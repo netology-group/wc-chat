@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Chat Demo with es modules</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <script src="/dist/polyfill.js"></script>
+  <script type="module">
+    import { Input } from '/es/input.js'
+    window.customElements.define('webcomponents-chat-input', Input)
+  </script>
+  <script type="module">
+    import { Messages } from '/es/messages.js'
+    window.customElements.define('webcomponents-chat-messages', Messages)
+  </script>
+  <script>
+    let _messages = []
+    const _users = [{
+      name: 'Marco Polo',
+      role: 'user',
+      user_id: 1,
+      visible: true,
+    }]
+
+    const enhanceMessage = message => ({
+      id: Date.now(),
+      body: message,
+      timestamp: Date.now() / 1e3,
+      user_id: 1,
+    })
+
+    window.addEventListener('DOMContentLoaded', function(){
+      var input = document.getElementById('input')
+      var messages = document.getElementById('messages')
+
+      messages.users = _users
+
+      input.addEventListener('message-submit', (e) => {
+
+        setTimeout(() => {
+          _messages = _messages.concat(enhanceMessage(e.detail.message))
+          messages.list = _messages
+          input.changeValue()
+        }, 1e3)
+
+      })
+
+    })
+  </script>
+  <h1>Chat demo (powered by es modules)</h1>
+  <webcomponents-chat-messages
+    id="messages"
+  ></webcomponents-chat-messages>
+  <webcomponents-chat-input
+    id="input"
+    placeholderdisabled="Input is blocked"
+    placeholder="Type something..."
+    submit-event="message-input-was-submitted"
+  ></webcomponents-chat-input>
+</body>
+</html>

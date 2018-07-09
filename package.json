@@ -1,0 +1,42 @@
+{
+  "name": "@netology-group/webcomponents-chat",
+  "version": "0.0.2",
+  "description": "",
+  "main": "lib/index.mjs",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "eslint --ext .js,.mjs .",
+    "rollup:es": "rollup -c",
+    "rollup:umd": "rollup -c rollup.config.umd.js",
+    "build:es": "entry=input rollup -c && entry=messages rollup -c",
+    "prebuild:umd": "npm run polyfill",
+    "build:umd": "entry=input npm run rollup:umd && entry=messages npm run rollup:umd",
+    "build:all": "npm run build:es && npm run build:umd",
+    "polyfill": "modernizr -uqf customelements -d lib/polyfill",
+    "prepare": "npm run polyfill",
+    "demo": "http-server . -p ${DEMO_PORT:-9090}"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^5.0.1",
+    "eslint-config-adequate": "^1.1.0",
+    "modernizr": "^3.6.0",
+    "rollup": "^0.62.0",
+    "rollup-plugin-commonjs": "^9.1.3",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-svg": "^1.0.1"
+  },
+  "dependencies": {
+    "@netology-group/webcomponents-utils": "0.0.2",
+    "@polymer/iron-autogrow-textarea": "^3.0.0-pre.21",
+    "@polymer/lit-element": "^0.5.2",
+    "@webcomponents/custom-elements": "^1.1.2",
+    "@webcomponents/webcomponentsjs": "^2.0.2",
+    "most": "^1.7.3",
+    "ramda": "^0.25.0",
+    "rollup-plugin-polyfill": "^2.0.1"
+  }
+}
