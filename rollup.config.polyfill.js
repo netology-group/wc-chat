@@ -3,9 +3,9 @@ import cjs from 'rollup-plugin-commonjs'
 import resolve from 'rollup-plugin-node-resolve'
 
 export default {
-  input: `lib/polyfill/index.js`,
+  input: 'lib/polyfill/index.js',
   output: {
-    file: `dist/polyfill.js`,
+    file: 'dist/polyfill.js',
     format: 'umd',
   },
   plugins: [
