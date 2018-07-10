@@ -1,11 +1,16 @@
 {
   "name": "@netology-group/webcomponents-chat",
-  "version": "0.0.2",
+  "version": "0.0.16",
   "description": "",
   "main": "lib/index.mjs",
   "directories": {
     "lib": "lib"
   },
+  "files":[
+    "dist",
+    "es",
+    "lib"
+  ],
   "scripts": {
     "test": "eslint --ext .js,.mjs .",
     "rollup:es": "rollup -c",
@@ -15,8 +20,9 @@
     "build:umd": "entry=input npm run rollup:umd && entry=messages npm run rollup:umd",
     "build:all": "npm run build:es && npm run build:umd",
     "polyfill": "modernizr -uqf customelements -d lib/polyfill",
-    "prepare": "npm run polyfill",
-    "demo": "http-server . -p ${DEMO_PORT:-9090}"
+    "prepare": "npm run polyfill && npm run build:all",
+    "demo": "http-server . -p ${DEMO_PORT:-9090}",
+    "start": "npm run demo"
   },
   "author": "",
   "license": "MIT",
@@ -27,6 +33,7 @@
     "rollup": "^0.62.0",
     "rollup-plugin-commonjs": "^9.1.3",
     "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-polyfill": "^2.0.1",
     "rollup-plugin-svg": "^1.0.1"
   },
   "dependencies": {
@@ -36,7 +43,6 @@
     "@webcomponents/custom-elements": "^1.1.2",
     "@webcomponents/webcomponentsjs": "^2.0.2",
     "most": "^1.7.3",
-    "ramda": "^0.25.0",
-    "rollup-plugin-polyfill": "^2.0.1"
+    "ramda": "^0.25.0"
   }
 }
