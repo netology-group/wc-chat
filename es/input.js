@@ -2373,6 +2373,22 @@ class EventPart {
     }
 }
 
+/**
+ * Returns a string of css class names formed by taking the properties
+ * in the `classInfo` object and appending the property name to the string of
+ * class names if the property value is truthy.
+ * @param classInfo
+ */
+function classString(classInfo) {
+    const o = [];
+    for (const name in classInfo) {
+        const v = classInfo[name];
+        if (v) {
+            o.push(name);
+        }
+    }
+    return o.join(' ');
+}
 class LitElement extends PropertiesMixin(HTMLElement) {
     constructor() {
         super(...arguments);
@@ -3523,12 +3539,17 @@ const withStyle$1 = (base, ...styles) => props => html$1`
 var entry = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDEyIDEyKSI+CiAgICAgICAgPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiM0OEExRTYiLz4KICAgICAgICA8cGF0aCBmaWxsPSIjRkZGIiBmaWxsLXJ1bGU9Im5vbnplcm8iIGQ9Ik0xMC4yIDguNjQ5bC44NDktLjg0OSA0LjAyNCA0LjAyNC00LjAyNCA0LjAyNUwxMC4yIDE1bDMuMTc2LTMuMTc2eiIvPgogICAgPC9nPgo8L3N2Zz4=';
 
 const styles = `
-  .enter:active{
+  .enter:hover:not(disabled){
+    filter: brightness(var(--darken-hover, 95%));
+  }
+  .enter:active:not(disabled){
     transform:translateY(1px);
+    filter: brightness(var(--darken-hover, 85%));
   }
   .enter:disabled {
     cursor: not-allowed;
-    filter: grayscale(100%);
+    transform: none !important;
+    filter: grayscale(100%) !important;
   }
 `;
 
@@ -3541,7 +3562,9 @@ const button = ({
     class="enter"
     disabled="${disabled}"
     type="${type}"
-  >${children || html$1`<img src="${entry}" />`}</button>
+  >
+    ${children || html$1`<img src="${entry}" />`}
+  </button>
 `;
 
 const Button = withStyle$1(button, styles);
@@ -17569,35 +17592,48 @@ Polymer({
 
 const styles$1 = `
   iron-autogrow-textarea {
-    border: 0px transparent;
     -webkit-appearance: none;
-    outlibe: none;
+    background: var(--bg-color, var(--theme-color-white, #fff));
+    border-radius: 5px;
+    border: 1px solid var(--border-color, var(--theme-color-alto, #d4d4d4));
+    box-sizing: border-box;
+    caret-color: var(--caret-color, var(--theme-color-pictonblue, #48a1e6));
+    font-size: var(--font-size, var(--theme-font-size, 16px));
+    height: inherit;
+    line-height: 1.2em;
+    min-height: 52px;
+    outline: none;
     width: 100%;
+
     --iron-autogrow-textarea: {
-      box-sizing: border-box;
-      width: 100%;
       padding: 16px 70px 0px 20px;
-      border: 1px solid #d4d4d4;
-      border-radius: 5px;
-      min-height: 48px;
-      line-height: 1.2em;
-      background: #fff;
     };
+
     --iron-autogrow-textarea-placeholder: {
-      color: #d4d4d4
+      color: var(--ph-color, var(--theme-color-alto, #d4d4d4));
     };
+  }
+
+  iron-autogrow-textarea:hover {
+    border-color: var(--border-color-hover, var(--theme-color-silver, #b8b8b8));
+  }
+
+  iron-autogrow-textarea:focus-within {
+    border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));
   }
 `;
 
 const textarea = ({
   disabled,
   id,
+  onKeyPress,
   placeholder,
   value,
 }) => html$1`
   <iron-autogrow-textarea
     disabled="${disabled}"
     id="${id}"
+    on-keypress="${onKeyPress}"
     placeholder="${placeholder || 'Just type something...'}"
     value="${value}"
   />
@@ -18628,9 +18664,9 @@ const observeC = curry(observe);
 
 const throttleC = curry(throttle);
 
-const isMetaBtn = ({ key }) => key.toLowerCase() === 'meta';
 const isEnterBtn = ({ key, keyCode }) => key.toLowerCase() === 'enter' || keyCode === 13;
-const isControlBtn = ({ key }) => key.toLowerCase() === 'control';
+const isControlBtn = ({ key, keyCode }) => key.toLowerCase() === 'control' || keyCode === 17;
+const isShiftBtn = ({ key, keyCode }) => key.toLowerCase() === 'shift' || keyCode === 16;
 
 const styles$2 = `
   .input {
@@ -18664,6 +18700,7 @@ class MessageInput extends LitElement {
       placeholder: String,
       placeholderdisabled: String,
       value: String,
+      debounce: Number,
     }
   }
 
@@ -18671,6 +18708,7 @@ class MessageInput extends LitElement {
     super(props);
 
     this._boundValueChange = this._onValueChanged.bind(this);
+    this._boundKeyPress = this._onKeyPress.bind(this);
   }
 
   connectedCallback () {
@@ -18694,18 +18732,49 @@ class MessageInput extends LitElement {
   }
 
   _onFormActivate (currentTarget) { // eslint-disable-line class-methods-use-this
+    let previous;
+    const combineTuple = (a$, b$) => combineC((x, y) => [x, y], a$, b$);
+    const keyup = fromEvent('keyup', currentTarget);
+    const keydown = fromEvent('keydown', currentTarget);
+    const wasPrevSpecial = _ => _ && (
+      isShiftBtn(_[0])
+      || isShiftBtn(_[1])
+      || isControlBtn(_[0])
+      || isControlBtn(_[1])
+    );
+
     compose$1(
-      observeC(([e]) => this._handleSubmit(e)),
-      x => delayC(50, x),
-      filterC(([up$, down$]) => cond([
-        [(u, d) => isMetaBtn(u) && isEnterBtn(d), T],
-        [(u, d) => isControlBtn(u) && isEnterBtn(d), T],
+      observeC((_) => {
+        const shouldSubmit = cond([[([a, b]) => !wasPrevSpecial(previous) && isEnterBtn(a) && isEnterBtn(b), T], [T, F]]);
+
+        shouldSubmit(_) && this._handleSubmit(_[0]);
+
+        previous = _;
+        // memorize tuple
+      }),
+      debounceC(this.debounce || 25), // skip noisy events which are invokend on special+enter chord, e.g. new line
+      filterC(() => this.value),
+      combineTuple,
+    )(keydown, keydown);
+    // allow to submit on cmd+enter || control+enter || enter
+
+    compose$1(
+      observeC(() => { this.changeValue(`${this.value || ''}\n`); }),
+      filterC(cond([
+        [([up, down]) => isControlBtn(up) && isEnterBtn(down), T],
+        [([up, down]) => isShiftBtn(up) && isEnterBtn(down), T],
         [T, F],
-      ])(up$, down$)),
+        [F, F],
+      ])),
       filterC(([up, down]) => up.key !== down.key),
-      (up$, down$) => combineC((x, y) => [x, y], up$, down$),
-    )(fromEvent('keyup', currentTarget), fromEvent('keydown', currentTarget));
-    // allow to submit on cmd+enter || control+enter
+      combineTuple,
+    )(keyup, keydown);
+    // allow to input newline on shift+enter || control+enter
+  }
+
+  _onKeyPress (e) { // eslint-disable-line class-methods-use-this
+    isEnterBtn(e) && e.preventDefault();
+    // prevent native textarea's enter event
   }
 
   _handleSubmit (e) {
@@ -18734,6 +18803,7 @@ class MessageInput extends LitElement {
 
     const textarea$$1 = Textarea({
       disabled,
+      onKeyPress: this._boundKeyPress,
       placeholder: this.hasAttribute('disabled')
         ? placeholderdisabled
         : placeholder,
@@ -18741,7 +18811,7 @@ class MessageInput extends LitElement {
     });
 
     return html$1`
-      <section class="input">
+      <section class$="${classString({ input: true, disabled })}">
         <form on-submit="${e => this._handleSubmit(e)}">
           ${textarea$$1}
           ${button$$1}

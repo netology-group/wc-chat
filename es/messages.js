@@ -2137,7 +2137,7 @@ const styles = `
 `;
 
 // eslint-disable-next-line multiline-ternary
-const actions = (props = {}) => !props.children ? null : html$1`
+const actions = (props = {}) => !props.children.length ? null : html$1`
   <div class="actions">
     <div class="action-group">
       <span>...</span>
@@ -2941,7 +2941,7 @@ const body = (props) => {
       style="background-image: url(${message.avatar});"
       title="${message.user_name}"
     ></div>
-    <section class="message" id="${message.user_role}">
+    <section class$="message ${message.user_role}">
       <div class="message-meta">
         <span class="message-author">${message.user_name}</span>
         <span class="message-status">${message.status || formatDate(stampToDate(message.timestamp))}</span>
@@ -2970,7 +2970,6 @@ const styles$1 = `
     height: 87%;
     padding: 20px 0 20px 20px;
     min-height: 200px;
-    overflow-y: scroll;
     border-radius: 5px;
   }
   .message-block.deleted .message {
@@ -2998,12 +2997,6 @@ const styles$1 = `
     border-radius: 5px;
     margin-bottom: 16px;
     background-color: #fff;
-  }
-  .message#moderator {
-    background-color: rgba(255, 114, 86, 0.08);
-  }
-  .message#me {
-    background-color: rgba(72, 161, 230, 0.08);
   }
   .message-meta {
     margin-bottom: 3px;
