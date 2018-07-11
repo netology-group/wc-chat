@@ -1,6 +1,6 @@
 {
   "name": "@netology-group/webcomponents-chat",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "",
   "main": "lib/index.mjs",
   "directories": {
