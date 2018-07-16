@@ -3421,420 +3421,6 @@
 	  return pipe.apply(this, reverse(arguments));
 	}
 
-	function _isTransformer(obj) {
-	  return typeof obj['@@transducer/step'] === 'function';
-	}
-
-	/**
-	 * Returns a function that dispatches with different strategies based on the
-	 * object in list position (last argument). If it is an array, executes [fn].
-	 * Otherwise, if it has a function with one of the given method names, it will
-	 * execute that function (functor case). Otherwise, if it is a transformer,
-	 * uses transducer [xf] to return a new transformer (transducer case).
-	 * Otherwise, it will default to executing [fn].
-	 *
-	 * @private
-	 * @param {Array} methodNames properties to check for a custom implementation
-	 * @param {Function} xf transducer to initialize if object is transformer
-	 * @param {Function} fn default ramda implementation
-	 * @return {Function} A function that dispatches on object in list position
-	 */
-	function _dispatchable(methodNames, xf, fn) {
-	  return function () {
-	    if (arguments.length === 0) {
-	      return fn();
-	    }
-	    var args = Array.prototype.slice.call(arguments, 0);
-	    var obj = args.pop();
-	    if (!_isArray(obj)) {
-	      var idx = 0;
-	      while (idx < methodNames.length) {
-	        if (typeof obj[methodNames[idx]] === 'function') {
-	          return obj[methodNames[idx]].apply(obj, args);
-	        }
-	        idx += 1;
-	      }
-	      if (_isTransformer(obj)) {
-	        var transducer = xf.apply(null, args);
-	        return transducer(obj);
-	      }
-	    }
-	    return fn.apply(this, arguments);
-	  };
-	}
-
-	function _map(fn, functor) {
-	  var idx = 0;
-	  var len = functor.length;
-	  var result = Array(len);
-	  while (idx < len) {
-	    result[idx] = fn(functor[idx]);
-	    idx += 1;
-	  }
-	  return result;
-	}
-
-	var _xfBase = {
-	  init: function () {
-	    return this.xf['@@transducer/init']();
-	  },
-	  result: function (result) {
-	    return this.xf['@@transducer/result'](result);
-	  }
-	};
-
-	var XMap = /*#__PURE__*/function () {
-	  function XMap(f, xf) {
-	    this.xf = xf;
-	    this.f = f;
-	  }
-	  XMap.prototype['@@transducer/init'] = _xfBase.init;
-	  XMap.prototype['@@transducer/result'] = _xfBase.result;
-	  XMap.prototype['@@transducer/step'] = function (result, input) {
-	    return this.xf['@@transducer/step'](result, this.f(input));
-	  };
-
-	  return XMap;
-	}();
-
-	var _xmap = /*#__PURE__*/_curry2(function _xmap(f, xf) {
-	  return new XMap(f, xf);
-	});
-
-	/**
-	 * Internal curryN function.
-	 *
-	 * @private
-	 * @category Function
-	 * @param {Number} length The arity of the curried function.
-	 * @param {Array} received An array of arguments received thus far.
-	 * @param {Function} fn The function to curry.
-	 * @return {Function} The curried function.
-	 */
-	function _curryN(length, received, fn) {
-	  return function () {
-	    var combined = [];
-	    var argsIdx = 0;
-	    var left = length;
-	    var combinedIdx = 0;
-	    while (combinedIdx < received.length || argsIdx < arguments.length) {
-	      var result;
-	      if (combinedIdx < received.length && (!_isPlaceholder(received[combinedIdx]) || argsIdx >= arguments.length)) {
-	        result = received[combinedIdx];
-	      } else {
-	        result = arguments[argsIdx];
-	        argsIdx += 1;
-	      }
-	      combined[combinedIdx] = result;
-	      if (!_isPlaceholder(result)) {
-	        left -= 1;
-	      }
-	      combinedIdx += 1;
-	    }
-	    return left <= 0 ? fn.apply(this, combined) : _arity(left, _curryN(length, combined, fn));
-	  };
-	}
-
-	/**
-	 * Returns a curried equivalent of the provided function, with the specified
-	 * arity. The curried function has two unusual capabilities. First, its
-	 * arguments needn't be provided one at a time. If `g` is `R.curryN(3, f)`, the
-	 * following are equivalent:
-	 *
-	 *   - `g(1)(2)(3)`
-	 *   - `g(1)(2, 3)`
-	 *   - `g(1, 2)(3)`
-	 *   - `g(1, 2, 3)`
-	 *
-	 * Secondly, the special placeholder value [`R.__`](#__) may be used to specify
-	 * "gaps", allowing partial application of any combination of arguments,
-	 * regardless of their positions. If `g` is as above and `_` is [`R.__`](#__),
-	 * the following are equivalent:
-	 *
-	 *   - `g(1, 2, 3)`
-	 *   - `g(_, 2, 3)(1)`
-	 *   - `g(_, _, 3)(1)(2)`
-	 *   - `g(_, _, 3)(1, 2)`
-	 *   - `g(_, 2)(1)(3)`
-	 *   - `g(_, 2)(1, 3)`
-	 *   - `g(_, 2)(_, 3)(1)`
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.5.0
-	 * @category Function
-	 * @sig Number -> (* -> a) -> (* -> a)
-	 * @param {Number} length The arity for the returned function.
-	 * @param {Function} fn The function to curry.
-	 * @return {Function} A new, curried function.
-	 * @see R.curry
-	 * @example
-	 *
-	 *      var sumArgs = (...args) => R.sum(args);
-	 *
-	 *      var curriedAddFourNumbers = R.curryN(4, sumArgs);
-	 *      var f = curriedAddFourNumbers(1, 2);
-	 *      var g = f(3);
-	 *      g(4); //=> 10
-	 */
-	var curryN = /*#__PURE__*/_curry2(function curryN(length, fn) {
-	  if (length === 1) {
-	    return _curry1(fn);
-	  }
-	  return _arity(length, _curryN(length, [], fn));
-	});
-
-	function _has(prop, obj) {
-	  return Object.prototype.hasOwnProperty.call(obj, prop);
-	}
-
-	var toString = Object.prototype.toString;
-	var _isArguments = function () {
-	  return toString.call(arguments) === '[object Arguments]' ? function _isArguments(x) {
-	    return toString.call(x) === '[object Arguments]';
-	  } : function _isArguments(x) {
-	    return _has('callee', x);
-	  };
-	};
-
-	// cover IE < 9 keys issues
-	var hasEnumBug = ! /*#__PURE__*/{ toString: null }.propertyIsEnumerable('toString');
-	var nonEnumerableProps = ['constructor', 'valueOf', 'isPrototypeOf', 'toString', 'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
-	// Safari bug
-	var hasArgsEnumBug = /*#__PURE__*/function () {
-
-	  return arguments.propertyIsEnumerable('length');
-	}();
-
-	var contains = function contains(list, item) {
-	  var idx = 0;
-	  while (idx < list.length) {
-	    if (list[idx] === item) {
-	      return true;
-	    }
-	    idx += 1;
-	  }
-	  return false;
-	};
-
-	/**
-	 * Returns a list containing the names of all the enumerable own properties of
-	 * the supplied object.
-	 * Note that the order of the output array is not guaranteed to be consistent
-	 * across different JS platforms.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.1.0
-	 * @category Object
-	 * @sig {k: v} -> [k]
-	 * @param {Object} obj The object to extract properties from
-	 * @return {Array} An array of the object's own properties.
-	 * @see R.keysIn, R.values
-	 * @example
-	 *
-	 *      R.keys({a: 1, b: 2, c: 3}); //=> ['a', 'b', 'c']
-	 */
-	var _keys = typeof Object.keys === 'function' && !hasArgsEnumBug ? function keys(obj) {
-	  return Object(obj) !== obj ? [] : Object.keys(obj);
-	} : function keys(obj) {
-	  if (Object(obj) !== obj) {
-	    return [];
-	  }
-	  var prop, nIdx;
-	  var ks = [];
-	  var checkArgsLength = hasArgsEnumBug && _isArguments(obj);
-	  for (prop in obj) {
-	    if (_has(prop, obj) && (!checkArgsLength || prop !== 'length')) {
-	      ks[ks.length] = prop;
-	    }
-	  }
-	  if (hasEnumBug) {
-	    nIdx = nonEnumerableProps.length - 1;
-	    while (nIdx >= 0) {
-	      prop = nonEnumerableProps[nIdx];
-	      if (_has(prop, obj) && !contains(ks, prop)) {
-	        ks[ks.length] = prop;
-	      }
-	      nIdx -= 1;
-	    }
-	  }
-	  return ks;
-	};
-	var keys = /*#__PURE__*/_curry1(_keys);
-
-	/**
-	 * Takes a function and
-	 * a [functor](https://github.com/fantasyland/fantasy-land#functor),
-	 * applies the function to each of the functor's values, and returns
-	 * a functor of the same shape.
-	 *
-	 * Ramda provides suitable `map` implementations for `Array` and `Object`,
-	 * so this function may be applied to `[1, 2, 3]` or `{x: 1, y: 2, z: 3}`.
-	 *
-	 * Dispatches to the `map` method of the second argument, if present.
-	 *
-	 * Acts as a transducer if a transformer is given in list position.
-	 *
-	 * Also treats functions as functors and will compose them together.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.1.0
-	 * @category List
-	 * @sig Functor f => (a -> b) -> f a -> f b
-	 * @param {Function} fn The function to be called on every element of the input `list`.
-	 * @param {Array} list The list to be iterated over.
-	 * @return {Array} The new list.
-	 * @see R.transduce, R.addIndex
-	 * @example
-	 *
-	 *      var double = x => x * 2;
-	 *
-	 *      R.map(double, [1, 2, 3]); //=> [2, 4, 6]
-	 *
-	 *      R.map(double, {x: 1, y: 2, z: 3}); //=> {x: 2, y: 4, z: 6}
-	 * @symb R.map(f, [a, b]) = [f(a), f(b)]
-	 * @symb R.map(f, { x: a, y: b }) = { x: f(a), y: f(b) }
-	 * @symb R.map(f, functor_o) = functor_o.map(f)
-	 */
-	var map$2 = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable(['fantasy-land/map', 'map'], _xmap, function map(fn, functor) {
-	  switch (Object.prototype.toString.call(functor)) {
-	    case '[object Function]':
-	      return curryN(functor.length, function () {
-	        return fn.call(this, functor.apply(this, arguments));
-	      });
-	    case '[object Object]':
-	      return _reduce(function (acc, key) {
-	        acc[key] = fn(functor[key]);
-	        return acc;
-	      }, {}, keys(functor));
-	    default:
-	      return _map(fn, functor);
-	  }
-	}));
-
-	/**
-	 * Returns the larger of its two arguments.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.1.0
-	 * @category Relation
-	 * @sig Ord a => a -> a -> a
-	 * @param {*} a
-	 * @param {*} b
-	 * @return {*}
-	 * @see R.maxBy, R.min
-	 * @example
-	 *
-	 *      R.max(789, 123); //=> 789
-	 *      R.max('a', 'b'); //=> 'b'
-	 */
-	var max = /*#__PURE__*/_curry2(function max(a, b) {
-	  return b > a ? b : a;
-	});
-
-	/**
-	 * Returns a function, `fn`, which encapsulates `if/else, if/else, ...` logic.
-	 * `R.cond` takes a list of [predicate, transformer] pairs. All of the arguments
-	 * to `fn` are applied to each of the predicates in turn until one returns a
-	 * "truthy" value, at which point `fn` returns the result of applying its
-	 * arguments to the corresponding transformer. If none of the predicates
-	 * matches, `fn` returns undefined.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.6.0
-	 * @category Logic
-	 * @sig [[(*... -> Boolean),(*... -> *)]] -> (*... -> *)
-	 * @param {Array} pairs A list of [predicate, transformer]
-	 * @return {Function}
-	 * @example
-	 *
-	 *      var fn = R.cond([
-	 *        [R.equals(0),   R.always('water freezes at 0°C')],
-	 *        [R.equals(100), R.always('water boils at 100°C')],
-	 *        [R.T,           temp => 'nothing special happens at ' + temp + '°C']
-	 *      ]);
-	 *      fn(0); //=> 'water freezes at 0°C'
-	 *      fn(50); //=> 'nothing special happens at 50°C'
-	 *      fn(100); //=> 'water boils at 100°C'
-	 */
-	var cond = /*#__PURE__*/_curry1(function cond(pairs) {
-	  var arity = reduce$1(max, 0, map$2(function (pair) {
-	    return pair[0].length;
-	  }, pairs));
-	  return _arity(arity, function () {
-	    var idx = 0;
-	    while (idx < pairs.length) {
-	      if (pairs[idx][0].apply(this, arguments)) {
-	        return pairs[idx][1].apply(this, arguments);
-	      }
-	      idx += 1;
-	    }
-	  });
-	});
-
-	/**
-	 * Returns a function that always returns the given value. Note that for
-	 * non-primitives the value returned is a reference to the original value.
-	 *
-	 * This function is known as `const`, `constant`, or `K` (for K combinator) in
-	 * other languages and libraries.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.1.0
-	 * @category Function
-	 * @sig a -> (* -> a)
-	 * @param {*} val The value to wrap in a function
-	 * @return {Function} A Function :: * -> val.
-	 * @example
-	 *
-	 *      var t = R.always('Tee');
-	 *      t(); //=> 'Tee'
-	 */
-	var always = /*#__PURE__*/_curry1(function always(val) {
-	  return function () {
-	    return val;
-	  };
-	});
-
-	/**
-	 * A function that always returns `false`. Any passed in parameters are ignored.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.9.0
-	 * @category Function
-	 * @sig * -> Boolean
-	 * @param {*}
-	 * @return {Boolean}
-	 * @see R.always, R.T
-	 * @example
-	 *
-	 *      R.F(); //=> false
-	 */
-	var F = /*#__PURE__*/always(false);
-
-	/**
-	 * A function that always returns `true`. Any passed in parameters are ignored.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.9.0
-	 * @category Function
-	 * @sig * -> Boolean
-	 * @param {*}
-	 * @return {Boolean}
-	 * @see R.always, R.F
-	 * @example
-	 *
-	 *      R.T(); //=> true
-	 */
-	var T = /*#__PURE__*/always(true);
-
 	const withStyle$1 = (base, ...styles) => props => html$1`
   <style>${styles.join(' ')}</style>
   ${base(props)}
@@ -17910,7 +17496,8 @@
     width: 100%;
 
     --iron-autogrow-textarea: {
-      padding: 16px 70px 0px 20px;
+      padding: 16px 70px 14px 20px;
+      box-sizing: border-box;
     };
 
     --iron-autogrow-textarea-placeholder: {
@@ -17930,6 +17517,8 @@
 	const textarea = ({
 	  disabled,
 	  id,
+	  maxRows,
+	  onInput,
 	  onKeyPress,
 	  placeholder,
 	  value,
@@ -17937,6 +17526,8 @@
   <iron-autogrow-textarea
     disabled="${disabled}"
     id="${id}"
+    maxRows="${maxRows}"
+    on-input="${function oninput (e) { onInput(e, this.textarea); }}"
     on-keypress="${onKeyPress}"
     placeholder="${placeholder || 'Just type something...'}"
     value="${value}"
@@ -18093,7 +17684,7 @@
 	 * @param {Stream} stream stream to map
 	 * @returns {Stream} stream containing items transformed by f
 	 */
-	function map$3 (f, stream) {
+	function map$2 (f, stream) {
 	  return new Stream(Map$1.create(f, stream.source))
 	}
 
@@ -18264,7 +17855,7 @@
 
 	/** @license MIT License (c) copyright 2010-2016 original author or authors */
 
-	var map$4 = map;
+	var map$3 = map;
 	var tail$2 = tail;
 
 	/**
@@ -18287,12 +17878,12 @@
 	function combineArray (f, streams) {
 	  var l = streams.length;
 	  return l === 0 ? empty$1()
-	  : l === 1 ? map$3(f, streams[0])
+	  : l === 1 ? map$2(f, streams[0])
 	  : new Stream(combineSources(f, streams))
 	}
 
 	function combineSources (f, streams) {
-	  return new Combine(f, map$4(getSource, streams))
+	  return new Combine(f, map$3(getSource, streams))
 	}
 
 	function getSource (stream) {
@@ -18910,6 +18501,89 @@
 	}
 
 	/**
+	 * Internal curryN function.
+	 *
+	 * @private
+	 * @category Function
+	 * @param {Number} length The arity of the curried function.
+	 * @param {Array} received An array of arguments received thus far.
+	 * @param {Function} fn The function to curry.
+	 * @return {Function} The curried function.
+	 */
+	function _curryN(length, received, fn) {
+	  return function () {
+	    var combined = [];
+	    var argsIdx = 0;
+	    var left = length;
+	    var combinedIdx = 0;
+	    while (combinedIdx < received.length || argsIdx < arguments.length) {
+	      var result;
+	      if (combinedIdx < received.length && (!_isPlaceholder(received[combinedIdx]) || argsIdx >= arguments.length)) {
+	        result = received[combinedIdx];
+	      } else {
+	        result = arguments[argsIdx];
+	        argsIdx += 1;
+	      }
+	      combined[combinedIdx] = result;
+	      if (!_isPlaceholder(result)) {
+	        left -= 1;
+	      }
+	      combinedIdx += 1;
+	    }
+	    return left <= 0 ? fn.apply(this, combined) : _arity(left, _curryN(length, combined, fn));
+	  };
+	}
+
+	/**
+	 * Returns a curried equivalent of the provided function, with the specified
+	 * arity. The curried function has two unusual capabilities. First, its
+	 * arguments needn't be provided one at a time. If `g` is `R.curryN(3, f)`, the
+	 * following are equivalent:
+	 *
+	 *   - `g(1)(2)(3)`
+	 *   - `g(1)(2, 3)`
+	 *   - `g(1, 2)(3)`
+	 *   - `g(1, 2, 3)`
+	 *
+	 * Secondly, the special placeholder value [`R.__`](#__) may be used to specify
+	 * "gaps", allowing partial application of any combination of arguments,
+	 * regardless of their positions. If `g` is as above and `_` is [`R.__`](#__),
+	 * the following are equivalent:
+	 *
+	 *   - `g(1, 2, 3)`
+	 *   - `g(_, 2, 3)(1)`
+	 *   - `g(_, _, 3)(1)(2)`
+	 *   - `g(_, _, 3)(1, 2)`
+	 *   - `g(_, 2)(1)(3)`
+	 *   - `g(_, 2)(1, 3)`
+	 *   - `g(_, 2)(_, 3)(1)`
+	 *
+	 * @func
+	 * @memberOf R
+	 * @since v0.5.0
+	 * @category Function
+	 * @sig Number -> (* -> a) -> (* -> a)
+	 * @param {Number} length The arity for the returned function.
+	 * @param {Function} fn The function to curry.
+	 * @return {Function} A new, curried function.
+	 * @see R.curry
+	 * @example
+	 *
+	 *      var sumArgs = (...args) => R.sum(args);
+	 *
+	 *      var curriedAddFourNumbers = R.curryN(4, sumArgs);
+	 *      var f = curriedAddFourNumbers(1, 2);
+	 *      var g = f(3);
+	 *      g(4); //=> 10
+	 */
+	var curryN = /*#__PURE__*/_curry2(function curryN(length, fn) {
+	  if (length === 1) {
+	    return _curry1(fn);
+	  }
+	  return _arity(length, _curryN(length, [], fn));
+	});
+
+	/**
 	 * Returns a curried equivalent of the provided function. The curried function
 	 * has two unusual capabilities. First, its arguments needn't be provided one
 	 * at a time. If `f` is a ternary function and `g` is `R.curry(f)`, the
@@ -18962,12 +18636,13 @@
 
 	const filterC = curry(filter);
 
-	const mapC = curry(map$3);
+	const mapC = curry(map$2);
 
 	const observeC = curry(observe);
 
 	const throttleC = curry(throttle);
 
+	const isMetaBtn = ({ key, keyCode }) => key.toLowerCase() === 'meta' || keyCode === 91; // eslint-disable-line
 	const isEnterBtn = ({ key, keyCode }) => key.toLowerCase() === 'enter' || keyCode === 13;
 	const isControlBtn = ({ key, keyCode }) => key.toLowerCase() === 'control' || keyCode === 17;
 	const isShiftBtn = ({ key, keyCode }) => key.toLowerCase() === 'shift' || keyCode === 16;
@@ -18990,7 +18665,7 @@
     outline: none;
     padding: 0;
     position: absolute;
-    right: 14px
+    right: 18px
   }
   .enter:active:not(:disabled): {
     transform: translateY(1px);
@@ -19001,10 +18676,11 @@
 	  static get properties () {
 	    return {
 	      disabled: Boolean,
+	      maxrows: Number,
 	      placeholder: String,
 	      placeholderdisabled: String,
 	      value: String,
-	      debounce: Number,
+	      delay: Number,
 	    }
 	  }
 
@@ -19013,6 +18689,10 @@
 
 	    this._boundValueChange = this._onValueChanged.bind(this);
 	    this._boundKeyPress = this._onKeyPress.bind(this);
+	    this._boundOnInput = this._onInput.bind(this);
+	    this._underlyingTextarea = null;
+	    this.__pre = null;
+	    this.__post = null;
 	  }
 
 	  connectedCallback () {
@@ -19024,6 +18704,10 @@
 	  disconnectedCallback () {
 	    super.disconnectedCallback();
 
+	    this._underlyingTextarea = null;
+	    this.__pre = null;
+	    this.__post = null;
+
 	    this.removeEventListener('bind-value-changed', this._boundValueChange);
 	  }
 
@@ -19033,47 +18717,41 @@
 
 	  _onValueChanged (e) {
 	    this.value = e.detail.value;
+
+	    if (this._underlyingTextarea && this.__pre && this.__post) {
+	      this._underlyingTextarea.setSelectionRange(this.__pre, this.__post);
+	      this.__pre = null;
+	      this.__post = null;
+	    }
 	  }
 
 	  _onFormActivate (currentTarget) { // eslint-disable-line class-methods-use-this
-	    let previous;
-	    const combineTuple = (a$, b$) => combineC((x, y) => [x, y], a$, b$);
-	    const keyup = fromEvent('keyup', currentTarget);
-	    const keydown = fromEvent('keydown', currentTarget);
-	    const wasPrevSpecial = _ => _ && (
-	      isShiftBtn(_[0])
-	      || isShiftBtn(_[1])
-	      || isControlBtn(_[0])
-	      || isControlBtn(_[1])
-	    );
+	    const keyup$ = fromEvent('keyup', currentTarget);
+	    const keydown$ = fromEvent('keydown', currentTarget);
+	    const enter$ = filterC(isEnterBtn, keydown$);
+
+	    const special = {
+	      shift: false, meta: false, control: false,
+	    };
+	    const isSpecialPressed = () => special.shift || special.meta || special.control;
 
 	    compose$1(
-	      observeC((_) => {
-	        const shouldSubmit = cond([[([a, b]) => !wasPrevSpecial(previous) && isEnterBtn(a) && isEnterBtn(b), T], [T, F]]);
+	      observeC(this._handleSubmit.bind(this)),
+	      throttleC(this.delay || 0),
+	      filterC(() => !isSpecialPressed())
+	    )(enter$);
 
-	        shouldSubmit(_) && this._handleSubmit(_[0]);
-
-	        previous = _;
-	        // memorize tuple
-	      }),
-	      debounceC(this.debounce || 25), // skip noisy events which are invokend on special+enter chord, e.g. new line
-	      filterC(() => this.value),
-	      combineTuple,
-	    )(keydown, keydown);
-	    // allow to submit on cmd+enter || control+enter || enter
+	    observeC((e) => { isEnterBtn(e) && isSpecialPressed() && this._insertLinebreak(); }, keydown$);
 
 	    compose$1(
-	      observeC(() => { this.changeValue(`${this.value || ''}\n`); }),
-	      filterC(cond([
-	        [([up, down]) => isControlBtn(up) && isEnterBtn(down), T],
-	        [([up, down]) => isShiftBtn(up) && isEnterBtn(down), T],
-	        [T, F],
-	        [F, F],
-	      ])),
-	      filterC(([up, down]) => up.key !== down.key),
-	      combineTuple,
-	    )(keyup, keydown);
-	    // allow to input newline on shift+enter || control+enter
+	      observeC(({ key }) => { special[key.toLowerCase()] = true; }),
+	      filterC(e => isShiftBtn(e) || isControlBtn(e) || isMetaBtn(e))
+	    )(keydown$);
+
+	    compose$1(
+	      observeC(({ key }) => { special[key.toLowerCase()] = false; }),
+	      filterC(e => isShiftBtn(e) || isControlBtn(e) || isMetaBtn(e))
+	    )(keyup$);
 	  }
 
 	  _onKeyPress (e) { // eslint-disable-line class-methods-use-this
@@ -19081,14 +18759,36 @@
 	    // prevent native textarea's enter event
 	  }
 
+	  _onInput (e, textarea$$1) {
+	    if (!this._underlyingTextarea) this._underlyingTextarea = textarea$$1;
+	  }
+
+	  _insertLinebreak () {
+	    if (!this._underlyingTextarea) {
+	      this.changeValue(`${this.value || ''}\n`);
+
+	      return
+	    }
+	    const { selectionStart: pre, selectionEnd: post } = this._underlyingTextarea;
+
+	    this.__pre = pre + 1;
+	    this.__post = pre + 1;
+
+	    this.changeValue(`${this.value.slice(0, pre)}\n${this.value.slice(post)}`);
+	  }
+
 	  _handleSubmit (e) {
 	    e && e.preventDefault();
+	    const message = this._processMessage(this.value);
 
-	    this.dispatchEvent(new CustomEvent('message-submit', { detail: { message: this._processMessage(this.value) } }));
+	    if (message) {
+	      this.dispatchEvent(new CustomEvent('message-submit', { detail: { message } }));
+	      this.changeValue('');
+	    }
 	  }
 
 	  _processMessage (value) { // eslint-disable-line class-methods-use-this
-	    return value.trim ? value.trim() : value
+	    return (value && value.trim) ? value.trim() : value
 	  }
 
 	  _firstRendered () {
@@ -19097,17 +18797,19 @@
 
 	  _render (props) {
 	    const {
-	      disabled, placeholder, placeholderdisabled, value,
+	      disabled, placeholder, placeholderdisabled, value, maxrows,
 	    } = props;
 
 	    const button$$1 = Button({
-	      disabled: !value || disabled,
+	      disabled: !this._processMessage(value) || disabled,
 	      type: 'submit',
 	    });
 
 	    const textarea$$1 = Textarea({
 	      disabled,
+	      maxRows: maxrows || 5,
 	      onKeyPress: this._boundKeyPress,
+	      onInput: this._boundOnInput,
 	      placeholder: this.hasAttribute('disabled')
 	        ? placeholderdisabled
 	        : placeholder,
