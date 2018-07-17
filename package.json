@@ -1,7 +1,7 @@
 {
-  "name": "@netology-group/webcomponents-chat",
-  "version": "0.1.1",
-  "description": "",
+  "name": "@netology-group/wc-chat",
+  "version": "0.1.2",
+  "description": "Messenger's webcomponents",
   "main": "lib/index.mjs",
   "directories": {
     "lib": "lib"
@@ -11,6 +11,12 @@
     "es",
     "lib"
   ],
+  "repository": {
+    "url": "https://github.com/netology-group/wc-chat"
+  },
+  "bugs": {
+    "url": "https://github.com/netology-group/wc-chat/issues"
+  },
   "scripts": {
     "test": "eslint --ext .js,.mjs .",
     "rollup:es": "rollup -c",
@@ -26,8 +32,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^5.0.1",
-    "eslint-config-adequate": "^1.1.0",
+    "eslint": "^5.1.0",
+    "eslint-config-adequate": "^1.1.1",
     "modernizr": "^3.6.0",
     "rollup": "^0.62.0",
     "rollup-plugin-commonjs": "^9.1.3",
@@ -36,7 +42,7 @@
     "rollup-plugin-svg": "^1.0.1"
   },
   "dependencies": {
-    "@netology-group/webcomponents-utils": "0.0.2",
+    "@netology-group/wc-utils": "^0.1.0",
     "@polymer/iron-autogrow-textarea": "^3.0.0-pre.21",
     "@polymer/lit-element": "^0.5.2",
     "@webcomponents/custom-elements": "^1.1.2",
