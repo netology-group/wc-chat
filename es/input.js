@@ -2575,11 +2575,13 @@ class LitElement extends PropertiesMixin(HTMLElement) {
 }
 
 const withStyle = (base, ...styles) => class extends base {
-  _render (props) {
-    const style = html$1`<style>${styles.join(' ')}</style>`;
+  _renderStyles (...argv) { // eslint-disable-line class-methods-use-this
+    return html$1`<style>${argv.join(' ')}</style>`
+  }
 
+  _render (props) {
     return html$1`
-      ${style}
+      ${this._renderStyles(...styles)}
       ${super._render(props)}
     `
   }
