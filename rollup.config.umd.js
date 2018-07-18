@@ -1,7 +1,10 @@
-import svg from 'rollup-plugin-svg'
+import autoprefixer from 'autoprefixer'
 import cjs from 'rollup-plugin-commonjs'
-import resolve from 'rollup-plugin-node-resolve'
+import env from 'postcss-preset-env'
 import polyfill from 'rollup-plugin-polyfill'
+import postcss from 'rollup-plugin-postcss'
+import resolve from 'rollup-plugin-node-resolve'
+import svg from 'rollup-plugin-svg'
 
 const input = `lib/organisms/${process.env.entry}.mjs`
 
@@ -15,6 +18,7 @@ export default {
   plugins: [
     polyfill(input, ['../../dist/polyfill']),
     resolve(),
+    postcss({ plugins: [env(), autoprefixer()] }),
     svg(),
     cjs({
       extensions: ['.js', '.mjs'],
