@@ -1,0 +1,14 @@
+.enter:hover:not(disabled) {
+  filter: brightness(var(--darken-hover, 95%));
+}
+
+.enter:active:not(disabled) {
+  transform: translateY(1px);
+  filter: brightness(var(--darken-active, 85%));
+}
+
+.enter:disabled {
+  cursor: not-allowed;
+  transform: none !important;
+  filter: grayscale(100%) !important;
+}
