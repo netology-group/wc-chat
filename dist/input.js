@@ -3430,20 +3430,35 @@
 
 	var entry = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDEyIDEyKSI+CiAgICAgICAgPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiM0OEExRTYiLz4KICAgICAgICA8cGF0aCBmaWxsPSIjRkZGIiBmaWxsLXJ1bGU9Im5vbnplcm8iIGQ9Ik0xMC4yIDguNjQ5bC44NDktLjg0OSA0LjAyNCA0LjAyNC00LjAyNCA0LjAyNUwxMC4yIDE1bDMuMTc2LTMuMTc2eiIvPgogICAgPC9nPgo8L3N2Zz4=';
 
-	const styles = `
-  .enter:hover:not(disabled){
-    filter: brightness(var(--darken-hover, 95%));
-  }
-  .enter:active:not(disabled){
-    transform:translateY(1px);
-    filter: brightness(var(--darken-hover, 85%));
-  }
-  .enter:disabled {
-    cursor: not-allowed;
-    transform: none !important;
-    filter: grayscale(100%) !important;
-  }
-`;
+	function styleInject(css, ref) {
+	  if ( ref === void 0 ) ref = {};
+	  var insertAt = ref.insertAt;
+
+	  if (!css || typeof document === 'undefined') { return; }
+
+	  var head = document.head || document.getElementsByTagName('head')[0];
+	  var style = document.createElement('style');
+	  style.type = 'text/css';
+
+	  if (insertAt === 'top') {
+	    if (head.firstChild) {
+	      head.insertBefore(style, head.firstChild);
+	    } else {
+	      head.appendChild(style);
+	    }
+	  } else {
+	    head.appendChild(style);
+	  }
+
+	  if (style.styleSheet) {
+	    style.styleSheet.cssText = css;
+	  } else {
+	    style.appendChild(document.createTextNode(css));
+	  }
+	}
+
+	var css = ".enter:hover:not(disabled) {\n  -webkit-filter: brightness(95%);\n          filter: brightness(95%);\n  -webkit-filter: brightness(var(--darken-hover, 95%));\n          filter: brightness(var(--darken-hover, 95%));\n}\n\n.enter:active:not(disabled) {\n  -webkit-transform: translateY(1px);\n          transform: translateY(1px);\n  -webkit-filter: brightness(85%);\n          filter: brightness(85%);\n  -webkit-filter: brightness(var(--darken-active, 85%));\n          filter: brightness(var(--darken-active, 85%));\n}\n\n.enter:disabled {\n  cursor: not-allowed;\n  -webkit-transform: none !important;\n          transform: none !important;\n  -webkit-filter: grayscale(100%) !important;\n          filter: grayscale(100%) !important;\n}\n";
+	styleInject(css);
 
 	const button = ({
 	  disabled,
@@ -3459,7 +3474,7 @@
   </button>
 `;
 
-	const Button = withStyle$1(button, styles);
+	var Button = withStyle$1(button, css);
 
 	/**
 	@license
@@ -17482,39 +17497,8 @@
 	  }
 	});
 
-	const styles$1 = `
-  iron-autogrow-textarea {
-    -webkit-appearance: none;
-    background: var(--bg-color, var(--theme-color-white, #fff));
-    border-radius: 5px;
-    border: 1px solid var(--border-color, var(--theme-color-alto, #d4d4d4));
-    box-sizing: border-box;
-    caret-color: var(--caret-color, var(--theme-color-pictonblue, #48a1e6));
-    font-size: var(--font-size, var(--theme-font-size, 16px));
-    height: inherit;
-    line-height: 1.2em;
-    min-height: 52px;
-    outline: none;
-    width: 100%;
-
-    --iron-autogrow-textarea: {
-      padding: 16px 70px 14px 20px;
-      box-sizing: border-box;
-    };
-
-    --iron-autogrow-textarea-placeholder: {
-      color: var(--ph-color, var(--theme-color-alto, #d4d4d4));
-    };
-  }
-
-  iron-autogrow-textarea:hover {
-    border-color: var(--border-color-hover, var(--theme-color-silver, #b8b8b8));
-  }
-
-  iron-autogrow-textarea:focus-within {
-    border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));
-  }
-`;
+	var css$1 = "iron-autogrow-textarea {\n  -webkit-appearance: none;\n  background: #fff;\n  background: var(--bg-color, var(--theme-color-white, #fff));\n  border-radius: 5px;\n  border: 1px solid #d4d4d4;\n  border: 1px solid var(--border-color, var(--theme-color-alto, #d4d4d4));\n  box-sizing: border-box;\n  caret-color: #48a1e6;\n  caret-color: var(--caret-color, var(--theme-color-pictonblue, #48a1e6));\n  font-size: 16px;\n  font-size: var(--font-size, var(--theme-font-size, 16px));\n  height: inherit;\n  line-height: 1.2em;\n  min-height: 52px;\n  outline: none;\n  width: 100%;\n\n  --iron-autogrow-textarea: {\n    padding: 16px 70px 14px 20px;\n    box-sizing: border-box;\n  };\n\n  --iron-autogrow-textarea-placeholder: {\n    color: #d4d4d4;\n    color: var(--ph-color, var(--theme-color-alto, #d4d4d4));\n  };\n}\n\niron-autogrow-textarea:hover {\n  border-color: #b8b8b8;\n  border-color: var(--border-color-hover, var(--theme-color-silver, #b8b8b8));\n}\n\niron-autogrow-textarea[focus-within] {\n  border-color: #48a1e6;\n  border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));\n}\n\niron-autogrow-textarea:focus-within {\n  border-color: #48a1e6;\n  border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));\n}\n";
+	styleInject(css$1);
 
 	const textarea = ({
 	  disabled,
@@ -17536,7 +17520,7 @@
   />
 `;
 
-	const Textarea = withStyle$1(textarea, styles$1);
+	var Textarea = withStyle$1(textarea, css$1);
 
 	/** @license MIT License (c) copyright 2010-2016 original author or authors */
 	/** @author Brian Cavalier */
@@ -18644,35 +18628,13 @@
 
 	const throttleC = curry(throttle);
 
+	var css$2 = ".input {\n  padding: 0 20px 10px;\n  height: auto;\n  height: initial;\n}\n\n.input > * {\n  line-height: 0;\n  position: relative;\n}\n\n.enter {\n  background: no-repeat center center;\n  border: none;\n  bottom: 14px;\n  cursor: pointer;\n  height: 24px;\n  outline: none;\n  padding: 0;\n  position: absolute;\n  right: 18px;\n}\n\n.enter:active:not(:disabled) {\n  -webkit-transform: translateY(1px);\n          transform: translateY(1px);\n}\n";
+	styleInject(css$2);
+
 	const isMetaBtn = ({ key, keyCode }) => key.toLowerCase() === 'meta' || keyCode === 91; // eslint-disable-line
 	const isEnterBtn = ({ key, keyCode }) => key.toLowerCase() === 'enter' || keyCode === 13;
 	const isControlBtn = ({ key, keyCode }) => key.toLowerCase() === 'control' || keyCode === 17;
 	const isShiftBtn = ({ key, keyCode }) => key.toLowerCase() === 'shift' || keyCode === 16;
-
-	const styles$2 = `
-  .input {
-    padding: 0 20px 10px;
-    height: initial;
-  }
-  .input > * {
-    line-height: 0;
-    position: relative;
-  }
-  .enter {
-    background: no-repeat center center;
-    border: none;
-    bottom: 14px;
-    cursor: pointer;
-    height: 24px;
-    outline: none;
-    padding: 0;
-    position: absolute;
-    right: 18px
-  }
-  .enter:active:not(:disabled): {
-    transform: translateY(1px);
-  }
-`;
 
 	class MessageInput extends LitElement {
 	  static get properties () {
@@ -18829,11 +18791,12 @@
 	  }
 	}
 
-	const Input = withStyle(MessageInput, styles$2);
+	const Input = withStyle(MessageInput, css$2);
 
-	exports.styles = styles$2;
+	exports.MessageInput = MessageInput;
 	exports.default = Input;
 	exports.Input = Input;
+	exports.styles = css$2;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 

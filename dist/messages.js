@@ -2349,83 +2349,35 @@
 	  }
 	};
 
-	const styles = `
-  .message:hover .actions {
-    opacity: 1;
-    transform: translateX(90%)
-  }
-  .actions {
-    top: -10px;
-    right: 0;
-    cursor: default;
-    opacity: 0;
-    z-index: 100;
-    position: absolute;
-    transform: translateX(80%);
-    text-align: center;
-    transition: all ease-out 0.7s;
-    line-height: 18px;
-  }
-  .action-group {
-    position: relative;
-    text-align: left;
-  }
-  .action-group:hover {
-    color: #48a1e6;
-    border-color: #48a1e6;
-  }
-  .action-group > span {
-    width: 22px;
-    height: 24px;
-    border: 1px solid #b8b8b8;
-    display: inline-block;
-    font-size: 15px;
-    box-sizing: border-box;
-    text-align: center;
-    line-height: 17px;
-    border-radius: 5px;
-    letter-spacing: 0.1px;
-    background-color: #fff;
-  }
-  .action-group:hover .action-subgroup {
-    opacity: 1;
-    z-index: 300;
-    transform: translateY(2px);
-  }
-  .action-subgroup {
-    cursor: pointer;
-    opacity: 0;
-    transition: all ease-out 0.5s;
-    margin-left: -1px;
-    padding-top: 1px;
-  }
-  .action-subgroup-inner {
-    border: 1px solid #c6e6ff;
-    display: flex;
-    background: no-repeat center center #fff;
-    box-sizing: content-box;
-    border-radius: 5px;
-    flex-direction: row;
-  }
-  .action-subgroup-item {
-    width: 40px;
-    height: 40px;
-  }
-  .action-subgroup-item #delete{
-    padding: 12px;
-  }
-  .action-subgroup-item #warning{
-    padding: 13px;
-  }
-  .action-subgroup-item > svg{
-    fill: #b8b8b8;
-    padding: 12px;
-    display: inline-block;
-  }
-  .action-subgroup-item:hover > svg{
-    fill: #48a1e6;
-  }
-`;
+	function styleInject(css, ref) {
+	  if ( ref === void 0 ) ref = {};
+	  var insertAt = ref.insertAt;
+
+	  if (!css || typeof document === 'undefined') { return; }
+
+	  var head = document.head || document.getElementsByTagName('head')[0];
+	  var style = document.createElement('style');
+	  style.type = 'text/css';
+
+	  if (insertAt === 'top') {
+	    if (head.firstChild) {
+	      head.insertBefore(style, head.firstChild);
+	    } else {
+	      head.appendChild(style);
+	    }
+	  } else {
+	    head.appendChild(style);
+	  }
+
+	  if (style.styleSheet) {
+	    style.styleSheet.cssText = css;
+	  } else {
+	    style.appendChild(document.createTextNode(css));
+	  }
+	}
+
+	var css = ".message:hover .actions {\n  opacity: 1;\n  -webkit-transform: translateX(90%);\n          transform: translateX(90%);\n}\n\n.actions {\n  top: -10px;\n  right: 0;\n  cursor: default;\n  opacity: 0;\n  z-index: 100;\n  position: absolute;\n  -webkit-transform: translateX(80%);\n          transform: translateX(80%);\n  text-align: center;\n  transition: all ease-out 0.7s;\n  line-height: 18px;\n}\n\n.action-group {\n  position: relative;\n  text-align: left;\n}\n\n.action-group:hover {\n  color: #48a1e6;\n  color: var(--action-group-color-hover, var(--theme-color-pictonblue, #48a1e6));\n  border-color: #48a1e6;\n  border-color: var(--action-group-border-color-hover, var(--theme-color-pictonblue, #48a1e6));\n}\n\n.action-group > span {\n  width: 22px;\n  height: 24px;\n  border: 1px solid #b8b8b8;\n  display: inline-block;\n  font-size: 15px;\n  box-sizing: border-box;\n  text-align: center;\n  line-height: 17px;\n  border-radius: 5px;\n  letter-spacing: 0.1px;\n  background-color: #fff;\n  background-color: var(--bg-color, var(--theme-color-white, #fff));\n}\n\n.action-group:hover .action-subgroup {\n  opacity: 1;\n  z-index: 300;\n  -webkit-transform: translateY(2px);\n          transform: translateY(2px);\n}\n\n.action-subgroup {\n  cursor: pointer;\n  opacity: 0;\n  transition: all ease-out 0.5s;\n  margin-left: -1px;\n  padding-top: 1px;\n}\n\n.action-subgroup-inner {\n  border: 1px solid #c6e6ff;\n  display: flex;\n  background: no-repeat center center #fff;\n  background: no-repeat center center var(--bg-color, var(--theme-color-white, #fff));\n  box-sizing: content-box;\n  border-radius: 5px;\n  flex-direction: row;\n}\n\n.action-subgroup-item {\n  width: 40px;\n  height: 40px;\n}\n\n.action-subgroup-item #delete {\n  padding: 12px;\n}\n\n.action-subgroup-item #warning {\n  padding: 13px;\n}\n\n.action-subgroup-item > svg {\n  fill: #b8b8b8;\n  fill: var(--subgroup-fill-color, var(--theme-color-silver, #b8b8b8));\n  padding: 12px;\n  display: inline-block;\n}\n\n.action-subgroup-item:hover > svg {\n  fill: #48a1e6;\n  fill: var(--subgroup-fill-color-hover, var(--theme-color-pictonblue, #48a1e6));\n}\n";
+	styleInject(css);
 
 	// eslint-disable-next-line multiline-ternary
 	const actions = (props = {}) => !props.children.length ? null : html$1`
@@ -2441,12 +2393,12 @@
   </div>
 `;
 
-	const toBinary$1 = policy => parseInt(policy, 2);
+	const toBinary = policy => parseInt(policy, 2);
 
-	const notAllowed$1 = '00000';
+	const notAllowed = '00000';
 	// create, read, update, delete, patch
 
-	const withPermissions = (base, permissions = notAllowed$1) => class extends base {
+	const withPermissions = (base, permissions = notAllowed) => class extends base {
 	  static get properties () {
 	    return Object.assign({}, super.properties, { permissions: String })
 	  }
@@ -2454,7 +2406,7 @@
 	  _getPermissions () { return this.permissions || permissions }
 
 	  _isAllowed (policy) {
-	    return toBinary$1(policy) & toBinary$1(this._getPermissions()) // eslint-disable-line no-bitwise
+	    return toBinary(policy) & toBinary(this._getPermissions()) // eslint-disable-line no-bitwise
 	  }
 	};
 
@@ -2497,9 +2449,9 @@
 
 	const formatDate = (date, pattern = /\d{2}:\d{2}/) => date.toTimeString().match(pattern);
 
-	var Message = (props) => {
-	  const { message } = props;
-	  const text = (message.body || '').split('\n').map(it => html$1`
+	const message = (props) => {
+	  const { message: msg } = props;
+	  const text = (msg.body || '').split('\n').map(it => html$1`
     <p class="message-line">${it}</p>
   `);
 
@@ -2507,13 +2459,13 @@
     <div class$="${classString({ 'message-block': true, deleted: props.deleted })}">
       <div
         class="avatar"
-        style="background-image: url(${message.avatar});"
-        title="${message.user_name}"
+        style="background-image: url(${msg.avatar});"
+        title="${msg.user_name}"
       ></div>
-      <section class$="message ${message.user_role}">
+      <section class$="message ${msg.user_role}">
         <div class="message-meta">
-          <span class="message-author">${message.user_name}</span>
-          <span class="message-status">${message.status || formatDate(stampToDate(message.timestamp))}</span>
+          <span class="message-author">${msg.user_name}</span>
+          <span class="message-status">${msg.status || formatDate(stampToDate(msg.timestamp))}</span>
         </div>
         <div>${text}</div>
         ${props.children}
@@ -2522,60 +2474,8 @@
   `
 	};
 
-	const styles$1 = `
-  .messages {
-    width: 93%;
-    height: 87%;
-    padding: 20px 0 20px 20px;
-    min-height: 200px;
-    border-radius: 5px;
-  }
-  .message-block.deleted .message {
-    background: rgba(0,0,0,0.04);
-  }
-  .message-block.deleted .avatar, .message-block.deleted .message {
-    filter: grayscale(75%);
-  }
-  .avatar {
-    width: 32px;
-    height: 32px;
-    display: inline-block;
-    overflow: hidden;
-    background: no-repeat center center;
-    margin-right: 8px;
-    vertical-align: top;
-    background-size: contain;
-  }
-  .message {
-    display: inline-block;
-    padding: 8px 22px 8px 14px;
-    position: relative;
-    max-width: 80%;
-    text-align: left;
-    border-radius: 5px;
-    margin-bottom: 16px;
-    background-color: #fff;
-  }
-  .message-meta {
-    margin-bottom: 3px;
-  }
-  .message-line {
-    margin: 0;
-    line-height: 1.25em;
-    margin-bottom: 12px;
-  }
-  .message-line:last-child {
-    margin-bottom: 0;
-  }
-  .message-status {
-    color: #b8b8b8;
-    font-size: 0.8em;
-  }
-  .message-author {
-    font-weight: bold;
-    margin-right: 8px;
-  }
-`;
+	var css$1 = ".messages {\n  width: 93%;\n  height: 87%;\n  padding: 20px 0 20px 20px;\n  min-height: 200px;\n  border-radius: 5px;\n}\n\n.message-block.deleted .message {\n  background: rgba(0, 0, 0, 0.04);\n}\n\n.message-block.deleted .avatar,\n.message-block.deleted .message {\n  -webkit-filter: grayscale(75%);\n          filter: grayscale(75%);\n}\n\n.avatar {\n  width: 32px;\n  height: 32px;\n  display: inline-block;\n  overflow: hidden;\n  background: no-repeat center center;\n  margin-right: 8px;\n  vertical-align: top;\n  background-size: contain;\n}\n\n.message {\n  display: inline-block;\n  padding: 8px 22px 8px 14px;\n  position: relative;\n  max-width: 80%;\n  text-align: left;\n  border-radius: 5px;\n  margin-bottom: 16px;\n  background-color: #fff;\n}\n\n.message-meta {\n  margin-bottom: 3px;\n}\n\n.message-line {\n  margin: 0;\n  line-height: 1.25em;\n  margin-bottom: 12px;\n}\n\n.message-line:last-child {\n  margin-bottom: 0;\n}\n\n.message-status {\n  color: #b8b8b8;\n  color: var(--status-color, var(--theme-color-silver, #b8b8b8));\n  font-size: 0.8em;\n}\n\n.message-author {\n  font-weight: bold;\n  margin-right: 8px;\n}\n";
+	styleInject(css$1);
 
 	class MessageList extends LitElement {
 	  static get properties () {
@@ -2588,12 +2488,12 @@
 	    }
 	  }
 
-	  _onMessageDelete (e, message) {
-	    this.dispatchEvent(new CustomEvent('message-delete', { detail: { id: message.id } }));
+	  _onMessageDelete (e, message$$1) {
+	    this.dispatchEvent(new CustomEvent('message-delete', { detail: { id: message$$1.id } }));
 	  }
 
-	  _renderMessage (message) {
-	    return Message({ message, children: this._renderActions(message) })
+	  _renderMessage (message$$1) {
+	    return message({ message: message$$1, children: this._renderActions(message$$1) })
 	  }
 
 	  _render ({ list = [] }) {
@@ -2613,12 +2513,12 @@
 	  }
 	}
 
-	const Messages = withStyle(withActions(withPermissions(MessageList), actions), styles$1, styles);
+	const Messages = withStyle(withActions(withPermissions(MessageList), actions), css$1, css);
 
-	exports.styles = styles$1;
 	exports.MessageList = MessageList;
 	exports.default = Messages;
 	exports.Messages = Messages;
+	exports.styles = css$1;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
