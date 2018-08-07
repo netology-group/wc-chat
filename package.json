@@ -21,8 +21,8 @@
     "test": "eslint --ext .js,.mjs .",
     "rollup:es": "rollup -c",
     "rollup:umd": "rollup -c rollup.config.umd.js",
-    "build:es": "entry=input rollup -c && entry=messages rollup -c",
-    "build:umd": "entry=input npm run rollup:umd && entry=messages npm run rollup:umd",
+    "build:es": "cross-env entry=input rollup -c && cross-env entry=messages rollup -c",
+    "build:umd": "cross-env entry=input npm run rollup:umd && cross-env entry=messages npm run rollup:umd",
     "build:all": "npm run build:es && npm run build:umd",
     "polyfill": "modernizr -uqf customelements -d lib/polyfill",
     "prepare": "npm run polyfill && npm run build:all",
@@ -33,6 +33,7 @@
   "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^9.0.0",
+    "cross-env": "^5.2.0",
     "eslint-config-adequate": "^1.1.1",
     "modernizr": "^3.6.0",
     "postcss-preset-env": "^5.2.2",
