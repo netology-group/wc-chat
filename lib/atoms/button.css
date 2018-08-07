@@ -12,3 +12,9 @@
   transform: none !important;
   filter: grayscale(100%) !important;
 }
+
+.enter {
+  width: 24px;
+  height: 24px;
+  background: url('../images/entry.svg') no-repeat center center;
+}
