@@ -2,35 +2,44 @@
   "name": "@netology-group/wc-chat",
   "version": "0.2.2",
   "description": "Messenger's webcomponents",
-  "main": "lib/index.mjs",
-  "directories": {
-    "lib": "lib"
+  "bugs": {
+    "url": "https://github.com/netology-group/wc-chat/issues"
   },
+  "repository": {
+    "url": "https://github.com/netology-group/wc-chat"
+  },
+  "license": "MIT",
+  "author": "",
   "files": [
     "dist",
     "es",
     "lib"
   ],
-  "repository": {
-    "url": "https://github.com/netology-group/wc-chat"
-  },
-  "bugs": {
-    "url": "https://github.com/netology-group/wc-chat/issues"
+  "main": "lib/index.mjs",
+  "directories": {
+    "lib": "lib"
   },
   "scripts": {
-    "test": "eslint --ext .js,.mjs .",
+    "build:all": "npm run build:es && npm run build:umd",
+    "build:es": "entry=input rollup -c && entry=messages rollup -c",
+    "build:umd": "entry=input npm run rollup:umd && entry=messages npm run rollup:umd",
+    "demo": "http-server . -p ${DEMO_PORT:-9090}",
+    "prepare": "npm run polyfill && npm run build:all",
+    "polyfill": "modernizr -uqf customelements -d lib/polyfill",
     "rollup:es": "rollup -c",
     "rollup:umd": "rollup -c rollup.config.umd.js",
-    "build:es": "cross-env entry=input rollup -c && cross-env entry=messages rollup -c",
-    "build:umd": "cross-env entry=input npm run rollup:umd && cross-env entry=messages npm run rollup:umd",
-    "build:all": "npm run build:es && npm run build:umd",
-    "polyfill": "modernizr -uqf customelements -d lib/polyfill",
-    "prepare": "npm run polyfill && npm run build:all",
-    "demo": "http-server . -p ${DEMO_PORT:-9090}",
-    "start": "npm run demo"
+    "start": "npm run demo",
+    "test": "eslint --ext .js,.mjs ."
   },
-  "author": "",
-  "license": "MIT",
+  "dependencies": {
+    "@netology-group/wc-utils": "^0.1.0",
+    "@polymer/iron-autogrow-textarea": "^3.0.0-pre.21",
+    "@polymer/lit-element": "^0.5.2",
+    "@webcomponents/custom-elements": "^1.1.2",
+    "@webcomponents/webcomponentsjs": "^2.0.2",
+    "most": "^1.7.3",
+    "ramda": "^0.25.0"
+  },
   "devDependencies": {
     "autoprefixer": "^9.0.0",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
@@ -47,14 +56,5 @@
     "rollup-plugin-polyfill": "^2.0.1",
     "rollup-plugin-postcss": "^1.6.2",
     "rollup-plugin-svg": "^1.0.1"
-  },
-  "dependencies": {
-    "@netology-group/wc-utils": "^0.1.0",
-    "@polymer/iron-autogrow-textarea": "^3.0.0-pre.21",
-    "@polymer/lit-element": "^0.5.2",
-    "@webcomponents/custom-elements": "^1.1.2",
-    "@webcomponents/webcomponentsjs": "^2.0.2",
-    "most": "^1.7.3",
-    "ramda": "^0.25.0"
   }
 }
