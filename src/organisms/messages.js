@@ -1,9 +1,9 @@
 import { html, LitElement } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils/lib/mixins/mixins'
 
-import { actions, styles as actionStyles } from '../atoms/actions.mjs'
+import { actions, styles as actionStyles } from '../atoms/actions'
 import { withPermissions, withActions } from '../utils/mixins'
-import Message from '../molecules/message.mjs'
+import Message from '../molecules/message'
 
 import styles from './messages.css'
 

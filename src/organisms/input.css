@@ -1,0 +1,25 @@
+.input {
+  padding: 0 20px 10px;
+  height: initial;
+}
+
+.input > * {
+  line-height: 0;
+  position: relative;
+}
+
+.enter {
+  background: no-repeat center center;
+  border: none;
+  bottom: 14px;
+  cursor: pointer;
+  height: 24px;
+  outline: none;
+  padding: 0;
+  position: absolute;
+  right: 18px;
+}
+
+.enter:active:not(:disabled) {
+  transform: translateY(1px);
+}

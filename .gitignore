@@ -1,4 +1,5 @@
-node_modules
-es
-dist
+/es
+/fonts
+/lib
+/node_modules
 **/modernizr.js

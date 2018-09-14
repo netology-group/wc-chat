@@ -3,13 +3,13 @@ import { html, LitElement, classString } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils/lib/mixins/mixins'
 import compose from 'ramda/es/compose'
 
-import Button from '../atoms/button.mjs'
-import Textarea from '../atoms/textarea.mjs'
+import Button from '../atoms/button'
+import Textarea from '../atoms/textarea'
 import {
   observeC as observe,
   filterC as filter,
   throttleC as throttle,
-} from '../utils/most.mjs'
+} from '../utils/most'
 
 import styles from './input.css'
 
