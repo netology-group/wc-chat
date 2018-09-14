@@ -3,7 +3,7 @@ import babel from 'rollup-plugin-babel'
 import copy from 'rollup-plugin-copy'
 import nodeResolve from 'rollup-plugin-node-resolve'
 
-import { shouldUglify } from './rollup.config'
+import { shouldUglify } from './rollup.utils'
 import { directories } from './package.json'
 
 const copyPublicModules = (entries = []) => entries.reduce((acc, it) => {

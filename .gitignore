@@ -1,4 +1,5 @@
 /es
 /fonts
 /lib
-/node_modules
+node_modules
+/public/fonts
