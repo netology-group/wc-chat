@@ -1,5 +1,8 @@
 :host {
-  height: 100%;
+  box-sizing: var(--chat-scrollable-box-sizing, content-box);
+  display: var(--chat-scrollable-display, block);
+  height: var(--chat-scrollable-height, 100%);
+  padding: var(--chat-scrollable-padding, 0);
 }
 
 .scrollable {

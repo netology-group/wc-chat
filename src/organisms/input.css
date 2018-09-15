@@ -1,21 +1,21 @@
 /* :root, */
-:host{
-  display:block;
-  width:100%;
-  position: var(--chat-input-position, relative);
+:host {
   bottom: var(--chat-input-bottom, initial);
+  display: block;
+  position: var(--chat-input-position, relative);
+  width: 100%;
 }
 
 .input {
-  width: 100%;
-  bottom: 0;
-  padding: 0 20px 20px;
   background: var(--alabaster, #f8f8f8);
+  bottom: 0;
   box-sizing: border-box;
   font-size: 16px;
+  padding: 0 20px 20px;
+  width: 100%;
 }
 
-.input.disabled{
+.input.disabled {
   color: var(--silver, #b8b8b8);
 }
 

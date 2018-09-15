@@ -1,8 +1,9 @@
+/* stylelint-disable selector-type-no-unknown */
 iron-autogrow-textarea {
   -webkit-appearance: none;
   background: var(--bg-color, var(--theme-color-white, #fff));
-  border-radius: 5px;
   border: 1px solid var(--border-color, var(--theme-color-alto, #d4d4d4));
+  border-radius: 5px;
   box-sizing: border-box;
   caret-color: var(--caret-color, var(--theme-color-pictonblue, #48a1e6));
   font-size: var(--font-size, var(--theme-font-size, 16px));
@@ -13,8 +14,8 @@ iron-autogrow-textarea {
   width: 100%;
 
   --iron-autogrow-textarea: {
-    padding: 16px 70px 14px 20px;
     box-sizing: border-box;
+    padding: 16px 70px 14px 20px;
   };
 
   --iron-autogrow-textarea-placeholder: {

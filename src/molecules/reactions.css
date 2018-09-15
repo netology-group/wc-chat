@@ -1,11 +1,12 @@
 /* :root, */
-:host{
+:host {
   display: block;
 }
 
 .icons {
   display: flex;
   flex-direction: row;
+  margin-top: 10px;
 }
 
 .icons.vertical {
@@ -14,18 +15,14 @@
 
 .icon {
   cursor: default;
-  user-select: none;
-  position: relative;
   margin-right: 5px;
+  position: relative;
+  user-select: none;
 }
 
 .icon span {
-  width: 14px;
   height: 21px;
-  vertical-align: top;
   user-select: none;
-}
-
-.icons{
-  margin-top: 10px;
+  vertical-align: top;
+  width: 14px;
 }

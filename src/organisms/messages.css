@@ -1,23 +1,22 @@
-:host{
+:host {
+  display: block;
   height: var(--chat-messages-height, inherit);
 }
 
 .messages {
-  width: 93%;
-  height: 87%;
-  padding-top:20px;
-  padding-left:20px;
   box-sizing: border-box;
   font-size: var(--messages-font-size, inherit);
-}
-
-.messages {
+  height: 87%;
   overflow-y: auto !important;
+  padding-left: 20px;
+  padding-top: 20px;
+  width: 93%;
 }
 
 .action-subgroup-item.lock.disabled {
   cursor: not-allowed;
 }
+
 .action-subgroup-item.lock.allowed {
   cursor: pointer !important;
 }
@@ -31,11 +30,10 @@
 }
 
 .action-subgroup-item.lock:hover svg path,
-.action-subgroup-item.lock.disabled svg path
-{
+.action-subgroup-item.lock.disabled svg path {
   fill: #48a1e6;
 }
 
-.reactions{
+.reactions {
   margin-top: 10px;
 }

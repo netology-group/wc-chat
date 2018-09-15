@@ -1,6 +1,6 @@
 {
   "name": "@netology-group/wc-chat",
-  "version": "0.2.5",
+  "version": "0.2.8",
   "description": "Messenger's webcomponents",
   "bugs": {
     "url": "https://github.com/netology-group/wc-chat/issues"
@@ -29,11 +29,31 @@
     "build:umd": "npm run rollup -- -o dist/chat.js",
     "build:umd:min": "cross-env NODE_ENV=production npm run rollup -- -o dist/chat.min.js",
     "demo": "http-server . -p ${DEMO_PORT:-9090}",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run test && npm run build",
     "rollup": "cross-env BABEL_ENV=rollup rollup -c",
     "prestart": "npm run build",
     "start": "npm run demo",
-    "test": "eslint ."
+    "stylelint": "stylelint src",
+    "test": "eslint . && npm run stylelint"
+  },
+  "stylelint": {
+    "extends": [
+      "stylelint-config-standard"
+    ],
+    "plugins": [
+      "stylelint-order"
+    ],
+    "rules": {
+      "order/order": [
+        "dollar-variables",
+        "custom-properties",
+        "at-variables",
+        "declarations",
+        "rules",
+        "at-rules"
+      ],
+      "order/properties-alphabetical-order": false
+    }
   },
   "dependencies": {
     "@netology-group/wc-reaction": "^0.1.0",
@@ -69,6 +89,9 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-postcss": "^1.6.2",
     "rollup-plugin-svg": "^1.0.1",
-    "rollup-plugin-uglify": "^4.0.0"
+    "rollup-plugin-uglify": "^4.0.0",
+    "stylelint": "^9.5.0",
+    "stylelint-config-standard": "^18.2.0",
+    "stylelint-order": "^1.0.0"
   }
 }
