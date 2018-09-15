@@ -36,20 +36,18 @@ export class Scrollable extends LitElement {
     return this._targetNode instanceof HTMLElement
   }
 
-  invokeUpdate () {
-    this.hasAttribute('watch') && this._shouldScrollTo()
-  }
-
   disconnectedCallback () {
     if (!this._isTarget) return
 
-    this.hasAttribute('listen') && this._targetNode.removeEventListener(this.listen, this._onChildrenUpdate.bind(this), true)
+    this.listen
+      && this._targetNode.removeEventListener(this.listen, this._onChildrenUpdate.bind(this), true)
   }
 
   _firstRendered () {
     if (!this._isTarget) return
 
-    this.hasAttribute('listen') && this._targetNode.addEventListener(this.listen, this._onChildrenUpdate.bind(this), true)
+    this.listen
+      && this._targetNode.addEventListener(this.listen, this._onChildrenUpdate.bind(this), true)
   }
 
   _onScrollHandler (e) {

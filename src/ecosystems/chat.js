@@ -17,16 +17,17 @@ export class Chat extends LitElement {
       actions: Array,
       actionsallowed: Array,
       delay: Number,
+      disabled: Boolean,
       enablegap: Boolean,
       list: Array,
       maxrows: Number,
       message: String,
+      noinput: Boolean,
       placeholder: String,
       placeholderdisabled: String,
       reverse: Boolean,
       user: Number,
       users: Array,
-      watch: Boolean,
     }
   }
 
@@ -68,11 +69,24 @@ export class Chat extends LitElement {
   }
 
   _render (props) {
+    const input = props.noinput
+      ? null
+      : (html`
+        <wc-chat-input
+          delay='${props.delay || 0}'
+          maxrows='${props.maxrows || 10}'
+          disabled='${props.disabled}'
+          on-message-submit='${this.boundedMessageSubmit}'
+          placeholder='${props.placeholder}'
+          placeholderdisabled='${props.placeholderdisabled}'
+          value='${props.message}'
+        />
+      `)
+
     return (html`
       <wc-chat-scrollable
         enablegap='${props.enablegap}'
         listen='${EVENT}'
-        watch='${props.watch}'
       >
         <div>
           <wc-chat-messages
@@ -89,14 +103,7 @@ export class Chat extends LitElement {
           />
         </div>
       </wc-chat-scrollable>
-      <wc-chat-input
-        delay='${props.delay || 0}'
-        maxrows='${props.maxrows || 10}'
-        on-message-submit='${this.boundedMessageSubmit}'
-        placeholder='${props.placeholder}'
-        placeholderdisabled='${props.placeholderdisabled}'
-        value='${props.message}'
-      />
+      ${input}
     `)
   }
 }

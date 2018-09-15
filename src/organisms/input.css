@@ -4,6 +4,7 @@
   display: block;
   position: var(--chat-input-position, relative);
   width: 100%;
+  z-index: var(--chat-input-z-index, initial);
 }
 
 .input {

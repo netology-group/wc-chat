@@ -1,6 +1,7 @@
 :host {
   background-color: var(--chat-background-color, #f8f8f8);
   display: block;
+  font-size: var(--chat-font-size, inherit);
   height: var(--chat-height, 100%);
   min-height: var(--chat-min-height, 400px);
   min-width: var(--chat-min-width, 330px);

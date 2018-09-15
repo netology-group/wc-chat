@@ -152,9 +152,7 @@ export class MessageInput extends LitElement {
       maxRows: maxrows || 5,
       onKeyPress: this._boundKeyPress,
       onInput: this._boundOnInput,
-      placeholder: this.hasAttribute('disabled')
-        ? placeholderdisabled
-        : placeholder,
+      placeholder: disabled ? placeholderdisabled : placeholder,
       value,
     })
 

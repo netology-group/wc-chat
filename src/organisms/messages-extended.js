@@ -23,16 +23,18 @@ export class XMessagesElement extends MessagesElement {
   }
 
   __renderMessage (message) {
-    return Message({ message, children: this.__renderActions({ ...message, me: this.user }) })
+    return Message({ message, children: this.__renderActions({ ...message }) })
   }
 
   __renderActions (data) {
     let children = []
     let reactions = []
 
-    const isAllowed = (action, d) => d.me !== d.user_id || (d.me === d.user_id && action.self)
+    const isAllowed = (action, d) => d.current_user_id !== d.user_id
+      || (d.current_user_id === d.user_id && action.self)
 
     const hasOnlyReactions = this.actionsallowed
+      .filter(key => key !== 'message-reaction')
       .filter(key => isAllowed(this._actions.get(key) || {}, data))
 
     this.actionsallowed.forEach((key) => {
@@ -43,7 +45,7 @@ export class XMessagesElement extends MessagesElement {
           message: data,
           allowed: isAllowed(_action, data) || undefined,
           children: actions.actionImages.get(key),
-          standalone: hasOnlyReactions.length <= 1,
+          standalone: hasOnlyReactions.length === 0,
           handler: (e, detail) => { this.dispatchEvent(new CustomEvent(key, { detail })) },
         }))
       } else {
