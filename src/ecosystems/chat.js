@@ -5,6 +5,7 @@ import Input from '../organisms/input'
 import Messages from '../organisms/messages-extended'
 import Scroll from '../molecules/scrollable'
 import Reactions from '../molecules/reactions'
+import { registerCustomElement } from '../utils/index'
 
 import style from './chat.css'
 
@@ -37,10 +38,10 @@ export class Chat extends LitElement {
     this.boundedUserDisable = this._handleUserDisable.bind(this)
     this.boundedMessageReaction = this._handleMessageReaction.bind(this)
 
-    window.customElements.define('wc-chat-scrollable', Scroll)
-    window.customElements.define('wc-chat-input', Input)
-    window.customElements.define('wc-chat-messages', Messages)
-    window.customElements.define('wc-chat-reactions', Reactions)
+    registerCustomElement('wc-chat-scrollable', Scroll)
+    registerCustomElement('wc-chat-input', Input)
+    registerCustomElement('wc-chat-messages', Messages)
+    registerCustomElement('wc-chat-reactions', Reactions)
   }
 
   disconnectedCallback () {

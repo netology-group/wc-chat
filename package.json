@@ -1,6 +1,6 @@
 {
   "name": "@netology-group/wc-chat",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Messenger's webcomponents",
   "bugs": {
     "url": "https://github.com/netology-group/wc-chat/issues"
