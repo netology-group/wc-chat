@@ -1,6 +1,9 @@
 /* :root, */
 :host{
   display:block;
+  width:100%;
+  position: var(--chat-input-position, relative);
+  bottom: var(--chat-input-bottom, initial);
 }
 
 .input {

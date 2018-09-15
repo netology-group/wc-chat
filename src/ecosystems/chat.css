@@ -2,6 +2,6 @@
   min-width: var(--chat-min-width, 330px);
   min-height: var(--chat-min-height, 400px);
   background-color: var(--chat-background-color, #f8f8f8);
-  height: 100%;
+  height: var(--chat-height, 100%);
   display: block;
 }
