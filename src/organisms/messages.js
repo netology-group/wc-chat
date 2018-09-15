@@ -1,50 +1,41 @@
 import { html, LitElement } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils/lib/mixins/mixins'
 
-import { actions, styles as actionStyles } from '../atoms/actions'
-import { withPermissions, withActions } from '../utils/mixins'
-import Message from '../molecules/message'
+import { style as actionStyle } from '../atoms/actions'
+import { messageExtended as Message } from '../molecules/message-extended'
+import { style as messageStyle } from '../molecules/message'
 
-import styles from './messages.css'
+import style from './messages.css'
 
-export class MessageList extends LitElement {
+export class MessagesElement extends LitElement {
   static get properties () {
     return {
+      invoke: String,
       list: Array,
-      permissions: String,
-      sheet: Object,
       user: Number,
       users: Array,
     }
   }
 
-  _onMessageDelete (e, message) {
-    this.dispatchEvent(new CustomEvent('message-delete', { detail: { id: message.id } }))
-  }
-
-  _renderMessage (message) {
-    return Message({ message, children: this._renderActions(message) })
+  __renderMessage (message) { // eslint-disable-line class-methods-use-this
+    return Message({ message })
   }
 
   _render ({ list = [] }) {
-    if (!list.length) return html`<div class="messages"></div>`
+    if (!list.length) return (html`<div class='messages'></div>`)
 
-    return html`
-      <div class="messages">
-        <div class="messages-inner">
-          ${list.map(it => this._renderMessage(it))}
+    return (html`
+      <div class='messages'>
+        <div class='messages-inner'>
+          ${list.map(it => this.__renderMessage(it))}
         </div>
       </div>
-    `
+    `)
   }
 
   _didRender () {
-    this.dispatchEvent(new CustomEvent('did-update'))
+    this.dispatchEvent(new CustomEvent(this.invoke))
   }
 }
 
-const Messages = withStyle(withActions(withPermissions(MessageList), actions), styles, actionStyles)
-
-export default Messages
-
-export { Messages, styles }
+export default withStyle(html)(MessagesElement, style, messageStyle, actionStyle)

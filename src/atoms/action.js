@@ -1,15 +1,19 @@
-import { html, classString } from '@polymer/lit-element'
+import { html, classString as cs } from '@polymer/lit-element'
+
+import * as images from '../images'
+
+export const actionImages = new Map([['message-delete', images.del], ['user-disable', images.lock], ['message-react', null]])
 
 export const action = ({
-  allowed = true,
+  allowed,
   children,
   classname,
   disabled,
-  fn,
+  handler,
   message,
   name,
 }) => {
-  const $class = classString(Object.assign(
+  const cls = cs(Object.assign(
     { 'action-subgroup-item': true, [name]: true },
     classname ? { [classname]: true } : {},
     disabled ? { disabled: true } : {},
@@ -18,7 +22,31 @@ export const action = ({
 
   if (!allowed) return null
 
-  return html`<div class$="${$class}" on-click="${allowed ? e => fn(e, message) : undefined}">${children}</div>`
+  return (html`
+    <button
+      class$='${cls}'
+      on-click='${e => handler && handler(e, message)}'
+    >${children}</button>
+  `)
 }
 
-export default action
+export const reaction = ({
+  disabled,
+  handler,
+  message,
+  standalone,
+}) => {
+  const cls = cs({
+    'reaction-add': true,
+    disabled,
+    standalone,
+  })
+
+  return (html`
+    <button
+      class$='${cls}'
+      disabled='${disabled}'
+      on-click='${e => handler && handler(e, { message })}'
+    >${images.smile}</button>
+`)
+}

@@ -1,3 +1,5 @@
-export { Input } from './organisms/input'
+import { mixins } from '@netology-group/wc-utils'
 
-export { Messages } from './organisms/messages'
+import * as chat from './ecosystems/chat'
+
+export { chat, mixins }

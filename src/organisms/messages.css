@@ -1,62 +1,37 @@
 .messages {
   width: 93%;
   height: 87%;
-  padding: 20px 0 20px 20px;
-  min-height: 200px;
-  border-radius: 5px;
+  padding-top:20px;
+  padding-left:20px;
+  box-sizing: border-box;
+  font-size: var(--messages-font-size, inherit);
 }
 
-.message-block.deleted .message {
-  background: rgba(0, 0, 0, 0.04);
+.messages {
+  overflow-y: auto !important;
 }
 
-.message-block.deleted .avatar,
-.message-block.deleted .message {
-  filter: grayscale(75%);
+.action-subgroup-item.lock.disabled {
+  cursor: not-allowed;
+}
+.action-subgroup-item.lock.allowed {
+  cursor: pointer !important;
 }
 
-.avatar {
-  width: 32px;
-  height: 32px;
-  display: inline-block;
-  overflow: hidden;
-  background: no-repeat center center;
-  margin-right: 8px;
-  vertical-align: top;
-  background-size: contain;
+.action-subgroup-item.lock svg {
+  padding: 10px 12px;
 }
 
-.message {
-  display: inline-block;
-  padding: 8px 22px 8px 14px;
-  position: relative;
-  max-width: 80%;
-  text-align: left;
-  border-radius: 5px;
-  margin-bottom: 16px;
-  background-color: #fff;
+.action-subgroup-item.lock svg path {
+  fill: #b8b8b8;
 }
 
-.message-meta {
-  margin-bottom: 3px;
+.action-subgroup-item.lock:hover svg path,
+.action-subgroup-item.lock.disabled svg path
+{
+  fill: #48a1e6;
 }
 
-.message-line {
-  margin: 0;
-  line-height: 1.25em;
-  margin-bottom: 12px;
-}
-
-.message-line:last-child {
-  margin-bottom: 0;
-}
-
-.message-status {
-  color: var(--status-color, var(--theme-color-silver, #b8b8b8));
-  font-size: 0.8em;
-}
-
-.message-author {
-  font-weight: bold;
-  margin-right: 8px;
+.reactions{
+  margin-top: 10px;
 }

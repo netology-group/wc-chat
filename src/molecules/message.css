@@ -1,0 +1,77 @@
+
+.message-block.deleted .message {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.message-block.deleted .avatar,
+.message-block.deleted .message {
+  filter: grayscale(75%);
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  overflow: hidden;
+  background: no-repeat center center;
+  margin-right: 8px;
+  vertical-align: top;
+  background-size: contain;
+  user-select: none;
+  border-radius: 100%;
+  background-color: var(--message-avatar-color-moderator, transparent);
+}
+
+.avatar.moderator {
+  background-color: var(--message-avatar-color, transparent);
+}
+
+.message {
+  display: inline-block;
+  padding: 8px 22px 8px 14px;
+  position: relative;
+  max-width: 80%;
+  text-align: left;
+  border-radius: 5px;
+  margin-bottom: 16px;
+  background-color: #fff;
+  max-width: 55% !important;
+}
+
+.message-meta {
+  margin-bottom: 5px;
+  user-select: none;
+}
+
+.message-line {
+  margin: 0;
+  line-height: 1.25em;
+  margin-bottom: 12px;
+}
+
+.message-line:last-child {
+  margin-bottom: 0;
+}
+
+.message-status{
+  margin-bottom: 3px;
+}
+
+.message-stamp,
+.message-status {
+  color: var(--message-status-color, var(--silver, #b8b8b8));
+  font-size: 0.75em;
+}
+
+.message-author {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.message.moderator {
+  background-color: rgba(255, 114, 86, 0.08);
+}
+
+.message.me {
+  background-color: rgba(72, 161, 230, 0.08);
+}

@@ -1,6 +1,19 @@
+/* :root, */
+:host{
+  display:block;
+}
+
 .input {
-  padding: 0 20px 10px;
-  height: initial;
+  width: 100%;
+  bottom: 0;
+  padding: 0 20px 20px;
+  background: var(--alabaster, #f8f8f8);
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.input.disabled{
+  color: var(--silver, #b8b8b8);
 }
 
 .input > * {

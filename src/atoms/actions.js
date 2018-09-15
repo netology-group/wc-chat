@@ -1,22 +1,29 @@
 import { html } from '@polymer/lit-element'
-import { withStyle } from '@netology-group/wc-utils/lib/mixins/template-mixins'
 
-import styles from './actions.css'
+import style from './actions.css'
 
-// eslint-disable-next-line multiline-ternary
-export const actions = (props = {}) => !props.children.length ? null : html`
-  <div class="actions">
-    <div class="action-group">
-      <span>...</span>
-      <div class="action-subgroup">
-        <div class="action-subgroup-inner">
-          ${props.children}
-        </div>
+const _reactions = props => (html`
+  <div class='action-group action-group-reactions'>
+    ${props.children}
+  </div>
+`)
+
+const _actions = props => (html`
+  <div class='action-group action-group-actions'>
+    <span>...</span>
+    <div class='action-subgroup'>
+      <div class='action-subgroup-inner'>
+        ${props.children}
       </div>
     </div>
   </div>
-`
+`)
 
-export default withStyle(actions, styles)
+export const actions = props => (html`
+  <div class='actions'>
+    ${props.reactions.length ? _reactions({ children: props.reactions }) : null}
+    ${props.children.length ? _actions(props) : null}
+  </div>
+`)
 
-export { styles }
+export { style }

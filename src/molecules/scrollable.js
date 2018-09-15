@@ -1,7 +1,7 @@
 import { html, LitElement } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils/lib/mixins/mixins'
 
-import styles from './scrollable.css'
+import style from './scrollable.css'
 
 export class Scrollable extends LitElement {
   static get properties () {
@@ -146,14 +146,13 @@ export class Scrollable extends LitElement {
   }
 
   _render () {
-    return html`
-      <div class="scrollable" on-scroll="${this.__boundScrollHandler}">
+    return (html`
+      <div class='scrollable' on-scroll='${this.__boundScrollHandler}'>
         ${this.children}
       </div>
-    `
+    `)
   }
 }
 
-export default withStyle(Scrollable, styles)
+export default withStyle(html)(Scrollable, style)
 
-export { styles }

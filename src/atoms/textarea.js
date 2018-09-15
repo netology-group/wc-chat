@@ -1,8 +1,9 @@
 import '@polymer/iron-autogrow-textarea'
 import { html } from '@polymer/lit-element'
-import { withStyle } from '@netology-group/wc-utils/lib/mixins/template-mixins'
 
-import styles from './textarea.css'
+import style from './textarea.css'
+
+const _placeholder = 'Just type something...'
 
 export const textarea = ({
   disabled,
@@ -12,18 +13,16 @@ export const textarea = ({
   onKeyPress,
   placeholder,
   value,
-}) => html`
+}) => (html`
   <iron-autogrow-textarea
-    disabled="${disabled}"
-    id="${id}"
-    maxRows="${maxRows}"
-    on-input="${function oninput (e) { onInput(e, this.textarea) }}"
-    on-keypress="${onKeyPress}"
-    placeholder="${placeholder || 'Just type something...'}"
-    value="${value}"
+    disabled='${disabled}'
+    id='${id}'
+    maxRows='${maxRows}'
+    on-input='${function oninput (e) { onInput(e, this.textarea) }}'
+    on-keypress='${onKeyPress}'
+    placeholder='${placeholder || _placeholder}'
+    value='${value}'
   />
-`
+`)
 
-export default withStyle(textarea, styles)
-
-export { styles }
+export { style }
