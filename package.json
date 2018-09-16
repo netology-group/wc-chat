@@ -60,8 +60,8 @@
     "@netology-group/wc-utils": "^0.2.1",
     "@polymer/iron-autogrow-textarea": "^3.0.0-pre.21",
     "@polymer/lit-element": "^0.5.2",
-    "@webcomponents/custom-elements": "^1.1.2",
-    "@webcomponents/webcomponentsjs": "^2.0.4",
+    "@webcomponents/custom-elements": "^1.2.0",
+    "@webcomponents/webcomponentsjs": "^2.1.2",
     "core-js": "^2.5.7",
     "most": "^1.7.3",
     "ramda": "^0.25.0"
