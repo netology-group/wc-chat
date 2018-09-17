@@ -9,10 +9,12 @@ import { observeC as observe, filterC as filter, throttleC as throttle } from '.
 
 import style from './input.css'
 
-const isMetaBtn = ({ key, keyCode }) => key.toLowerCase() === 'meta' || keyCode === 91 // eslint-disable-line
-const isEnterBtn = ({ key, keyCode }) => key.toLowerCase() === 'enter' || keyCode === 13
-const isControlBtn = ({ key, keyCode }) => key.toLowerCase() === 'control' || keyCode === 17
-const isShiftBtn = ({ key, keyCode }) => key.toLowerCase() === 'shift' || keyCode === 16
+const isKeyCode = (keyCode, code) => keyCode === code
+
+const isMetaBtn = ({ keyCode }) => isKeyCode(keyCode, 91)
+const isEnterBtn = ({ keyCode }) => isKeyCode(keyCode, 13)
+const isControlBtn = ({ keyCode }) => isKeyCode(keyCode, 17)
+const isShiftBtn = ({ keyCode }) => isKeyCode(keyCode, 16)
 
 export class MessageInput extends LitElement {
   static get properties () {
