@@ -14,7 +14,8 @@ export const action = ({
   name,
 }) => {
   const cls = cs(Object.assign(
-    { 'action-subgroup-item': true, [name]: true },
+    { 'action-subgroup-item': true },
+    name ? { [name]: true } : {},
     classname ? { [classname]: true } : {},
     disabled ? { disabled: true } : {},
     allowed ? { allowed: true } : {}

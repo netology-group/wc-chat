@@ -65,6 +65,7 @@
 }
 
 .action-subgroup-item {
+  background-color: transparent;
   border: none;
   cursor: pointer;
   height: 39px;

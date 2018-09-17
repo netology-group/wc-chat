@@ -1,3 +1,7 @@
+wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
+  --reaction-count-left: 0;
+}
+
 .avatar {
   background: no-repeat center center;
   background-color: var(--message-avatar-color-moderator, transparent);
