@@ -8,7 +8,9 @@
 
     <script defer src="./dist/polyfill.min.js"></script>
 
+    <script>if (window.ShadowRoot) { document.write('<!--'); }</script>
     <script defer type="text/javascript" src="./public/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <!--! do not remove -->
 
     <script>if (!window.customElements) { document.write('<!--'); }</script>
     <script defer type="text/javascript" src="./public/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>

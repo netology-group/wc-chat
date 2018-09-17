@@ -21,8 +21,10 @@ const polyfill = () => ({
     babel(),
     copy(copyPublicModules([
       'node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js',
-      'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
       'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js.map',
+      'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
+      'node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js',
+      'node_modules/@webcomponents/webcomponentsjs/bundles',
       'node_modules/core-js/client',
     ])),
     nodeResolve(),
