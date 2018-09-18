@@ -65,6 +65,7 @@
 
       function initialize () {
         var messenger = document.getElementById('messenger')
+        var reverse = ~location.search.indexOf('reverse=true') ? true : false
 
         messenger.actions = _actions
         messenger.actionsallowed = _actionsallowed
@@ -74,7 +75,12 @@
 
         messenger.addEventListener('chat-message-submit', (e) => {
           setTimeout(() => {
-            _messages = _messages.concat(enhanceMessage(e.detail.message))
+            if(reverse){
+              _messages = [enhanceMessage(e.detail.message)].concat(_messages)
+            }else{
+              _messages = _messages.concat(enhanceMessage(e.detail.message))
+            }
+
             messenger.list = _messages
           }, 1e2)
         })

@@ -15,6 +15,9 @@
    ],
   "plugins": [
     "babel-plugin-transform-object-rest-spread",
+    ["babel-plugin-transform-inline-environment-variables", {
+      "include": [ "NODE_ENV" ]
+    }]
   ],
   "env":{
     "cjs": {

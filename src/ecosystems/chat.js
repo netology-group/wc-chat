@@ -18,7 +18,6 @@ export class Chat extends LitElement {
       actionsallowed: Array,
       delay: Number,
       disabled: Boolean,
-      enablegap: Boolean,
       list: Array,
       maxrows: Number,
       message: String,
@@ -85,7 +84,7 @@ export class Chat extends LitElement {
 
     return (html`
       <wc-chat-scrollable
-        enablegap='${props.enablegap}'
+        reverse='${props.reverse}'
         listen='${EVENT}'
       >
         <div>
@@ -97,7 +96,6 @@ export class Chat extends LitElement {
             on-message-delete='${this.boundedMessageDelete}'
             on-message-reaction='${this.boundedMessageReaction}'
             on-user-disable='${this.boundedUserDisable}'
-            reverse='${props.reverse}'
             user='${props.user}'
             users='${props.users}'
           />

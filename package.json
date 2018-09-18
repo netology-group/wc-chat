@@ -1,6 +1,6 @@
 {
   "name": "@netology-group/wc-chat",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "description": "Messenger's webcomponents",
   "bugs": {
     "url": "https://github.com/netology-group/wc-chat/issues"
@@ -63,6 +63,7 @@
     "@webcomponents/custom-elements": "^1.2.0",
     "@webcomponents/webcomponentsjs": "^2.1.2",
     "core-js": "^2.5.7",
+    "invariant": "^2.2.4",
     "most": "^1.7.3",
     "ramda": "^0.25.0"
   },
@@ -72,6 +73,7 @@
     "babel-plugin-annotate-pure-calls": "^0.3.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
