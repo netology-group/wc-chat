@@ -1,0 +1,42 @@
+/* :root, */
+:host {
+  bottom: var(--chat-input-bottom, initial);
+  display: block;
+  position: var(--chat-input-position, relative);
+  width: 100%;
+  z-index: var(--chat-input-z-index, initial);
+}
+
+.input {
+  background: var(--alabaster, #f8f8f8);
+  bottom: 0;
+  box-sizing: border-box;
+  font-size: 16px;
+  padding: 0 20px 20px;
+  width: 100%;
+}
+
+.input.disabled {
+  color: var(--silver, #b8b8b8);
+}
+
+.input > * {
+  line-height: 0;
+  position: relative;
+}
+
+.enter {
+  background: no-repeat center center;
+  border: none;
+  bottom: 14px;
+  cursor: pointer;
+  height: 24px;
+  outline: none;
+  padding: 0;
+  position: absolute;
+  right: 18px;
+}
+
+.enter:active:not(:disabled) {
+  transform: translateY(1px);
+}

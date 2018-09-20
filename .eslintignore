@@ -1,3 +1,4 @@
-/es
 /dist
-modernizr.js
+/es
+/lib
+node_modules

@@ -1,0 +1,39 @@
+:host {
+  display: block;
+  height: var(--chat-messages-height, inherit);
+}
+
+.messages {
+  box-sizing: border-box;
+  font-size: var(--messages-font-size, inherit);
+  height: 87%;
+  overflow-y: auto !important;
+  padding-left: 20px;
+  padding-top: 20px;
+  width: 93%;
+}
+
+.action-subgroup-item.lock.disabled {
+  cursor: not-allowed;
+}
+
+.action-subgroup-item.lock.allowed {
+  cursor: pointer !important;
+}
+
+.action-subgroup-item.lock svg {
+  padding: 10px 12px;
+}
+
+.action-subgroup-item.lock svg path {
+  fill: #b8b8b8;
+}
+
+.action-subgroup-item.lock:hover svg path,
+.action-subgroup-item.lock.disabled svg path {
+  fill: #48a1e6;
+}
+
+.reactions {
+  margin-top: 10px;
+}

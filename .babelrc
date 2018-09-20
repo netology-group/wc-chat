@@ -1,0 +1,40 @@
+{
+  "presets": [
+    ["babel-preset-env",{
+      "modules": false,
+      "targets":{
+        "chrome": 50,
+        "firefox": 50,
+        "safari": 10,
+        "ios": 10,
+        "opera": 40,
+        "edge": 13,
+        "ie": 11
+      }
+    }]
+   ],
+  "plugins": [
+    "babel-plugin-transform-object-rest-spread",
+    ["babel-plugin-transform-inline-environment-variables", {
+      "include": [ "NODE_ENV" ]
+    }]
+  ],
+  "env":{
+    "cjs": {
+      "plugins": [
+        "babel-plugin-annotate-pure-calls",
+        "babel-plugin-transform-es2015-modules-commonjs"
+      ]
+    },
+    "es": {
+      "plugins": [
+        "babel-plugin-annotate-pure-calls"
+      ]
+    },
+    "rollup": {
+      "plugins": [
+        "babel-plugin-external-helpers"
+      ]
+    }
+  }
+}

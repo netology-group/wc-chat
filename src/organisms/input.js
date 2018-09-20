@@ -3,20 +3,18 @@ import { html, LitElement, classString } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils/lib/mixins/mixins'
 import compose from 'ramda/es/compose'
 
-import Button from '../atoms/button.mjs'
-import Textarea from '../atoms/textarea.mjs'
-import {
-  observeC as observe,
-  filterC as filter,
-  throttleC as throttle,
-} from '../utils/most.mjs'
+import { button as Button, style as buttonStyle } from '../atoms/button'
+import { textarea as Textarea, style as textareaStyle } from '../atoms/textarea'
+import { observeC as observe, filterC as filter, throttleC as throttle } from '../utils/most'
 
-import styles from './input.css'
+import style from './input.css'
 
-const isMetaBtn = ({ key, keyCode }) => key.toLowerCase() === 'meta' || keyCode === 91 // eslint-disable-line
-const isEnterBtn = ({ key, keyCode }) => key.toLowerCase() === 'enter' || keyCode === 13
-const isControlBtn = ({ key, keyCode }) => key.toLowerCase() === 'control' || keyCode === 17
-const isShiftBtn = ({ key, keyCode }) => key.toLowerCase() === 'shift' || keyCode === 16
+const isKeyCode = (keyCode, code) => keyCode === code
+
+const isMetaBtn = ({ keyCode }) => isKeyCode(keyCode, 91)
+const isEnterBtn = ({ keyCode }) => isKeyCode(keyCode, 13)
+const isControlBtn = ({ keyCode }) => isKeyCode(keyCode, 17)
+const isShiftBtn = ({ keyCode }) => isKeyCode(keyCode, 16)
 
 export class MessageInput extends LitElement {
   static get properties () {
@@ -156,25 +154,19 @@ export class MessageInput extends LitElement {
       maxRows: maxrows || 5,
       onKeyPress: this._boundKeyPress,
       onInput: this._boundOnInput,
-      placeholder: this.hasAttribute('disabled')
-        ? placeholderdisabled
-        : placeholder,
+      placeholder: disabled ? placeholderdisabled : placeholder,
       value,
     })
 
-    return html`
-      <section class$="${classString({ input: true, disabled })}">
-        <form on-submit="${e => this._handleSubmit(e)}">
+    return (html`
+      <section class$='${classString({ input: true, disabled })}'>
+        <form on-submit='${e => this._handleSubmit(e)}'>
           ${textarea}
           ${button}
         <form>
       </section>
-    `
+    `)
   }
 }
 
-const Input = withStyle(MessageInput, styles)
-
-export default Input
-
-export { Input, styles }
+export default withStyle(html)(MessageInput, style, buttonStyle, textareaStyle)

@@ -1,22 +1,57 @@
 import autoprefixer from 'autoprefixer'
+import babel from 'rollup-plugin-babel'
 import cjs from 'rollup-plugin-commonjs'
+import copy from 'rollup-plugin-copy'
+import cssfonts from 'postcss-fontpath'
+import cssimport from 'postcss-import'
+import cssurl from 'postcss-url'
 import env from 'postcss-preset-env'
+import json from 'rollup-plugin-json'
 import postcss from 'rollup-plugin-postcss'
-import resolve from 'rollup-plugin-node-resolve'
+import nodeResolve from 'rollup-plugin-node-resolve'
 import svg from 'rollup-plugin-svg'
 
-export default {
-  input: `lib/organisms/${process.env.entry}.mjs`,
+import { shouldUglify } from './rollup.utils'
+import { directories } from './package.json'
+
+const entry = process.env.ENTRY || 'index'
+const ns = process.env.NAMESPACE || 'WCChat'
+const noCssTransform = process.env.SKIPCSS
+
+const css = () => postcss(noCssTransform
+  ? {}
+  : {
+    extract: false,
+    modules: false,
+    namedExports: function namedExports (name) {
+      return `_$${name.replace(/-/g, '_')}`
+    },
+    plugins: [
+      cssimport({ addModulesDirectories: ['node_modules'] }),
+      cssurl({ url: 'inline' }),
+      cssfonts(),
+      env(),
+      autoprefixer(),
+    ],
+  })
+
+const dist = (name = ns) => ({
+  input: `${directories.lib}/${entry}.js`,
   output: {
-    file: `es/${process.env.entry}.js`,
-    format: 'es',
+    format: 'umd',
+    exports: 'named',
+    name,
   },
   plugins: [
-    resolve(),
-    postcss({ plugins: [env(), autoprefixer()] }),
+    nodeResolve(),
+    css(),
     svg(),
-    cjs({
-      extensions: ['.js', '.mjs'],
-    }),
+    json(),
+    cjs(),
+    babel(),
+    shouldUglify(),
+    copy({ './fonts': 'public/fonts' }),
   ],
-}
+})
+
+export default dist()

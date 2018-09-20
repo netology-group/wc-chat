@@ -1,0 +1,28 @@
+/* :root, */
+:host {
+  display: block;
+}
+
+.icons {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+.icons.vertical {
+  flex-direction: column;
+}
+
+.icon {
+  cursor: default;
+  margin-right: 5px;
+  position: relative;
+  user-select: none;
+}
+
+.icon span {
+  height: 21px;
+  user-select: none;
+  vertical-align: top;
+  width: 14px;
+}

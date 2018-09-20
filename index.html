@@ -1,63 +1,117 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Chat Demo with es modules</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
-  <script src="./dist/polyfill.js"></script>
-  <script type="module">
-    import Input from './es/input.js'
-    import Messages from './es/messages.js'
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Chat component</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    window.customElements.define('webcomponents-chat-input', Input)
-    window.customElements.define('webcomponents-chat-messages', Messages)
-  </script>
-  <script>
-    let _messages = []
-    const _users = [{
-      name: 'Marco Polo',
-      role: 'user',
-      user_id: 1,
-      visible: true,
-    }]
+    <script defer src="./dist/polyfill.min.js"></script>
 
-    const enhanceMessage = message => ({
-      id: Date.now(),
-      body: message,
-      timestamp: Date.now() / 1e3,
-      user_id: 1,
-    })
+    <script>if (window.ShadowRoot) { document.write('<!--'); }</script>
+    <script defer type="text/javascript" src="./public/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <!--! do not remove -->
 
-    window.addEventListener('DOMContentLoaded', function(){
-      var input = document.getElementById('input')
-      var messages = document.getElementById('messages')
+    <script>if (!window.customElements) { document.write('<!--'); }</script>
+    <script defer type="text/javascript" src="./public/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
+    <!--! do not remove -->
 
-      messages.users = _users
+    <link href="./public/fonts.css" rel="stylesheet" />
 
-      input.addEventListener('message-submit', (e) => {
+    <script defer src="./dist/chat.min.js"></script>
 
-        setTimeout(() => {
-          _messages = _messages.concat(enhanceMessage(e.detail.message))
-          messages.list = _messages
-          input.changeValue()
-        }, 1e3)
+    <script>
+      var _messages = [
+        {
+          name: 'Admin',
+          user_name: "Admin",
+          role: 'moderator',
+          user_role: 'moderator',
+          status: 'Administrator',
+          user_id: 99,
+          visible: true,
+          avatar: 'https://about.gitlab.com/images/comparison/gitlab-logo.svg',
+          id: Date.now(),
+          body: 'Hello World!',
+          timestamp: Date.now() / 1e3,
+          rating: 100500,
+        }
+      ]
+      var _users = [
+        {
+          name: 'Marco Polo',
+          user_name: "Marco Polo",
+          user_role: 'user',
+          user_id: 1,
+          visible: true,
+          avatar: 'https://about.gitlab.com/images/comparison/gitlab-logo.svg'
+        },
+      ]
 
+      var _actions = [['message-delete', { self: true }],['message-reaction', { self: true }]]
+
+      var _actionsallowed = ['message-delete', 'user-disable', 'message-reaction']
+
+      function enhanceMessage (message) {
+        const _message = {
+          id: Date.now(),
+          body: message,
+          timestamp: Date.now() / 1e3,
+          user_id: 1,
+        }
+
+        return Object.assign(_message, _users.filter(_ => _.user_id === _message.user_id)[0] || {})
+      }
+
+      function initialize () {
+        var messenger = document.getElementById('messenger')
+        var reverse = ~location.search.indexOf('reverse=true') ? true : false
+
+        messenger.actions = _actions
+        messenger.actionsallowed = _actionsallowed
+        messenger.list = _messages
+        messenger.users = _users
+        messenger.user = 1
+
+        messenger.addEventListener('chat-message-submit', (e) => {
+          setTimeout(() => {
+            if(reverse){
+              _messages = [enhanceMessage(e.detail.message)].concat(_messages)
+            }else{
+              _messages = _messages.concat(enhanceMessage(e.detail.message))
+            }
+
+            messenger.list = _messages
+          }, 1e2)
+        })
+
+        messenger.addEventListener('chat-message-reaction', (e) => {
+          _messages = _messages.map((it) => {
+            if(it.id === e.detail.message.id) it.rating = !it.rating ? 1 : it.rating + 1
+            return it
+          })
+
+          messenger.list = _messages
+        })
+      }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        var _Chat = window.WCChat.chat.default
+
+        window.customElements.define('wc-chat', _Chat)
+
+        initialize()
       })
-
-    })
-  </script>
-  <h1>Chat demo (powered by es modules)</h1>
-  <webcomponents-chat-messages
-    id="messages"
-  ></webcomponents-chat-messages>
-  <webcomponents-chat-input
-    id="input"
-    placeholderdisabled="Input is blocked"
-    placeholder="Type something..."
-    submit-event="message-input-was-submitted"
-  ></webcomponents-chat-input>
-</body>
+    </script>
+  </head>
+  <body>
+    <h1>Chat</h1>
+    <div style="height:500px; width: 30%;">
+      <wc-chat
+        id="messenger"
+        placeholder="Write something…"
+        placeholderdisabled="Chat is blocked now"
+      />
+    </div>
+  </body>
 </html>
