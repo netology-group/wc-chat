@@ -1,8 +1,0 @@
-:host {
-  height: 100%;
-}
-
-.scrollable {
-  height: 100%;
-  overflow-y: scroll;
-}
