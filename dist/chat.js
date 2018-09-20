@@ -400,8 +400,7 @@
       return extended;
     }
 
-    return (/** @type {T} */dedupingMixin
-    );
+    return dedupingMixin;
   };
   /* eslint-enable valid-jsdoc */
 
@@ -569,12 +568,17 @@
    * @summary Element class mixin for reacting to property changes from
    *   generated property accessors.
    */
-  var PropertiesChanged = dedupingMixin(function (superClass) {
+  var PropertiesChanged = dedupingMixin(
+  /**
+   * @template T
+   * @param {function(new:T)} superClass Class to apply mixin to.
+   * @return {function(new:T)} superClass with mixin applied.
+   */
+  function (superClass) {
 
     /**
      * @polymer
      * @mixinClass
-     * @extends {superClass}
      * @implements {Polymer_PropertiesChanged}
      * @unrestricted
      */
@@ -599,6 +603,7 @@
          *   protected `_setProperty` function must be used to set the property
          * @return {void}
          * @protected
+         * @override
          */
         value: function _createPropertyAccessor(property, readOnly) {
           this._addPropertyToAttributeMap(property);
@@ -617,6 +622,7 @@
          * used when deserializing attribute values to properties.
          *
          * @param {string} property Name of the property
+         * @override
          */
 
       }, {
@@ -636,6 +642,7 @@
          * @param {string} property Name of the property
          * @param {boolean=} readOnly When true, no setter is created
          * @return {void}
+         * @override
          */
 
       }, {
@@ -734,6 +741,7 @@
        *
        * @return {void}
        * @public
+       * @override
        */
 
 
@@ -752,6 +760,7 @@
          *
          * @return {void}
          * @protected
+         * @override
          */
 
       }, {
@@ -781,6 +790,7 @@
          *   when creating property accessors.
          * @return {void}
          * @protected
+         * @override
          */
 
       }, {
@@ -797,6 +807,7 @@
          * @param {*} value Value to set
          * @return {void}
          * @protected
+         * @override
          */
 
       }, {
@@ -812,6 +823,7 @@
          * @param {string} property Name of property
          * @return {*} Value for the given property
          * @protected
+         * @override
          */
 
       }, {
@@ -832,6 +844,7 @@
          * @param {boolean=} ext Not used here; affordance for closure
          * @return {boolean} Returns true if the property changed
          * @protected
+         * @override
          */
 
       }, {
@@ -861,6 +874,7 @@
          *
          * @return {void}
          * @protected
+         * @override
          */
 
       }, {
@@ -889,6 +903,7 @@
          *
          * @return {void}
          * @protected
+         * @override
          */
 
       }, {
@@ -912,6 +927,7 @@
          *
          * @return {void}
          * @protected
+         * @override
          */
 
       }, {
@@ -933,11 +949,12 @@
          * properties are pending. Override to customize when
          * `_propertiesChanged` is called.
          * @param {!Object} currentProps Bag of all current accessor values
-         * @param {!Object} changedProps Bag of properties changed since the last
+         * @param {?Object} changedProps Bag of properties changed since the last
          *   call to `_propertiesChanged`
-         * @param {!Object} oldProps Bag of previous values for each property
+         * @param {?Object} oldProps Bag of previous values for each property
          *   in `changedProps`
          * @return {boolean} true if changedProps is truthy
+         * @override
          */
 
       }, {
@@ -952,12 +969,13 @@
          * `_createPropertyAccessor` have been set.
          *
          * @param {!Object} currentProps Bag of all current accessor values
-         * @param {!Object} changedProps Bag of properties changed since the last
+         * @param {?Object} changedProps Bag of properties changed since the last
          *   call to `_propertiesChanged`
-         * @param {!Object} oldProps Bag of previous values for each property
+         * @param {?Object} oldProps Bag of previous values for each property
          *   in `changedProps`
          * @return {void}
          * @protected
+         * @override
          */
 
       }, {
@@ -982,6 +1000,7 @@
          * @return {boolean} Whether the property should be considered a change
          *   and enqueue a `_proeprtiesChanged` callback
          * @protected
+         * @override
          */
 
       }, {
@@ -1005,6 +1024,7 @@
          * @param {?string} namespace Attribute namespace.
          * @return {void}
          * @suppress {missingProperties} Super may or may not implement the callback
+         * @override
          */
 
       }, {
@@ -1029,6 +1049,7 @@
          * @param {*=} type type to deserialize to, defaults to the value
          * returned from `typeForProperty`
          * @return {void}
+         * @override
          */
 
       }, {
@@ -1050,6 +1071,7 @@
          * @param {string=} attribute Attribute name to reflect to.
          * @param {*=} value Property value to refect.
          * @return {void}
+         * @override
          */
 
       }, {
@@ -1073,6 +1095,7 @@
          * @param {*} value Value to serialize.
          * @param {string} attribute Attribute name to serialize to.
          * @return {void}
+         * @override
          */
 
       }, {
@@ -1096,6 +1119,7 @@
          * @param {*} value Property value to serialize.
          * @return {string | undefined} String serialized from the provided
          * property  value.
+         * @override
          */
 
       }, {
@@ -1120,6 +1144,7 @@
          * @param {?string} value Value to deserialize.
          * @param {*=} type Type to deserialize the string to.
          * @return {*} Typed value deserialized from the provided string.
+         * @override
          */
 
       }, {
@@ -1190,8 +1215,8 @@
 
     /**
      * @constructor
-     * @extends {superClass}
      * @implements {Polymer_PropertiesChanged}
+     * @private
      */
     var base = PropertiesChanged(superClass);
 
@@ -1200,7 +1225,7 @@
      * instance of the PropertiesMixin.
      *
      * @param {!PropertiesMixinConstructor} constructor PropertiesMixin constructor
-     * @return {PropertiesMixinConstructor} Super class constructor
+     * @return {?PropertiesMixinConstructor} Super class constructor
      */
     function superPropertiesClass(constructor) {
       var superCtor = Object.getPrototypeOf(constructor);
@@ -1210,7 +1235,7 @@
       // because the mixin is deduped and guaranteed only to apply once, hence
       // all constructors in a proto chain will see the same `PropertiesMixin`
       return superCtor.prototype instanceof PropertiesMixin ?
-      /** @type {PropertiesMixinConstructor} */superCtor : null;
+      /** @type {!PropertiesMixinConstructor} */superCtor : null;
     }
 
     /**
@@ -1271,6 +1296,7 @@
          * `PropertiesChanged`.
          * @suppress {missingProperties} Super may or may not implement the callback
          * @return {void}
+         * @override
          */
 
       }, {
@@ -1286,6 +1312,7 @@
          * Called when the element is removed from a document
          * @suppress {missingProperties} Super may or may not implement the callback
          * @return {void}
+         * @override
          */
 
       }, {
@@ -1308,7 +1335,7 @@
          */
         value: function finalize() {
           if (!this.hasOwnProperty(JSCompiler_renameProperty('__finalized', this))) {
-            var superCtor = superPropertiesClass( /** @type {PropertiesMixinConstructor} */this);
+            var superCtor = superPropertiesClass( /** @type {!PropertiesMixinConstructor} */this);
             if (superCtor) {
               superCtor.finalize();
             }
@@ -1328,7 +1355,7 @@
       }, {
         key: '_finalizeClass',
         value: function _finalizeClass() {
-          var props = ownProperties( /** @type {PropertiesMixinConstructor} */this);
+          var props = ownProperties( /** @type {!PropertiesMixinConstructor} */this);
           if (props) {
             this.createProperties(props);
           }
@@ -1380,7 +1407,7 @@
         key: '_properties',
         get: function get$$1() {
           if (!this.hasOwnProperty(JSCompiler_renameProperty('__properties', this))) {
-            var superCtor = superPropertiesClass( /** @type {PropertiesMixinConstructor} */this);
+            var superCtor = superPropertiesClass( /** @type {!PropertiesMixinConstructor} */this);
             this.__properties = Object.assign({}, superCtor && superCtor._properties, ownProperties( /** @type {PropertiesMixinConstructor} */this));
           }
           return this.__properties;
@@ -1405,6 +1432,11 @@
   var caseMap = {};
   var DASH_TO_CAMEL = /-[a-z]/g;
   var CAMEL_TO_DASH = /([A-Z])/g;
+
+  /**
+   * @fileoverview Module with utilities for converting between "dash-case" and
+   * "camelCase" identifiers.
+   */
 
   /**
    * Converts "dash-case" identifier (e.g. `foo-bar-baz`) to "camelCase"
@@ -2971,6 +3003,7 @@
 
   // removeAll :: (a -> boolean) -> [a] -> [a]
   // remove all elements matching a predicate
+  // @deprecated
   function removeAll(f, a) {
     var l = a.length;
     var b = new Array(l);
@@ -3860,7 +3893,7 @@
     }
   }
 
-  var css = ".enter:hover:not(disabled) {\n  -webkit-filter: brightness(95%);\n          filter: brightness(95%);\n  -webkit-filter: brightness(var(--darken-hover, 95%));\n          filter: brightness(var(--darken-hover, 95%));\n}\n\n.enter:active:not(disabled) {\n  -webkit-transform: translateY(1px);\n          transform: translateY(1px);\n  -webkit-filter: brightness(85%);\n          filter: brightness(85%);\n  -webkit-filter: brightness(var(--darken-active, 85%));\n          filter: brightness(var(--darken-active, 85%));\n}\n\n.enter:disabled {\n  cursor: not-allowed;\n  -webkit-transform: none !important;\n          transform: none !important;\n  -webkit-filter: grayscale(100%) !important;\n          filter: grayscale(100%) !important;\n}\n";
+  var css = ".enter:disabled {\n  cursor: not-allowed;\n  -webkit-filter: grayscale(100%) !important;\n          filter: grayscale(100%) !important;\n  -webkit-transform: none !important;\n          transform: none !important;\n}\n\n.enter:hover:not(:disabled) {\n  -webkit-filter: brightness(95%);\n          filter: brightness(95%);\n  -webkit-filter: brightness(var(--darken-hover, 95%));\n          filter: brightness(var(--darken-hover, 95%));\n}\n\n.enter:active:not(:disabled) {\n  -webkit-filter: brightness(85%);\n          filter: brightness(85%);\n  -webkit-filter: brightness(var(--darken-active, 85%));\n          filter: brightness(var(--darken-active, 85%));\n  -webkit-transform: translateY(1px);\n          transform: translateY(1px);\n}\n";
   styleInject(css);
 
   var _templateObject$1 = taggedTemplateLiteral(['\n  <button\n    class=\'enter\'\n    disabled=', '\n  >', '</button>\n'], ['\n  <button\n    class=\'enter\'\n    disabled=', '\n  >', '</button>\n']),
@@ -4398,6 +4431,77 @@
     return styleTextParts.join('').trim();
   }
 
+  var CSS_BUILD_ATTR = 'css-build';
+
+  /**
+   * Return the polymer-css-build "build type" applied to this element
+   *
+   * @param {!HTMLElement} element
+   * @return {string} Can be "", "shady", or "shadow"
+   */
+  function getCssBuild(element) {
+    if (element.__cssBuild === undefined) {
+      // try attribute first, as it is the common case
+      var attrValue = element.getAttribute(CSS_BUILD_ATTR);
+      if (attrValue) {
+        element.__cssBuild = attrValue;
+      } else {
+        var buildComment = getBuildComment(element);
+        if (buildComment !== '') {
+          // remove build comment so it is not needlessly copied into every element instance
+          removeBuildComment(element);
+        }
+        element.__cssBuild = buildComment;
+      }
+    }
+    return element.__cssBuild || '';
+  }
+
+  /**
+   * Check if the given element, either a <template> or <style>, has been processed
+   * by polymer-css-build.
+   *
+   * If so, then we can make a number of optimizations:
+   * - polymer-css-build will decompose mixins into individual CSS Custom Properties,
+   * so the ApplyShim can be skipped entirely.
+   * - Under native ShadowDOM, the style text can just be copied into each instance
+   * without modification
+   * - If the build is "shady" and ShadyDOM is in use, the styling does not need
+   * scoping beyond the shimming of CSS Custom Properties
+   *
+   * @param {!HTMLElement} element
+   * @return {boolean}
+   */
+  function elementHasBuiltCss(element) {
+    return getCssBuild(element) !== '';
+  }
+
+  /**
+   * For templates made with tagged template literals, polymer-css-build will
+   * insert a comment of the form `<!--css-build:shadow-->`
+   *
+   * @param {!HTMLElement} element
+   * @return {string}
+   */
+  function getBuildComment(element) {
+    var buildComment = element.localName === 'template' ? element.content.firstChild : element.firstChild;
+    if (buildComment instanceof Comment) {
+      var commentParts = buildComment.textContent.trim().split(':');
+      if (commentParts[0] === CSS_BUILD_ATTR) {
+        return commentParts[1];
+      }
+    }
+    return '';
+  }
+
+  /**
+   * @param {!HTMLElement} element
+   */
+  function removeBuildComment(element) {
+    var buildComment = element.localName === 'template' ? element.content.firstChild : element.firstChild;
+    buildComment.parentNode.removeChild(buildComment);
+  }
+
   /**
   @license
   Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -4638,7 +4742,7 @@
     }, {
       key: 'transformRule',
       value: function transformRule(rule) {
-        rule['cssText'] = this.transformCssText(rule['parsedCssText']);
+        rule['cssText'] = this.transformCssText(rule['parsedCssText'], rule);
         // :root was only used for variable assignment in property shim,
         // but generates invalid selectors with real properties.
         // replace with `:host > *`, which serves the same effect
@@ -4648,20 +4752,21 @@
       }
       /**
        * @param {string} cssText
+       * @param {!StyleNode} rule
        * @return {string}
        */
 
     }, {
       key: 'transformCssText',
-      value: function transformCssText(cssText) {
+      value: function transformCssText(cssText, rule) {
         var _this3 = this;
 
         // produce variables
         cssText = cssText.replace(VAR_ASSIGN, function (matchText, propertyName, valueProperty, valueMixin) {
-          return _this3._produceCssProperties(matchText, propertyName, valueProperty, valueMixin);
+          return _this3._produceCssProperties(matchText, propertyName, valueProperty, valueMixin, rule);
         });
         // consume mixins
-        return this._consumeCssProperties(cssText);
+        return this._consumeCssProperties(cssText, rule);
       }
       /**
        * @param {string} property
@@ -4680,14 +4785,50 @@
         return window.getComputedStyle(this._measureElement).getPropertyValue(property);
       }
       /**
+       * Walk over all rules before this rule to find fallbacks for mixins
+       *
+       * @param {!StyleNode} startRule
+       * @return {!Object}
+       */
+
+    }, {
+      key: '_fallbacksFromPreviousRules',
+      value: function _fallbacksFromPreviousRules(startRule) {
+        var _this4 = this;
+
+        // find the "top" rule
+        var topRule = startRule;
+        while (topRule['parent']) {
+          topRule = topRule['parent'];
+        }
+        var fallbacks = {};
+        var seenStartRule = false;
+        forEachRule(topRule, function (r) {
+          // stop when we hit the input rule
+          seenStartRule = seenStartRule || r === startRule;
+          if (seenStartRule) {
+            return;
+          }
+          // NOTE: Only matching selectors are "safe" for this fallback processing
+          // It would be prohibitive to run `matchesSelector()` on each selector,
+          // so we cheat and only check if the same selector string is used, which
+          // guarantees things like specificity matching
+          if (r['selector'] === startRule['selector']) {
+            Object.assign(fallbacks, _this4._cssTextToMap(r['parsedCssText']));
+          }
+        });
+        return fallbacks;
+      }
+      /**
        * replace mixin consumption with variable consumption
        * @param {string} text
+       * @param {!StyleNode=} rule
        * @return {string}
        */
 
     }, {
       key: '_consumeCssProperties',
-      value: function _consumeCssProperties(text) {
+      value: function _consumeCssProperties(text, rule) {
         /** @type {Array} */
         var m = null;
         // loop over text until all mixins with defintions have been applied
@@ -4702,7 +4843,8 @@
           // find props defined before this @apply
           var textBeforeApply = text.slice(0, applyPos);
           var textAfterApply = text.slice(afterApplyPos);
-          var defaults$$1 = this._cssTextToMap(textBeforeApply);
+          var defaults$$1 = rule ? this._fallbacksFromPreviousRules(rule) : {};
+          Object.assign(defaults$$1, this._cssTextToMap(textBeforeApply));
           var replacement = this._atApplyToCssProperties(mixinName, defaults$$1);
           // use regex match position to replace mixin, keep linear processing time
           text = '' + textBeforeApply + replacement + textAfterApply;
@@ -4837,19 +4979,20 @@
        * @param {string} propertyName
        * @param {?string} valueProperty
        * @param {?string} valueMixin
+       * @param {!StyleNode} rule
        * @return {string}
        */
 
     }, {
       key: '_produceCssProperties',
-      value: function _produceCssProperties(matchText, propertyName, valueProperty, valueMixin) {
-        var _this4 = this;
+      value: function _produceCssProperties(matchText, propertyName, valueProperty, valueMixin, rule) {
+        var _this5 = this;
 
         // handle case where property value is a mixin
         if (valueProperty) {
           // form: --mixin2: var(--mixin1), where --mixin1 is in the map
           processVariableAndFallback(valueProperty, function (prefix, value) {
-            if (value && _this4._map.get(value)) {
+            if (value && _this5._map.get(value)) {
               valueMixin = '@apply ' + value + ';';
             }
           });
@@ -4857,7 +5000,7 @@
         if (!valueMixin) {
           return matchText;
         }
-        var mixinAsProperties = this._consumeCssProperties('' + valueMixin);
+        var mixinAsProperties = this._consumeCssProperties('' + valueMixin, rule);
         var prefix = matchText.slice(0, matchText.indexOf('--'));
         var mixinValues = this._cssTextToMap(mixinAsProperties);
         var combinedProps = mixinValues;
@@ -5313,6 +5456,9 @@
       key: 'prepareTemplate',
       value: function prepareTemplate(template, elementName) {
         this.ensure();
+        if (elementHasBuiltCss(template)) {
+          return;
+        }
         templateMap[elementName] = template;
         var ast = applyShim.transformTemplate(template, elementName);
         // save original style ast to use for revalidating instances
@@ -5376,6 +5522,9 @@
             is = _getIsExtends.is;
 
         var template = templateMap[is];
+        if (template && elementHasBuiltCss(template)) {
+          return;
+        }
         if (template && !templateIsValid(template)) {
           // only revalidate template once
           if (!templateIsValidating(template)) {
@@ -5437,7 +5586,7 @@
 
 
       /**
-       * @param {HTMLTemplateElement} template
+       * @param {!HTMLTemplateElement} template
        * @param {string} elementName
        */
       prepareTemplateDom: function prepareTemplateDom(template, elementName) {},
@@ -5945,6 +6094,7 @@
        * @param {?string} value Current value of attribute.
        * @param {?string} namespace Attribute namespace.
        * @return {void}
+       * @override
        */
       value: function attributeChangedCallback(name, old, value, namespace) {
         if (old !== value) {
@@ -6365,6 +6515,7 @@
      * @extends {superClass}
      * @implements {Polymer_PropertiesChanged}
      * @unrestricted
+     * @private
      */
     var base = PropertiesChanged(superClass);
 
@@ -6720,7 +6871,13 @@
    * @polymer
    * @summary Element class mixin that provides basic template parsing and stamping
    */
-  var TemplateStamp = dedupingMixin(function (superClass) {
+  var TemplateStamp = dedupingMixin(
+  /**
+   * @template T
+   * @param {function(new:T)} superClass Class to apply mixin to.
+   * @return {function(new:T)} superClass with mixin applied.
+   */
+  function (superClass) {
 
     /**
      * @polymer
@@ -6760,6 +6917,7 @@
          *
          * @param {!HTMLTemplateElement} template Template to stamp
          * @return {!StampedTemplate} Cloned template content
+         * @override
          */
         value: function _stampTemplate(template) {
           // Polyfill support: bootstrap the template if it has not already been
@@ -6796,6 +6954,7 @@
          * @param {*=} context Context the method will be called on (defaults
          *   to `node`)
          * @return {Function} Generated handler function
+         * @override
          */
 
       }, {
@@ -6814,6 +6973,7 @@
          * @param {string} eventName Name of event
          * @param {function(!Event):void} handler Listener function to add
          * @return {void}
+         * @override
          */
 
       }, {
@@ -6825,10 +6985,11 @@
         /**
          * Override point for adding custom or simulated event handling.
          *
-         * @param {Node} node Node to remove event listener from
+         * @param {!Node} node Node to remove event listener from
          * @param {string} eventName Name of event
          * @param {function(!Event):void} handler Listener function to remove
          * @return {void}
+         * @override
          */
 
       }, {
@@ -8206,6 +8367,7 @@
      * @implements {Polymer_PropertyAccessors}
      * @implements {Polymer_TemplateStamp}
      * @unrestricted
+     * @private
      */
     var propertyEffectsBase = TemplateStamp(PropertyAccessors(superClass));
 
@@ -8833,9 +8995,9 @@
          * a specific order (compute, propagate, reflect, observe, notify).
          *
          * @param {!Object} currentProps Bag of all current accessor values
-         * @param {!Object} changedProps Bag of properties changed since the last
+         * @param {?Object} changedProps Bag of properties changed since the last
          *   call to `_propertiesChanged`
-         * @param {!Object} oldProps Bag of previous values for each property
+         * @param {?Object} oldProps Bag of previous values for each property
          *   in `changedProps`
          * @return {void}
          */
@@ -10052,45 +10214,58 @@
    *
    * @private
    */
-  var hostStack = {
 
-    stack: [],
+  var HostStack = function () {
+    function HostStack() {
+      classCallCheck(this, HostStack);
+
+      this.stack = [];
+    }
 
     /**
      * @param {*} inst Instance to add to hostStack
      * @return {void}
-     * @this {hostStack}
      */
-    registerHost: function registerHost(inst) {
-      if (this.stack.length) {
-        var host = this.stack[this.stack.length - 1];
-        host._enqueueClient(inst);
+
+
+    createClass(HostStack, [{
+      key: 'registerHost',
+      value: function registerHost(inst) {
+        if (this.stack.length) {
+          var host = this.stack[this.stack.length - 1];
+          host._enqueueClient(inst);
+        }
       }
-    },
 
+      /**
+       * @param {*} inst Instance to begin hosting
+       * @return {void}
+       */
 
-    /**
-     * @param {*} inst Instance to begin hosting
-     * @return {void}
-     * @this {hostStack}
-     */
-    beginHosting: function beginHosting(inst) {
-      this.stack.push(inst);
-    },
-
-
-    /**
-     * @param {*} inst Instance to end hosting
-     * @return {void}
-     * @this {hostStack}
-     */
-    endHosting: function endHosting(inst) {
-      var stackLen = this.stack.length;
-      if (stackLen && this.stack[stackLen - 1] == inst) {
-        this.stack.pop();
+    }, {
+      key: 'beginHosting',
+      value: function beginHosting(inst) {
+        this.stack.push(inst);
       }
-    }
-  };
+
+      /**
+       * @param {*} inst Instance to end hosting
+       * @return {void}
+       */
+
+    }, {
+      key: 'endHosting',
+      value: function endHosting(inst) {
+        var stackLen = this.stack.length;
+        if (stackLen && this.stack[stackLen - 1] == inst) {
+          this.stack.pop();
+        }
+      }
+    }]);
+    return HostStack;
+  }();
+
+  var hostStack = new HostStack();
 
   /**
   @license
@@ -10117,8 +10292,7 @@
    *
    * - `static get template()`: Users may provide the template directly (as
    *   opposed to via `dom-module`) by implementing a static `template` getter.
-   *   The getter may return an `HTMLTemplateElement` or a string, which will
-   *   automatically be parsed into a template.
+   *   The getter must return an `HTMLTemplateElement`.
    *
    * - `static get properties()`: Should return an object describing
    *   property-related metadata used by Polymer features (key: property name
@@ -10178,6 +10352,7 @@
      * @extends {base}
      * @implements {Polymer_PropertyEffects}
      * @implements {Polymer_PropertiesMixin}
+     * @private
      */
     var polymerElementBase = PropertiesMixin(PropertyEffects(base));
 
@@ -10442,8 +10617,7 @@
          *
          * Users may override this getter to return an arbitrary template
          * (in which case the `is` getter is unnecessary). The template returned
-         * may be either an `HTMLTemplateElement` or a string that will be
-         * automatically parsed into a template.
+         * must be an `HTMLTemplateElement`.
          *
          * Note that when subclassing, if the super class overrode the default
          * implementation and the subclass would like to provide an alternate
@@ -10900,7 +11074,7 @@
        * called once. Add this method to a custom element:
        *
        * ```js
-       * import {microtask} from '@polymer/polymer/lib/utils/async.js';
+       * import {microTask} from '@polymer/polymer/lib/utils/async.js';
        * import {Debouncer} from '@polymer/polymer/lib/utils/debounce.js';
        * // ...
        *
@@ -11025,6 +11199,20 @@
     'textarea': true,
     'progress': true,
     'select': true
+  };
+
+  // Defined at https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#enabling-and-disabling-form-controls:-the-disabled-attribute
+  /** @type {!Object<boolean>} */
+  var canBeDisabled = {
+    'button': true,
+    'command': true,
+    'fieldset': true,
+    'input': true,
+    'keygen': true,
+    'optgroup': true,
+    'option': true,
+    'select': true,
+    'textarea': true
   };
 
   /**
@@ -11276,7 +11464,7 @@
    * a cheaper check than ev.composedPath()[0];
    *
    * @private
-   * @param {Event} ev Event.
+   * @param {Event|Touch} ev Event.
    * @return {EventTarget} Returns the event target.
    */
   function _findOriginalTarget(ev) {
@@ -11370,17 +11558,17 @@
       }
       POINTERSTATE.touch.scrollDecided = true;
       var ta = firstTouchAction(ev);
-      var _prevent = false;
+      var shouldPrevent = false;
       var dx = Math.abs(POINTERSTATE.touch.x - t.clientX);
       var dy = Math.abs(POINTERSTATE.touch.y - t.clientY);
       if (!ev.cancelable) ; else if (ta === 'none') {
-        _prevent = true;
+        shouldPrevent = true;
       } else if (ta === 'pan-x') {
-        _prevent = dy > dx;
+        shouldPrevent = dy > dx;
       } else if (ta === 'pan-y') {
-        _prevent = dx > dy;
+        shouldPrevent = dx > dy;
       }
-      if (_prevent) {
+      if (shouldPrevent) {
         ev.preventDefault();
       } else {
         _prevent('track');
@@ -11395,7 +11583,6 @@
    * @param {string} evType Gesture type: `down`, `up`, `track`, or `tap`
    * @param {!function(!Event):void} handler Event listener function to call
    * @return {boolean} Returns true if a gesture event listener was added.
-   * @this {Gestures}
    */
   function addListener(node, evType, handler) {
     if (gestures[evType]) {
@@ -11413,7 +11600,6 @@
    * @param {!function(!Event):void} handler Event listener function previously passed to
    *  `addListener`.
    * @return {boolean} Returns true if a gesture event listener was removed.
-   * @this {Gestures}
    */
   function removeListener(node, evType, handler) {
     if (gestures[evType]) {
@@ -11427,11 +11613,10 @@
    * automate the event listeners for the native events
    *
    * @private
-   * @param {!HTMLElement} node Node on which to add the event.
+   * @param {!Node} node Node on which to add the event.
    * @param {string} evType Event type to add.
    * @param {function(!Event)} handler Event handler function.
    * @return {void}
-   * @this {Gestures}
    */
   function _add(node, evType, handler) {
     var recognizer = gestures[evType];
@@ -11467,11 +11652,10 @@
    * automate event listener removal for native events
    *
    * @private
-   * @param {!HTMLElement} node Node on which to remove the event.
+   * @param {!Node} node Node on which to remove the event.
    * @param {string} evType Event type to remove.
-   * @param {function(Event?)} handler Event handler function.
+   * @param {function(!Event): void} handler Event handler function.
    * @return {void}
-   * @this {Gestures}
    */
   function _remove(node, evType, handler) {
     var recognizer = gestures[evType];
@@ -11500,7 +11684,6 @@
    *
    * @param {!GestureRecognizer} recog Gesture recognizer descriptor
    * @return {void}
-   * @this {Gestures}
    */
   function register$1(recog) {
     recognizers.push(recog);
@@ -11513,7 +11696,6 @@
    * @private
    * @param {string} evName Event name.
    * @return {Object} Returns the gesture for the given event name.
-   * @this {Gestures}
    */
   function _findRecognizerByEvent(evName) {
     for (var i = 0, r; i < recognizers.length; i++) {
@@ -11534,7 +11716,7 @@
    * This value is checked on first move, thus it should be called prior to
    * adding event listeners.
    *
-   * @param {!Element} node Node to set touch action setting on
+   * @param {!Node} node Node to set touch action setting on
    * @param {string} value Touch action value
    * @return {void}
    */
@@ -11560,7 +11742,7 @@
    * @param {!Object=} detail The detail object to populate on the event.
    * @return {void}
    */
-  function _fire2(target, type, detail) {
+  function _fire(target, type, detail) {
     var ev = new Event(type, { bubbles: true, cancelable: true, composed: true });
     ev.detail = detail;
     target.dispatchEvent(ev);
@@ -11578,9 +11760,8 @@
    *
    * @param {string} evName Event name.
    * @return {void}
-   * @this {Gestures}
    */
-  function _prevent2(evName) {
+  function _prevent(evName) {
     var recognizer = _findRecognizerByEvent(evName);
     if (recognizer.info) {
       recognizer.info.prevent = true;
@@ -11639,18 +11820,18 @@
       var self = this;
       var movefn = function movefn(e) {
         if (!hasLeftMouseButton(e)) {
-          self._fire('up', t, e);
+          downupFire('up', t, e);
           untrackDocument(self.info);
         }
       };
       var upfn = function upfn(e) {
         if (hasLeftMouseButton(e)) {
-          self._fire('up', t, e);
+          downupFire('up', t, e);
         }
         untrackDocument(self.info);
       };
       trackDocument(this.info, movefn, upfn);
-      this._fire('down', t, e);
+      downupFire('down', t, e);
     },
     /**
      * @this {GestureRecognizer}
@@ -11658,7 +11839,7 @@
      * @return {void}
      */
     touchstart: function touchstart(e) {
-      this._fire('down', _findOriginalTarget(e), e.changedTouches[0], e);
+      downupFire('down', _findOriginalTarget(e), e.changedTouches[0], e);
     },
     /**
      * @this {GestureRecognizer}
@@ -11666,27 +11847,31 @@
      * @return {void}
      */
     touchend: function touchend(e) {
-      this._fire('up', _findOriginalTarget(e), e.changedTouches[0], e);
-    },
-    /**
-     * @param {string} type
-     * @param {!EventTarget} target
-     * @param {Event} event
-     * @param {Function} preventer
-     * @return {void}
-     */
-    _fire: function _fire(type, target, event, preventer) {
-      _fire2(target, type, {
-        x: event.clientX,
-        y: event.clientY,
-        sourceEvent: event,
-        preventer: preventer,
-        prevent: function prevent(e) {
-          return _prevent2(e);
-        }
-      });
+      downupFire('up', _findOriginalTarget(e), e.changedTouches[0], e);
     }
   });
+
+  /**
+   * @param {string} type
+   * @param {EventTarget} target
+   * @param {Event|Touch} event
+   * @param {Event=} preventer
+   * @return {void}
+   */
+  function downupFire(type, target, event, preventer) {
+    if (!target) {
+      return;
+    }
+    _fire(target, type, {
+      x: event.clientX,
+      y: event.clientY,
+      sourceEvent: event,
+      preventer: preventer,
+      prevent: function prevent(e) {
+        return _prevent(e);
+      }
+    });
+  }
 
   register$1({
     name: 'track',
@@ -11704,7 +11889,7 @@
       state: 'start',
       started: false,
       moves: [],
-      /** @this {GestureRecognizer} */
+      /** @this {GestureInfo} */
       addMove: function addMove(move) {
         if (this.moves.length > TRACK_LENGTH) {
           this.moves.shift();
@@ -11732,23 +11917,6 @@
 
     /**
      * @this {GestureRecognizer}
-     * @param {number} x
-     * @param {number} y
-     * @return {boolean}
-     */
-    hasMovedEnough: function hasMovedEnough(x, y) {
-      if (this.info.prevent) {
-        return false;
-      }
-      if (this.info.started) {
-        return true;
-      }
-      var dx = Math.abs(this.info.x - x);
-      var dy = Math.abs(this.info.y - y);
-      return dx >= TRACK_DISTANCE || dy >= TRACK_DISTANCE;
-    },
-    /**
-     * @this {GestureRecognizer}
      * @param {MouseEvent} e
      * @return {void}
      */
@@ -11761,20 +11929,22 @@
       var movefn = function movefn(e) {
         var x = e.clientX,
             y = e.clientY;
-        if (self.hasMovedEnough(x, y)) {
+        if (trackHasMovedEnough(self.info, x, y)) {
           // first move is 'start', subsequent moves are 'move', mouseup is 'end'
           self.info.state = self.info.started ? e.type === 'mouseup' ? 'end' : 'track' : 'start';
           if (self.info.state === 'start') {
             // if and only if tracking, always prevent tap
-            _prevent2('tap');
+            _prevent('tap');
           }
           self.info.addMove({ x: x, y: y });
           if (!hasLeftMouseButton(e)) {
-            // always _fire "end"
+            // always fire "end"
             self.info.state = 'end';
             untrackDocument(self.info);
           }
-          self._fire(t, e);
+          if (t) {
+            trackFire(self.info, t, e);
+          }
           self.info.started = true;
         }
       };
@@ -11811,13 +11981,13 @@
       var ct = e.changedTouches[0];
       var x = ct.clientX,
           y = ct.clientY;
-      if (this.hasMovedEnough(x, y)) {
+      if (trackHasMovedEnough(this.info, x, y)) {
         if (this.info.state === 'start') {
           // if and only if tracking, always prevent tap
-          _prevent2('tap');
+          _prevent('tap');
         }
         this.info.addMove({ x: x, y: y });
-        this._fire(t, ct);
+        trackFire(this.info, t, ct);
         this.info.state = 'track';
         this.info.started = true;
       }
@@ -11835,43 +12005,63 @@
         // reset started state on up
         this.info.state = 'end';
         this.info.addMove({ x: ct.clientX, y: ct.clientY });
-        this._fire(t, ct, e);
+        trackFire(this.info, t, ct);
       }
-    },
-
-    /**
-     * @this {GestureRecognizer}
-     * @param {!EventTarget} target
-     * @param {Touch} touch
-     * @return {void}
-     */
-    _fire: function _fire(target, touch) {
-      var secondlast = this.info.moves[this.info.moves.length - 2];
-      var lastmove = this.info.moves[this.info.moves.length - 1];
-      var dx = lastmove.x - this.info.x;
-      var dy = lastmove.y - this.info.y;
-      var ddx = void 0,
-          ddy = 0;
-      if (secondlast) {
-        ddx = lastmove.x - secondlast.x;
-        ddy = lastmove.y - secondlast.y;
-      }
-      _fire2(target, 'track', {
-        state: this.info.state,
-        x: touch.clientX,
-        y: touch.clientY,
-        dx: dx,
-        dy: dy,
-        ddx: ddx,
-        ddy: ddy,
-        sourceEvent: touch,
-        hover: function hover() {
-          return deepTargetFind(touch.clientX, touch.clientY);
-        }
-      });
     }
-
   });
+
+  /**
+   * @param {!GestureInfo} info
+   * @param {number} x
+   * @param {number} y
+   * @return {boolean}
+   */
+  function trackHasMovedEnough(info, x, y) {
+    if (info.prevent) {
+      return false;
+    }
+    if (info.started) {
+      return true;
+    }
+    var dx = Math.abs(info.x - x);
+    var dy = Math.abs(info.y - y);
+    return dx >= TRACK_DISTANCE || dy >= TRACK_DISTANCE;
+  }
+
+  /**
+   * @param {!GestureInfo} info
+   * @param {?EventTarget} target
+   * @param {Touch} touch
+   * @return {void}
+   */
+  function trackFire(info, target, touch) {
+    if (!target) {
+      return;
+    }
+    var secondlast = info.moves[info.moves.length - 2];
+    var lastmove = info.moves[info.moves.length - 1];
+    var dx = lastmove.x - info.x;
+    var dy = lastmove.y - info.y;
+    var ddx = void 0,
+        ddy = 0;
+    if (secondlast) {
+      ddx = lastmove.x - secondlast.x;
+      ddy = lastmove.y - secondlast.y;
+    }
+    _fire(target, 'track', {
+      state: info.state,
+      x: touch.clientX,
+      y: touch.clientY,
+      dx: dx,
+      dy: dy,
+      ddx: ddx,
+      ddy: ddy,
+      sourceEvent: touch,
+      hover: function hover() {
+        return deepTargetFind(touch.clientX, touch.clientY);
+      }
+    });
+  }
 
   register$1({
     name: 'tap',
@@ -11900,18 +12090,10 @@
      * @param {MouseEvent} e
      * @return {void}
      */
-    save: function save(e) {
-      this.info.x = e.clientX;
-      this.info.y = e.clientY;
-    },
-    /**
-     * @this {GestureRecognizer}
-     * @param {MouseEvent} e
-     * @return {void}
-     */
     mousedown: function mousedown(e) {
       if (hasLeftMouseButton(e)) {
-        this.save(e);
+        this.info.x = e.clientX;
+        this.info.y = e.clientY;
       }
     },
     /**
@@ -11921,7 +12103,7 @@
      */
     click: function click(e) {
       if (hasLeftMouseButton(e)) {
-        this.forward(e);
+        trackForward(this.info, e);
       }
     },
     /**
@@ -11930,7 +12112,9 @@
      * @return {void}
      */
     touchstart: function touchstart(e) {
-      this.save(e.changedTouches[0], e);
+      var touch = e.changedTouches[0];
+      this.info.x = touch.clientX;
+      this.info.y = touch.clientY;
     },
     /**
      * @this {GestureRecognizer}
@@ -11938,36 +12122,37 @@
      * @return {void}
      */
     touchend: function touchend(e) {
-      this.forward(e.changedTouches[0], e);
-    },
-    /**
-     * @this {GestureRecognizer}
-     * @param {Event | Touch} e
-     * @param {Event=} preventer
-     * @return {void}
-     */
-    forward: function forward(e, preventer) {
-      var dx = Math.abs(e.clientX - this.info.x);
-      var dy = Math.abs(e.clientY - this.info.y);
-      // find original target from `preventer` for TouchEvents, or `e` for MouseEvents
-      var t = _findOriginalTarget(preventer || e);
-      if (!t || t.disabled) {
-        return;
-      }
-      // dx,dy can be NaN if `click` has been simulated and there was no `down` for `start`
-      if (isNaN(dx) || isNaN(dy) || dx <= TAP_DISTANCE && dy <= TAP_DISTANCE || isSyntheticClick(e)) {
-        // prevent taps from being generated if an event has canceled them
-        if (!this.info.prevent) {
-          _fire2(t, 'tap', {
-            x: e.clientX,
-            y: e.clientY,
-            sourceEvent: e,
-            preventer: preventer
-          });
-        }
-      }
+      trackForward(this.info, e.changedTouches[0], e);
     }
   });
+
+  /**
+   * @param {!GestureInfo} info
+   * @param {Event | Touch} e
+   * @param {Event=} preventer
+   * @return {void}
+   */
+  function trackForward(info, e, preventer) {
+    var dx = Math.abs(e.clientX - info.x);
+    var dy = Math.abs(e.clientY - info.y);
+    // find original target from `preventer` for TouchEvents, or `e` for MouseEvents
+    var t = _findOriginalTarget(preventer || e);
+    if (!t || canBeDisabled[/** @type {!HTMLElement} */t.localName] && t.hasAttribute('disabled')) {
+      return;
+    }
+    // dx,dy can be NaN if `click` has been simulated and there was no `down` for `start`
+    if (isNaN(dx) || isNaN(dy) || dx <= TAP_DISTANCE && dy <= TAP_DISTANCE || isSyntheticClick(e)) {
+      // prevent taps from being generated if an event has canceled them
+      if (!info.prevent) {
+        _fire(t, 'tap', {
+          x: e.clientX,
+          y: e.clientY,
+          sourceEvent: e,
+          preventer: preventer
+        });
+      }
+    }
+  }
 
   /* eslint-enable valid-jsdoc */
 
@@ -11981,7 +12166,7 @@
   var remove$1 = removeListener;
 
   var gestures$0 = /*#__PURE__*/Object.freeze({
-    prevent: _prevent2,
+    prevent: _prevent,
     gestures: gestures,
     recognizers: recognizers,
     deepTargetFind: deepTargetFind,
@@ -12022,8 +12207,13 @@
    *   cross-platform
    * gesture events to nodes
    */
-  var GestureEventListeners = dedupingMixin(function (superClass) {
-
+  var GestureEventListeners = dedupingMixin(
+  /**
+   * @template T
+   * @param {function(new:T)} superClass Class to apply mixin to.
+   * @return {function(new:T)} superClass with mixin applied.
+   */
+  function (superClass) {
     /**
      * @polymer
      * @mixinClass
@@ -12040,7 +12230,6 @@
       createClass(GestureEventListeners, [{
         key: '_addEventListenerToNode',
 
-
         /**
          * Add the event listener to the node if it is a gestures event.
          *
@@ -12048,6 +12237,7 @@
          * @param {string} eventName Name of event
          * @param {function(!Event):void} handler Listener function to add
          * @return {void}
+         * @override
          */
         value: function _addEventListenerToNode(node, eventName, handler) {
           if (!gestures$1.addListener(node, eventName, handler)) {
@@ -12062,6 +12252,7 @@
          * @param {string} eventName Name of event
          * @param {function(!Event):void} handler Listener function to remove
          * @return {void}
+         * @override
          */
 
       }, {
@@ -12167,6 +12358,7 @@
      * @constructor
      * @extends {base}
      * @implements {Polymer_PropertyAccessors}
+     * @private
      */
     var elementBase = PropertyAccessors(base);
 
@@ -13035,7 +13227,7 @@
      *
      * @param {function(!Element, { target: !Element, addedNodes: !Array<!Element>, removedNodes: !Array<!Element> }):void} callback Called when direct or distributed children
      *   of this element changes
-     * @return {!Polymer.FlattenedNodesObserver} Observer instance
+     * @return {!FlattenedNodesObserver} Observer instance
      */
 
 
@@ -13048,7 +13240,7 @@
       /**
        * Disconnects an observer previously created via `observeNodes`
        *
-       * @param {!Polymer.FlattenedNodesObserver} observerHandle Observer instance
+       * @param {!FlattenedNodesObserver} observerHandle Observer instance
        *   to disconnect.
        * @return {void}
        */
@@ -13095,7 +13287,7 @@
       }
 
       /**
-       * Returns the root node of this node.  Equivalent to `getRoodNode()`.
+       * Returns the root node of this node.  Equivalent to `getRootNode()`.
        *
        * @return {Node} Top most element in the dom tree in which the node
        * exists. If the node is connected to a document this is either a
@@ -13257,12 +13449,6 @@
     }
   }
 
-  forwardMethods(DomApi.prototype, ['cloneNode', 'appendChild', 'insertBefore', 'removeChild', 'replaceChild', 'setAttribute', 'removeAttribute', 'querySelector', 'querySelectorAll']);
-
-  forwardReadOnlyProperties(DomApi.prototype, ['parentNode', 'firstChild', 'lastChild', 'nextSibling', 'previousSibling', 'firstElementChild', 'lastElementChild', 'nextElementSibling', 'previousElementSibling', 'childNodes', 'children', 'classList']);
-
-  forwardProperties(DomApi.prototype, ['textContent', 'innerHTML']);
-
   /**
    * Event API wrapper class returned from `Polymer.dom.(target)` when
    * `target` is an `Event`.
@@ -13314,6 +13500,12 @@
     return EventApi;
   }();
 
+  forwardMethods(DomApi.prototype, ['cloneNode', 'appendChild', 'insertBefore', 'removeChild', 'replaceChild', 'setAttribute', 'removeAttribute', 'querySelector', 'querySelectorAll']);
+
+  forwardReadOnlyProperties(DomApi.prototype, ['parentNode', 'firstChild', 'lastChild', 'nextSibling', 'previousSibling', 'firstElementChild', 'lastElementChild', 'nextElementSibling', 'previousElementSibling', 'childNodes', 'children', 'classList']);
+
+  forwardProperties(DomApi.prototype, ['textContent', 'innerHTML']);
+
   /**
    * Legacy DOM and Event manipulation API wrapper factory used to abstract
    * differences between native Shadow DOM and "Shady DOM" when polyfilling on
@@ -13362,8 +13554,8 @@
    *
    * @mixinFunction
    * @polymer
-   * @appliesMixin Polymer.ElementMixin
-   * @appliesMixin Polymer.GestureEventListeners
+   * @appliesMixin ElementMixin
+   * @appliesMixin GestureEventListeners
    * @property isAttached {boolean} Set to `true` in this element's
    *   `connectedCallback` and `false` in `disconnectedCallback`
    * @summary Element class mixin that provides Polymer's "legacy" API
@@ -13376,6 +13568,7 @@
      * @implements {Polymer_ElementMixin}
      * @implements {Polymer_GestureEventListeners}
      * @implements {Polymer_DirMixin}
+     * @private
      */
     var legacyElementBase = DirMixin(GestureEventListeners(ElementMixin(base)));
 
@@ -13870,7 +14063,7 @@
       }, {
         key: 'setScrollDirection',
         value: function setScrollDirection(direction, node) {
-          setTouchAction(node || this, DIRECTION_MAP[direction] || 'auto');
+          setTouchAction( /** @type {Element} */node || this, DIRECTION_MAP[direction] || 'auto');
         }
         /* **** End Events **** */
 
@@ -13925,7 +14118,7 @@
         key: 'getEffectiveChildNodes',
         value: function getEffectiveChildNodes() {
           var thisEl = /** @type {Element} */this;
-          var domApi = /** @type {Polymer.DomApi} */dom(thisEl);
+          var domApi = /** @type {DomApi} */dom(thisEl);
           return domApi.getEffectiveChildNodes();
         }
 
@@ -13942,7 +14135,7 @@
         key: 'queryDistributedElements',
         value: function queryDistributedElements(selector) {
           var thisEl = /** @type {Element} */this;
-          var domApi = /** @type {Polymer.DomApi} */dom(thisEl);
+          var domApi = /** @type {DomApi} */dom(thisEl);
           return domApi.queryDistributedElements(selector);
         }
 
@@ -14029,7 +14222,7 @@
         key: 'getContentChildNodes',
         value: function getContentChildNodes(slctr) {
           var content = this.root.querySelector(slctr || 'slot');
-          return content ? /** @type {Polymer.DomApi} */dom(content).getDistributedNodes() : [];
+          return content ? /** @type {DomApi} */dom(content).getDistributedNodes() : [];
         }
 
         /**
@@ -14641,6 +14834,8 @@
    * @private
    */
   function GenerateClassFromInfo(info, Base) {
+
+    /** @private */
     var PolymerGenerated = function (_Base) {
       inherits(PolymerGenerated, _Base);
 
@@ -15178,9 +15373,11 @@
   // class only because Babel (incorrectly) requires super() in the class
   // constructor even though no `this` is used and it returns an instance.
   var newInstance = null;
+
   /**
    * @constructor
    * @extends {HTMLTemplateElement}
+   * @private
    */
   function HTMLTemplateElementExtension() {
     return newInstance;
@@ -15191,16 +15388,20 @@
       writable: true
     }
   });
+
   /**
    * @constructor
    * @implements {Polymer_PropertyEffects}
    * @extends {HTMLTemplateElementExtension}
+   * @private
    */
   var DataTemplate = PropertyEffects(HTMLTemplateElementExtension);
+
   /**
    * @constructor
    * @implements {Polymer_MutableData}
    * @extends {DataTemplate}
+   * @private
    */
   var MutableDataTemplate = MutableData(DataTemplate);
 
@@ -15212,10 +15413,11 @@
     newInstance = null;
   }
 
-  // Base class for TemplateInstance's
   /**
+   * Base class for TemplateInstance.
    * @constructor
    * @implements {Polymer_PropertyEffects}
+   * @private
    */
   var base = PropertyEffects(function () {
     function _class() {
@@ -15452,6 +15654,7 @@
    * @constructor
    * @extends {TemplateInstanceBase}
    * @implements {Polymer_MutableData}
+   * @private
    */
   var MutableTemplateInstanceBase = MutableData(TemplateInstanceBase);
 
@@ -15503,6 +15706,7 @@
       var klass = templateInfo.templatizeTemplateClass;
       if (!klass) {
         var _base3 = options.mutableData ? MutableDataTemplate : DataTemplate;
+        /** @private */
         klass = templateInfo.templatizeTemplateClass = function (_base4) {
           inherits(TemplatizedTemplate, _base4);
 
@@ -15756,6 +15960,7 @@
    * @implements {Polymer_PropertyEffects}
    * @implements {Polymer_OptionalMutableData}
    * @implements {Polymer_GestureEventListeners}
+   * @private
    */
   var domBindBase = GestureEventListeners(OptionalMutableData(PropertyEffects(HTMLElement)));
 
@@ -15912,6 +16117,7 @@
     }
     /**
      * @return {string} LiteralString string value
+     * @override
      */
 
 
@@ -16042,6 +16248,7 @@
    * @constructor
    * @implements {Polymer_OptionalMutableData}
    * @extends {PolymerElement}
+   * @private
    */
   var domRepeatBase = OptionalMutableData(PolymerElement);
 
@@ -17169,6 +17376,7 @@
      * @constructor
      * @extends {superClass}
      * @implements {Polymer_ElementMixin}
+     * @private
      */
     var elementBase = ElementMixin(superClass);
 
@@ -17515,6 +17723,7 @@
    * @constructor
    * @extends {PolymerElement}
    * @implements {Polymer_ArraySelectorMixin}
+   * @private
    */
   var baseArraySelector = ArraySelectorMixin(PolymerElement);
 
@@ -17630,7 +17839,7 @@
   if (!window.ShadyCSS) {
     window.ShadyCSS = {
       /**
-       * @param {HTMLTemplateElement} template
+       * @param {!HTMLTemplateElement} template
        * @param {string} elementName
        * @param {string=} elementExtends
        */
@@ -17638,14 +17847,14 @@
       // eslint-disable-line no-unused-vars
 
       /**
-       * @param {HTMLTemplateElement} template
+       * @param {!HTMLTemplateElement} template
        * @param {string} elementName
        */
       prepareTemplateDom: function prepareTemplateDom(template, elementName) {},
       // eslint-disable-line no-unused-vars
 
       /**
-       * @param {HTMLTemplateElement} template
+       * @param {!HTMLTemplateElement} template
        * @param {string} elementName
        * @param {string=} elementExtends
        */
@@ -17842,14 +18051,88 @@
   // bc
   var Base = LegacyElementMixin(HTMLElement).prototype;
 
+  var _templateObject$2 = taggedTemplateLiteral(['\n<custom-style>\n  <style is="custom-style">\n    [hidden] {\n      display: none !important;\n    }\n  </style>\n</custom-style>\n<custom-style>\n  <style is="custom-style">\n    html {\n\n      --layout: {\n        display: -ms-flexbox;\n        display: -webkit-flex;\n        display: flex;\n      };\n\n      --layout-inline: {\n        display: -ms-inline-flexbox;\n        display: -webkit-inline-flex;\n        display: inline-flex;\n      };\n\n      --layout-horizontal: {\n        @apply --layout;\n\n        -ms-flex-direction: row;\n        -webkit-flex-direction: row;\n        flex-direction: row;\n      };\n\n      --layout-horizontal-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: row-reverse;\n        -webkit-flex-direction: row-reverse;\n        flex-direction: row-reverse;\n      };\n\n      --layout-vertical: {\n        @apply --layout;\n\n        -ms-flex-direction: column;\n        -webkit-flex-direction: column;\n        flex-direction: column;\n      };\n\n      --layout-vertical-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: column-reverse;\n        -webkit-flex-direction: column-reverse;\n        flex-direction: column-reverse;\n      };\n\n      --layout-wrap: {\n        -ms-flex-wrap: wrap;\n        -webkit-flex-wrap: wrap;\n        flex-wrap: wrap;\n      };\n\n      --layout-wrap-reverse: {\n        -ms-flex-wrap: wrap-reverse;\n        -webkit-flex-wrap: wrap-reverse;\n        flex-wrap: wrap-reverse;\n      };\n\n      --layout-flex-auto: {\n        -ms-flex: 1 1 auto;\n        -webkit-flex: 1 1 auto;\n        flex: 1 1 auto;\n      };\n\n      --layout-flex-none: {\n        -ms-flex: none;\n        -webkit-flex: none;\n        flex: none;\n      };\n\n      --layout-flex: {\n        -ms-flex: 1 1 0.000000001px;\n        -webkit-flex: 1;\n        flex: 1;\n        -webkit-flex-basis: 0.000000001px;\n        flex-basis: 0.000000001px;\n      };\n\n      --layout-flex-2: {\n        -ms-flex: 2;\n        -webkit-flex: 2;\n        flex: 2;\n      };\n\n      --layout-flex-3: {\n        -ms-flex: 3;\n        -webkit-flex: 3;\n        flex: 3;\n      };\n\n      --layout-flex-4: {\n        -ms-flex: 4;\n        -webkit-flex: 4;\n        flex: 4;\n      };\n\n      --layout-flex-5: {\n        -ms-flex: 5;\n        -webkit-flex: 5;\n        flex: 5;\n      };\n\n      --layout-flex-6: {\n        -ms-flex: 6;\n        -webkit-flex: 6;\n        flex: 6;\n      };\n\n      --layout-flex-7: {\n        -ms-flex: 7;\n        -webkit-flex: 7;\n        flex: 7;\n      };\n\n      --layout-flex-8: {\n        -ms-flex: 8;\n        -webkit-flex: 8;\n        flex: 8;\n      };\n\n      --layout-flex-9: {\n        -ms-flex: 9;\n        -webkit-flex: 9;\n        flex: 9;\n      };\n\n      --layout-flex-10: {\n        -ms-flex: 10;\n        -webkit-flex: 10;\n        flex: 10;\n      };\n\n      --layout-flex-11: {\n        -ms-flex: 11;\n        -webkit-flex: 11;\n        flex: 11;\n      };\n\n      --layout-flex-12: {\n        -ms-flex: 12;\n        -webkit-flex: 12;\n        flex: 12;\n      };\n\n      /* alignment in cross axis */\n\n      --layout-start: {\n        -ms-flex-align: start;\n        -webkit-align-items: flex-start;\n        align-items: flex-start;\n      };\n\n      --layout-center: {\n        -ms-flex-align: center;\n        -webkit-align-items: center;\n        align-items: center;\n      };\n\n      --layout-end: {\n        -ms-flex-align: end;\n        -webkit-align-items: flex-end;\n        align-items: flex-end;\n      };\n\n      --layout-baseline: {\n        -ms-flex-align: baseline;\n        -webkit-align-items: baseline;\n        align-items: baseline;\n      };\n\n      /* alignment in main axis */\n\n      --layout-start-justified: {\n        -ms-flex-pack: start;\n        -webkit-justify-content: flex-start;\n        justify-content: flex-start;\n      };\n\n      --layout-center-justified: {\n        -ms-flex-pack: center;\n        -webkit-justify-content: center;\n        justify-content: center;\n      };\n\n      --layout-end-justified: {\n        -ms-flex-pack: end;\n        -webkit-justify-content: flex-end;\n        justify-content: flex-end;\n      };\n\n      --layout-around-justified: {\n        -ms-flex-pack: distribute;\n        -webkit-justify-content: space-around;\n        justify-content: space-around;\n      };\n\n      --layout-justified: {\n        -ms-flex-pack: justify;\n        -webkit-justify-content: space-between;\n        justify-content: space-between;\n      };\n\n      --layout-center-center: {\n        @apply --layout-center;\n        @apply --layout-center-justified;\n      };\n\n      /* self alignment */\n\n      --layout-self-start: {\n        -ms-align-self: flex-start;\n        -webkit-align-self: flex-start;\n        align-self: flex-start;\n      };\n\n      --layout-self-center: {\n        -ms-align-self: center;\n        -webkit-align-self: center;\n        align-self: center;\n      };\n\n      --layout-self-end: {\n        -ms-align-self: flex-end;\n        -webkit-align-self: flex-end;\n        align-self: flex-end;\n      };\n\n      --layout-self-stretch: {\n        -ms-align-self: stretch;\n        -webkit-align-self: stretch;\n        align-self: stretch;\n      };\n\n      --layout-self-baseline: {\n        -ms-align-self: baseline;\n        -webkit-align-self: baseline;\n        align-self: baseline;\n      };\n\n      /* multi-line alignment in main axis */\n\n      --layout-start-aligned: {\n        -ms-flex-line-pack: start;  /* IE10 */\n        -ms-align-content: flex-start;\n        -webkit-align-content: flex-start;\n        align-content: flex-start;\n      };\n\n      --layout-end-aligned: {\n        -ms-flex-line-pack: end;  /* IE10 */\n        -ms-align-content: flex-end;\n        -webkit-align-content: flex-end;\n        align-content: flex-end;\n      };\n\n      --layout-center-aligned: {\n        -ms-flex-line-pack: center;  /* IE10 */\n        -ms-align-content: center;\n        -webkit-align-content: center;\n        align-content: center;\n      };\n\n      --layout-between-aligned: {\n        -ms-flex-line-pack: justify;  /* IE10 */\n        -ms-align-content: space-between;\n        -webkit-align-content: space-between;\n        align-content: space-between;\n      };\n\n      --layout-around-aligned: {\n        -ms-flex-line-pack: distribute;  /* IE10 */\n        -ms-align-content: space-around;\n        -webkit-align-content: space-around;\n        align-content: space-around;\n      };\n\n      /*******************************\n                Other Layout\n      *******************************/\n\n      --layout-block: {\n        display: block;\n      };\n\n      --layout-invisible: {\n        visibility: hidden !important;\n      };\n\n      --layout-relative: {\n        position: relative;\n      };\n\n      --layout-fit: {\n        position: absolute;\n        top: 0;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-scroll: {\n        -webkit-overflow-scrolling: touch;\n        overflow: auto;\n      };\n\n      --layout-fullbleed: {\n        margin: 0;\n        height: 100vh;\n      };\n\n      /* fixed position */\n\n      --layout-fixed-top: {\n        position: fixed;\n        top: 0;\n        left: 0;\n        right: 0;\n      };\n\n      --layout-fixed-right: {\n        position: fixed;\n        top: 0;\n        right: 0;\n        bottom: 0;\n      };\n\n      --layout-fixed-bottom: {\n        position: fixed;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-fixed-left: {\n        position: fixed;\n        top: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n    }\n  </style>\n</custom-style>'], ['\n<custom-style>\n  <style is="custom-style">\n    [hidden] {\n      display: none !important;\n    }\n  </style>\n</custom-style>\n<custom-style>\n  <style is="custom-style">\n    html {\n\n      --layout: {\n        display: -ms-flexbox;\n        display: -webkit-flex;\n        display: flex;\n      };\n\n      --layout-inline: {\n        display: -ms-inline-flexbox;\n        display: -webkit-inline-flex;\n        display: inline-flex;\n      };\n\n      --layout-horizontal: {\n        @apply --layout;\n\n        -ms-flex-direction: row;\n        -webkit-flex-direction: row;\n        flex-direction: row;\n      };\n\n      --layout-horizontal-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: row-reverse;\n        -webkit-flex-direction: row-reverse;\n        flex-direction: row-reverse;\n      };\n\n      --layout-vertical: {\n        @apply --layout;\n\n        -ms-flex-direction: column;\n        -webkit-flex-direction: column;\n        flex-direction: column;\n      };\n\n      --layout-vertical-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: column-reverse;\n        -webkit-flex-direction: column-reverse;\n        flex-direction: column-reverse;\n      };\n\n      --layout-wrap: {\n        -ms-flex-wrap: wrap;\n        -webkit-flex-wrap: wrap;\n        flex-wrap: wrap;\n      };\n\n      --layout-wrap-reverse: {\n        -ms-flex-wrap: wrap-reverse;\n        -webkit-flex-wrap: wrap-reverse;\n        flex-wrap: wrap-reverse;\n      };\n\n      --layout-flex-auto: {\n        -ms-flex: 1 1 auto;\n        -webkit-flex: 1 1 auto;\n        flex: 1 1 auto;\n      };\n\n      --layout-flex-none: {\n        -ms-flex: none;\n        -webkit-flex: none;\n        flex: none;\n      };\n\n      --layout-flex: {\n        -ms-flex: 1 1 0.000000001px;\n        -webkit-flex: 1;\n        flex: 1;\n        -webkit-flex-basis: 0.000000001px;\n        flex-basis: 0.000000001px;\n      };\n\n      --layout-flex-2: {\n        -ms-flex: 2;\n        -webkit-flex: 2;\n        flex: 2;\n      };\n\n      --layout-flex-3: {\n        -ms-flex: 3;\n        -webkit-flex: 3;\n        flex: 3;\n      };\n\n      --layout-flex-4: {\n        -ms-flex: 4;\n        -webkit-flex: 4;\n        flex: 4;\n      };\n\n      --layout-flex-5: {\n        -ms-flex: 5;\n        -webkit-flex: 5;\n        flex: 5;\n      };\n\n      --layout-flex-6: {\n        -ms-flex: 6;\n        -webkit-flex: 6;\n        flex: 6;\n      };\n\n      --layout-flex-7: {\n        -ms-flex: 7;\n        -webkit-flex: 7;\n        flex: 7;\n      };\n\n      --layout-flex-8: {\n        -ms-flex: 8;\n        -webkit-flex: 8;\n        flex: 8;\n      };\n\n      --layout-flex-9: {\n        -ms-flex: 9;\n        -webkit-flex: 9;\n        flex: 9;\n      };\n\n      --layout-flex-10: {\n        -ms-flex: 10;\n        -webkit-flex: 10;\n        flex: 10;\n      };\n\n      --layout-flex-11: {\n        -ms-flex: 11;\n        -webkit-flex: 11;\n        flex: 11;\n      };\n\n      --layout-flex-12: {\n        -ms-flex: 12;\n        -webkit-flex: 12;\n        flex: 12;\n      };\n\n      /* alignment in cross axis */\n\n      --layout-start: {\n        -ms-flex-align: start;\n        -webkit-align-items: flex-start;\n        align-items: flex-start;\n      };\n\n      --layout-center: {\n        -ms-flex-align: center;\n        -webkit-align-items: center;\n        align-items: center;\n      };\n\n      --layout-end: {\n        -ms-flex-align: end;\n        -webkit-align-items: flex-end;\n        align-items: flex-end;\n      };\n\n      --layout-baseline: {\n        -ms-flex-align: baseline;\n        -webkit-align-items: baseline;\n        align-items: baseline;\n      };\n\n      /* alignment in main axis */\n\n      --layout-start-justified: {\n        -ms-flex-pack: start;\n        -webkit-justify-content: flex-start;\n        justify-content: flex-start;\n      };\n\n      --layout-center-justified: {\n        -ms-flex-pack: center;\n        -webkit-justify-content: center;\n        justify-content: center;\n      };\n\n      --layout-end-justified: {\n        -ms-flex-pack: end;\n        -webkit-justify-content: flex-end;\n        justify-content: flex-end;\n      };\n\n      --layout-around-justified: {\n        -ms-flex-pack: distribute;\n        -webkit-justify-content: space-around;\n        justify-content: space-around;\n      };\n\n      --layout-justified: {\n        -ms-flex-pack: justify;\n        -webkit-justify-content: space-between;\n        justify-content: space-between;\n      };\n\n      --layout-center-center: {\n        @apply --layout-center;\n        @apply --layout-center-justified;\n      };\n\n      /* self alignment */\n\n      --layout-self-start: {\n        -ms-align-self: flex-start;\n        -webkit-align-self: flex-start;\n        align-self: flex-start;\n      };\n\n      --layout-self-center: {\n        -ms-align-self: center;\n        -webkit-align-self: center;\n        align-self: center;\n      };\n\n      --layout-self-end: {\n        -ms-align-self: flex-end;\n        -webkit-align-self: flex-end;\n        align-self: flex-end;\n      };\n\n      --layout-self-stretch: {\n        -ms-align-self: stretch;\n        -webkit-align-self: stretch;\n        align-self: stretch;\n      };\n\n      --layout-self-baseline: {\n        -ms-align-self: baseline;\n        -webkit-align-self: baseline;\n        align-self: baseline;\n      };\n\n      /* multi-line alignment in main axis */\n\n      --layout-start-aligned: {\n        -ms-flex-line-pack: start;  /* IE10 */\n        -ms-align-content: flex-start;\n        -webkit-align-content: flex-start;\n        align-content: flex-start;\n      };\n\n      --layout-end-aligned: {\n        -ms-flex-line-pack: end;  /* IE10 */\n        -ms-align-content: flex-end;\n        -webkit-align-content: flex-end;\n        align-content: flex-end;\n      };\n\n      --layout-center-aligned: {\n        -ms-flex-line-pack: center;  /* IE10 */\n        -ms-align-content: center;\n        -webkit-align-content: center;\n        align-content: center;\n      };\n\n      --layout-between-aligned: {\n        -ms-flex-line-pack: justify;  /* IE10 */\n        -ms-align-content: space-between;\n        -webkit-align-content: space-between;\n        align-content: space-between;\n      };\n\n      --layout-around-aligned: {\n        -ms-flex-line-pack: distribute;  /* IE10 */\n        -ms-align-content: space-around;\n        -webkit-align-content: space-around;\n        align-content: space-around;\n      };\n\n      /*******************************\n                Other Layout\n      *******************************/\n\n      --layout-block: {\n        display: block;\n      };\n\n      --layout-invisible: {\n        visibility: hidden !important;\n      };\n\n      --layout-relative: {\n        position: relative;\n      };\n\n      --layout-fit: {\n        position: absolute;\n        top: 0;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-scroll: {\n        -webkit-overflow-scrolling: touch;\n        overflow: auto;\n      };\n\n      --layout-fullbleed: {\n        margin: 0;\n        height: 100vh;\n      };\n\n      /* fixed position */\n\n      --layout-fixed-top: {\n        position: fixed;\n        top: 0;\n        left: 0;\n        right: 0;\n      };\n\n      --layout-fixed-right: {\n        position: fixed;\n        top: 0;\n        right: 0;\n        bottom: 0;\n      };\n\n      --layout-fixed-bottom: {\n        position: fixed;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-fixed-left: {\n        position: fixed;\n        top: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n    }\n  </style>\n</custom-style>']);
+
+  /**
+  The `<iron-flex-layout>` component provides simple ways to use
+  [CSS flexible box
+  layout](https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Flexible_boxes),
+  also known as flexbox. Note that this is an old element, that was written
+  before all modern browsers had non-prefixed flex styles. As such, nowadays you
+  don't really need to use this element anymore, and can use CSS flex styles
+  directly in your code.
+
+  This component provides two different ways to use flexbox:
+
+  1. [Layout
+  classes](https://github.com/PolymerElements/iron-flex-layout/tree/master/iron-flex-layout-classes.html).
+  The layout class stylesheet provides a simple set of class-based flexbox rules,
+  that let you specify layout properties directly in markup. You must include this
+  file in every element that needs to use them.
+
+      Sample use:
+
+      ```
+      <custom-element-demo>
+        <template>
+          <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+          <next-code-block></next-code-block>
+        </template>
+      </custom-element-demo>
+      ```
+
+      ```js
+      import {html} from '@polymer/polymer/lib/utils/html-tag.js';
+      import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
+
+      const template = html`
+        <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
+        <style>
+          .test { width: 100px; }
+        </style>
+        <div class="layout horizontal center-center">
+          <div class="test">horizontal layout center alignment</div>
+        </div>
+      `;
+      document.body.appendChild(template.content);
+      ```
+
+  2. [Custom CSS
+  mixins](https://github.com/PolymerElements/iron-flex-layout/blob/master/iron-flex-layout.html).
+  The mixin stylesheet includes custom CSS mixins that can be applied inside a CSS
+  rule using the `@apply` function.
+
+  Please note that the old [/deep/ layout
+  classes](https://github.com/PolymerElements/iron-flex-layout/tree/master/classes)
+  are deprecated, and should not be used. To continue using layout properties
+  directly in markup, please switch to using the new `dom-module`-based
+  [layout
+  classes](https://github.com/PolymerElements/iron-flex-layout/tree/master/iron-flex-layout-classes.html).
+  Please note that the new version does not use `/deep/`, and therefore requires
+  you to import the `dom-modules` in every element that needs to use them.
+
+  @group Iron Elements
+  @pseudoElement iron-flex-layout
+  @demo demo/index.html
+  */
+  var template = html$2(_templateObject$2);
+
+  template.setAttribute('style', 'display: none;');
+  document.head.appendChild(template.content);
+
+  var style = document.createElement('style');
+  style.textContent = '[hidden] { display: none !important; }';
+  document.head.appendChild(style);
+
   /**
   @license
   Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-  This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-  The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-  The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-  Code distributed by Google as part of the polymer project is also
-  subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+  This code may only be used under the BSD style license found at
+  http://polymer.github.io/LICENSE.txt The complete set of authors may be found at
+  http://polymer.github.io/AUTHORS.txt The complete set of contributors may be
+  found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
+  part of the polymer project is also subject to an additional IP rights grant
+  found at http://polymer.github.io/PATENTS.txt
   */
 
   /**
@@ -17894,13 +18177,6 @@
         value: function value() {
           return this._focusBlurHandler.bind(this);
         }
-      },
-
-      __handleEventRetargeting: {
-        type: Boolean,
-        value: function value() {
-          return !this.shadowRoot && !PolymerElement;
-        }
       }
     },
 
@@ -17915,25 +18191,9 @@
     },
 
     _focusBlurHandler: function _focusBlurHandler(event) {
-      // In Polymer 2.0, the library takes care of retargeting events.
-      if (PolymerElement) {
-        this._setFocused(event.type === 'focus');
-        return;
-      }
-
-      // NOTE(cdata):  if we are in ShadowDOM land, `event.target` will
-      // eventually become `this` due to retargeting; if we are not in
-      // ShadowDOM land, `event.target` will eventually become `this` due
-      // to the second conditional which fires a synthetic event (that is also
-      // handled). In either case, we can disregard `event.path`.
-      if (event.target === this) {
-        this._setFocused(event.type === 'focus');
-      } else if (this.__handleEventRetargeting) {
-        var target = /** @type {Node} */dom(event).localTarget;
-        if (!this.isLightDescendant(target)) {
-          this.fire(event.type, { sourceEvent: event }, { node: this, bubbles: event.bubbles, cancelable: event.cancelable });
-        }
-      }
+      // Polymer takes care of retargeting events.
+      this._setFocused(event.type === 'focus');
+      return;
     },
 
     _disabledChanged: function _disabledChanged(disabled, old) {
@@ -17969,106 +18229,148 @@
   /**
   @license
   Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-  This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-  The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-  The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-  Code distributed by Google as part of the polymer project is also
-  subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+  This code may only be used under the BSD style license found at
+  http://polymer.github.io/LICENSE.txt The complete set of authors may be found at
+  http://polymer.github.io/AUTHORS.txt The complete set of contributors may be
+  found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
+  part of the polymer project is also subject to an additional IP rights grant
+  found at http://polymer.github.io/PATENTS.txt
   */
 
-  var $_documentContainer = document.createElement('template');
-  $_documentContainer.setAttribute('style', 'display: none;');
+  var IronMeta = function () {
+    /**
+     * @param {{
+     *   type: (string|null|undefined),
+     *   key: (string|null|undefined),
+     *   value: *,
+     * }=} options
+     */
+    function IronMeta(options) {
+      classCallCheck(this, IronMeta);
 
-  $_documentContainer.innerHTML = '<custom-style>\n  <style is="custom-style">\n    [hidden] {\n      display: none !important;\n    }\n  </style>\n</custom-style><custom-style>\n  <style is="custom-style">\n    html {\n\n      --layout: {\n        display: -ms-flexbox;\n        display: -webkit-flex;\n        display: flex;\n      };\n\n      --layout-inline: {\n        display: -ms-inline-flexbox;\n        display: -webkit-inline-flex;\n        display: inline-flex;\n      };\n\n      --layout-horizontal: {\n        @apply --layout;\n\n        -ms-flex-direction: row;\n        -webkit-flex-direction: row;\n        flex-direction: row;\n      };\n\n      --layout-horizontal-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: row-reverse;\n        -webkit-flex-direction: row-reverse;\n        flex-direction: row-reverse;\n      };\n\n      --layout-vertical: {\n        @apply --layout;\n\n        -ms-flex-direction: column;\n        -webkit-flex-direction: column;\n        flex-direction: column;\n      };\n\n      --layout-vertical-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: column-reverse;\n        -webkit-flex-direction: column-reverse;\n        flex-direction: column-reverse;\n      };\n\n      --layout-wrap: {\n        -ms-flex-wrap: wrap;\n        -webkit-flex-wrap: wrap;\n        flex-wrap: wrap;\n      };\n\n      --layout-wrap-reverse: {\n        -ms-flex-wrap: wrap-reverse;\n        -webkit-flex-wrap: wrap-reverse;\n        flex-wrap: wrap-reverse;\n      };\n\n      --layout-flex-auto: {\n        -ms-flex: 1 1 auto;\n        -webkit-flex: 1 1 auto;\n        flex: 1 1 auto;\n      };\n\n      --layout-flex-none: {\n        -ms-flex: none;\n        -webkit-flex: none;\n        flex: none;\n      };\n\n      --layout-flex: {\n        -ms-flex: 1 1 0.000000001px;\n        -webkit-flex: 1;\n        flex: 1;\n        -webkit-flex-basis: 0.000000001px;\n        flex-basis: 0.000000001px;\n      };\n\n      --layout-flex-2: {\n        -ms-flex: 2;\n        -webkit-flex: 2;\n        flex: 2;\n      };\n\n      --layout-flex-3: {\n        -ms-flex: 3;\n        -webkit-flex: 3;\n        flex: 3;\n      };\n\n      --layout-flex-4: {\n        -ms-flex: 4;\n        -webkit-flex: 4;\n        flex: 4;\n      };\n\n      --layout-flex-5: {\n        -ms-flex: 5;\n        -webkit-flex: 5;\n        flex: 5;\n      };\n\n      --layout-flex-6: {\n        -ms-flex: 6;\n        -webkit-flex: 6;\n        flex: 6;\n      };\n\n      --layout-flex-7: {\n        -ms-flex: 7;\n        -webkit-flex: 7;\n        flex: 7;\n      };\n\n      --layout-flex-8: {\n        -ms-flex: 8;\n        -webkit-flex: 8;\n        flex: 8;\n      };\n\n      --layout-flex-9: {\n        -ms-flex: 9;\n        -webkit-flex: 9;\n        flex: 9;\n      };\n\n      --layout-flex-10: {\n        -ms-flex: 10;\n        -webkit-flex: 10;\n        flex: 10;\n      };\n\n      --layout-flex-11: {\n        -ms-flex: 11;\n        -webkit-flex: 11;\n        flex: 11;\n      };\n\n      --layout-flex-12: {\n        -ms-flex: 12;\n        -webkit-flex: 12;\n        flex: 12;\n      };\n\n      /* alignment in cross axis */\n\n      --layout-start: {\n        -ms-flex-align: start;\n        -webkit-align-items: flex-start;\n        align-items: flex-start;\n      };\n\n      --layout-center: {\n        -ms-flex-align: center;\n        -webkit-align-items: center;\n        align-items: center;\n      };\n\n      --layout-end: {\n        -ms-flex-align: end;\n        -webkit-align-items: flex-end;\n        align-items: flex-end;\n      };\n\n      --layout-baseline: {\n        -ms-flex-align: baseline;\n        -webkit-align-items: baseline;\n        align-items: baseline;\n      };\n\n      /* alignment in main axis */\n\n      --layout-start-justified: {\n        -ms-flex-pack: start;\n        -webkit-justify-content: flex-start;\n        justify-content: flex-start;\n      };\n\n      --layout-center-justified: {\n        -ms-flex-pack: center;\n        -webkit-justify-content: center;\n        justify-content: center;\n      };\n\n      --layout-end-justified: {\n        -ms-flex-pack: end;\n        -webkit-justify-content: flex-end;\n        justify-content: flex-end;\n      };\n\n      --layout-around-justified: {\n        -ms-flex-pack: distribute;\n        -webkit-justify-content: space-around;\n        justify-content: space-around;\n      };\n\n      --layout-justified: {\n        -ms-flex-pack: justify;\n        -webkit-justify-content: space-between;\n        justify-content: space-between;\n      };\n\n      --layout-center-center: {\n        @apply --layout-center;\n        @apply --layout-center-justified;\n      };\n\n      /* self alignment */\n\n      --layout-self-start: {\n        -ms-align-self: flex-start;\n        -webkit-align-self: flex-start;\n        align-self: flex-start;\n      };\n\n      --layout-self-center: {\n        -ms-align-self: center;\n        -webkit-align-self: center;\n        align-self: center;\n      };\n\n      --layout-self-end: {\n        -ms-align-self: flex-end;\n        -webkit-align-self: flex-end;\n        align-self: flex-end;\n      };\n\n      --layout-self-stretch: {\n        -ms-align-self: stretch;\n        -webkit-align-self: stretch;\n        align-self: stretch;\n      };\n\n      --layout-self-baseline: {\n        -ms-align-self: baseline;\n        -webkit-align-self: baseline;\n        align-self: baseline;\n      };\n\n      /* multi-line alignment in main axis */\n\n      --layout-start-aligned: {\n        -ms-flex-line-pack: start;  /* IE10 */\n        -ms-align-content: flex-start;\n        -webkit-align-content: flex-start;\n        align-content: flex-start;\n      };\n\n      --layout-end-aligned: {\n        -ms-flex-line-pack: end;  /* IE10 */\n        -ms-align-content: flex-end;\n        -webkit-align-content: flex-end;\n        align-content: flex-end;\n      };\n\n      --layout-center-aligned: {\n        -ms-flex-line-pack: center;  /* IE10 */\n        -ms-align-content: center;\n        -webkit-align-content: center;\n        align-content: center;\n      };\n\n      --layout-between-aligned: {\n        -ms-flex-line-pack: justify;  /* IE10 */\n        -ms-align-content: space-between;\n        -webkit-align-content: space-between;\n        align-content: space-between;\n      };\n\n      --layout-around-aligned: {\n        -ms-flex-line-pack: distribute;  /* IE10 */\n        -ms-align-content: space-around;\n        -webkit-align-content: space-around;\n        align-content: space-around;\n      };\n\n      /*******************************\n                Other Layout\n      *******************************/\n\n      --layout-block: {\n        display: block;\n      };\n\n      --layout-invisible: {\n        visibility: hidden !important;\n      };\n\n      --layout-relative: {\n        position: relative;\n      };\n\n      --layout-fit: {\n        position: absolute;\n        top: 0;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-scroll: {\n        -webkit-overflow-scrolling: touch;\n        overflow: auto;\n      };\n\n      --layout-fullbleed: {\n        margin: 0;\n        height: 100vh;\n      };\n\n      /* fixed position */\n\n      --layout-fixed-top: {\n        position: fixed;\n        top: 0;\n        left: 0;\n        right: 0;\n      };\n\n      --layout-fixed-right: {\n        position: fixed;\n        top: 0;\n        right: 0;\n        bottom: 0;\n      };\n\n      --layout-fixed-bottom: {\n        position: fixed;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-fixed-left: {\n        position: fixed;\n        top: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n    }\n  </style>\n</custom-style>';
+      IronMeta[' '](options);
 
-  document.head.appendChild($_documentContainer.content);
-  var style = document.createElement('style');
-  style.textContent = '[hidden] { display: none !important; }';
-  document.head.appendChild(style);
-
-  /**
-  @license
-  Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-  This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-  The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-  The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-  Code distributed by Google as part of the polymer project is also
-  subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
-  */
-
-  /**
-   * @constructor
-   * @param {{
-   *   type: (string|null|undefined),
-   *   key: (string|null|undefined),
-   *   value: *,
-   * }=} options
-   */
-  var IronMeta = function IronMeta(options) {
-    IronMeta[' '](options);
-
-    this.type = options && options.type || 'default';
-    this.key = options && options.key;
-    if (options && 'value' in options) {
-      this.value = options.value;
+      /** @type {string} */
+      this.type = options && options.type || 'default';
+      /** @type {string|null|undefined} */
+      this.key = options && options.key;
+      if (options && 'value' in options) {
+        /** @type {*} */
+        this.value = options.value;
+      }
     }
-  };
 
+    /** @return {*} */
+
+
+    createClass(IronMeta, [{
+      key: 'byKey',
+
+
+      /**
+       * @param {string} key
+       * @return {*}
+       */
+      value: function byKey(key) {
+        this.key = key;
+        return this.value;
+      }
+    }, {
+      key: 'value',
+      get: function get$$1() {
+        var type = this.type;
+        var key = this.key;
+
+        if (type && key) {
+          return IronMeta.types[type] && IronMeta.types[type][key];
+        }
+      }
+
+      /** @param {*} value */
+      ,
+      set: function set$$1(value) {
+        var type = this.type;
+        var key = this.key;
+
+        if (type && key) {
+          type = IronMeta.types[type] = IronMeta.types[type] || {};
+          if (value == null) {
+            delete type[key];
+          } else {
+            type[key] = value;
+          }
+        }
+      }
+
+      /** @return {!Array<*>} */
+
+    }, {
+      key: 'list',
+      get: function get$$1() {
+        var type = this.type;
+
+        if (type) {
+          var items = IronMeta.types[this.type];
+          if (!items) {
+            return [];
+          }
+
+          return Object.keys(items).map(function (key) {
+            return metaDatas[this.type][key];
+          }, this);
+        }
+      }
+    }]);
+    return IronMeta;
+  }();
   // This function is used to convince Closure not to remove constructor calls
   // for instances that are not held anywhere. For example, when
-  // `new Polymer.IronMeta({...})` is used only for the side effect of adding
-  // a value.
+  // `new IronMeta({...})` is used only for the side effect of adding a value.
   IronMeta[' '] = function () {};
 
   IronMeta.types = {};
 
-  IronMeta.prototype = {
-    get value() {
-      var type = this.type;
-      var key = this.key;
-
-      if (type && key) {
-        return IronMeta.types[type] && IronMeta.types[type][key];
-      }
-    },
-
-    set value(value) {
-      var type = this.type;
-      var key = this.key;
-
-      if (type && key) {
-        type = IronMeta.types[type] = IronMeta.types[type] || {};
-        if (value == null) {
-          delete type[key];
-        } else {
-          type[key] = value;
-        }
-      }
-    },
-
-    get list() {
-      var type = this.type;
-
-      if (type) {
-        var items = IronMeta.types[this.type];
-        if (!items) {
-          return [];
-        }
-
-        return Object.keys(items).map(function (key) {
-          return metaDatas[this.type][key];
-        }, this);
-      }
-    },
-
-    byKey: function byKey(key) {
-      this.key = key;
-      return this.value;
-    }
-  };
-
   var metaDatas = IronMeta.types;
 
+  /**
+  `iron-meta` is a generic element you can use for sharing information across the
+  DOM tree. It uses [monostate pattern](http://c2.com/cgi/wiki?MonostatePattern)
+  such that any instance of iron-meta has access to the shared information. You
+  can use `iron-meta` to share whatever you want (or create an extension [like
+  x-meta] for enhancements).
+
+  The `iron-meta` instances containing your actual data can be loaded in an
+  import, or constructed in any way you see fit. The only requirement is that you
+  create them before you try to access them.
+
+  Examples:
+
+  If I create an instance like this:
+
+      <iron-meta key="info" value="foo/bar"></iron-meta>
+
+  Note that value="foo/bar" is the metadata I've defined. I could define more
+  attributes or use child nodes to define additional metadata.
+
+  Now I can access that element (and it's metadata) from any iron-meta instance
+  via the byKey method, e.g.
+
+      meta.byKey('info');
+
+  Pure imperative form would be like:
+
+      document.createElement('iron-meta').byKey('info');
+
+  Or, in a Polymer element, you can include a meta in your template:
+
+      <iron-meta id="meta"></iron-meta>
+      ...
+      this.$.meta.byKey('info');
+
+  @group Iron Elements
+  @demo demo/index.html
+  @element iron-meta
+  */
   Polymer({
 
     is: 'iron-meta',
@@ -18149,11 +18451,12 @@
   /**
   @license
   Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-  This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-  The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-  The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-  Code distributed by Google as part of the polymer project is also
-  subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+  This code may only be used under the BSD style license found at
+  http://polymer.github.io/LICENSE.txt The complete set of authors may be found at
+  http://polymer.github.io/AUTHORS.txt The complete set of contributors may be
+  found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
+  part of the polymer project is also subject to an additional IP rights grant
+  found at http://polymer.github.io/PATENTS.txt
   */
 
   /**
@@ -18162,14 +18465,14 @@
   var IronValidatableBehaviorMeta = null;
 
   /**
-   * `Use Polymer.IronValidatableBehavior` to implement an element that validates
-   * user input. Use the related `Polymer.IronValidatorBehavior` to add custom
+   * `Use IronValidatableBehavior` to implement an element that validates
+   * user input. Use the related `IronValidatorBehavior` to add custom
    * validation logic to an iron-input.
    *
    * By default, an `<iron-form>` element validates its fields when the user
    * presses the submit button. To validate a form imperatively, call the form's
    * `validate()` method, which in turn will call `validate()` on all its
-   * children. By using `Polymer.IronValidatableBehavior`, your custom element
+   * children. By using `IronValidatableBehavior`, your custom element
    * will get a public `validate()`, which will return the validity of the
    * element, and a corresponding `invalid` attribute, which can be used for
    * styling.
@@ -18269,9 +18572,32 @@
     }
   };
 
-  var _templateObject$2 = taggedTemplateLiteral(['\n    <style>\n      :host {\n        display: inline-block;\n        position: relative;\n        width: 400px;\n        border: 1px solid;\n        padding: 2px;\n        -moz-appearance: textarea;\n        -webkit-appearance: textarea;\n        overflow: hidden;\n      }\n\n      .mirror-text {\n        visibility: hidden;\n        word-wrap: break-word;\n        @apply --iron-autogrow-textarea;\n      }\n\n      .fit {\n        @apply --layout-fit;\n      }\n\n      textarea {\n        position: relative;\n        outline: none;\n        border: none;\n        resize: none;\n        background: inherit;\n        color: inherit;\n        /* see comments in template */\n        width: 100%;\n        height: 100%;\n        font-size: inherit;\n        font-family: inherit;\n        line-height: inherit;\n        text-align: inherit;\n        @apply --iron-autogrow-textarea;\n      }\n\n      textarea::-webkit-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea::-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-ms-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n    </style>\n\n    <!-- the mirror sizes the input/textarea so it grows with typing -->\n    <!-- use &#160; instead &nbsp; of to allow this element to be used in XHTML -->\n    <div id="mirror" class="mirror-text" aria-hidden="true">&nbsp;</div>\n\n    <!-- size the input/textarea with a div, because the textarea has intrinsic size in ff -->\n    <div class="textarea-container fit">\n      <textarea id="textarea" name$="[[name]]" aria-label$="[[label]]" autocomplete$="[[autocomplete]]" autofocus$="[[autofocus]]" inputmode$="[[inputmode]]" placeholder$="[[placeholder]]" readonly$="[[readonly]]" required$="[[required]]" disabled$="[[disabled]]" rows$="[[rows]]" minlength$="[[minlength]]" maxlength$="[[maxlength]]"></textarea>\n    </div>\n'], ['\n    <style>\n      :host {\n        display: inline-block;\n        position: relative;\n        width: 400px;\n        border: 1px solid;\n        padding: 2px;\n        -moz-appearance: textarea;\n        -webkit-appearance: textarea;\n        overflow: hidden;\n      }\n\n      .mirror-text {\n        visibility: hidden;\n        word-wrap: break-word;\n        @apply --iron-autogrow-textarea;\n      }\n\n      .fit {\n        @apply --layout-fit;\n      }\n\n      textarea {\n        position: relative;\n        outline: none;\n        border: none;\n        resize: none;\n        background: inherit;\n        color: inherit;\n        /* see comments in template */\n        width: 100%;\n        height: 100%;\n        font-size: inherit;\n        font-family: inherit;\n        line-height: inherit;\n        text-align: inherit;\n        @apply --iron-autogrow-textarea;\n      }\n\n      textarea::-webkit-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea::-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-ms-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n    </style>\n\n    <!-- the mirror sizes the input/textarea so it grows with typing -->\n    <!-- use &#160; instead &nbsp; of to allow this element to be used in XHTML -->\n    <div id="mirror" class="mirror-text" aria-hidden="true">&nbsp;</div>\n\n    <!-- size the input/textarea with a div, because the textarea has intrinsic size in ff -->\n    <div class="textarea-container fit">\n      <textarea id="textarea" name\\$="[[name]]" aria-label\\$="[[label]]" autocomplete\\$="[[autocomplete]]" autofocus\\$="[[autofocus]]" inputmode\\$="[[inputmode]]" placeholder\\$="[[placeholder]]" readonly\\$="[[readonly]]" required\\$="[[required]]" disabled\\$="[[disabled]]" rows\\$="[[rows]]" minlength\\$="[[minlength]]" maxlength\\$="[[maxlength]]"></textarea>\n    </div>\n']);
+  var _templateObject$3 = taggedTemplateLiteral(['\n    <style>\n      :host {\n        display: inline-block;\n        position: relative;\n        width: 400px;\n        border: 1px solid;\n        padding: 2px;\n        -moz-appearance: textarea;\n        -webkit-appearance: textarea;\n        overflow: hidden;\n      }\n\n      .mirror-text {\n        visibility: hidden;\n        word-wrap: break-word;\n        @apply --iron-autogrow-textarea;\n      }\n\n      .fit {\n        @apply --layout-fit;\n      }\n\n      textarea {\n        position: relative;\n        outline: none;\n        border: none;\n        resize: none;\n        background: inherit;\n        color: inherit;\n        /* see comments in template */\n        width: 100%;\n        height: 100%;\n        font-size: inherit;\n        font-family: inherit;\n        line-height: inherit;\n        text-align: inherit;\n        @apply --iron-autogrow-textarea;\n      }\n\n      textarea::-webkit-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea::-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-ms-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n    </style>\n\n    <!-- the mirror sizes the input/textarea so it grows with typing -->\n    <!-- use &#160; instead &nbsp; of to allow this element to be used in XHTML -->\n    <div id="mirror" class="mirror-text" aria-hidden="true">&nbsp;</div>\n\n    <!-- size the input/textarea with a div, because the textarea has intrinsic size in ff -->\n    <div class="textarea-container fit">\n      <textarea id="textarea" name$="[[name]]" aria-label$="[[label]]" autocomplete$="[[autocomplete]]" autofocus$="[[autofocus]]" inputmode$="[[inputmode]]" placeholder$="[[placeholder]]" readonly$="[[readonly]]" required$="[[required]]" disabled$="[[disabled]]" rows$="[[rows]]" minlength$="[[minlength]]" maxlength$="[[maxlength]]"></textarea>\n    </div>\n'], ['\n    <style>\n      :host {\n        display: inline-block;\n        position: relative;\n        width: 400px;\n        border: 1px solid;\n        padding: 2px;\n        -moz-appearance: textarea;\n        -webkit-appearance: textarea;\n        overflow: hidden;\n      }\n\n      .mirror-text {\n        visibility: hidden;\n        word-wrap: break-word;\n        @apply --iron-autogrow-textarea;\n      }\n\n      .fit {\n        @apply --layout-fit;\n      }\n\n      textarea {\n        position: relative;\n        outline: none;\n        border: none;\n        resize: none;\n        background: inherit;\n        color: inherit;\n        /* see comments in template */\n        width: 100%;\n        height: 100%;\n        font-size: inherit;\n        font-family: inherit;\n        line-height: inherit;\n        text-align: inherit;\n        @apply --iron-autogrow-textarea;\n      }\n\n      textarea::-webkit-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea::-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-ms-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n    </style>\n\n    <!-- the mirror sizes the input/textarea so it grows with typing -->\n    <!-- use &#160; instead &nbsp; of to allow this element to be used in XHTML -->\n    <div id="mirror" class="mirror-text" aria-hidden="true">&nbsp;</div>\n\n    <!-- size the input/textarea with a div, because the textarea has intrinsic size in ff -->\n    <div class="textarea-container fit">\n      <textarea id="textarea" name\\$="[[name]]" aria-label\\$="[[label]]" autocomplete\\$="[[autocomplete]]" autofocus\\$="[[autofocus]]" inputmode\\$="[[inputmode]]" placeholder\\$="[[placeholder]]" readonly\\$="[[readonly]]" required\\$="[[required]]" disabled\\$="[[disabled]]" rows\\$="[[rows]]" minlength\\$="[[minlength]]" maxlength\\$="[[maxlength]]"></textarea>\n    </div>\n']);
+
+  /**
+  `iron-autogrow-textarea` is an element containing a textarea that grows in
+  height as more lines of input are entered. Unless an explicit height or the
+  `maxRows` property is set, it will never scroll.
+
+  Example:
+
+      <iron-autogrow-textarea></iron-autogrow-textarea>
+
+  ### Styling
+
+  The following custom properties and mixins are available for styling:
+
+  Custom property | Description | Default
+  ----------------|-------------|----------
+  `--iron-autogrow-textarea` | Mixin applied to the textarea | `{}`
+  `--iron-autogrow-textarea-placeholder` | Mixin applied to the textarea placeholder | `{}`
+
+  @group Iron Elements
+  @hero hero.svg
+  @demo demo/index.html
+  */
   Polymer({
-    _template: html$2(_templateObject$2),
+    _template: html$2(_templateObject$3),
 
     is: 'iron-autogrow-textarea',
     behaviors: [IronValidatableBehavior, IronControlState],
@@ -18495,10 +18821,10 @@
     }
   });
 
-  var css$1 = "iron-autogrow-textarea {\n  -webkit-appearance: none;\n  background: #fff;\n  background: var(--bg-color, var(--theme-color-white, #fff));\n  border-radius: 5px;\n  border: 1px solid #d4d4d4;\n  border: 1px solid var(--border-color, var(--theme-color-alto, #d4d4d4));\n  box-sizing: border-box;\n  caret-color: #48a1e6;\n  caret-color: var(--caret-color, var(--theme-color-pictonblue, #48a1e6));\n  font-size: 16px;\n  font-size: var(--font-size, var(--theme-font-size, 16px));\n  height: inherit;\n  line-height: 1.2em;\n  min-height: 52px;\n  outline: none;\n  width: 100%;\n\n  --iron-autogrow-textarea: {\n    padding: 16px 70px 14px 20px;\n    box-sizing: border-box;\n  };\n\n  --iron-autogrow-textarea-placeholder: {\n    color: #d4d4d4;\n    color: var(--ph-color, var(--theme-color-alto, #d4d4d4));\n  };\n}\n\niron-autogrow-textarea:hover {\n  border-color: #b8b8b8;\n  border-color: var(--border-color-hover, var(--theme-color-silver, #b8b8b8));\n}\n\niron-autogrow-textarea[focus-within] {\n  border-color: #48a1e6;\n  border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));\n}\n\niron-autogrow-textarea:focus-within {\n  border-color: #48a1e6;\n  border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));\n}\n";
+  var css$1 = "/* stylelint-disable selector-type-no-unknown */\niron-autogrow-textarea {\n  -webkit-appearance: none;\n  background: #fff;\n  background: var(--bg-color, var(--theme-color-white, #fff));\n  border: 1px solid #d4d4d4;\n  border: 1px solid var(--border-color, var(--theme-color-alto, #d4d4d4));\n  border-radius: 5px;\n  box-sizing: border-box;\n  caret-color: #48a1e6;\n  caret-color: var(--caret-color, var(--theme-color-pictonblue, #48a1e6));\n  font-size: 16px;\n  font-size: var(--font-size, var(--theme-font-size, 16px));\n  height: inherit;\n  line-height: 1.2em;\n  min-height: 52px;\n  outline: none;\n  width: 100%;\n\n  --iron-autogrow-textarea: {\n    box-sizing: border-box;\n    padding: 16px 70px 14px 20px;\n  };\n\n  --iron-autogrow-textarea-placeholder: {\n    color: #d4d4d4;\n    color: var(--ph-color, var(--theme-color-alto, #d4d4d4));\n  };\n}\niron-autogrow-textarea:hover {\n  border-color: #b8b8b8;\n  border-color: var(--border-color-hover, var(--theme-color-silver, #b8b8b8));\n}\niron-autogrow-textarea[focus-within] {\n  border-color: #48a1e6;\n  border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));\n}\niron-autogrow-textarea:focus-within {\n  border-color: #48a1e6;\n  border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));\n}\n";
   styleInject(css$1);
 
-  var _templateObject$3 = taggedTemplateLiteral(['\n  <iron-autogrow-textarea\n    disabled=\'', '\'\n    id=\'', '\'\n    maxRows=\'', '\'\n    on-input=\'', '\'\n    on-keypress=\'', '\'\n    placeholder=\'', '\'\n    value=\'', '\'\n  />\n'], ['\n  <iron-autogrow-textarea\n    disabled=\'', '\'\n    id=\'', '\'\n    maxRows=\'', '\'\n    on-input=\'', '\'\n    on-keypress=\'', '\'\n    placeholder=\'', '\'\n    value=\'', '\'\n  />\n']);
+  var _templateObject$4 = taggedTemplateLiteral(['\n  <iron-autogrow-textarea\n    disabled=\'', '\'\n    id=\'', '\'\n    maxRows=\'', '\'\n    on-input=\'', '\'\n    on-keypress=\'', '\'\n    placeholder=\'', '\'\n    value=\'', '\'\n  />\n'], ['\n  <iron-autogrow-textarea\n    disabled=\'', '\'\n    id=\'', '\'\n    maxRows=\'', '\'\n    on-input=\'', '\'\n    on-keypress=\'', '\'\n    placeholder=\'', '\'\n    value=\'', '\'\n  />\n']);
 
   var _placeholder = 'Just type something...';
 
@@ -18510,7 +18836,7 @@
         onKeyPress = _ref.onKeyPress,
         placeholder = _ref.placeholder,
         value = _ref.value;
-    return html$1(_templateObject$3, disabled, id, maxRows, function oninput(e) {
+    return html$1(_templateObject$4, disabled, id, maxRows, function oninput(e) {
       onInput(e, this.textarea);
     }, onKeyPress, placeholder || _placeholder, value);
   };
@@ -19627,30 +19953,30 @@
 
   var throttleC = curry(throttle);
 
-  var css$2 = "/* :root, */\n:host{\n  display:block;\n}\n.input {\n  width: 100%;\n  bottom: 0;\n  padding: 0 20px 20px;\n  background: #f8f8f8;\n  background: var(--alabaster, #f8f8f8);\n  box-sizing: border-box;\n  font-size: 16px;\n}\n.input.disabled{\n  color: #b8b8b8;\n  color: var(--silver, #b8b8b8);\n}\n.input > * {\n  line-height: 0;\n  position: relative;\n}\n.enter {\n  background: no-repeat center center;\n  border: none;\n  bottom: 14px;\n  cursor: pointer;\n  height: 24px;\n  outline: none;\n  padding: 0;\n  position: absolute;\n  right: 18px;\n}\n.enter:active:not(:disabled) {\n  -webkit-transform: translateY(1px);\n          transform: translateY(1px);\n}\n";
+  var css$2 = "/* :root, */\n:host {\n  bottom: initial;\n  bottom: var(--chat-input-bottom, initial);\n  display: block;\n  position: relative;\n  position: var(--chat-input-position, relative);\n  width: 100%;\n  z-index: initial;\n  z-index: var(--chat-input-z-index, initial);\n}\n.input {\n  background: #f8f8f8;\n  background: var(--alabaster, #f8f8f8);\n  bottom: 0;\n  box-sizing: border-box;\n  font-size: 16px;\n  padding: 0 20px 20px;\n  width: 100%;\n}\n.input.disabled {\n  color: #b8b8b8;\n  color: var(--silver, #b8b8b8);\n}\n.input > * {\n  line-height: 0;\n  position: relative;\n}\n.enter {\n  background: no-repeat center center;\n  border: none;\n  bottom: 14px;\n  cursor: pointer;\n  height: 24px;\n  outline: none;\n  padding: 0;\n  position: absolute;\n  right: 18px;\n}\n.enter:active:not(:disabled) {\n  -webkit-transform: translateY(1px);\n          transform: translateY(1px);\n}\n";
   styleInject(css$2);
 
-  var _templateObject$4 = taggedTemplateLiteral(['\n      <section class$=\'', '\'>\n        <form on-submit=\'', '\'>\n          ', '\n          ', '\n        <form>\n      </section>\n    '], ['\n      <section class$=\'', '\'>\n        <form on-submit=\'', '\'>\n          ', '\n          ', '\n        <form>\n      </section>\n    ']);
+  var _templateObject$5 = taggedTemplateLiteral(['\n      <section class$=\'', '\'>\n        <form on-submit=\'', '\'>\n          ', '\n          ', '\n        <form>\n      </section>\n    '], ['\n      <section class$=\'', '\'>\n        <form on-submit=\'', '\'>\n          ', '\n          ', '\n        <form>\n      </section>\n    ']);
+
+  var isKeyCode = function isKeyCode(keyCode, code) {
+    return keyCode === code;
+  };
 
   var isMetaBtn = function isMetaBtn(_ref) {
-    var key = _ref.key,
-        keyCode = _ref.keyCode;
-    return key.toLowerCase() === 'meta' || keyCode === 91;
-  }; // eslint-disable-line
+    var keyCode = _ref.keyCode;
+    return isKeyCode(keyCode, 91);
+  };
   var isEnterBtn = function isEnterBtn(_ref2) {
-    var key = _ref2.key,
-        keyCode = _ref2.keyCode;
-    return key.toLowerCase() === 'enter' || keyCode === 13;
+    var keyCode = _ref2.keyCode;
+    return isKeyCode(keyCode, 13);
   };
   var isControlBtn = function isControlBtn(_ref3) {
-    var key = _ref3.key,
-        keyCode = _ref3.keyCode;
-    return key.toLowerCase() === 'control' || keyCode === 17;
+    var keyCode = _ref3.keyCode;
+    return isKeyCode(keyCode, 17);
   };
   var isShiftBtn = function isShiftBtn(_ref4) {
-    var key = _ref4.key,
-        keyCode = _ref4.keyCode;
-    return key.toLowerCase() === 'shift' || keyCode === 16;
+    var keyCode = _ref4.keyCode;
+    return isKeyCode(keyCode, 16);
   };
 
   var MessageInput = function (_LitElement) {
@@ -19832,11 +20158,11 @@
           maxRows: maxrows || 5,
           onKeyPress: this._boundKeyPress,
           onInput: this._boundOnInput,
-          placeholder: this.hasAttribute('disabled') ? placeholderdisabled : placeholder,
+          placeholder: disabled ? placeholderdisabled : placeholder,
           value: value
         });
 
-        return html$1(_templateObject$4, classString({ input: true, disabled: disabled }), function (e) {
+        return html$1(_templateObject$5, classString({ input: true, disabled: disabled }), function (e) {
           return _this3._handleSubmit(e);
         }, textarea$$1, button$$1);
       }
@@ -19846,15 +20172,15 @@
 
   var Input = withStyle(html$1)(MessageInput, css$2, css, css$1);
 
-  var css$3 = ".message:hover .actions {\n  opacity: 1;\n  -webkit-transform: translateX(90%);\n          transform: translateX(90%);\n}\n\n.actions {\n  top: -10px;\n  right: 0;\n  cursor: default;\n  opacity: 0;\n  z-index: 100;\n  position: absolute;\n  -webkit-transform: translateX(89%);\n          transform: translateX(89%);\n  text-align: center;\n  transition: all ease-out 0.7s;\n  line-height: 18px;\n}\n\n.action-group {\n  position: relative;\n  text-align: left;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.action-group:hover {\n  color: #48a1e6;\n  color: var(--action-group-color-hover, var(--theme-color-pictonblue, #48a1e6));\n  border-color: #48a1e6;\n  border-color: var(--action-group-border-color-hover, var(--theme-color-pictonblue, #48a1e6));\n}\n\n.action-group > span {\n  width: 22px;\n  height: 24px;\n  border: 1px solid #b8b8b8;\n  display: inline-block;\n  font-size: 15px;\n  box-sizing: border-box;\n  text-align: center;\n  line-height: 17px;\n  border-radius: 5px;\n  letter-spacing: 0.1px;\n  background-color: #fff;\n  background-color: var(--bg-color, var(--theme-color-white, #fff));\n}\n\n.action-group:hover .action-subgroup {\n  opacity: 1;\n  z-index: 300;\n  -webkit-transform: translateY(2px);\n          transform: translateY(2px);\n}\n\n.action-subgroup {\n  cursor: pointer;\n  opacity: 0;\n  transition: all ease-out 0.5s;\n  margin-left: -1px;\n  padding-top: 1px;\n}\n\n.action-subgroup-inner {\n  border: 1px solid #c6e6ff;\n  display: flex;\n  background: no-repeat center center #fff;\n  background: no-repeat center center var(--bg-color, var(--theme-color-white, #fff));\n  box-sizing: content-box;\n  border-radius: 5px;\n  flex-direction: row;\n}\n\n.action-subgroup-item {\n  width: 39px;\n  height: 39px;\n  padding: 0;\n  margin: 1px;\n  border: none;\n  cursor: pointer;\n  outline: none;\n}\n\n.action-subgroup-item:disabled{\n  cursor: not-allowed;\n}\n\n.action-subgroup-item #delete {\n  padding: 12px;\n}\n\n.action-subgroup-item #warning {\n  padding: 13px;\n}\n\n.action-subgroup-item > svg {\n  padding: 10px;\n}\n\n.action-subgroup-item > svg path {\n  fill: #b8b8b8;\n  fill: var(--subgroup-fill-color, var(--theme-color-silver, #b8b8b8));\n  display: inline-block;\n}\n\n.action-subgroup-item:hover > svg path {\n  fill: #48a1e6;\n  fill: var(--subgroup-fill-color-hover, var(--theme-color-pictonblue, #48a1e6));\n}\n\n/* client styles */\n\n.actions {\n  display: flex;\n  flex-direction: row;\n  right: 14px;\n}\n\n.action-group {\n  color: #b8b8b8;\n  border-color: #b8b8b8;\n}\n\n.action-group-reactions,\n.action-group-reactions:hover {\n  color: #b8b8b8 !important;\n  border-color: #b8b8b8 !important;\n}\n\n.action-group > * {\n  position: relative;\n  z-index: 0;\n}\n\n.action-group *:hover\n{\n  z-index: 100 !important;\n}\n\n.action-group > * {\n  left: -1px;\n}\n\n.action-group:first-child > * {\n  left: 0 !important;\n}\n\n.action-group > *:hover {\n  border-color: #1682d7;\n  border-color: var(--action-group-border-color-hover, var(--theme-color-pictonblue, #1682d7));\n  color: #1682d7;\n  color: var(--action-group-color-hover, var(--theme-color-pictonblue, #1682d7));\n}\n\n.action-group:nth-child(2) span {\n  border-radius: 0 5px 5px 0;\n}\n\n.action-group:nth-child(2):hover span {\n  border-radius: 0 5px 5px 0;\n  border-color: inherit;\n  color: inherit;\n}\n\n.reaction-add {\n  padding: 0;\n  outline: none;\n  background: center center no-repeat;\n  background-color: #fff;\n  border-color: inherit;\n  border-radius: 5px 0 0 5px;\n  border: 1px solid;\n  box-sizing: border-box;\n  color: inherit;\n  display: block;\n  height: 24px;\n  line-height: 17px;\n  text-align: center;\n  width: 32px;\n  cursor: pointer;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.reaction-add.disabled {\n  border-color: #b8b8b8;\n  color: #b8b8b8;\n  cursor: not-allowed;\n}\n\n.reaction-add.standalone {\n  border-radius: 5px;\n}\n\n.reaction-add:hover:not(.disabled) svg path {\n  fill: #1682d7;\n  fill: var(--action-group-color-hover, var(--theme-color-pictonblue, #1682d7));\n}\n\n.reaction-add svg{\n  height: inherit;\n  position: relative;\n  top: -1px;\n}\n";
+  var css$3 = ".actions {\n  cursor: default;\n  display: flex;\n  flex-direction: row;\n  line-height: 18px;\n  opacity: 0;\n  position: absolute;\n  right: 0;\n  right: 14px;\n  text-align: center;\n  top: -10px;\n  -webkit-transform: translateX(89%);\n          transform: translateX(89%);\n  transition: all ease-out 0.7s;\n  z-index: 100;\n}\n\n.action-group {\n  border-color: #b8b8b8;\n  color: #b8b8b8;\n  position: relative;\n  text-align: left;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.action-group:hover {\n  border-color: #48a1e6;\n  border-color: var(--action-group-border-color-hover, var(--theme-color-pictonblue, #48a1e6));\n  color: #48a1e6;\n  color: var(--action-group-color-hover, var(--theme-color-pictonblue, #48a1e6));\n}\n\n.action-group > span {\n  background-color: #fff;\n  background-color: var(--bg-color, var(--theme-color-white, #fff));\n  border: 1px solid #b8b8b8;\n  border-radius: 5px;\n  box-sizing: border-box;\n  display: inline-block;\n  font-size: 15px;\n  height: 24px;\n  letter-spacing: 0.1px;\n  line-height: 17px;\n  text-align: center;\n  width: 22px;\n}\n\n.action-subgroup {\n  cursor: pointer;\n  margin-left: -1px;\n  opacity: 0;\n  padding-top: 1px;\n  transition: all ease-out 0.5s;\n}\n\n.action-group:hover .action-subgroup {\n  opacity: 1;\n  -webkit-transform: translateY(2px);\n          transform: translateY(2px);\n  z-index: 300;\n}\n\n.action-subgroup-inner {\n  background: no-repeat center center #fff;\n  background: no-repeat center center var(--bg-color, var(--theme-color-white, #fff));\n  border: 1px solid #c6e6ff;\n  border-radius: 5px;\n  box-sizing: content-box;\n  display: flex;\n  flex-direction: row;\n}\n\n.action-subgroup-item {\n  background-color: transparent;\n  border: none;\n  cursor: pointer;\n  height: 39px;\n  margin: 1px;\n  outline: none;\n  padding: 0;\n  width: 39px;\n}\n\n.action-subgroup-item:disabled {\n  cursor: not-allowed;\n}\n\n.action-subgroup-item #delete {\n  padding: 12px;\n}\n\n.action-subgroup-item #warning {\n  padding: 13px;\n}\n\n.action-subgroup-item > svg {\n  padding: 10px;\n}\n\n.action-subgroup-item > svg path {\n  display: inline-block;\n  fill: #b8b8b8;\n  fill: var(--subgroup-fill-color, var(--theme-color-silver, #b8b8b8));\n}\n\n.action-subgroup-item:hover > svg path {\n  fill: #48a1e6;\n  fill: var(--subgroup-fill-color-hover, var(--theme-color-pictonblue, #48a1e6));\n}\n\n/* client styles */\n\n.action-group-reactions,\n.action-group-reactions:hover {\n  border-color: #b8b8b8 !important;\n  color: #b8b8b8 !important;\n}\n\n.action-group > * {\n  left: -1px;\n  position: relative;\n  z-index: 0;\n}\n\n.action-group *:hover {\n  z-index: 100 !important;\n}\n\n.action-group:first-child > * {\n  left: 0 !important;\n}\n\n.action-group > *:hover {\n  border-color: #1682d7;\n  border-color: var(--action-group-border-color-hover, var(--theme-color-pictonblue, #1682d7));\n  color: #1682d7;\n  color: var(--action-group-color-hover, var(--theme-color-pictonblue, #1682d7));\n}\n\n.action-group:nth-child(2) span {\n  border-radius: 0 5px 5px 0;\n}\n\n.action-group:nth-child(2):hover span {\n  border-color: inherit;\n  border-radius: 0 5px 5px 0;\n  color: inherit;\n}\n\n.message:hover .actions {\n  opacity: 1;\n  -webkit-transform: translateX(90%);\n          transform: translateX(90%);\n}\n\n.reaction-add {\n  background: center center no-repeat;\n  background-color: #fff;\n  border: 1px solid;\n  border-color: inherit;\n  border-radius: 5px 0 0 5px;\n  box-sizing: border-box;\n  color: inherit;\n  cursor: pointer;\n  display: block;\n  height: 24px;\n  line-height: 17px;\n  outline: none;\n  padding: 0;\n  text-align: center;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  width: 32px;\n}\n\n.reaction-add.disabled {\n  border-color: #b8b8b8;\n  color: #b8b8b8;\n  cursor: not-allowed;\n}\n\n.reaction-add.standalone {\n  border-radius: 5px;\n}\n\n.reaction-add:hover:not(.disabled) svg path {\n  fill: #1682d7;\n  fill: var(--action-group-color-hover, var(--theme-color-pictonblue, #1682d7));\n}\n\n.reaction-add svg {\n  height: inherit;\n  position: relative;\n  top: -1px;\n}\n";
   styleInject(css$3);
 
-  var _templateObject$5 = taggedTemplateLiteral(['\n  <div class=\'action-group action-group-reactions\'>\n    ', '\n  </div>\n'], ['\n  <div class=\'action-group action-group-reactions\'>\n    ', '\n  </div>\n']),
+  var _templateObject$6 = taggedTemplateLiteral(['\n  <div class=\'action-group action-group-reactions\'>\n    ', '\n  </div>\n'], ['\n  <div class=\'action-group action-group-reactions\'>\n    ', '\n  </div>\n']),
       _templateObject2$2 = taggedTemplateLiteral(['\n  <div class=\'action-group action-group-actions\'>\n    <span>...</span>\n    <div class=\'action-subgroup\'>\n      <div class=\'action-subgroup-inner\'>\n        ', '\n      </div>\n    </div>\n  </div>\n'], ['\n  <div class=\'action-group action-group-actions\'>\n    <span>...</span>\n    <div class=\'action-subgroup\'>\n      <div class=\'action-subgroup-inner\'>\n        ', '\n      </div>\n    </div>\n  </div>\n']),
       _templateObject3$1 = taggedTemplateLiteral(['\n  <div class=\'actions\'>\n    ', '\n    ', '\n  </div>\n'], ['\n  <div class=\'actions\'>\n    ', '\n    ', '\n  </div>\n']);
 
   var _reactions = function _reactions(props) {
-    return html$1(_templateObject$5, props.children);
+    return html$1(_templateObject$6, props.children);
   };
 
   var _actions = function _actions(props) {
@@ -19865,10 +20191,10 @@
     return html$1(_templateObject3$1, props.reactions.length ? _reactions({ children: props.reactions }) : null, props.children.length ? _actions(props) : null);
   };
 
-  var css$4 = "\n.message-block.deleted .message {\n  background: rgba(0, 0, 0, 0.04);\n}\n\n.message-block.deleted .avatar,\n.message-block.deleted .message {\n  -webkit-filter: grayscale(75%);\n          filter: grayscale(75%);\n}\n\n.avatar {\n  width: 32px;\n  height: 32px;\n  display: inline-block;\n  overflow: hidden;\n  background: no-repeat center center;\n  margin-right: 8px;\n  vertical-align: top;\n  background-size: contain;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  border-radius: 100%;\n  background-color: transparent;\n  background-color: var(--message-avatar-color-moderator, transparent);\n}\n\n.avatar.moderator {\n  background-color: transparent;\n  background-color: var(--message-avatar-color, transparent);\n}\n\n.message {\n  display: inline-block;\n  padding: 8px 22px 8px 14px;\n  position: relative;\n  max-width: 80%;\n  text-align: left;\n  border-radius: 5px;\n  margin-bottom: 16px;\n  background-color: #fff;\n  max-width: 55% !important;\n}\n\n.message-meta {\n  margin-bottom: 5px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.message-line {\n  margin: 0;\n  line-height: 1.25em;\n  margin-bottom: 12px;\n}\n\n.message-line:last-child {\n  margin-bottom: 0;\n}\n\n.message-status{\n  margin-bottom: 3px;\n}\n\n.message-stamp,\n.message-status {\n  color: #b8b8b8;\n  color: var(--message-status-color, var(--silver, #b8b8b8));\n  font-size: 0.75em;\n}\n\n.message-author {\n  font-weight: bold;\n  margin-right: 8px;\n}\n\n.message.moderator {\n  background-color: rgba(255, 114, 86, 0.08);\n}\n\n.message.me {\n  background-color: rgba(72, 161, 230, 0.08);\n}\n";
+  var css$4 = "wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */\n  --reaction-count-left: 0;\n}\n\n.avatar {\n  background: no-repeat center center;\n  background-color: transparent;\n  background-color: var(--message-avatar-color-moderator, transparent);\n  background-size: contain;\n  border-radius: 100%;\n  display: inline-block;\n  height: 32px;\n  margin-right: 8px;\n  overflow: hidden;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  vertical-align: top;\n  width: 32px;\n}\n\n.avatar.moderator {\n  background-color: transparent;\n  background-color: var(--message-avatar-color, transparent);\n}\n\n.message {\n  background-color: #fff;\n  border-radius: 5px;\n  display: inline-block;\n  margin-bottom: 16px;\n  max-width: 80%;\n  max-width: 55% !important;\n  padding: 8px 22px 8px 14px;\n  position: relative;\n  text-align: left;\n}\n\n.message-block.deleted .message {\n  background: rgba(0, 0, 0, 0.04);\n}\n\n.message-block.deleted .avatar,\n.message-block.deleted .message {\n  -webkit-filter: grayscale(75%);\n          filter: grayscale(75%);\n}\n\n.message-meta {\n  margin-bottom: 5px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.message-line {\n  line-height: 1.25em;\n  margin: 0;\n  margin-bottom: 12px;\n}\n\n.message-line:last-child {\n  margin-bottom: 0;\n}\n\n.message-status {\n  margin-bottom: 3px;\n}\n\n.message-stamp,\n.message-status {\n  color: #b8b8b8;\n  color: var(--message-status-color, var(--silver, #b8b8b8));\n  font-size: 0.75em;\n}\n\n.message-author {\n  font-weight: bold;\n  margin-right: 8px;\n}\n\n.message.moderator {\n  background-color: rgba(255, 114, 86, 0.08);\n}\n\n.message.me {\n  background-color: rgba(72, 161, 230, 0.08);\n}\n";
   styleInject(css$4);
 
-  var _templateObject$6 = taggedTemplateLiteral(['<p class=\'message-line\'>', '</p>'], ['<p class=\'message-line\'>', '</p>']),
+  var _templateObject$7 = taggedTemplateLiteral(['<p class=\'message-line\'>', '</p>'], ['<p class=\'message-line\'>', '</p>']),
       _templateObject2$3 = taggedTemplateLiteral(['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'background-image: url(', ');\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-status\'>', '</span>\n        </div>\n        <div>', '</div>\n        ', '\n      </section>\n    </div>\n  '], ['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'background-image: url(', ');\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-status\'>', '</span>\n        </div>\n        <div>', '</div>\n        ', '\n      </section>\n    </div>\n  ']);
 
   var stampToDate = function stampToDate(stamp) {
@@ -19883,11 +20209,11 @@
   var text = function text() {
     var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     return message.split('\n').map(function (it) {
-      return html$1(_templateObject$6, it);
+      return html$1(_templateObject$7, it);
     });
   };
 
-  var _templateObject$7 = taggedTemplateLiteral(['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'', '\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-stamp\'>', '</span>\n          <div class=\'message-status\'>', '</div>\n        </div>\n        <div>', '</div>\n        <wc-chat-reactions config=', ' showcount></wc-chat-reactions>\n        ', '\n      </section>\n    </div>\n  '], ['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'', '\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-stamp\'>', '</span>\n          <div class=\'message-status\'>', '</div>\n        </div>\n        <div>', '</div>\n        <wc-chat-reactions config=', ' showcount></wc-chat-reactions>\n        ', '\n      </section>\n    </div>\n  ']);
+  var _templateObject$8 = taggedTemplateLiteral(['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'', '\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-stamp\'>', '</span>\n          <div class=\'message-status\'>', '</div>\n        </div>\n        <div>', '</div>\n        <wc-chat-reactions config=', ' showcount></wc-chat-reactions>\n        ', '\n      </section>\n    </div>\n  '], ['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'', '\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-stamp\'>', '</span>\n          <div class=\'message-status\'>', '</div>\n        </div>\n        <div>', '</div>\n        <wc-chat-reactions config=', ' showcount></wc-chat-reactions>\n        ', '\n      </section>\n    </div>\n  ']);
 
   var cn$1 = function cn() {
     for (var _len = arguments.length, argv = Array(_len), _key = 0; _key < _len; _key++) {
@@ -19903,13 +20229,13 @@
 
     var config = new Map([['thumbsup', { name: ':thumbsup', count: message.rating }]]);
 
-    return html$1(_templateObject$7, classString({ 'message-block': true, deleted: props.deleted }), cn$1(message.user_role, 'avatar'), !message.avatar ? '' : 'background-image: url(' + message.avatar + ');', cn$1(message.user_role, 'message'), message.user_name, formatDate(stampToDate(message.timestamp)), message.status, text(message.body), config, props.children);
+    return html$1(_templateObject$8, classString({ 'message-block': true, deleted: props.deleted }), cn$1(message.user_role, 'avatar'), !message.avatar ? '' : 'background-image: url(' + message.avatar + ');', cn$1(message.user_role, 'message'), message.user_name, formatDate(stampToDate(message.timestamp)), message.status, text(message.body), config, props.children);
   };
 
-  var css$5 = ".messages {\n  width: 93%;\n  height: 87%;\n  padding-top:20px;\n  padding-left:20px;\n  box-sizing: border-box;\n  font-size: inherit;\n  font-size: var(--messages-font-size, inherit);\n}\n\n.messages {\n  overflow-y: auto !important;\n}\n\n.action-subgroup-item.lock.disabled {\n  cursor: not-allowed;\n}\n\n.action-subgroup-item.lock.allowed {\n  cursor: pointer !important;\n}\n\n.action-subgroup-item.lock svg {\n  padding: 10px 12px;\n}\n\n.action-subgroup-item.lock svg path {\n  fill: #b8b8b8;\n}\n\n.action-subgroup-item.lock:hover svg path,\n.action-subgroup-item.lock.disabled svg path\n{\n  fill: #48a1e6;\n}\n\n.reactions{\n  margin-top: 10px;\n}\n";
+  var css$5 = ":host {\n  display: block;\n  height: inherit;\n  height: var(--chat-messages-height, inherit);\n}\n\n.messages {\n  box-sizing: border-box;\n  font-size: inherit;\n  font-size: var(--messages-font-size, inherit);\n  height: 87%;\n  overflow-y: auto !important;\n  padding-left: 20px;\n  padding-top: 20px;\n  width: 93%;\n}\n\n.action-subgroup-item.lock.disabled {\n  cursor: not-allowed;\n}\n\n.action-subgroup-item.lock.allowed {\n  cursor: pointer !important;\n}\n\n.action-subgroup-item.lock svg {\n  padding: 10px 12px;\n}\n\n.action-subgroup-item.lock svg path {\n  fill: #b8b8b8;\n}\n\n.action-subgroup-item.lock:hover svg path,\n.action-subgroup-item.lock.disabled svg path {\n  fill: #48a1e6;\n}\n\n.reactions {\n  margin-top: 10px;\n}\n";
   styleInject(css$5);
 
-  var _templateObject$8 = taggedTemplateLiteral(['<div class=\'messages\'></div>'], ['<div class=\'messages\'></div>']),
+  var _templateObject$9 = taggedTemplateLiteral(['<div class=\'messages\'></div>'], ['<div class=\'messages\'></div>']),
       _templateObject2$4 = taggedTemplateLiteral(['\n      <div class=\'messages\'>\n        <div class=\'messages-inner\'>\n          ', '\n        </div>\n      </div>\n    '], ['\n      <div class=\'messages\'>\n        <div class=\'messages-inner\'>\n          ', '\n        </div>\n      </div>\n    ']);
 
   var MessagesElement = function (_LitElement) {
@@ -19934,7 +20260,7 @@
         var _ref$list = _ref.list,
             list = _ref$list === undefined ? [] : _ref$list;
 
-        if (!list.length) return html$1(_templateObject$8);
+        if (!list.length) return html$1(_templateObject$9);
 
         return html$1(_templateObject2$4, list.map(function (it) {
           return _this2.__renderMessage(it);
@@ -19961,7 +20287,7 @@
 
   withStyle(html$1)(MessagesElement, css$5, css$4, css$3);
 
-  var _templateObject$9 = taggedTemplateLiteral(['<svg id="warninig" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm0 2A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>\n    <path d="M9 9H7V4h2zM9 12H7v-2h2z"/>\n  </g>\n</svg>'], ['<svg id="warninig" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm0 2A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>\n    <path d="M9 9H7V4h2zM9 12H7v-2h2z"/>\n  </g>\n</svg>']),
+  var _templateObject$a = taggedTemplateLiteral(['<svg id="warninig" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm0 2A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>\n    <path d="M9 9H7V4h2zM9 12H7v-2h2z"/>\n  </g>\n</svg>'], ['<svg id="warninig" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm0 2A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>\n    <path d="M9 9H7V4h2zM9 12H7v-2h2z"/>\n  </g>\n</svg>']),
       _templateObject2$5 = taggedTemplateLiteral(['<svg id="delete" xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M9 7h2v7H9zM5 7h2v7H5z"/>\n    <path fill-rule="nonzero" d="M3 5v11h10V5H3zM1 3h14v15H1V3z"/>\n    <path d="M4 0h8v5H4V0zm2 2v1h4V2H6z"/>\n    <path fill-rule="nonzero" d="M0 5h16V3H0z"/>\n  </g>\n</svg>'], ['<svg id="delete" xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M9 7h2v7H9zM5 7h2v7H5z"/>\n    <path fill-rule="nonzero" d="M3 5v11h10V5H3zM1 3h14v15H1V3z"/>\n    <path d="M4 0h8v5H4V0zm2 2v1h4V2H6z"/>\n    <path fill-rule="nonzero" d="M0 5h16V3H0z"/>\n  </g>\n</svg>']),
       _templateObject3$2 = taggedTemplateLiteral(['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23859 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90912C1.30243 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81818 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM2 2.90912C2 2.40704 2.40704 2 2.90912 2H13.0909C13.593 2 14 2.40704 14 2.90912V10.1818C14 12.2905 12.2905 14 10.1818 14H5.81818C3.70947 14 2 12.2905 2 10.1818V2.90912Z" transform="translate(0 6)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.18188 2.64374C2.61658 2.3988 2.90906 1.94104 2.90906 1.41669C2.90906 0.634277 2.25781 0 1.45459 0C0.651245 0 0 0.634277 0 1.41669C0 1.94104 0.29248 2.39886 0.727295 2.6438V3.52277C0.727295 3.92444 1.05286 4.25 1.45459 4.25C1.8562 4.25 2.18188 3.92444 2.18188 3.52277V2.64374Z" transform="translate(6.54541 11.375)" fill="#B8B8B8"/>\n</svg>'], ['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23859 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90912C1.30243 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81818 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM2 2.90912C2 2.40704 2.40704 2 2.90912 2H13.0909C13.593 2 14 2.40704 14 2.90912V10.1818C14 12.2905 12.2905 14 10.1818 14H5.81818C3.70947 14 2 12.2905 2 10.1818V2.90912Z" transform="translate(0 6)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.18188 2.64374C2.61658 2.3988 2.90906 1.94104 2.90906 1.41669C2.90906 0.634277 2.25781 0 1.45459 0C0.651245 0 0 0.634277 0 1.41669C0 1.94104 0.29248 2.39886 0.727295 2.6438V3.52277C0.727295 3.92444 1.05286 4.25 1.45459 4.25C1.8562 4.25 2.18188 3.92444 2.18188 3.52277V2.64374Z" transform="translate(6.54541 11.375)" fill="#B8B8B8"/>\n</svg>']),
       _templateObject4 = taggedTemplateLiteral(['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23853 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#48A1E6"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90906C1.30249 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81824 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM9.45447 6.79169C9.45447 7.31604 9.16199 7.7738 8.72729 8.01874V8.89777C8.72729 9.29944 8.40161 9.625 8 9.625C7.59827 9.625 7.27271 9.29944 7.27271 8.89777V8.0188C6.83789 7.77386 6.54541 7.31604 6.54541 6.79169C6.54541 6.00928 7.19666 5.375 8 5.375C8.80322 5.375 9.45447 6.00928 9.45447 6.79169Z" transform="translate(0 6)" fill="#48A1E6"/>\n</svg>'], ['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23853 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#48A1E6"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90906C1.30249 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81824 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM9.45447 6.79169C9.45447 7.31604 9.16199 7.7738 8.72729 8.01874V8.89777C8.72729 9.29944 8.40161 9.625 8 9.625C7.59827 9.625 7.27271 9.29944 7.27271 8.89777V8.0188C6.83789 7.77386 6.54541 7.31604 6.54541 6.79169C6.54541 6.00928 7.19666 5.375 8 5.375C8.80322 5.375 9.45447 6.00928 9.45447 6.79169Z" transform="translate(0 6)" fill="#48A1E6"/>\n</svg>']),
@@ -19969,7 +20295,7 @@
       _templateObject6 = taggedTemplateLiteral(['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\n  <g fill="none" fill-rule="evenodd" transform="rotate(-90 12 12)">\n    <circle cx="12" cy="12" r="12" fill="#48A1E6"/>\n    <path fill="#FFF" fill-rule="nonzero" d="M10.2 8.649l.849-.849 4.024 4.024-4.024 4.025L10.2 15l3.176-3.176z"/>\n  </g>\n</svg>'], ['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\n  <g fill="none" fill-rule="evenodd" transform="rotate(-90 12 12)">\n    <circle cx="12" cy="12" r="12" fill="#48A1E6"/>\n    <path fill="#FFF" fill-rule="nonzero" d="M10.2 8.649l.849-.849 4.024 4.024-4.024 4.025L10.2 15l3.176-3.176z"/>\n  </g>\n</svg>']),
       _templateObject7 = taggedTemplateLiteral(['<svg width="26" height="16" viewBox="0 0 26 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0 8C0 12.4182 3.58167 16 8 16C12.4183 16 16 12.4182 16 8C16 3.58179 12.4183 0 8 0C3.58167 0 0 3.58179 0 8ZM15 8C15 11.866 11.866 15 8 15C4.13403 15 1 11.866 1 8C1 4.13403 4.13403 1 8 1C11.866 1 15 4.13403 15 8Z" fill="#B8B8B8"/>\n<path d="M0.0684113 0.760408C-0.0678355 0.522532 0.00581659 0.213915 0.232567 0.0713954C0.458845 -0.0708268 0.752265 0.00601634 0.888225 0.243391C1.18372 0.759298 1.53889 0.996346 2 0.996346C2.46111 0.996346 2.81628 0.759298 3.11177 0.243391C3.24773 0.00601634 3.54116 -0.0708268 3.76743 0.0713954C3.99418 0.213915 4.06784 0.522532 3.93159 0.760408C3.46598 1.57332 2.8061 2 2 2C1.1939 2 0.534021 1.57332 0.0684113 0.760408Z" transform="translate(6 9)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1 2C1.55228 2 2 1.55228 2 1C2 0.447715 1.55228 0 1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2Z" transform="translate(4 6)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1 2C1.55228 2 2 1.55228 2 1C2 0.447715 1.55228 0 1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2Z" transform="translate(10 6)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0H3.5V3.5H0V4.5H3.5V8H4.5V4.5H8V3.5H4.5V0Z" transform="translate(18 4)" fill="#B8B8B8"/>\n</svg>\n'], ['<svg width="26" height="16" viewBox="0 0 26 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0 8C0 12.4182 3.58167 16 8 16C12.4183 16 16 12.4182 16 8C16 3.58179 12.4183 0 8 0C3.58167 0 0 3.58179 0 8ZM15 8C15 11.866 11.866 15 8 15C4.13403 15 1 11.866 1 8C1 4.13403 4.13403 1 8 1C11.866 1 15 4.13403 15 8Z" fill="#B8B8B8"/>\n<path d="M0.0684113 0.760408C-0.0678355 0.522532 0.00581659 0.213915 0.232567 0.0713954C0.458845 -0.0708268 0.752265 0.00601634 0.888225 0.243391C1.18372 0.759298 1.53889 0.996346 2 0.996346C2.46111 0.996346 2.81628 0.759298 3.11177 0.243391C3.24773 0.00601634 3.54116 -0.0708268 3.76743 0.0713954C3.99418 0.213915 4.06784 0.522532 3.93159 0.760408C3.46598 1.57332 2.8061 2 2 2C1.1939 2 0.534021 1.57332 0.0684113 0.760408Z" transform="translate(6 9)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1 2C1.55228 2 2 1.55228 2 1C2 0.447715 1.55228 0 1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2Z" transform="translate(4 6)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1 2C1.55228 2 2 1.55228 2 1C2 0.447715 1.55228 0 1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2Z" transform="translate(10 6)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0H3.5V3.5H0V4.5H3.5V8H4.5V4.5H8V3.5H4.5V0Z" transform="translate(18 4)" fill="#B8B8B8"/>\n</svg>\n']);
 
-  var warning = html$1(_templateObject$9);
+  var warning = html$1(_templateObject$a);
 
   var del = html$1(_templateObject2$5);
 
@@ -19983,7 +20309,7 @@
 
   var smile = html$1(_templateObject7);
 
-  var _templateObject$a = taggedTemplateLiteral(['\n    <button\n      class$=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n  '], ['\n    <button\n      class$=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n  ']),
+  var _templateObject$b = taggedTemplateLiteral(['\n    <button\n      class$=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n  '], ['\n    <button\n      class$=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n  ']),
       _templateObject2$6 = taggedTemplateLiteral(['\n    <button\n      class$=\'', '\'\n      disabled=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n'], ['\n    <button\n      class$=\'', '\'\n      disabled=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n']);
 
   var actionImages = new Map([['message-delete', del], ['user-disable', lock], ['message-react', null]]);
@@ -19997,20 +20323,20 @@
         message = _ref.message,
         name = _ref.name;
 
-    var cls = classString(Object.assign(defineProperty({ 'action-subgroup-item': true }, name, true), classname ? defineProperty({}, classname, true) : {}, disabled ? { disabled: true } : {}, allowed ? { allowed: true } : {}));
+    var cls = classString(Object.assign({ 'action-subgroup-item': true }, name ? defineProperty({}, name, true) : {}, classname ? defineProperty({}, classname, true) : {}, disabled ? { disabled: true } : {}, allowed ? { allowed: true } : {}));
 
     if (!allowed) return null;
 
-    return html$1(_templateObject$a, cls, function (e) {
+    return html$1(_templateObject$b, cls, function (e) {
       return handler && handler(e, message);
     }, children);
   };
 
-  var reaction = function reaction(_ref3) {
-    var disabled = _ref3.disabled,
-        handler = _ref3.handler,
-        message = _ref3.message,
-        standalone = _ref3.standalone;
+  var reaction = function reaction(_ref4) {
+    var disabled = _ref4.disabled,
+        handler = _ref4.handler,
+        message = _ref4.message,
+        standalone = _ref4.standalone;
 
     var cls = classString({
       'reaction-add': true,
@@ -20034,7 +20360,7 @@
     createClass(XMessagesElement, [{
       key: '__renderMessage',
       value: function __renderMessage(message) {
-        return messageExtended({ message: message, children: this.__renderActions(_extends({}, message, { me: this.user })) });
+        return messageExtended({ message: message, children: this.__renderActions(_extends({}, message)) });
       }
     }, {
       key: '__renderActions',
@@ -20045,10 +20371,12 @@
         var reactions = [];
 
         var isAllowed = function isAllowed(action$$1, d) {
-          return d.me !== d.user_id || d.me === d.user_id && action$$1.self;
+          return d.current_user_id !== d.user_id || d.current_user_id === d.user_id && action$$1.self;
         };
 
         var hasOnlyReactions = this.actionsallowed.filter(function (key) {
+          return key !== 'message-reaction';
+        }).filter(function (key) {
           return isAllowed(_this2._actions.get(key) || {}, data);
         });
 
@@ -20060,7 +20388,7 @@
               message: data,
               allowed: isAllowed(_action, data) || undefined,
               children: actionImages.get(key),
-              standalone: hasOnlyReactions.length <= 1,
+              standalone: hasOnlyReactions.length === 0,
               handler: function handler(e, detail) {
                 _this2.dispatchEvent(new CustomEvent(key, { detail: detail }));
               }
@@ -20098,10 +20426,77 @@
 
   var Messages = withStyle(html$1)(XMessagesElement, css$5, css$4, css$3);
 
-  var css$6 = ":host {\n  height: 100%;\n}\n\n.scrollable {\n  height: 100%;\n  overflow-y: scroll;\n}\n";
+  /**
+   * Copyright (c) 2013-present, Facebook, Inc.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE file in the root directory of this source tree.
+   */
+
+  var invariant = function invariant(condition, format, a, b, c, d, e, f) {
+    {
+      if (format === undefined) {
+        throw new Error('invariant requires an error message argument');
+      }
+    }
+
+    if (!condition) {
+      var error;
+      if (format === undefined) {
+        error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+      } else {
+        var args = [a, b, c, d, e, f];
+        var argIndex = 0;
+        error = new Error(format.replace(/%s/g, function () {
+          return args[argIndex++];
+        }));
+        error.name = 'Invariant Violation';
+      }
+
+      error.framesToPop = 1; // we don't care about invariant's own frame
+      throw error;
+    }
+  };
+
+  var invariant_1 = invariant;
+
+  var _ = function _(ns) {
+    return function (cond) {
+      for (var _len = arguments.length, argv = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        argv[_key - 1] = arguments[_key];
+      }
+
+      return invariant_1.apply(undefined, [cond].concat(argv));
+    };
+  }; // eslint-disable-line no-unused-vars
+
+  var registerCustomElement = function registerCustomElement(key, value) {
+    if (!key || !value) throw new Error('CustomElement is not specified');
+    !window.customElements.get(key) && window.customElements.define(key, value);
+  };
+
+  var Debug = function Debug(namespace) {
+    var debug = _(namespace);
+
+    return function () {
+      for (var _len2 = arguments.length, argv = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        argv[_key2] = arguments[_key2];
+      }
+
+      return debug.apply(undefined, ['development' === 'production'].concat(argv));
+    };
+  };
+
+  var css$6 = ":host {\n  box-sizing: content-box;\n  box-sizing: var(--chat-scrollable-box-sizing, content-box);\n  display: block;\n  display: var(--chat-scrollable-display, block);\n  height: 100%;\n  height: var(--chat-scrollable-height, 100%);\n  padding: 0;\n  padding: var(--chat-scrollable-padding, 0);\n}\n\n.scrollable {\n  height: 100%;\n  overflow-y: scroll;\n}\n";
   styleInject(css$6);
 
-  var _templateObject$b = taggedTemplateLiteral(['\n      <div class=\'scrollable\' on-scroll=\'', '\'>\n        ', '\n      </div>\n    '], ['\n      <div class=\'scrollable\' on-scroll=\'', '\'>\n        ', '\n      </div>\n    ']);
+  var _templateObject$c = taggedTemplateLiteral(['\n      <div class=\'scrollable\' on-scroll=\'', '\'>\n        ', '\n      </div>\n    '], ['\n      <div class=\'scrollable\' on-scroll=\'', '\'>\n        ', '\n      </div>\n    ']);
+
+  var debug = Debug('wc:scrollable');
+
+  var isNumber = function isNumber(it) {
+    return typeof it === 'number';
+  };
 
   var Scrollable = function (_LitElement) {
     inherits(Scrollable, _LitElement);
@@ -20109,12 +20504,11 @@
       key: 'properties',
       get: function get$$1() {
         return {
-          enablegap: Boolean,
           scrolltarget: String,
           scrollgap: Number,
-          watch: Boolean,
           listen: String,
-          reverse: Boolean
+          reverse: Boolean,
+          debounce: Number
         };
       }
     }]);
@@ -20124,93 +20518,145 @@
 
       var _this = possibleConstructorReturn(this, (Scrollable.__proto__ || Object.getPrototypeOf(Scrollable)).call(this, props));
 
+      _this._height = 0;
+      _this._width = 0;
+      _this._left = 0;
+      _this._top = 0;
+      _this._x = 0;
+      _this._y = 0;
+
       _this.__boundScrollHandler = _this._onScrollHandler.bind(_this);
       return _this;
     }
 
     createClass(Scrollable, [{
-      key: 'invokeUpdate',
-      value: function invokeUpdate() {
-        this.hasAttribute('watch') && this._shouldScrollTo();
-      }
-    }, {
-      key: 'disconnectedCallback',
-      value: function disconnectedCallback() {
-        if (!this._isTarget) return;
+      key: 'scrollTo',
+      value: function scrollTo(x, y) {
+        var el = void 0;
+        if (!isNumber(x) || !isNumber(y)) el = this._scrollable;
 
-        this.hasAttribute('listen') && this._targetNode.removeEventListener(this.listen, this._onChildrenUpdate.bind(this), true);
+        var _x = 0;
+        var _y = this.reverse ? 0 : el.scrollHeight;
+
+        this._scrollTo(x || _x, y || _y);
       }
     }, {
       key: '_firstRendered',
       value: function _firstRendered() {
-        if (!this._isTarget) return;
+        var _this2 = this;
 
-        this.hasAttribute('listen') && this._targetNode.addEventListener(this.listen, this._onChildrenUpdate.bind(this), true);
+        // eslint-disable-next-line padding-line-between-statements
+        if (!this._isTarget) {
+          debug('Target is not valid HTMLElement');return;
+        }
+
+        this.listen && compose$1(observeC(function (e) {
+          return _this2._onChildrenUpdate(e);
+        }), throttleC(this.debounce || 50))(fromEvent(this.listen, this._scrollable, true));
       }
     }, {
       key: '_onScrollHandler',
-      value: function _onScrollHandler(e) {} // eslint-disable-line class-methods-use-this,no-unused-vars
+      value: function _onScrollHandler(e) {
+        var _e$currentTarget = e.currentTarget,
+            scrollTop = _e$currentTarget.scrollTop,
+            scrollLeft = _e$currentTarget.scrollLeft,
+            scrollHeight = _e$currentTarget.scrollHeight,
+            scrollWidth = _e$currentTarget.scrollWidth;
 
+
+        this._top = scrollTop;
+        this._left = scrollLeft;
+        this._width = scrollWidth;
+        this._height = scrollHeight;
+        this._y = scrollTop;
+        this._x = scrollLeft;
+      }
     }, {
       key: '_onChildrenUpdate',
       value: function _onChildrenUpdate(e) {
         this._shouldScrollTo(e);
       }
     }, {
+      key: '_yScroll',
+      value: function _yScroll(el) {
+        var top = el.scrollTop,
+            height = el.scrollHeight;
+
+
+        return {
+          current: this._y || top,
+          height: height,
+          tail: this._height - this._y,
+          top: top
+        };
+      }
+    }, {
+      key: '_xScroll',
+      value: function _xScroll(el) {
+        var left = el.scrollLeft,
+            width = el.scrollWidth;
+
+
+        return {
+          current: this._x || left,
+          left: left,
+          width: width
+        };
+      }
+    }, {
       key: '_shouldScrollTo',
       value: function _shouldScrollTo(e) {
         // eslint-disable-line no-unused-vars
-        var gap = this.scrollgap || 666;
-        // pixel gap
-        var _targetNode = this._targetNode,
-            top = _targetNode.scrollTop,
-            left = _targetNode.scrollLeft,
-            height = _targetNode.scrollHeight;
+        var X = this._xScroll(this._scrollable);
+        var Y = this._yScroll(this._scrollable);
+
+        if (Y.top === Y.height) return;
+        // skip scrolling on empty children (initial render might has 0/0)
+
+        var y = this._y;
+        var offsetHeight = this._scrollable.offsetHeight;
 
 
-        var contendLoaded = top !== height;
-        // initial render has 0/0
+        var scrollTo = this.reverse ? y === 0 ? y : Y.height - Y.tail : y + offsetHeight < this._height ? null : Y.height;
 
-        if (!contendLoaded) return;
-        // skip scrolling on empty children
-
-        var onEdge = this.reverse ? top === height : top === 0;
-        // bottom 4 generic list; top 4 reversed list
-        var withinGap = this.enablegap ? this.reverse ? gap > top : top > height - gap
-        // between 0 and gap 4 generic list; between height and height-gap
-        : true;
-        // scroll on every update
-
-        (onEdge // follow the edge when content is loading
-        || withinGap // autoscroll when user is watching latest messages
-        ) && this._scrollTo(left, this.reverse ? 0 : height);
+        scrollTo && this._scrollTo(X.current, scrollTo);
       }
     }, {
       key: '_scrollTo',
-      value: function _scrollTo(l, t) {
-        var _targetNode2 = this._targetNode,
-            scrollLeft = _targetNode2.scrollLeft,
-            scrollHeight = _targetNode2.scrollHeight;
+      value: function _scrollTo(x, y) {
+        var el = this._scrollable;
 
-        var left = typeof l !== 'undefined' ? l : scrollLeft;
-        var top = typeof t !== 'undefined' ? t : scrollHeight;
+        // eslint-disable-next-line padding-line-between-statements
+        if (!isNumber(x) || !isNumber(y)) {
+          debug('Wrong coordinate type');return;
+        }
 
-        this._targetNode.scrollTo(left, top);
+        if (!el.scrollTo) {
+          el.scrollLeft = x;
+          el.scrollTop = y;
+        } else {
+          el.scrollTo(x, y);
+        }
       }
     }, {
       key: '_render',
       value: function _render() {
-        return html$1(_templateObject$b, this.__boundScrollHandler, this.children);
+        return html$1(_templateObject$c, this.__boundScrollHandler, this.children);
       }
     }, {
-      key: '_targetNode',
+      key: '_rootElement',
       get: function get$$1() {
-        return !this.shadowRoot ? null : this.shadowRoot.querySelector('' + (this.scrolltarget || '.scrollable'));
+        return !this.shadowRoot ? undefined : this.shadowRoot;
+      }
+    }, {
+      key: '_scrollable',
+      get: function get$$1() {
+        return this._rootElement ? this._rootElement.querySelector('' + (this.scrolltarget || '.scrollable')) : this._rootElement;
       }
     }, {
       key: '_isTarget',
       get: function get$$1() {
-        return this._targetNode instanceof HTMLElement;
+        return this._scrollable instanceof HTMLElement;
       }
     }]);
     return Scrollable;
@@ -20218,7 +20664,7 @@
 
   var Scroll = withStyle(html$1)(Scrollable, css$6);
 
-  var _templateObject$c = taggedTemplateLiteral(['<style>', '</style>'], ['<style>', '</style>']),
+  var _templateObject$d = taggedTemplateLiteral(['<style>', '</style>'], ['<style>', '</style>']),
       _templateObject2$7 = taggedTemplateLiteral(['\n      ', '\n      ', '\n    '], ['\n      ', '\n      ', '\n    ']);
 
   var withStyle$1 = function withStyle(base) {
@@ -20242,7 +20688,7 @@
           }
 
           // eslint-disable-line class-methods-use-this
-          return html$1(_templateObject$c, argv.join(' '));
+          return html$1(_templateObject$d, argv.join(' '));
         }
       }, {
         key: '_render',
@@ -24858,14 +25304,13 @@
 
   var emoji$2 = Emoji;
 
-  var css$7 = ".icons {\n  display: flex;\n  flex-direction: row;\n}\n\n.icons.vertical {\n  flex-direction: column;\n}\n\n.icon {\n  cursor: pointer;\n  position: relative;\n  margin-right: 5px;\n}\n\n.icon span {\n  line-height: 0px;\n}\n\n.count {\n  left: -5px;\n  position: inherit;\n  top: 4px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n";
+  var css$7 = ".icons {\n  display: flex;\n  flex-direction: row;\n}\n\n.icons.vertical {\n  flex-direction: column;\n}\n\n.icon {\n  cursor: pointer;\n  line-height: normal;\n  line-height: var(--reaction-icon-line-height, normal);\n  margin-right: 5px;\n  position: relative;\n}\n\n.count {\n  left: -5px;\n  left: var(--reaction-count-left, -5px);\n  position: inherit;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n";
   styleInject(css$7);
 
-  var _templateObject$d = taggedTemplateLiteral(['\n          <div class="tab-bars">\n            ', '\n          </div>\n        '], ['\n          <div class="tab-bars">\n            ', '\n          </div>\n        ']),
-      _templateObject2$8 = taggedTemplateLiteral(['<img src="', '" />'], ['<img src="', '" />']),
-      _templateObject3$3 = taggedTemplateLiteral(['\n        <div class="icon" name=', ' on-click=', '>\n          <span>', '</span>\n          ', '\n        </div>\n      '], ['\n        <div class="icon" name=', ' on-click=', '>\n          <span>', '</span>\n          ', '\n        </div>\n      ']),
-      _templateObject4$1 = taggedTemplateLiteral(['<span class="count">', '</span>'], ['<span class="count">', '</span>']),
-      _templateObject5$1 = taggedTemplateLiteral(['\n      <div class$=', '>\n        ', '\n      </div>\n    '], ['\n      <div class$=', '>\n        ', '\n      </div>\n    ']);
+  var _templateObject$e = taggedTemplateLiteral(['<img src="', '" />'], ['<img src="', '" />']),
+      _templateObject2$8 = taggedTemplateLiteral(['\n        <div class="icon" name=', ' on-click=', '>\n          <span>', '</span>\n          ', '\n        </div>\n      '], ['\n        <div class="icon" name=', ' on-click=', '>\n          <span>', '</span>\n          ', '\n        </div>\n      ']),
+      _templateObject3$3 = taggedTemplateLiteral(['<span class="count">', '</span>'], ['<span class="count">', '</span>']),
+      _templateObject4$1 = taggedTemplateLiteral(['\n      <div class$=', '>\n        ', '\n      </div>\n    '], ['\n      <div class$=', '>\n        ', '\n      </div>\n    ']);
 
   var Reactions = function (_LitElement) {
     inherits(Reactions, _LitElement);
@@ -24898,14 +25343,9 @@
     }
 
     createClass(Reactions, [{
-      key: '__renderBars',
-      value: function __renderBars() {
-        return !(this._childs && this._childs.length) ? null : this.hasAttribute('headless') ? null : html$1(_templateObject$d, this._childs.map(this.__renderBar.bind(this, this.selected)));
-      }
-    }, {
       key: '_renderIcon',
       value: function _renderIcon(data) {
-        return data.icon ? html$1(_templateObject2$8, data.icon) : this.emoji.get(data.name);
+        return data.icon ? html$1(_templateObject$e, data.icon) : this.emoji.get(data.name);
       }
     }, {
       key: '_handleClick',
@@ -24932,7 +25372,7 @@
         var shouldRender = count || this.showall;
         var shouldCount = count > 0 && this.showcount;
 
-        return !shouldRender ? null : html$1(_templateObject3$3, k, this._boundedClick, this._renderIcon(v), shouldCount ? html$1(_templateObject4$1, count) : null);
+        return !shouldRender ? null : html$1(_templateObject2$8, k, this._boundedClick, this._renderIcon(v), shouldCount ? html$1(_templateObject3$3, count) : null);
       }
     }, {
       key: '_configure',
@@ -24949,22 +25389,23 @@
             direction = _props$direction === undefined ? 'row' : _props$direction;
 
 
-        return html$1(_templateObject5$1, classString({ icons: true, vertical: direction === 'column' }), this._renderActions());
+        return html$1(_templateObject4$1, classString({ icons: true, vertical: direction === 'column' }), this._renderActions());
       }
     }]);
     return Reactions;
   }(LitElement);
   var ReactionList = withStyle$1(Reactions, css$7);
 
-  var css$8 = "/* :root, */\n:host{\n  display: block;\n}\n.icons {\n  display: flex;\n  flex-direction: row;\n}\n.icons.vertical {\n  flex-direction: column;\n}\n.icon {\n  cursor: default;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  position: relative;\n  margin-right: 5px;\n}\n.icon span {\n  width: 14px;\n  height: 21px;\n  vertical-align: top;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.icons{\n  margin-top: 10px;\n}\n";
+  var css$8 = "/* :root, */\n:host {\n  display: block;\n}\n.icons {\n  display: flex;\n  flex-direction: row;\n  margin-top: 10px;\n}\n.icons.vertical {\n  flex-direction: column;\n}\n.icon {\n  cursor: default;\n  margin-right: 5px;\n  position: relative;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.icon span {\n  height: 21px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  vertical-align: top;\n  width: 14px;\n}\n";
   styleInject(css$8);
 
   var Reactions$1 = withStyle(html$1)(Reactions, css$8);
 
-  var css$9 = ":host{\n  min-width: 330px;\n  min-width: var(--chat-min-width, 330px);\n  min-height: 400px;\n  min-height: var(--chat-min-height, 400px);\n  background-color: #f8f8f8;\n  background-color: var(--chat-background-color, #f8f8f8);\n  height: 100%;\n  display: block;\n}\n";
+  var css$9 = ":host {\n  background-color: #f8f8f8;\n  background-color: var(--chat-background-color, #f8f8f8);\n  display: block;\n  font-size: inherit;\n  font-size: var(--chat-font-size, inherit);\n  height: 100%;\n  height: var(--chat-height, 100%);\n  min-height: 400px;\n  min-height: var(--chat-min-height, 400px);\n  min-width: 330px;\n  min-width: var(--chat-min-width, 330px);\n}\n";
   styleInject(css$9);
 
-  var _templateObject$e = taggedTemplateLiteral(['\n      <wc-chat-scrollable\n        enablegap=\'', '\'\n        listen=\'', '\'\n        watch=\'', '\'\n      >\n        <div>\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            invoke=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            reverse=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </div>\n      </wc-chat-scrollable>\n      <wc-chat-input\n        delay=\'', '\'\n        maxrows=\'', '\'\n        on-message-submit=\'', '\'\n        placeholder=\'', '\'\n        placeholderdisabled=\'', '\'\n        value=\'', '\'\n      />\n    '], ['\n      <wc-chat-scrollable\n        enablegap=\'', '\'\n        listen=\'', '\'\n        watch=\'', '\'\n      >\n        <div>\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            invoke=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            reverse=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </div>\n      </wc-chat-scrollable>\n      <wc-chat-input\n        delay=\'', '\'\n        maxrows=\'', '\'\n        on-message-submit=\'', '\'\n        placeholder=\'', '\'\n        placeholderdisabled=\'', '\'\n        value=\'', '\'\n      />\n    ']);
+  var _templateObject$f = taggedTemplateLiteral(['\n        <wc-chat-input\n          delay=\'', '\'\n          maxrows=\'', '\'\n          disabled=\'', '\'\n          on-message-submit=\'', '\'\n          placeholder=\'', '\'\n          placeholderdisabled=\'', '\'\n          value=\'', '\'\n        />\n      '], ['\n        <wc-chat-input\n          delay=\'', '\'\n          maxrows=\'', '\'\n          disabled=\'', '\'\n          on-message-submit=\'', '\'\n          placeholder=\'', '\'\n          placeholderdisabled=\'', '\'\n          value=\'', '\'\n        />\n      ']),
+      _templateObject2$9 = taggedTemplateLiteral(['\n      <wc-chat-scrollable\n        reverse=\'', '\'\n        listen=\'', '\'\n      >\n        <div>\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            invoke=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </div>\n      </wc-chat-scrollable>\n      ', '\n    '], ['\n      <wc-chat-scrollable\n        reverse=\'', '\'\n        listen=\'', '\'\n      >\n        <div>\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            invoke=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </div>\n      </wc-chat-scrollable>\n      ', '\n    ']);
 
   var EVENT = 'did-update';
 
@@ -24977,16 +25418,16 @@
           actions: Array,
           actionsallowed: Array,
           delay: Number,
-          enablegap: Boolean,
+          disabled: Boolean,
           list: Array,
           maxrows: Number,
           message: String,
+          noinput: Boolean,
           placeholder: String,
           placeholderdisabled: String,
           reverse: Boolean,
           user: Number,
-          users: Array,
-          watch: Boolean
+          users: Array
         };
       }
     }]);
@@ -25001,10 +25442,12 @@
       _this.boundedUserDisable = _this._handleUserDisable.bind(_this);
       _this.boundedMessageReaction = _this._handleMessageReaction.bind(_this);
 
-      window.customElements.define('wc-chat-scrollable', Scroll);
-      window.customElements.define('wc-chat-input', Input);
-      window.customElements.define('wc-chat-messages', Messages);
-      window.customElements.define('wc-chat-reactions', Reactions$1);
+      registerCustomElement('wc-chat-scrollable', Scroll);
+      registerCustomElement('wc-chat-input', Input);
+      registerCustomElement('wc-chat-messages', Messages);
+      registerCustomElement('wc-chat-reactions', Reactions$1);
+
+      _this._scrollable = null;
       return _this;
     }
 
@@ -25015,6 +25458,16 @@
         this.boundedMessageDelete = null;
         this.boundedUserDisable = null;
         this.boundedMessageReaction = null;
+      }
+    }, {
+      key: 'scrollTo',
+      value: function scrollTo() {
+        this._scrollable.scrollTo && this._scrollable.scrollTo();
+      }
+    }, {
+      key: '_firstRendered',
+      value: function _firstRendered() {
+        if (this.shadowRoot) this._scrollable = this.shadowRoot.querySelector('wc-chat-scrollable');
       }
     }, {
       key: '_handleSubmit',
@@ -25039,7 +25492,9 @@
     }, {
       key: '_render',
       value: function _render(props) {
-        return html$1(_templateObject$e, props.enablegap, EVENT, props.watch, props.actions, props.actionsallowed, EVENT, props.list, this.boundedMessageDelete, this.boundedMessageReaction, this.boundedUserDisable, props.reverse, props.user, props.users, props.delay || 0, props.maxrows || 10, this.boundedMessageSubmit, props.placeholder, props.placeholderdisabled, props.message);
+        var input = props.noinput ? null : html$1(_templateObject$f, props.delay || 0, props.maxrows || 10, props.disabled, this.boundedMessageSubmit, props.placeholder, props.placeholderdisabled, props.message);
+
+        return html$1(_templateObject2$9, props.reverse, EVENT, props.actions, props.actionsallowed, EVENT, props.list, this.boundedMessageDelete, this.boundedMessageReaction, this.boundedUserDisable, props.user, props.users, input);
       }
     }]);
     return Chat;
