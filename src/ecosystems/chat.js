@@ -42,6 +42,8 @@ export class Chat extends LitElement {
     registerCustomElement('wc-chat-input', Input)
     registerCustomElement('wc-chat-messages', Messages)
     registerCustomElement('wc-chat-reactions', Reactions)
+
+    this._scrollable = null
   }
 
   disconnectedCallback () {
@@ -49,6 +51,14 @@ export class Chat extends LitElement {
     this.boundedMessageDelete = null
     this.boundedUserDisable = null
     this.boundedMessageReaction = null
+  }
+
+  scrollTo () {
+    this._scrollable.scrollTo && this._scrollable.scrollTo()
+  }
+
+  _firstRendered () {
+    if (this.shadowRoot) this._scrollable = this.shadowRoot.querySelector('wc-chat-scrollable')
   }
 
   _handleSubmit (e) {

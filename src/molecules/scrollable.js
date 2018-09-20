@@ -47,6 +47,16 @@ export class Scrollable extends LitElement {
     return this._scrollable instanceof HTMLElement
   }
 
+  scrollTo (x, y) {
+    let el
+    if (!isNumber(x) || !isNumber(y)) el = this._scrollable
+
+    const _x = 0
+    const _y = this.reverse ? 0 : el.scrollHeight
+
+    this._scrollTo(x || _x, y || _y)
+  }
+
   _firstRendered () {
     // eslint-disable-next-line padding-line-between-statements
     if (!this._isTarget) { debug('Target is not valid HTMLElement'); return }
