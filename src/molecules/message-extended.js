@@ -7,8 +7,6 @@ const cn = (...argv) => argv.join(' ').trim()
 export const messageExtended = (props) => {
   const { message } = props
 
-  const config = new Map([['thumbsup', { name: ':thumbsup', count: message.rating }]])
-
   return (html`
     <div class$='${cs({
       message: true, deleted: props.deleted, aggregated: message.aggregated,
@@ -18,13 +16,13 @@ export const messageExtended = (props) => {
         style$='${!message.avatar ? '' : `background-image: url(${message.avatar});`}'
       ></div>
       <section class$='${cn(message.user_role, 'content', cs({ me: message.user_id === message.current_user_id }))}'>
+        ${props.actions}
         <div class='message-meta'>
           <span class='message-author'>${message.user_name}</span>
           <span class='message-stamp'>${formatDate(stampToDate(message.timestamp))}</span>
           <div class='message-status'>${message.status}</div>
         </div>
-        <div>${text(message.body)}</div>
-        <wc-chat-reactions config=${config} showcount></wc-chat-reactions>
+        <div class='message-body'>${text(message.body)}</div>
         ${props.children}
       </section>
     </div>

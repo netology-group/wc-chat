@@ -55,3 +55,16 @@ export const smile = html`<svg width="26" height="16" viewBox="0 0 26 16" fill="
 <path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0H3.5V3.5H0V4.5H3.5V8H4.5V4.5H8V3.5H4.5V0Z" transform="translate(18 4)" fill="#B8B8B8"/>
 </svg>
 `
+
+export const menu = (html`<svg width="14" height="3" viewBox="0 0 14 3" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 3C2.32843 3 3 2.32843 3 1.5C3 0.671573 2.32843 0 1.5 0C0.671573 0 0 0.671573 0 1.5C0 2.32843 0.671573 3 1.5 3Z" fill="#B8B8B8"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12.5 3C13.3284 3 14 2.32843 14 1.5C14 0.671573 13.3284 0 12.5 0C11.6716 0 11 0.671573 11 1.5C11 2.32843 11.6716 3 12.5 3Z" fill="#B8B8B8"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7 3C7.82843 3 8.5 2.32843 8.5 1.5C8.5 0.671573 7.82843 0 7 0C6.17157 0 5.5 0.671573 5.5 1.5C5.5 2.32843 6.17157 3 7 3Z" fill="#B8B8B8"/>
+</svg>`)
+
+export const smiley = (html`<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M0 8C0 12.4183 3.58203 16 8 16C12.418 16 16 12.4183 16 8C16 3.58167 12.418 0 8 0C3.58203 0 0 3.58167 0 8ZM14 8C14 11.3137 11.3135 14 8 14C4.68652 14 2 11.3137 2 8C2 4.68628 4.68652 2 8 2C11.3135 2 14 4.68628 14 8Z" fill="#B8B8B8"/>
+<path d="M5.85148 9.88464C5.6492 9.53148 5.75819 9.07425 6.09953 8.85971C6.4473 8.64113 6.89926 8.75963 7.10516 9.11911C7.35768 9.55998 7.63379 9.74632 8 9.74632C8.36622 9.74632 8.64233 9.55998 8.89484 9.11911C9.10074 8.75963 9.55271 8.64113 9.90047 8.85971C10.2418 9.07425 10.3508 9.53148 10.1485 9.88464C9.63928 10.7737 8.8986 11.25 8 11.25C7.1014 11.25 6.36072 10.7737 5.85148 9.88464Z" fill="#B8B8B8"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M5 8C5.55228 8 6 7.55228 6 7C6 6.44772 5.55228 6 5 6C4.44772 6 4 6.44772 4 7C4 7.55228 4.44772 8 5 8Z" fill="#B8B8B8"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M11 8C11.5523 8 12 7.55228 12 7C12 6.44772 11.5523 6 11 6C10.4477 6 10 6.44772 10 7C10 7.55228 10.4477 8 11 8Z" fill="#B8B8B8"/>
+</svg>`)

@@ -2,7 +2,9 @@ import { html, classString as cs } from '@polymer/lit-element'
 
 import * as images from '../images'
 
-export const actionImages = new Map([['message-delete', images.del], ['user-disable', images.lock], ['message-react', null]])
+const cn = (...argv) => argv.join(' ').trim()
+
+export const actionImages = new Map([['message-delete', images.del], ['user-disable', images.lock]])
 
 export const action = ({
   allowed,
@@ -10,16 +12,17 @@ export const action = ({
   classname,
   disabled,
   handler,
+  key,
   message,
   name,
 }) => {
-  const cls = cs(Object.assign(
-    { 'action-subgroup-item': true },
-    name ? { [name]: true } : {},
-    classname ? { [classname]: true } : {},
-    disabled ? { disabled: true } : {},
-    allowed ? { allowed: true } : {}
-  ))
+  const cls = cn(
+    'action',
+    classname,
+    key,
+    name,
+    cs({ disabled, allowed }),
+  )
 
   if (!allowed) return null
 
@@ -35,19 +38,17 @@ export const reaction = ({
   disabled,
   handler,
   message,
-  standalone,
 }) => {
-  const cls = cs({
-    'reaction-add': true,
-    disabled,
-    standalone,
-  })
+  const cls = cn('reaction-add', cs({ disabled }))
+  const config = () => new Map([['thumbsup', { name: ':thumbsup' }]])
 
   return (html`
     <button
       class$='${cls}'
       disabled='${disabled}'
       on-click='${e => handler && handler(e, { message })}'
-    >${images.smile}</button>
+    >
+      <wc-chat-reactions direction='column' config='${config()}' showall></wc-chat-reactions>
+    </button>
 `)
 }

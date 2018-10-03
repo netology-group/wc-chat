@@ -3,13 +3,14 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 }
 
 :root {
-  --chat-message-avatar-size: 32px;
-  --chat-message-avatar-margin: 8px;
-  --chat-message-border-radius: 5px;
-  --chat-message-margin-between: 16px;
-  --chat-message-color-me: var(--cornflowerBlue, #ebf2f7);
-  --chat-message-color-watchdog: var(--whiteLinen, #faefeb);
-  --chat-message-color-deleted: var(--gallery, #eee);
+  --message-avatar-size: 32px;
+  --message-avatar-margin: 8px;
+  --message-border-radius: 5px;
+  --message-margin-between: 16px;
+  --message-color-me: var(--chat-message-color-me, var(--cornflowerBlue, #ebf2f7));
+  --message-color-watchdog: var(--chat-message-color-watchdog, var(--whiteLinen, #faefeb));
+  --message-color-deleted: var(--chat-message-color-watchdog, var(--gallery, #eee));
+  --message-status-color: var(--chat-message-status-color, var(--silver, #b8b8b8));
 }
 
 .avatar {
@@ -18,12 +19,12 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   background-size: contain;
   border-radius: 100%;
   float: left;
-  height: var(--chat-message-avatar-size);
-  margin-right: var(--chat-message-avatar-margin);
+  height: var(--message-avatar-size);
+  margin-right: var(--message-avatar-margin);
   overflow: hidden;
   user-select: none;
   vertical-align: top;
-  width: var(--chat-message-avatar-size);
+  width: var(--message-avatar-size);
 }
 
 .avatar.moderator {
@@ -32,32 +33,40 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 
 .content {
   background-color: #fff;
-  border-radius: var(--chat-message-border-radius);
+  border-radius: var(--message-border-radius);
   box-sizing: border-box;
   display: inline-block;
-  padding: 8px 22px 8px 14px;
+  padding: 8px 16px 8px 14px;
   text-align: left;
-  width: calc(100% - var(--chat-message-avatar-size) - var(--chat-message-avatar-margin));
+  width: calc(100% - var(--message-avatar-size) - var(--message-avatar-margin));
+}
+
+.content > [class^="actions"] {
+  opacity: 0;
+}
+
+.content:hover > [class^="actions"] {
+  opacity: 1;
 }
 
 .content.moderator {
-  background-color: var(--chat-message-color-watchdog);
+  background-color: var(--message-color-watchdog);
 }
 
 .content.me {
-  background-color: var(--chat-message-color-me);
+  background-color: var(--message-color-me);
 }
 
 .message:last-child {
-  margin-bottom: var(--chat-message-margin-between);
+  margin-bottom: var(--message-margin-between);
 }
 
 .message + .message:not(.aggregated) {
-  margin-top: var(--chat-message-margin-between);
+  margin-top: var(--message-margin-between);
 }
 
 .message.aggregated {
-  margin-top: calc(-1 * var(--chat-message-border-radius));
+  margin-top: calc(-1 * var(--message-border-radius));
 }
 
 .message.aggregated .avatar {
@@ -66,11 +75,11 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 }
 
 .message.aggregated .content {
-  border-radius: 0 0 var(--chat-message-border-radius) var(--chat-message-border-radius);
+  border-radius: 0 0 var(--message-border-radius) var(--message-border-radius);
 }
 
 .message.deleted .content {
-  background: var(--chat-message-color-deleted);
+  background: var(--message-color-deleted);
 }
 
 .message.deleted .avatar,
@@ -103,11 +112,15 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 
 .message-stamp,
 .message-status {
-  color: var(--message-status-color, var(--silver, #b8b8b8));
+  color: var(--message-status-color);
   font-size: 0.75em;
 }
 
 .message-author {
   font-weight: bold;
   margin-right: 8px;
+}
+
+.message-body {
+  padding-right: 24px;
 }

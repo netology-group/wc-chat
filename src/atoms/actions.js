@@ -1,28 +1,31 @@
 import { html } from '@polymer/lit-element'
 
+import { menu, smiley } from '../images'
+
 import style from './actions.css'
 
 const _reactions = props => (html`
-  <div class='action-group action-group-reactions'>
-    ${props.children}
-  </div>
+  <div class='reactions'>
+    <div class='reaction'>${smiley}</div>
+    <div class='reactions-group'>
+      ${props.children}
+    </div>
+</div>
 `)
 
 const _actions = props => (html`
-  <div class='action-group action-group-actions'>
-    <span>...</span>
-    <div class='action-subgroup'>
-      <div class='action-subgroup-inner'>
-        ${props.children}
-      </div>
-    </div>
+  <div class='actions-group'>
+    ${props.children}
+    ${props.reactions.length ? _reactions({ children: props.reactions }) : null}
   </div>
 `)
 
 export const actions = props => (html`
   <div class='actions'>
-    ${props.reactions.length ? _reactions({ children: props.reactions }) : null}
-    ${props.children.length ? _actions(props) : null}
+    ${menu}
+    <div class='actions-inner'>
+      ${props.children.length ? _actions(props) : null}
+    </div>
   </div>
 `)
 
