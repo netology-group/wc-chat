@@ -7,9 +7,9 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   --chat-message-avatar-margin: 8px;
   --chat-message-border-radius: 5px;
   --chat-message-margin-between: 16px;
-  --chat-message-color-me: rgba(72, 161, 230, 0.08);
-  --chat-message-color-watchdog: rgba(255, 114, 86, 0.08);
-  --chat-message-color-deleted: rgba(0, 0, 0, 0.04);
+  --chat-message-color-me: var(--cornflowerBlue, #ebf2f7);
+  --chat-message-color-watchdog: var(--whiteLinen, #faefeb);
+  --chat-message-color-deleted: var(--gallery, #eee);
 }
 
 .avatar {

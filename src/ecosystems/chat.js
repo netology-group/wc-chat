@@ -1,13 +1,12 @@
 import { html, LitElement } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils/lib/mixins/mixins'
+import { ReactionList as Reactions } from '@netology-group/wc-reaction/es/organisms/reaction-list'
 
 import Input from '../organisms/input'
 import Messages from '../organisms/messages-extended'
 import Scroll from '../molecules/scrollable'
-import Reactions from '../molecules/reactions'
 import { registerCustomElement } from '../utils/index'
-
-import style from './chat.css'
+import style from '../ecosystems/chat.css'
 
 const EVENT = 'did-update'
 
