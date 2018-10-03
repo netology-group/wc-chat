@@ -10,12 +10,14 @@ export const messageExtended = (props) => {
   const config = new Map([['thumbsup', { name: ':thumbsup', count: message.rating }]])
 
   return (html`
-    <div class$='${cs({ 'message-block': true, deleted: props.deleted })}'>
+    <div class$='${cs({
+      message: true, deleted: props.deleted, aggregated: message.aggregated,
+    })}'>
       <div
         class$='${cn(message.user_role, 'avatar')}'
         style$='${!message.avatar ? '' : `background-image: url(${message.avatar});`}'
       ></div>
-      <section class$='${cn(message.user_role, 'message')}'>
+      <section class$='${cn(message.user_role, 'content', cs({ me: message.user_id === message.current_user_id }))}'>
         <div class='message-meta'>
           <span class='message-author'>${message.user_name}</span>
           <span class='message-stamp'>${formatDate(stampToDate(message.timestamp))}</span>

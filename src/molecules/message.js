@@ -14,12 +14,14 @@ export const messageDefault = (props) => {
   const { message } = props
 
   return (html`
-    <div class$='${cs({ 'message-block': true, deleted: props.deleted })}'>
+    <div class$='${cs({
+      message: true, deleted: props.deleted, aggregated: message.aggregated,
+    })}'>
       <div
-        class$='${cn(message.user_role, 'avatar')}'
+        class$='${cn(message.user_role, 'avatar', cs({ me: message.user_id === message.current_user_id }))}'
         style$='background-image: url(${message.avatar});'
       ></div>
-      <section class$='${cn(message.user_role, 'message')}'>
+      <section class$='${cn(message.user_role, 'content')}'>
         <div class='message-meta'>
           <span class='message-author'>${message.user_name}</span>
           <span class='message-status'>${message.status || formatDate(stampToDate(message.timestamp))}</span>
