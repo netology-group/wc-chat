@@ -141,6 +141,11 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   margin-right: 8px;
 }
 
+.moderator .message-author {
+  background: url('../images/human.svg') no-repeat right center transparent;
+  padding-right: 12px;
+}
+
 .message-body {
   padding-right: 24px;
 }

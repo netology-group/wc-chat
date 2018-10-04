@@ -7,6 +7,8 @@ const cn = (...argv) => argv.join(' ').trim()
 export const messageExtended = (props) => {
   const { message } = props
 
+  const isWatchdog = message.user_role === 'moderator'
+
   return (html`
     <div class$='${cs({
       message: true, deleted: props.deleted, aggregated: message.aggregated,
@@ -18,9 +20,9 @@ export const messageExtended = (props) => {
       <section class$='${cn(message.user_role, 'content', cs({ me: message.user_id === message.current_user_id }))}'>
         ${props.actions}
         <div class='message-meta'>
-          <span class='message-author'>${message.user_name}</span>
+          <span class='message-author' title='${isWatchdog ? message.status : ''}'>${message.user_name}</span>
           <span class='message-stamp'>${formatDate(stampToDate(message.timestamp))}</span>
-          <div class='message-status'>${message.status}</div>
+          ${!isWatchdog ? (html`<div class='message-status'>${message.status}</div>`) : null}
         </div>
         <div class='message-body'>${text(message.body)}</div>
         ${props.children}
