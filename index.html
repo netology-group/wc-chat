@@ -93,6 +93,14 @@
 
           messenger.list = _messages
         })
+
+        messenger.addEventListener('chat-message-delete', (e) => {
+          alert(`Delete message: ${JSON.stringify(e.detail)}`)
+        })
+
+        messenger.addEventListener('chat-user-disable', (e) => {
+          alert(`Disable user: ${JSON.stringify(e.detail)}`)
+        })
       }
 
       window.addEventListener('DOMContentLoaded', () => {
@@ -103,6 +111,13 @@
         initialize()
       })
     </script>
+    <style>
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
     <h1>Chat</h1>
