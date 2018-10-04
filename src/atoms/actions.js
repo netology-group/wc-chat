@@ -1,8 +1,11 @@
 import { html } from '@polymer/lit-element'
 
-import { menu, smiley } from '../images'
+import { menu, smiley, cross } from '../images'
+import { action } from '../atoms/action'
 
 import style from './actions.css'
+
+const toList = map => map.toJSON().map(tuple => tuple[1])
 
 const _reactions = props => (html`
   <div class='reactions'>
@@ -15,12 +18,19 @@ const _reactions = props => (html`
 
 const _actions = props => (html`
   <div class='actions-group'>
-    ${props.children}
-    ${props.reactions.length ? _reactions({ children: props.reactions }) : null}
+    ${toList(props.children)}
+    ${props.reactions.size ? _reactions({ children: toList(props.reactions) }) : null}
   </div>
 `)
 
 export const actions = props => (html`
+  ${props.children.has('message-delete')
+    ? (html`${action({
+      ...props.actions.get('message-delete'),
+      classname: 'quickdelete',
+      children: cross,
+    })}`)
+    : null}
   <div class='actions'>
     ${menu}
     <div class='actions-inner'>

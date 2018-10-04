@@ -68,3 +68,14 @@ export const smiley = (html`<svg width="16" height="16" viewBox="0 0 16 16" fill
 <path fill-rule="evenodd" clip-rule="evenodd" d="M5 8C5.55228 8 6 7.55228 6 7C6 6.44772 5.55228 6 5 6C4.44772 6 4 6.44772 4 7C4 7.55228 4.44772 8 5 8Z" fill="#B8B8B8"/>
 <path fill-rule="evenodd" clip-rule="evenodd" d="M11 8C11.5523 8 12 7.55228 12 7C12 6.44772 11.5523 6 11 6C10.4477 6 10 6.44772 10 7C10 7.55228 10.4477 8 11 8Z" fill="#B8B8B8"/>
 </svg>`)
+
+export const cross = (html`<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
+<rect width="10" height="10" fill="#C4C4C4"/>
+</mask>
+<g mask="url(#mask0)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M8.29297 9.70706L0.292969 1.70706L1.70718 0.292847L9.70718 8.29285L8.29297 9.70706Z" fill="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M0.292969 8.29285L8.29297 0.292847L9.70718 1.70706L1.70718 9.70706L0.292969 8.29285Z" fill="white"/>
+</g>
+</svg>
+`)

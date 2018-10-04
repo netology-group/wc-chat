@@ -61,6 +61,10 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   background-color: var(--message-color-me);
 }
 
+.message {
+  position: relative;
+}
+
 .message:hover .content {
   background-color: var(--message-color-hover);
 }

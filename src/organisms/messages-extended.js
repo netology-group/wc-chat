@@ -33,34 +33,33 @@ export class XMessagesElement extends MessagesElement {
   }
 
   __renderActions (data) {
-    let children = []
-    let reactions = []
+    const children = new Map()
+    const reactions = new Map()
+    const actionsOpts = new Map()
 
     const isAllowed = (action, d) => d.current_user_id !== d.user_id
       || (d.current_user_id === d.user_id && action.self)
 
     this.actionsallowed.forEach((key) => {
       const _action = this._actions.get(key) || {}
+      const actionOpts = {
+        message: data,
+        allowed: isAllowed(_action, data) || undefined,
+        children: actions.actionImages.get(key),
+        handler: (e, detail) => { this.dispatchEvent(new CustomEvent(key, { detail })) },
+      }
+
+      actionsOpts.set(key, actionOpts)
 
       if (key === 'message-reaction') {
-        reactions = reactions.concat(actions.reaction({
-          message: data,
-          allowed: isAllowed(_action, data) || undefined,
-          children: actions.actionImages.get(key),
-          handler: (e, detail) => { this.dispatchEvent(new CustomEvent(key, { detail })) },
-        }))
+        reactions.set(key, actions.reaction(actionOpts))
       } else {
-        children = children.concat(actions.action({
-          key,
-          message: data,
-          allowed: isAllowed(_action, data) || undefined,
-          children: actions.actionImages.get(key),
-          handler: (e, detail) => { this.dispatchEvent(new CustomEvent(key, { detail })) },
-        }))
+        children.set(key, actions.action(actionOpts))
       }
     })
 
-    return Actions({ children, reactions })
+    // eslint-disable-next-line object-curly-newline
+    return Actions({ children, reactions, actions: actionsOpts })
   }
 }
 
