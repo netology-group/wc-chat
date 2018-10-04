@@ -18,16 +18,20 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 }
 
 .avatar {
-  background: no-repeat center center;
-  background-color: var(--message-avatar-color-moderator, transparent);
-  background-size: contain;
-  border-radius: 100%;
   float: left;
-  height: var(--message-avatar-size);
   margin-right: var(--message-avatar-margin);
   overflow: hidden;
   user-select: none;
   vertical-align: top;
+  width: var(--message-avatar-size);
+}
+
+.avatar > div:first-child {
+  background: no-repeat center center;
+  background-color: var(--message-avatar-color-moderator, transparent);
+  background-size: contain;
+  border-radius: 100%;
+  height: var(--message-avatar-size);
   width: var(--message-avatar-size);
 }
 
@@ -131,7 +135,8 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 }
 
 .message-stamp,
-.message-status {
+.message-status,
+.message-identity {
   color: var(--message-status-color);
   font-size: 0.75em;
 }
@@ -139,6 +144,14 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 .message-author {
   font-weight: bold;
   margin-right: 8px;
+}
+
+.moderator .message-status {
+  display: inline-block;
+}
+
+.user.avatar .message-identity {
+  text-align: center;
 }
 
 .moderator .message-author {

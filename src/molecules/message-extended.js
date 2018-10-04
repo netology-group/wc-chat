@@ -13,14 +13,14 @@ export const messageExtended = (props) => {
     <div class$='${cs({
       message: true, deleted: props.deleted, aggregated: message.aggregated,
     })}'>
-      <div
-        class$='${cn(message.user_role, 'avatar')}'
-        style$='${!message.avatar ? '' : `background-image: url(${message.avatar});`}'
-      ></div>
+      <div class$='${cn(message.user_role, 'avatar')}'>
+        <div style$='${!message.avatar ? '' : `background-image: url(${message.avatar});`}'></div>
+        ${!isWatchdog ? (html`<div class='message-identity'>${message.identity}</div>`) : null}
+      </div>
       <section class$='${cn(message.user_role, 'content', cs({ me: message.user_id === message.current_user_id }))}'>
         ${props.actions}
         <div class='message-meta'>
-          <span class='message-author' title='${isWatchdog ? message.status : ''}'>${message.user_name}</span>
+          <span class='message-author' title='${isWatchdog ? message.identity : ''}'>${message.user_name}</span>
           <span class='message-stamp'>${formatDate(stampToDate(message.timestamp))}</span>
           ${!isWatchdog ? (html`<div class='message-status'>${message.status}</div>`) : null}
         </div>
