@@ -96,19 +96,17 @@ export class Chat extends LitElement {
         reverse='${props.reverse}'
         listen='${EVENT}'
       >
-        <div>
-          <wc-chat-messages
-            actions='${props.actions}'
-            actionsallowed='${props.actionsallowed}'
-            invoke='${EVENT}'
-            list='${props.list}'
-            on-message-delete='${this.boundedMessageDelete}'
-            on-message-reaction='${this.boundedMessageReaction}'
-            on-user-disable='${this.boundedUserDisable}'
-            user='${props.user}'
-            users='${props.users}'
-          />
-        </div>
+        <wc-chat-messages
+          actions='${props.actions}'
+          actionsallowed='${props.actionsallowed}'
+          invoke='${EVENT}'
+          list='${props.list}'
+          on-message-delete='${this.boundedMessageDelete}'
+          on-message-reaction='${this.boundedMessageReaction}'
+          on-user-disable='${this.boundedUserDisable}'
+          user='${props.user}'
+          users='${props.users}'
+        />
       </wc-chat-scrollable>
       ${input}
     `)

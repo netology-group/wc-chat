@@ -10,6 +10,10 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   --message-color-me: var(--chat-message-color-me, var(--cornflowerBlue, #ebf2f7));
   --message-color-watchdog: var(--chat-message-color-watchdog, var(--whiteLinen, #faefeb));
   --message-color-deleted: var(--chat-message-color-watchdog, var(--gallery, #eee));
+  --message-color-hover: var(--chat-message-color-hover, #ffffff80);
+  --message-color-me-hover: var(--chat-message-color-me-hover, #ebf2f7b3);
+  --message-color-watchdog-hover: var(--chat-message-color-watchdog-hover, #faefebb3);
+  --message-color-deleted-hover: var(--chat-message-color-deleted-hover, #eeeeeeb3);
   --message-status-color: var(--chat-message-status-color, var(--silver, #b8b8b8));
 }
 
@@ -57,8 +61,16 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   background-color: var(--message-color-me);
 }
 
-.message:last-child {
-  margin-bottom: var(--message-margin-between);
+.message:hover .content {
+  background-color: var(--message-color-hover);
+}
+
+.message:hover .content.moderator {
+  background-color: var(--message-color-watchdog-hover);
+}
+
+.message:hover .content.me {
+  background-color: var(--message-color-me-hover);
 }
 
 .message + .message:not(.aggregated) {
@@ -78,13 +90,17 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   border-radius: 0 0 var(--message-border-radius) var(--message-border-radius);
 }
 
+.message.deleted .avatar,
+.message.deleted .content {
+  filter: grayscale(75%);
+}
+
 .message.deleted .content {
   background: var(--message-color-deleted);
 }
 
-.message.deleted .avatar,
-.message.deleted .content {
-  filter: grayscale(75%);
+.message.deleted:hover .content {
+  background: var(--message-color-deleted-hover);
 }
 
 .message-meta {

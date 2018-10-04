@@ -24,7 +24,7 @@ export const actions = props => (html`
   <div class='actions'>
     ${menu}
     <div class='actions-inner'>
-      ${props.children.length ? _actions(props) : null}
+      ${_actions(props)}
     </div>
   </div>
 `)
