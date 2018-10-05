@@ -3,17 +3,19 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 }
 
 :root {
-  --message-avatar-size: 32px;
+  --message-aggregated-content-border-radius: var(--chat-aggregated-content-border-radius, var(--message-border-radius));
+  --message-aggregated-margin: var(--chat-message-aggregated-margin, var(--message-border-radius));
   --message-avatar-margin: 8px;
+  --message-avatar-size: 32px;
   --message-border-radius: 5px;
-  --message-margin-between: 16px;
-  --message-color-me: var(--chat-message-color-me, var(--cornflowerBlue, #ebf2f7));
-  --message-color-watchdog: var(--chat-message-color-watchdog, var(--whiteLinen, #faefeb));
+  --message-color-deleted-hover: var(--chat-message-color-deleted-hover, #eeeeeeb3);
   --message-color-deleted: var(--chat-message-color-watchdog, var(--gallery, #eee));
   --message-color-hover: var(--chat-message-color-hover, #ffffff80);
   --message-color-me-hover: var(--chat-message-color-me-hover, #ebf2f7b3);
+  --message-color-me: var(--chat-message-color-me, var(--cornflowerBlue, #ebf2f7));
   --message-color-watchdog-hover: var(--chat-message-color-watchdog-hover, #faefebb3);
-  --message-color-deleted-hover: var(--chat-message-color-deleted-hover, #eeeeeeb3);
+  --message-color-watchdog: var(--chat-message-color-watchdog, var(--whiteLinen, #faefeb));
+  --message-margin-between: 16px;
   --message-status-color: var(--chat-message-status-color, var(--silver, #b8b8b8));
 }
 
@@ -86,7 +88,7 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 }
 
 .message.aggregated {
-  margin-top: calc(-1 * var(--message-border-radius));
+  margin-top: var(--message-aggregated-margin);
 }
 
 .message.aggregated .avatar {
@@ -95,7 +97,7 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 }
 
 .message.aggregated .content {
-  border-radius: 0 0 var(--message-border-radius) var(--message-border-radius);
+  border-radius: var(--message-border-radius);
 }
 
 .message.deleted .avatar,
