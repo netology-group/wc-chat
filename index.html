@@ -61,7 +61,9 @@
           user_id: 1,
         }
 
-        return Object.assign(_message, _users.filter(_ => _.user_id === _message.user_id)[0] || {})
+        return Object.assign(_message, _users.filter(function(_){
+          return _.user_id === _message.user_id
+        })[0] || {})
       }
 
       function initialize () {
@@ -74,8 +76,8 @@
         messenger.users = _users
         messenger.user = 1
 
-        messenger.addEventListener('chat-message-submit', (e) => {
-          setTimeout(() => {
+        messenger.addEventListener('chat-message-submit', function(e) {
+          setTimeout(function() {
             if(reverse){
               _messages = [enhanceMessage(e.detail.message)].concat(_messages)
             }else{
@@ -86,8 +88,8 @@
           }, 1e2)
         })
 
-        messenger.addEventListener('chat-message-reaction', (e) => {
-          _messages = _messages.map((it) => {
+        messenger.addEventListener('chat-message-reaction', function(e) {
+          _messages = _messages.map(function(it) {
             if(it.id === e.detail.message.id) it.rating = !it.rating ? 1 : it.rating + 1
             return it
           })
@@ -95,16 +97,16 @@
           messenger.list = _messages
         })
 
-        messenger.addEventListener('chat-message-delete', (e) => {
-          alert(`Delete message: ${JSON.stringify(e.detail)}`)
+        messenger.addEventListener('chat-message-delete', function(e) {
+          alert('Delete message: ' + JSON.stringify(e.detail))
         })
 
-        messenger.addEventListener('chat-user-disable', (e) => {
-          alert(`Disable user: ${JSON.stringify(e.detail)}`)
+        messenger.addEventListener('chat-user-disable', function(e) {
+          alert('Disable user: '+ JSON.stringify(e.detail))
         })
       }
 
-      window.addEventListener('DOMContentLoaded', () => {
+      window.addEventListener('DOMContentLoaded', function() {
         var _Chat = window.WCChat.chat.default
 
         window.customElements.define('wc-chat', _Chat)
