@@ -11,6 +11,7 @@ iron-autogrow-textarea {
   line-height: 1.2em;
   min-height: 52px;
   outline: none;
+  -ms-overflow-style: none;
   width: 100%;
 
   --iron-autogrow-textarea: {
