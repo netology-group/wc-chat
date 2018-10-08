@@ -38,21 +38,6 @@
     };
   }();
 
-  var defineProperty = function (obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
-    }
-
-    return obj;
-  };
-
   var _extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
@@ -115,44 +100,6 @@
 
     return call && (typeof call === "object" || typeof call === "function") ? call : self;
   };
-
-  var slicedToArray = function () {
-    function sliceIterator(arr, i) {
-      var _arr = [];
-      var _n = true;
-      var _d = false;
-      var _e = undefined;
-
-      try {
-        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-          _arr.push(_s.value);
-
-          if (i && _arr.length === i) break;
-        }
-      } catch (err) {
-        _d = true;
-        _e = err;
-      } finally {
-        try {
-          if (!_n && _i["return"]) _i["return"]();
-        } finally {
-          if (_d) throw _e;
-        }
-      }
-
-      return _arr;
-    }
-
-    return function (arr, i) {
-      if (Array.isArray(arr)) {
-        return arr;
-      } else if (Symbol.iterator in Object(arr)) {
-        return sliceIterator(arr, i);
-      } else {
-        throw new TypeError("Invalid attempt to destructure non-iterable instance");
-      }
-    };
-  }();
 
   var taggedTemplateLiteral = function (strings, raw) {
     return Object.freeze(Object.defineProperties(strings, {
@@ -2872,6 +2819,4826 @@
       return LitElement;
   }(PropertiesMixin(HTMLElement));
 
+  var _templateObject$1 = taggedTemplateLiteral(['<style>', '</style>'], ['<style>', '</style>']),
+      _templateObject2$1 = taggedTemplateLiteral(['\n      ', '\n      ', '\n    '], ['\n      ', '\n      ', '\n    ']);
+
+  var withStyle$1 = function withStyle(base) {
+    for (var _len = arguments.length, styles = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      styles[_key - 1] = arguments[_key];
+    }
+
+    return function (_base) {
+      inherits(_class, _base);
+
+      function _class() {
+        classCallCheck(this, _class);
+        return possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
+      }
+
+      createClass(_class, [{
+        key: '_renderStyles',
+        value: function _renderStyles() {
+          for (var _len2 = arguments.length, argv = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+            argv[_key2] = arguments[_key2];
+          }
+
+          // eslint-disable-line class-methods-use-this
+          return html$1(_templateObject$1, argv.join(' '));
+        }
+      }, {
+        key: '_render',
+        value: function _render(props) {
+          return html$1(_templateObject2$1, this._renderStyles.apply(this, styles), get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), '_render', this).call(this, props));
+        }
+      }]);
+      return _class;
+    }(base);
+  };
+
+  var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+  /**
+   * lodash (Custom Build) <https://lodash.com/>
+   * Build: `lodash modularize exports="npm" -o ./`
+   * Copyright jQuery Foundation and other contributors <https://jquery.org/>
+   * Released under MIT license <https://lodash.com/license>
+   * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+   * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+   */
+
+  /** Used as references for various `Number` constants. */
+  var MAX_SAFE_INTEGER = 9007199254740991;
+
+  /** `Object#toString` result references. */
+  var argsTag = '[object Arguments]',
+      funcTag = '[object Function]',
+      genTag = '[object GeneratorFunction]',
+      mapTag = '[object Map]',
+      objectTag = '[object Object]',
+      promiseTag = '[object Promise]',
+      setTag = '[object Set]',
+      stringTag = '[object String]',
+      weakMapTag = '[object WeakMap]';
+
+  var dataViewTag = '[object DataView]';
+
+  /**
+   * Used to match `RegExp`
+   * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+   */
+  var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+  /** Used to detect host constructors (Safari). */
+  var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+  /** Used to detect unsigned integer values. */
+  var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+  /** Used to compose unicode character classes. */
+  var rsAstralRange = '\\ud800-\\udfff',
+      rsComboMarksRange = '\\u0300-\\u036f\\ufe20-\\ufe23',
+      rsComboSymbolsRange = '\\u20d0-\\u20f0',
+      rsVarRange = '\\ufe0e\\ufe0f';
+
+  /** Used to compose unicode capture groups. */
+  var rsAstral = '[' + rsAstralRange + ']',
+      rsCombo = '[' + rsComboMarksRange + rsComboSymbolsRange + ']',
+      rsFitz = '\\ud83c[\\udffb-\\udfff]',
+      rsModifier = '(?:' + rsCombo + '|' + rsFitz + ')',
+      rsNonAstral = '[^' + rsAstralRange + ']',
+      rsRegional = '(?:\\ud83c[\\udde6-\\uddff]){2}',
+      rsSurrPair = '[\\ud800-\\udbff][\\udc00-\\udfff]',
+      rsZWJ = '\\u200d';
+
+  /** Used to compose unicode regexes. */
+  var reOptMod = rsModifier + '?',
+      rsOptVar = '[' + rsVarRange + ']?',
+      rsOptJoin = '(?:' + rsZWJ + '(?:' + [rsNonAstral, rsRegional, rsSurrPair].join('|') + ')' + rsOptVar + reOptMod + ')*',
+      rsSeq = rsOptVar + reOptMod + rsOptJoin,
+      rsSymbol = '(?:' + [rsNonAstral + rsCombo + '?', rsCombo, rsRegional, rsSurrPair, rsAstral].join('|') + ')';
+
+  /** Used to match [string symbols](https://mathiasbynens.be/notes/javascript-unicode). */
+  var reUnicode = RegExp(rsFitz + '(?=' + rsFitz + ')|' + rsSymbol + rsSeq, 'g');
+
+  /** Used to detect strings with [zero-width joiners or code points from the astral planes](http://eev.ee/blog/2015/09/12/dark-corners-of-unicode/). */
+  var reHasUnicode = RegExp('[' + rsZWJ + rsAstralRange + rsComboMarksRange + rsComboSymbolsRange + rsVarRange + ']');
+
+  /** Detect free variable `global` from Node.js. */
+  var freeGlobal = _typeof(commonjsGlobal) == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
+
+  /** Detect free variable `self`. */
+  var freeSelf = (typeof self === 'undefined' ? 'undefined' : _typeof(self)) == 'object' && self && self.Object === Object && self;
+
+  /** Used as a reference to the global object. */
+  var root = freeGlobal || freeSelf || Function('return this')();
+
+  /**
+   * A specialized version of `_.map` for arrays without support for iteratee
+   * shorthands.
+   *
+   * @private
+   * @param {Array} [array] The array to iterate over.
+   * @param {Function} iteratee The function invoked per iteration.
+   * @returns {Array} Returns the new mapped array.
+   */
+  function arrayMap(array, iteratee) {
+    var index = -1,
+        length = array ? array.length : 0,
+        result = Array(length);
+
+    while (++index < length) {
+      result[index] = iteratee(array[index], index, array);
+    }
+    return result;
+  }
+
+  /**
+   * Converts an ASCII `string` to an array.
+   *
+   * @private
+   * @param {string} string The string to convert.
+   * @returns {Array} Returns the converted array.
+   */
+  function asciiToArray(string) {
+    return string.split('');
+  }
+
+  /**
+   * The base implementation of `_.times` without support for iteratee shorthands
+   * or max array length checks.
+   *
+   * @private
+   * @param {number} n The number of times to invoke `iteratee`.
+   * @param {Function} iteratee The function invoked per iteration.
+   * @returns {Array} Returns the array of results.
+   */
+  function baseTimes(n, iteratee) {
+    var index = -1,
+        result = Array(n);
+
+    while (++index < n) {
+      result[index] = iteratee(index);
+    }
+    return result;
+  }
+
+  /**
+   * The base implementation of `_.values` and `_.valuesIn` which creates an
+   * array of `object` property values corresponding to the property names
+   * of `props`.
+   *
+   * @private
+   * @param {Object} object The object to query.
+   * @param {Array} props The property names to get values for.
+   * @returns {Object} Returns the array of property values.
+   */
+  function baseValues(object, props) {
+    return arrayMap(props, function (key) {
+      return object[key];
+    });
+  }
+
+  /**
+   * Gets the value at `key` of `object`.
+   *
+   * @private
+   * @param {Object} [object] The object to query.
+   * @param {string} key The key of the property to get.
+   * @returns {*} Returns the property value.
+   */
+  function getValue$1(object, key) {
+    return object == null ? undefined : object[key];
+  }
+
+  /**
+   * Checks if `string` contains Unicode symbols.
+   *
+   * @private
+   * @param {string} string The string to inspect.
+   * @returns {boolean} Returns `true` if a symbol is found, else `false`.
+   */
+  function hasUnicode(string) {
+    return reHasUnicode.test(string);
+  }
+
+  /**
+   * Checks if `value` is a host object in IE < 9.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
+   */
+  function isHostObject(value) {
+    // Many host objects are `Object` objects that can coerce to strings
+    // despite having improperly defined `toString` methods.
+    var result = false;
+    if (value != null && typeof value.toString != 'function') {
+      try {
+        result = !!(value + '');
+      } catch (e) {}
+    }
+    return result;
+  }
+
+  /**
+   * Converts `iterator` to an array.
+   *
+   * @private
+   * @param {Object} iterator The iterator to convert.
+   * @returns {Array} Returns the converted array.
+   */
+  function iteratorToArray(iterator) {
+    var data,
+        result = [];
+
+    while (!(data = iterator.next()).done) {
+      result.push(data.value);
+    }
+    return result;
+  }
+
+  /**
+   * Converts `map` to its key-value pairs.
+   *
+   * @private
+   * @param {Object} map The map to convert.
+   * @returns {Array} Returns the key-value pairs.
+   */
+  function mapToArray(map) {
+    var index = -1,
+        result = Array(map.size);
+
+    map.forEach(function (value, key) {
+      result[++index] = [key, value];
+    });
+    return result;
+  }
+
+  /**
+   * Creates a unary function that invokes `func` with its argument transformed.
+   *
+   * @private
+   * @param {Function} func The function to wrap.
+   * @param {Function} transform The argument transform.
+   * @returns {Function} Returns the new function.
+   */
+  function overArg(func, transform) {
+    return function (arg) {
+      return func(transform(arg));
+    };
+  }
+
+  /**
+   * Converts `set` to an array of its values.
+   *
+   * @private
+   * @param {Object} set The set to convert.
+   * @returns {Array} Returns the values.
+   */
+  function setToArray(set$$1) {
+    var index = -1,
+        result = Array(set$$1.size);
+
+    set$$1.forEach(function (value) {
+      result[++index] = value;
+    });
+    return result;
+  }
+
+  /**
+   * Converts `string` to an array.
+   *
+   * @private
+   * @param {string} string The string to convert.
+   * @returns {Array} Returns the converted array.
+   */
+  function stringToArray(string) {
+    return hasUnicode(string) ? unicodeToArray(string) : asciiToArray(string);
+  }
+
+  /**
+   * Converts a Unicode `string` to an array.
+   *
+   * @private
+   * @param {string} string The string to convert.
+   * @returns {Array} Returns the converted array.
+   */
+  function unicodeToArray(string) {
+    return string.match(reUnicode) || [];
+  }
+
+  /** Used for built-in method references. */
+  var funcProto = Function.prototype,
+      objectProto = Object.prototype;
+
+  /** Used to detect overreaching core-js shims. */
+  var coreJsData = root['__core-js_shared__'];
+
+  /** Used to detect methods masquerading as native. */
+  var maskSrcKey = function () {
+    var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+    return uid ? 'Symbol(src)_1.' + uid : '';
+  }();
+
+  /** Used to resolve the decompiled source of functions. */
+  var funcToString = funcProto.toString;
+
+  /** Used to check objects for own properties. */
+  var hasOwnProperty = objectProto.hasOwnProperty;
+
+  /**
+   * Used to resolve the
+   * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+   * of values.
+   */
+  var objectToString = objectProto.toString;
+
+  /** Used to detect if a method is native. */
+  var reIsNative = RegExp('^' + funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&').replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$');
+
+  /** Built-in value references. */
+  var _Symbol = root.Symbol,
+      iteratorSymbol = _Symbol ? _Symbol.iterator : undefined,
+      propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+  /* Built-in method references for those with the same name as other `lodash` methods. */
+  var nativeKeys = overArg(Object.keys, Object);
+
+  /* Built-in method references that are verified to be native. */
+  var DataView = getNative(root, 'DataView'),
+      Map$1 = getNative(root, 'Map'),
+      Promise$1 = getNative(root, 'Promise'),
+      Set$1 = getNative(root, 'Set'),
+      WeakMap$1 = getNative(root, 'WeakMap');
+
+  /** Used to detect maps, sets, and weakmaps. */
+  var dataViewCtorString = toSource(DataView),
+      mapCtorString = toSource(Map$1),
+      promiseCtorString = toSource(Promise$1),
+      setCtorString = toSource(Set$1),
+      weakMapCtorString = toSource(WeakMap$1);
+
+  /**
+   * Creates an array of the enumerable property names of the array-like `value`.
+   *
+   * @private
+   * @param {*} value The value to query.
+   * @param {boolean} inherited Specify returning inherited property names.
+   * @returns {Array} Returns the array of property names.
+   */
+  function arrayLikeKeys(value, inherited) {
+    // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
+    // Safari 9 makes `arguments.length` enumerable in strict mode.
+    var result = isArray(value) || isArguments(value) ? baseTimes(value.length, String) : [];
+
+    var length = result.length,
+        skipIndexes = !!length;
+
+    for (var key in value) {
+      if ((inherited || hasOwnProperty.call(value, key)) && !(skipIndexes && (key == 'length' || isIndex(key, length)))) {
+        result.push(key);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * The base implementation of `getTag`.
+   *
+   * @private
+   * @param {*} value The value to query.
+   * @returns {string} Returns the `toStringTag`.
+   */
+  function baseGetTag(value) {
+    return objectToString.call(value);
+  }
+
+  /**
+   * The base implementation of `_.isNative` without bad shim checks.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a native function,
+   *  else `false`.
+   */
+  function baseIsNative(value) {
+    if (!isObject(value) || isMasked(value)) {
+      return false;
+    }
+    var pattern = isFunction(value) || isHostObject(value) ? reIsNative : reIsHostCtor;
+    return pattern.test(toSource(value));
+  }
+
+  /**
+   * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+   *
+   * @private
+   * @param {Object} object The object to query.
+   * @returns {Array} Returns the array of property names.
+   */
+  function baseKeys(object) {
+    if (!isPrototype(object)) {
+      return nativeKeys(object);
+    }
+    var result = [];
+    for (var key in Object(object)) {
+      if (hasOwnProperty.call(object, key) && key != 'constructor') {
+        result.push(key);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Copies the values of `source` to `array`.
+   *
+   * @private
+   * @param {Array} source The array to copy values from.
+   * @param {Array} [array=[]] The array to copy values to.
+   * @returns {Array} Returns `array`.
+   */
+  function copyArray(source, array) {
+    var index = -1,
+        length = source.length;
+
+    array || (array = Array(length));
+    while (++index < length) {
+      array[index] = source[index];
+    }
+    return array;
+  }
+
+  /**
+   * Gets the native function at `key` of `object`.
+   *
+   * @private
+   * @param {Object} object The object to query.
+   * @param {string} key The key of the method to get.
+   * @returns {*} Returns the function if it's native, else `undefined`.
+   */
+  function getNative(object, key) {
+    var value = getValue$1(object, key);
+    return baseIsNative(value) ? value : undefined;
+  }
+
+  /**
+   * Gets the `toStringTag` of `value`.
+   *
+   * @private
+   * @param {*} value The value to query.
+   * @returns {string} Returns the `toStringTag`.
+   */
+  var getTag = baseGetTag;
+
+  // Fallback for data views, maps, sets, and weak maps in IE 11,
+  // for data views in Edge < 14, and promises in Node.js.
+  if (DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag || Map$1 && getTag(new Map$1()) != mapTag || Promise$1 && getTag(Promise$1.resolve()) != promiseTag || Set$1 && getTag(new Set$1()) != setTag || WeakMap$1 && getTag(new WeakMap$1()) != weakMapTag) {
+    getTag = function getTag(value) {
+      var result = objectToString.call(value),
+          Ctor = result == objectTag ? value.constructor : undefined,
+          ctorString = Ctor ? toSource(Ctor) : undefined;
+
+      if (ctorString) {
+        switch (ctorString) {
+          case dataViewCtorString:
+            return dataViewTag;
+          case mapCtorString:
+            return mapTag;
+          case promiseCtorString:
+            return promiseTag;
+          case setCtorString:
+            return setTag;
+          case weakMapCtorString:
+            return weakMapTag;
+        }
+      }
+      return result;
+    };
+  }
+
+  /**
+   * Checks if `value` is a valid array-like index.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+   * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+   */
+  function isIndex(value, length) {
+    length = length == null ? MAX_SAFE_INTEGER : length;
+    return !!length && (typeof value == 'number' || reIsUint.test(value)) && value > -1 && value % 1 == 0 && value < length;
+  }
+
+  /**
+   * Checks if `func` has its source masked.
+   *
+   * @private
+   * @param {Function} func The function to check.
+   * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+   */
+  function isMasked(func) {
+    return !!maskSrcKey && maskSrcKey in func;
+  }
+
+  /**
+   * Checks if `value` is likely a prototype object.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+   */
+  function isPrototype(value) {
+    var Ctor = value && value.constructor,
+        proto = typeof Ctor == 'function' && Ctor.prototype || objectProto;
+
+    return value === proto;
+  }
+
+  /**
+   * Converts `func` to its source code.
+   *
+   * @private
+   * @param {Function} func The function to process.
+   * @returns {string} Returns the source code.
+   */
+  function toSource(func) {
+    if (func != null) {
+      try {
+        return funcToString.call(func);
+      } catch (e) {}
+      try {
+        return func + '';
+      } catch (e) {}
+    }
+    return '';
+  }
+
+  /**
+   * Checks if `value` is likely an `arguments` object.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+   *  else `false`.
+   * @example
+   *
+   * _.isArguments(function() { return arguments; }());
+   * // => true
+   *
+   * _.isArguments([1, 2, 3]);
+   * // => false
+   */
+  function isArguments(value) {
+    // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
+    return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') && (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);
+  }
+
+  /**
+   * Checks if `value` is classified as an `Array` object.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+   * @example
+   *
+   * _.isArray([1, 2, 3]);
+   * // => true
+   *
+   * _.isArray(document.body.children);
+   * // => false
+   *
+   * _.isArray('abc');
+   * // => false
+   *
+   * _.isArray(_.noop);
+   * // => false
+   */
+  var isArray = Array.isArray;
+
+  /**
+   * Checks if `value` is array-like. A value is considered array-like if it's
+   * not a function and has a `value.length` that's an integer greater than or
+   * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+   * @example
+   *
+   * _.isArrayLike([1, 2, 3]);
+   * // => true
+   *
+   * _.isArrayLike(document.body.children);
+   * // => true
+   *
+   * _.isArrayLike('abc');
+   * // => true
+   *
+   * _.isArrayLike(_.noop);
+   * // => false
+   */
+  function isArrayLike(value) {
+    return value != null && isLength(value.length) && !isFunction(value);
+  }
+
+  /**
+   * This method is like `_.isArrayLike` except that it also checks if `value`
+   * is an object.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is an array-like object,
+   *  else `false`.
+   * @example
+   *
+   * _.isArrayLikeObject([1, 2, 3]);
+   * // => true
+   *
+   * _.isArrayLikeObject(document.body.children);
+   * // => true
+   *
+   * _.isArrayLikeObject('abc');
+   * // => false
+   *
+   * _.isArrayLikeObject(_.noop);
+   * // => false
+   */
+  function isArrayLikeObject(value) {
+    return isObjectLike(value) && isArrayLike(value);
+  }
+
+  /**
+   * Checks if `value` is classified as a `Function` object.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+   * @example
+   *
+   * _.isFunction(_);
+   * // => true
+   *
+   * _.isFunction(/abc/);
+   * // => false
+   */
+  function isFunction(value) {
+    // The use of `Object#toString` avoids issues with the `typeof` operator
+    // in Safari 8-9 which returns 'object' for typed array and other constructors.
+    var tag = isObject(value) ? objectToString.call(value) : '';
+    return tag == funcTag || tag == genTag;
+  }
+
+  /**
+   * Checks if `value` is a valid array-like length.
+   *
+   * **Note:** This method is loosely based on
+   * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+   * @example
+   *
+   * _.isLength(3);
+   * // => true
+   *
+   * _.isLength(Number.MIN_VALUE);
+   * // => false
+   *
+   * _.isLength(Infinity);
+   * // => false
+   *
+   * _.isLength('3');
+   * // => false
+   */
+  function isLength(value) {
+    return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+  }
+
+  /**
+   * Checks if `value` is the
+   * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+   * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+   * @example
+   *
+   * _.isObject({});
+   * // => true
+   *
+   * _.isObject([1, 2, 3]);
+   * // => true
+   *
+   * _.isObject(_.noop);
+   * // => true
+   *
+   * _.isObject(null);
+   * // => false
+   */
+  function isObject(value) {
+    var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
+    return !!value && (type == 'object' || type == 'function');
+  }
+
+  /**
+   * Checks if `value` is object-like. A value is object-like if it's not `null`
+   * and has a `typeof` result of "object".
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+   * @example
+   *
+   * _.isObjectLike({});
+   * // => true
+   *
+   * _.isObjectLike([1, 2, 3]);
+   * // => true
+   *
+   * _.isObjectLike(_.noop);
+   * // => false
+   *
+   * _.isObjectLike(null);
+   * // => false
+   */
+  function isObjectLike(value) {
+    return !!value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) == 'object';
+  }
+
+  /**
+   * Checks if `value` is classified as a `String` primitive or object.
+   *
+   * @static
+   * @since 0.1.0
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a string, else `false`.
+   * @example
+   *
+   * _.isString('abc');
+   * // => true
+   *
+   * _.isString(1);
+   * // => false
+   */
+  function isString(value) {
+    return typeof value == 'string' || !isArray(value) && isObjectLike(value) && objectToString.call(value) == stringTag;
+  }
+
+  /**
+   * Converts `value` to an array.
+   *
+   * @static
+   * @since 0.1.0
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to convert.
+   * @returns {Array} Returns the converted array.
+   * @example
+   *
+   * _.toArray({ 'a': 1, 'b': 2 });
+   * // => [1, 2]
+   *
+   * _.toArray('abc');
+   * // => ['a', 'b', 'c']
+   *
+   * _.toArray(1);
+   * // => []
+   *
+   * _.toArray(null);
+   * // => []
+   */
+  function toArray$1(value) {
+    if (!value) {
+      return [];
+    }
+    if (isArrayLike(value)) {
+      return isString(value) ? stringToArray(value) : copyArray(value);
+    }
+    if (iteratorSymbol && value[iteratorSymbol]) {
+      return iteratorToArray(value[iteratorSymbol]());
+    }
+    var tag = getTag(value),
+        func = tag == mapTag ? mapToArray : tag == setTag ? setToArray : values;
+
+    return func(value);
+  }
+
+  /**
+   * Creates an array of the own enumerable property names of `object`.
+   *
+   * **Note:** Non-object values are coerced to objects. See the
+   * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+   * for more details.
+   *
+   * @static
+   * @since 0.1.0
+   * @memberOf _
+   * @category Object
+   * @param {Object} object The object to query.
+   * @returns {Array} Returns the array of property names.
+   * @example
+   *
+   * function Foo() {
+   *   this.a = 1;
+   *   this.b = 2;
+   * }
+   *
+   * Foo.prototype.c = 3;
+   *
+   * _.keys(new Foo);
+   * // => ['a', 'b'] (iteration order is not guaranteed)
+   *
+   * _.keys('hi');
+   * // => ['0', '1']
+   */
+  function keys(object) {
+    return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+  }
+
+  /**
+   * Creates an array of the own enumerable string keyed property values of `object`.
+   *
+   * **Note:** Non-object values are coerced to objects.
+   *
+   * @static
+   * @since 0.1.0
+   * @memberOf _
+   * @category Object
+   * @param {Object} object The object to query.
+   * @returns {Array} Returns the array of property values.
+   * @example
+   *
+   * function Foo() {
+   *   this.a = 1;
+   *   this.b = 2;
+   * }
+   *
+   * Foo.prototype.c = 3;
+   *
+   * _.values(new Foo);
+   * // => [1, 2] (iteration order is not guaranteed)
+   *
+   * _.values('hi');
+   * // => ['h', 'i']
+   */
+  function values(object) {
+    return object ? baseValues(object, keys(object)) : [];
+  }
+
+  var lodash_toarray = toArray$1;
+
+  var interrobang = "⁉️";
+  var tm = "™️";
+  var information_source = "ℹ️";
+  var left_right_arrow = "↔️";
+  var arrow_up_down = "↕️";
+  var arrow_upper_left = "↖️";
+  var arrow_upper_right = "↗️";
+  var arrow_lower_right = "↘️";
+  var arrow_lower_left = "↙️";
+  var keyboard = "⌨";
+  var sunny = "☀️";
+  var cloud = "☁️";
+  var umbrella = "☔️";
+  var showman = "☃";
+  var comet = "☄";
+  var ballot_box_with_check = "☑️";
+  var coffee = "☕️";
+  var shamrock = "☘";
+  var skull_and_crossbones = "☠";
+  var radioactive_sign = "☢";
+  var biohazard_sign = "☣";
+  var orthodox_cross = "☦";
+  var wheel_of_dharma = "☸";
+  var white_frowning_face = "☹";
+  var aries = "♈️";
+  var taurus = "♉️";
+  var sagittarius = "♐️";
+  var capricorn = "♑️";
+  var aquarius = "♒️";
+  var pisces = "♓️";
+  var spades = "♠️";
+  var clubs = "♣️";
+  var hearts = "♥️";
+  var diamonds = "♦️";
+  var hotsprings = "♨️";
+  var hammer_and_pick = "⚒";
+  var anchor = "⚓️";
+  var crossed_swords = "⚔";
+  var scales = "⚖";
+  var alembic = "⚗";
+  var gear = "⚙";
+  var scissors = "✂️";
+  var white_check_mark = "✅";
+  var airplane = "✈️";
+  var email = "✉️";
+  var envelope = "✉️";
+  var black_nib = "✒️";
+  var heavy_check_mark = "✔️";
+  var heavy_multiplication_x = "✖️";
+  var star_of_david = "✡";
+  var sparkles = "✨";
+  var eight_spoked_asterisk = "✳️";
+  var eight_pointed_black_star = "✴️";
+  var snowflake = "❄️";
+  var sparkle = "❇️";
+  var question = "❓";
+  var grey_question = "❔";
+  var grey_exclamation = "❕";
+  var exclamation = "❗️";
+  var heavy_exclamation_mark = "❗️";
+  var heavy_heart_exclamation_mark_ornament = "❣";
+  var heart = "❤️";
+  var heavy_plus_sign = "➕";
+  var heavy_minus_sign = "➖";
+  var heavy_division_sign = "➗";
+  var arrow_heading_up = "⤴️";
+  var arrow_heading_down = "⤵️";
+  var wavy_dash = "〰️";
+  var congratulations = "㊗️";
+  var secret = "㊙️";
+  var copyright = "©️";
+  var registered = "®️";
+  var bangbang = "‼️";
+  var leftwards_arrow_with_hook = "↩️";
+  var arrow_right_hook = "↪️";
+  var watch = "⌚️";
+  var hourglass = "⌛️";
+  var fast_forward = "⏩";
+  var rewind = "⏪";
+  var arrow_double_up = "⏫";
+  var arrow_double_down = "⏬";
+  var black_right_pointing_double_triangle_with_vertical_bar = "⏭";
+  var black_left_pointing_double_triangle_with_vertical_bar = "⏮";
+  var black_right_pointing_triangle_with_double_vertical_bar = "⏯";
+  var alarm_clock = "⏰";
+  var stopwatch = "⏱";
+  var timer_clock = "⏲";
+  var hourglass_flowing_sand = "⏳";
+  var double_vertical_bar = "⏸";
+  var black_square_for_stop = "⏹";
+  var black_circle_for_record = "⏺";
+  var m = "Ⓜ️";
+  var black_small_square = "▪️";
+  var white_small_square = "▫️";
+  var arrow_forward = "▶️";
+  var arrow_backward = "◀️";
+  var white_medium_square = "◻️";
+  var black_medium_square = "◼️";
+  var white_medium_small_square = "◽️";
+  var black_medium_small_square = "◾️";
+  var phone = "☎️";
+  var telephone = "☎️";
+  var point_up = "☝️";
+  var star_and_crescent = "☪";
+  var peace_symbol = "☮";
+  var yin_yang = "☯";
+  var relaxed = "☺️";
+  var gemini = "♊️";
+  var cancer = "♋️";
+  var leo = "♌️";
+  var virgo = "♍️";
+  var libra = "♎️";
+  var scorpius = "♏️";
+  var recycle = "♻️";
+  var wheelchair = "♿️";
+  var atom_symbol = "⚛";
+  var fleur_de_lis = "⚜";
+  var warning = "⚠️";
+  var zap = "⚡️";
+  var white_circle = "⚪️";
+  var black_circle = "⚫️";
+  var coffin = "⚰";
+  var funeral_urn = "⚱";
+  var soccer = "⚽️";
+  var baseball = "⚾️";
+  var snowman = "⛄️";
+  var partly_sunny = "⛅️";
+  var thunder_cloud_and_rain = "⛈";
+  var ophiuchus = "⛎";
+  var pick = "⛏";
+  var helmet_with_white_cross = "⛑";
+  var chains = "⛓";
+  var no_entry = "⛔️";
+  var shinto_shrine = "⛩";
+  var church = "⛪️";
+  var mountain = "⛰";
+  var umbrella_on_ground = "⛱";
+  var fountain = "⛲️";
+  var golf = "⛳️";
+  var ferry = "⛴";
+  var boat = "⛵️";
+  var sailboat = "⛵️";
+  var skier = "⛷";
+  var ice_skate = "⛸";
+  var person_with_ball = "⛹";
+  var tent = "⛺️";
+  var fuelpump = "⛽️";
+  var fist = "✊";
+  var hand = "✋";
+  var raised_hand = "✋";
+  var v = "✌️";
+  var writing_hand = "✍";
+  var pencil2 = "✏️";
+  var latin_cross = "✝";
+  var x = "❌";
+  var negative_squared_cross_mark = "❎";
+  var arrow_right = "➡️";
+  var curly_loop = "➰";
+  var loop = "➿";
+  var arrow_left = "⬅️";
+  var arrow_up = "⬆️";
+  var arrow_down = "⬇️";
+  var black_large_square = "⬛️";
+  var white_large_square = "⬜️";
+  var star = "⭐️";
+  var o = "⭕️";
+  var part_alternation_mark = "〽️";
+  var mahjong = "🀄️";
+  var black_joker = "🃏";
+  var a = "🅰️";
+  var b = "🅱️";
+  var o2 = "🅾️";
+  var parking = "🅿️";
+  var ab = "🆎";
+  var cl = "🆑";
+  var cool = "🆒";
+  var free = "🆓";
+  var id = "🆔";
+  var ng = "🆖";
+  var ok = "🆗";
+  var sos = "🆘";
+  var up = "🆙";
+  var vs = "🆚";
+  var koko = "🈁";
+  var sa = "🈂️";
+  var u7121 = "🈚️";
+  var u6307 = "🈯️";
+  var u7981 = "🈲";
+  var u7a7a = "🈳";
+  var u5408 = "🈴";
+  var u6e80 = "🈵";
+  var u6709 = "🈶";
+  var u6708 = "🈷️";
+  var u7533 = "🈸";
+  var u5272 = "🈹";
+  var u55b6 = "🈺";
+  var ideograph_advantage = "🉐";
+  var accept = "🉑";
+  var cyclone = "🌀";
+  var foggy = "🌁";
+  var closed_umbrella = "🌂";
+  var night_with_stars = "🌃";
+  var sunrise_over_mountains = "🌄";
+  var sunrise = "🌅";
+  var city_sunset = "🌆";
+  var city_sunrise = "🌇";
+  var rainbow = "🌈";
+  var bridge_at_night = "🌉";
+  var ocean = "🌊";
+  var volcano = "🌋";
+  var milky_way = "🌌";
+  var earth_africa = "🌍";
+  var earth_americas = "🌎";
+  var earth_asia = "🌏";
+  var globe_with_meridians = "🌐";
+  var new_moon = "🌑";
+  var waxing_crescent_moon = "🌒";
+  var first_quarter_moon = "🌓";
+  var moon = "🌔";
+  var waxing_gibbous_moon = "🌔";
+  var full_moon = "🌕";
+  var waning_gibbous_moon = "🌖";
+  var last_quarter_moon = "🌗";
+  var waning_crescent_moon = "🌘";
+  var crescent_moon = "🌙";
+  var new_moon_with_face = "🌚";
+  var first_quarter_moon_with_face = "🌛";
+  var last_quarter_moon_with_face = "🌜";
+  var full_moon_with_face = "🌝";
+  var sun_with_face = "🌞";
+  var star2 = "🌟";
+  var stars = "🌠";
+  var thermometer = "🌡";
+  var mostly_sunny = "🌤";
+  var sun_small_cloud = "🌤";
+  var barely_sunny = "🌥";
+  var sun_behind_cloud = "🌥";
+  var partly_sunny_rain = "🌦";
+  var sun_behind_rain_cloud = "🌦";
+  var rain_cloud = "🌧";
+  var snow_cloud = "🌨";
+  var lightning = "🌩";
+  var lightning_cloud = "🌩";
+  var tornado = "🌪";
+  var tornado_cloud = "🌪";
+  var fog = "🌫";
+  var wind_blowing_face = "🌬";
+  var hotdog = "🌭";
+  var taco = "🌮";
+  var burrito = "🌯";
+  var chestnut = "🌰";
+  var seedling = "🌱";
+  var evergreen_tree = "🌲";
+  var deciduous_tree = "🌳";
+  var palm_tree = "🌴";
+  var cactus = "🌵";
+  var hot_pepper = "🌶";
+  var tulip = "🌷";
+  var cherry_blossom = "🌸";
+  var rose = "🌹";
+  var hibiscus = "🌺";
+  var sunflower = "🌻";
+  var blossom = "🌼";
+  var corn = "🌽";
+  var ear_of_rice = "🌾";
+  var herb = "🌿";
+  var four_leaf_clover = "🍀";
+  var maple_leaf = "🍁";
+  var fallen_leaf = "🍂";
+  var leaves = "🍃";
+  var mushroom = "🍄";
+  var tomato = "🍅";
+  var eggplant = "🍆";
+  var grapes = "🍇";
+  var melon = "🍈";
+  var watermelon = "🍉";
+  var tangerine = "🍊";
+  var lemon = "🍋";
+  var banana = "🍌";
+  var pineapple = "🍍";
+  var apple = "🍎";
+  var green_apple = "🍏";
+  var pear = "🍐";
+  var peach = "🍑";
+  var cherries = "🍒";
+  var strawberry = "🍓";
+  var hamburger = "🍔";
+  var pizza = "🍕";
+  var meat_on_bone = "🍖";
+  var poultry_leg = "🍗";
+  var rice_cracker = "🍘";
+  var rice_ball = "🍙";
+  var rice = "🍚";
+  var curry = "🍛";
+  var ramen = "🍜";
+  var spaghetti = "🍝";
+  var bread = "🍞";
+  var fries = "🍟";
+  var sweet_potato = "🍠";
+  var dango = "🍡";
+  var oden = "🍢";
+  var sushi = "🍣";
+  var fried_shrimp = "🍤";
+  var fish_cake = "🍥";
+  var icecream = "🍦";
+  var shaved_ice = "🍧";
+  var ice_cream = "🍨";
+  var doughnut = "🍩";
+  var cookie = "🍪";
+  var chocolate_bar = "🍫";
+  var candy = "🍬";
+  var lollipop = "🍭";
+  var custard = "🍮";
+  var honey_pot = "🍯";
+  var cake = "🍰";
+  var bento = "🍱";
+  var stew = "🍲";
+  var egg = "🍳";
+  var fork_and_knife = "🍴";
+  var tea = "🍵";
+  var sake = "🍶";
+  var wine_glass = "🍷";
+  var cocktail = "🍸";
+  var tropical_drink = "🍹";
+  var beer = "🍺";
+  var beers = "🍻";
+  var baby_bottle = "🍼";
+  var knife_fork_plate = "🍽";
+  var champagne = "🍾";
+  var popcorn = "🍿";
+  var ribbon = "🎀";
+  var gift = "🎁";
+  var birthday = "🎂";
+  var jack_o_lantern = "🎃";
+  var christmas_tree = "🎄";
+  var santa = "🎅";
+  var fireworks = "🎆";
+  var sparkler = "🎇";
+  var balloon = "🎈";
+  var tada = "🎉";
+  var confetti_ball = "🎊";
+  var tanabata_tree = "🎋";
+  var crossed_flags = "🎌";
+  var bamboo = "🎍";
+  var dolls = "🎎";
+  var flags = "🎏";
+  var wind_chime = "🎐";
+  var rice_scene = "🎑";
+  var school_satchel = "🎒";
+  var mortar_board = "🎓";
+  var medal = "🎖";
+  var reminder_ribbon = "🎗";
+  var studio_microphone = "🎙";
+  var level_slider = "🎚";
+  var control_knobs = "🎛";
+  var film_frames = "🎞";
+  var admission_tickets = "🎟";
+  var carousel_horse = "🎠";
+  var ferris_wheel = "🎡";
+  var roller_coaster = "🎢";
+  var fishing_pole_and_fish = "🎣";
+  var microphone = "🎤";
+  var movie_camera = "🎥";
+  var cinema = "🎦";
+  var headphones = "🎧";
+  var art = "🎨";
+  var tophat = "🎩";
+  var circus_tent = "🎪";
+  var ticket = "🎫";
+  var clapper = "🎬";
+  var performing_arts = "🎭";
+  var video_game = "🎮";
+  var dart = "🎯";
+  var slot_machine = "🎰";
+  var game_die = "🎲";
+  var bowling = "🎳";
+  var flower_playing_cards = "🎴";
+  var musical_note = "🎵";
+  var notes = "🎶";
+  var saxophone = "🎷";
+  var guitar = "🎸";
+  var musical_keyboard = "🎹";
+  var trumpet = "🎺";
+  var violin = "🎻";
+  var musical_score = "🎼";
+  var running_shirt_with_sash = "🎽";
+  var tennis = "🎾";
+  var ski = "🎿";
+  var basketball = "🏀";
+  var checkered_flag = "🏁";
+  var snowboarder = "🏂";
+  var runner = "🏃";
+  var running = "🏃";
+  var surfer = "🏄";
+  var sports_medal = "🏅";
+  var trophy = "🏆";
+  var horse_racing = "🏇";
+  var football = "🏈";
+  var rugby_football = "🏉";
+  var swimmer = "🏊";
+  var weight_lifter = "🏋";
+  var golfer = "🏌";
+  var racing_motorcycle = "🏍";
+  var racing_car = "🏎";
+  var cricket_bat_and_ball = "🏏";
+  var volleyball = "🏐";
+  var field_hockey_stick_and_ball = "🏑";
+  var ice_hockey_stick_and_puck = "🏒";
+  var table_tennis_paddle_and_ball = "🏓";
+  var snow_capped_mountain = "🏔";
+  var camping = "🏕";
+  var beach_with_umbrella = "🏖";
+  var building_construction = "🏗";
+  var house_buildings = "🏘";
+  var cityscape = "🏙";
+  var derelict_house_building = "🏚";
+  var classical_building = "🏛";
+  var desert = "🏜";
+  var desert_island = "🏝";
+  var national_park = "🏞";
+  var stadium = "🏟";
+  var house = "🏠";
+  var house_with_garden = "🏡";
+  var office = "🏢";
+  var post_office = "🏣";
+  var european_post_office = "🏤";
+  var hospital = "🏥";
+  var bank = "🏦";
+  var atm = "🏧";
+  var hotel = "🏨";
+  var love_hotel = "🏩";
+  var convenience_store = "🏪";
+  var school = "🏫";
+  var department_store = "🏬";
+  var factory = "🏭";
+  var izakaya_lantern = "🏮";
+  var lantern = "🏮";
+  var japanese_castle = "🏯";
+  var european_castle = "🏰";
+  var waving_white_flag = "🏳";
+  var waving_black_flag = "🏴";
+  var rosette = "🏵";
+  var label = "🏷";
+  var badminton_racquet_and_shuttlecock = "🏸";
+  var bow_and_arrow = "🏹";
+  var amphora = "🏺";
+  var rat = "🐀";
+  var mouse2 = "🐁";
+  var ox = "🐂";
+  var water_buffalo = "🐃";
+  var cow2 = "🐄";
+  var tiger2 = "🐅";
+  var leopard = "🐆";
+  var rabbit2 = "🐇";
+  var cat2 = "🐈";
+  var dragon = "🐉";
+  var crocodile = "🐊";
+  var whale2 = "🐋";
+  var snail = "🐌";
+  var snake = "🐍";
+  var racehorse = "🐎";
+  var ram = "🐏";
+  var goat = "🐐";
+  var sheep = "🐑";
+  var monkey = "🐒";
+  var rooster = "🐓";
+  var chicken = "🐔";
+  var dog2 = "🐕";
+  var pig2 = "🐖";
+  var boar = "🐗";
+  var elephant = "🐘";
+  var octopus = "🐙";
+  var shell = "🐚";
+  var bug = "🐛";
+  var ant = "🐜";
+  var bee = "🐝";
+  var honeybee = "🐝";
+  var beetle = "🐞";
+  var fish = "🐟";
+  var tropical_fish = "🐠";
+  var blowfish = "🐡";
+  var turtle = "🐢";
+  var hatching_chick = "🐣";
+  var baby_chick = "🐤";
+  var hatched_chick = "🐥";
+  var bird = "🐦";
+  var penguin = "🐧";
+  var koala = "🐨";
+  var poodle = "🐩";
+  var dromedary_camel = "🐪";
+  var camel = "🐫";
+  var dolphin = "🐬";
+  var flipper = "🐬";
+  var mouse = "🐭";
+  var cow = "🐮";
+  var tiger = "🐯";
+  var rabbit = "🐰";
+  var cat = "🐱";
+  var dragon_face = "🐲";
+  var whale = "🐳";
+  var horse = "🐴";
+  var monkey_face = "🐵";
+  var dog = "🐶";
+  var pig = "🐷";
+  var frog = "🐸";
+  var hamster = "🐹";
+  var wolf = "🐺";
+  var bear = "🐻";
+  var panda_face = "🐼";
+  var pig_nose = "🐽";
+  var feet = "🐾";
+  var paw_prints = "🐾";
+  var chipmunk = "🐿";
+  var eyes = "👀";
+  var eye = "👁";
+  var ear = "👂";
+  var nose = "👃";
+  var lips = "👄";
+  var tongue = "👅";
+  var point_up_2 = "👆";
+  var point_down = "👇";
+  var point_left = "👈";
+  var point_right = "👉";
+  var facepunch = "👊";
+  var punch = "👊";
+  var wave = "👋";
+  var ok_hand = "👌";
+  var thumbsup = "👍";
+  var thumbsdown = "👎";
+  var clap = "👏";
+  var open_hands = "👐";
+  var crown = "👑";
+  var womans_hat = "👒";
+  var eyeglasses = "👓";
+  var necktie = "👔";
+  var shirt = "👕";
+  var tshirt = "👕";
+  var jeans = "👖";
+  var dress = "👗";
+  var kimono = "👘";
+  var bikini = "👙";
+  var womans_clothes = "👚";
+  var purse = "👛";
+  var handbag = "👜";
+  var pouch = "👝";
+  var mans_shoe = "👞";
+  var shoe = "👞";
+  var athletic_shoe = "👟";
+  var high_heel = "👠";
+  var sandal = "👡";
+  var boot = "👢";
+  var footprints = "👣";
+  var bust_in_silhouette = "👤";
+  var busts_in_silhouette = "👥";
+  var boy = "👦";
+  var girl = "👧";
+  var man = "👨";
+  var woman = "👩";
+  var family = "👨‍👩‍👦";
+  var couple = "👫";
+  var man_and_woman_holding_hands = "👫";
+  var two_men_holding_hands = "👬";
+  var two_women_holding_hands = "👭";
+  var cop = "👮";
+  var dancers = "👯";
+  var bride_with_veil = "👰";
+  var person_with_blond_hair = "👱";
+  var man_with_gua_pi_mao = "👲";
+  var man_with_turban = "👳";
+  var older_man = "👴";
+  var older_woman = "👵";
+  var baby = "👶";
+  var construction_worker = "👷";
+  var princess = "👸";
+  var japanese_ogre = "👹";
+  var japanese_goblin = "👺";
+  var ghost = "👻";
+  var angel = "👼";
+  var alien = "👽";
+  var space_invader = "👾";
+  var imp = "👿";
+  var skull = "💀";
+  var information_desk_person = "💁";
+  var guardsman = "💂";
+  var dancer = "💃";
+  var lipstick = "💄";
+  var nail_care = "💅";
+  var massage = "💆";
+  var haircut = "💇";
+  var barber = "💈";
+  var syringe = "💉";
+  var pill = "💊";
+  var kiss = "💋";
+  var love_letter = "💌";
+  var ring = "💍";
+  var gem = "💎";
+  var couplekiss = "💏";
+  var bouquet = "💐";
+  var couple_with_heart = "💑";
+  var wedding = "💒";
+  var heartbeat = "💓";
+  var broken_heart = "💔";
+  var two_hearts = "💕";
+  var sparkling_heart = "💖";
+  var heartpulse = "💗";
+  var cupid = "💘";
+  var blue_heart = "💙";
+  var green_heart = "💚";
+  var yellow_heart = "💛";
+  var purple_heart = "💜";
+  var gift_heart = "💝";
+  var revolving_hearts = "💞";
+  var heart_decoration = "💟";
+  var diamond_shape_with_a_dot_inside = "💠";
+  var bulb = "💡";
+  var anger = "💢";
+  var bomb = "💣";
+  var zzz = "💤";
+  var boom = "💥";
+  var collision = "💥";
+  var sweat_drops = "💦";
+  var droplet = "💧";
+  var dash = "💨";
+  var hankey = "💩";
+  var poop = "💩";
+  var shit = "💩";
+  var muscle = "💪";
+  var dizzy = "💫";
+  var speech_balloon = "💬";
+  var thought_balloon = "💭";
+  var white_flower = "💮";
+  var moneybag = "💰";
+  var currency_exchange = "💱";
+  var heavy_dollar_sign = "💲";
+  var credit_card = "💳";
+  var yen = "💴";
+  var dollar = "💵";
+  var euro = "💶";
+  var pound = "💷";
+  var money_with_wings = "💸";
+  var chart = "💹";
+  var seat = "💺";
+  var computer = "💻";
+  var briefcase = "💼";
+  var minidisc = "💽";
+  var floppy_disk = "💾";
+  var cd = "💿";
+  var dvd = "📀";
+  var file_folder = "📁";
+  var open_file_folder = "📂";
+  var page_with_curl = "📃";
+  var page_facing_up = "📄";
+  var date = "📅";
+  var calendar = "📆";
+  var card_index = "📇";
+  var chart_with_upwards_trend = "📈";
+  var chart_with_downwards_trend = "📉";
+  var bar_chart = "📊";
+  var clipboard = "📋";
+  var pushpin = "📌";
+  var round_pushpin = "📍";
+  var paperclip = "📎";
+  var straight_ruler = "📏";
+  var triangular_ruler = "📐";
+  var bookmark_tabs = "📑";
+  var ledger = "📒";
+  var notebook = "📓";
+  var notebook_with_decorative_cover = "📔";
+  var closed_book = "📕";
+  var book = "📖";
+  var open_book = "📖";
+  var green_book = "📗";
+  var blue_book = "📘";
+  var orange_book = "📙";
+  var books = "📚";
+  var name_badge = "📛";
+  var scroll = "📜";
+  var memo = "📝";
+  var pencil = "📝";
+  var telephone_receiver = "📞";
+  var pager = "📟";
+  var fax = "📠";
+  var satellite = "🛰";
+  var loudspeaker = "📢";
+  var mega = "📣";
+  var outbox_tray = "📤";
+  var inbox_tray = "📥";
+  var incoming_envelope = "📨";
+  var envelope_with_arrow = "📩";
+  var mailbox_closed = "📪";
+  var mailbox = "📫";
+  var mailbox_with_mail = "📬";
+  var mailbox_with_no_mail = "📭";
+  var postbox = "📮";
+  var postal_horn = "📯";
+  var newspaper = "📰";
+  var iphone = "📱";
+  var calling = "📲";
+  var vibration_mode = "📳";
+  var mobile_phone_off = "📴";
+  var no_mobile_phones = "📵";
+  var signal_strength = "📶";
+  var camera = "📷";
+  var camera_with_flash = "📸";
+  var video_camera = "📹";
+  var tv = "📺";
+  var radio = "📻";
+  var vhs = "📼";
+  var film_projector = "📽";
+  var prayer_beads = "📿";
+  var twisted_rightwards_arrows = "🔀";
+  var repeat = "🔁";
+  var repeat_one = "🔂";
+  var arrows_clockwise = "🔃";
+  var arrows_counterclockwise = "🔄";
+  var low_brightness = "🔅";
+  var high_brightness = "🔆";
+  var mute = "🔇";
+  var speaker = "🔈";
+  var sound = "🔉";
+  var loud_sound = "🔊";
+  var battery = "🔋";
+  var electric_plug = "🔌";
+  var mag = "🔍";
+  var mag_right = "🔎";
+  var lock_with_ink_pen = "🔏";
+  var closed_lock_with_key = "🔐";
+  var key = "🔑";
+  var lock = "🔒";
+  var unlock = "🔓";
+  var bell = "🔔";
+  var no_bell = "🔕";
+  var bookmark = "🔖";
+  var link = "🔗";
+  var radio_button = "🔘";
+  var back = "🔙";
+  var end = "🔚";
+  var on = "🔛";
+  var soon = "🔜";
+  var top = "🔝";
+  var underage = "🔞";
+  var keycap_ten = "🔟";
+  var capital_abcd = "🔠";
+  var abcd = "🔡";
+  var symbols = "🔣";
+  var abc = "🔤";
+  var fire = "🔥";
+  var flashlight = "🔦";
+  var wrench = "🔧";
+  var hammer = "🔨";
+  var nut_and_bolt = "🔩";
+  var hocho = "🔪";
+  var knife = "🔪";
+  var gun = "🔫";
+  var microscope = "🔬";
+  var telescope = "🔭";
+  var crystal_ball = "🔮";
+  var six_pointed_star = "🔯";
+  var beginner = "🔰";
+  var trident = "🔱";
+  var black_square_button = "🔲";
+  var white_square_button = "🔳";
+  var red_circle = "🔴";
+  var large_blue_circle = "🔵";
+  var large_orange_diamond = "🔶";
+  var large_blue_diamond = "🔷";
+  var small_orange_diamond = "🔸";
+  var small_blue_diamond = "🔹";
+  var small_red_triangle = "🔺";
+  var small_red_triangle_down = "🔻";
+  var arrow_up_small = "🔼";
+  var arrow_down_small = "🔽";
+  var om_symbol = "🕉";
+  var dove_of_peace = "🕊";
+  var kaaba = "🕋";
+  var mosque = "🕌";
+  var synagogue = "🕍";
+  var menorah_with_nine_branches = "🕎";
+  var clock1 = "🕐";
+  var clock2 = "🕑";
+  var clock3 = "🕒";
+  var clock4 = "🕓";
+  var clock5 = "🕔";
+  var clock6 = "🕕";
+  var clock7 = "🕖";
+  var clock8 = "🕗";
+  var clock9 = "🕘";
+  var clock10 = "🕙";
+  var clock11 = "🕚";
+  var clock12 = "🕛";
+  var clock130 = "🕜";
+  var clock230 = "🕝";
+  var clock330 = "🕞";
+  var clock430 = "🕟";
+  var clock530 = "🕠";
+  var clock630 = "🕡";
+  var clock730 = "🕢";
+  var clock830 = "🕣";
+  var clock930 = "🕤";
+  var clock1030 = "🕥";
+  var clock1130 = "🕦";
+  var clock1230 = "🕧";
+  var candle = "🕯";
+  var mantelpiece_clock = "🕰";
+  var hole = "🕳";
+  var man_in_business_suit_levitating = "🕴";
+  var sleuth_or_spy = "🕵";
+  var dark_sunglasses = "🕶";
+  var spider = "🕷";
+  var spider_web = "🕸";
+  var joystick = "🕹";
+  var linked_paperclips = "🖇";
+  var lower_left_ballpoint_pen = "🖊";
+  var lower_left_fountain_pen = "🖋";
+  var lower_left_paintbrush = "🖌";
+  var lower_left_crayon = "🖍";
+  var raised_hand_with_fingers_splayed = "🖐";
+  var middle_finger = "🖕";
+  var reversed_hand_with_middle_finger_extended = "🖕";
+  var desktop_computer = "🖥";
+  var printer = "🖨";
+  var three_button_mouse = "🖱";
+  var trackball = "🖲";
+  var frame_with_picture = "🖼";
+  var card_index_dividers = "🗂";
+  var card_file_box = "🗃";
+  var file_cabinet = "🗄";
+  var wastebasket = "🗑";
+  var spiral_note_pad = "🗒";
+  var spiral_calendar_pad = "🗓";
+  var compression = "🗜";
+  var old_key = "🗝";
+  var rolled_up_newspaper = "🗞";
+  var dagger_knife = "🗡";
+  var speaking_head_in_silhouette = "🗣";
+  var left_speech_bubble = "🗨";
+  var right_anger_bubble = "🗯";
+  var ballot_box_with_ballot = "🗳";
+  var world_map = "🗺";
+  var mount_fuji = "🗻";
+  var tokyo_tower = "🗼";
+  var statue_of_liberty = "🗽";
+  var japan = "🗾";
+  var moyai = "🗿";
+  var grinning = "😀";
+  var grin = "😁";
+  var joy = "😂";
+  var smiley = "😃";
+  var smile = "😄";
+  var sweat_smile = "😅";
+  var laughing = "😆";
+  var satisfied = "😆";
+  var innocent = "😇";
+  var smiling_imp = "😈";
+  var wink = "😉";
+  var blush = "😊";
+  var yum = "😋";
+  var relieved = "😌";
+  var heart_eyes = "😍";
+  var sunglasses = "😎";
+  var smirk = "😏";
+  var neutral_face = "😐";
+  var expressionless = "😑";
+  var unamused = "😒";
+  var sweat = "😓";
+  var pensive = "😔";
+  var confused = "😕";
+  var confounded = "😖";
+  var kissing = "😗";
+  var kissing_heart = "😘";
+  var kissing_smiling_eyes = "😙";
+  var kissing_closed_eyes = "😚";
+  var stuck_out_tongue = "😛";
+  var stuck_out_tongue_winking_eye = "😜";
+  var stuck_out_tongue_closed_eyes = "😝";
+  var disappointed = "😞";
+  var worried = "😟";
+  var angry = "😠";
+  var rage = "😡";
+  var cry = "😢";
+  var persevere = "😣";
+  var triumph = "😤";
+  var disappointed_relieved = "😥";
+  var frowning = "😦";
+  var anguished = "😧";
+  var fearful = "😨";
+  var weary = "😩";
+  var sleepy = "😪";
+  var tired_face = "😫";
+  var grimacing = "😬";
+  var sob = "😭";
+  var open_mouth = "😮";
+  var hushed = "😯";
+  var cold_sweat = "😰";
+  var scream = "😱";
+  var astonished = "😲";
+  var flushed = "😳";
+  var sleeping = "😴";
+  var dizzy_face = "😵";
+  var no_mouth = "😶";
+  var mask = "😷";
+  var smile_cat = "😸";
+  var joy_cat = "😹";
+  var smiley_cat = "😺";
+  var heart_eyes_cat = "😻";
+  var smirk_cat = "😼";
+  var kissing_cat = "😽";
+  var pouting_cat = "😾";
+  var crying_cat_face = "😿";
+  var scream_cat = "🙀";
+  var slightly_frowning_face = "🙁";
+  var slightly_smiling_face = "🙂";
+  var upside_down_face = "🙃";
+  var face_with_rolling_eyes = "🙄";
+  var no_good = "🙅";
+  var ok_woman = "🙆";
+  var bow = "🙇";
+  var see_no_evil = "🙈";
+  var hear_no_evil = "🙉";
+  var speak_no_evil = "🙊";
+  var raising_hand = "🙋";
+  var raised_hands = "🙌";
+  var person_frowning = "🙍";
+  var person_with_pouting_face = "🙎";
+  var pray = "🙏";
+  var rocket = "🚀";
+  var helicopter = "🚁";
+  var steam_locomotive = "🚂";
+  var railway_car = "🚃";
+  var bullettrain_side = "🚄";
+  var bullettrain_front = "🚅";
+  var train2 = "🚆";
+  var metro = "🚇";
+  var light_rail = "🚈";
+  var station = "🚉";
+  var tram = "🚊";
+  var train = "🚋";
+  var bus = "🚌";
+  var oncoming_bus = "🚍";
+  var trolleybus = "🚎";
+  var busstop = "🚏";
+  var minibus = "🚐";
+  var ambulance = "🚑";
+  var fire_engine = "🚒";
+  var police_car = "🚓";
+  var oncoming_police_car = "🚔";
+  var taxi = "🚕";
+  var oncoming_taxi = "🚖";
+  var car = "🚗";
+  var red_car = "🚗";
+  var oncoming_automobile = "🚘";
+  var blue_car = "🚙";
+  var truck = "🚚";
+  var articulated_lorry = "🚛";
+  var tractor = "🚜";
+  var monorail = "🚝";
+  var mountain_railway = "🚞";
+  var suspension_railway = "🚟";
+  var mountain_cableway = "🚠";
+  var aerial_tramway = "🚡";
+  var ship = "🚢";
+  var rowboat = "🚣";
+  var speedboat = "🚤";
+  var traffic_light = "🚥";
+  var vertical_traffic_light = "🚦";
+  var construction = "🚧";
+  var rotating_light = "🚨";
+  var triangular_flag_on_post = "🚩";
+  var door = "🚪";
+  var no_entry_sign = "🚫";
+  var smoking = "🚬";
+  var no_smoking = "🚭";
+  var put_litter_in_its_place = "🚮";
+  var do_not_litter = "🚯";
+  var potable_water = "🚰";
+  var bike = "🚲";
+  var no_bicycles = "🚳";
+  var bicyclist = "🚴";
+  var mountain_bicyclist = "🚵";
+  var walking = "🚶";
+  var no_pedestrians = "🚷";
+  var children_crossing = "🚸";
+  var mens = "🚹";
+  var womens = "🚺";
+  var restroom = "🚻";
+  var baby_symbol = "🚼";
+  var toilet = "🚽";
+  var wc = "🚾";
+  var shower = "🚿";
+  var bath = "🛀";
+  var bathtub = "🛁";
+  var passport_control = "🛂";
+  var customs = "🛃";
+  var baggage_claim = "🛄";
+  var left_luggage = "🛅";
+  var couch_and_lamp = "🛋";
+  var sleeping_accommodation = "🛌";
+  var shopping_bags = "🛍";
+  var bellhop_bell = "🛎";
+  var bed = "🛏";
+  var place_of_worship = "🛐";
+  var hammer_and_wrench = "🛠";
+  var shield = "🛡";
+  var oil_drum = "🛢";
+  var motorway = "🛣";
+  var railway_track = "🛤";
+  var motor_boat = "🛥";
+  var small_airplane = "🛩";
+  var airplane_departure = "🛫";
+  var airplane_arriving = "🛬";
+  var passenger_ship = "🛳";
+  var zipper_mouth_face = "🤐";
+  var money_mouth_face = "🤑";
+  var face_with_thermometer = "🤒";
+  var nerd_face = "🤓";
+  var thinking_face = "🤔";
+  var face_with_head_bandage = "🤕";
+  var robot_face = "🤖";
+  var hugging_face = "🤗";
+  var the_horns = "🤘";
+  var sign_of_the_horns = "🤘";
+  var crab = "🦀";
+  var lion_face = "🦁";
+  var scorpion = "🦂";
+  var turkey = "🦃";
+  var unicorn_face = "🦄";
+  var cheese_wedge = "🧀";
+  var hash = "#️⃣";
+  var keycap_star = "*⃣";
+  var zero = "0️⃣";
+  var one = "1️⃣";
+  var two = "2️⃣";
+  var three = "3️⃣";
+  var four = "4️⃣";
+  var five = "5️⃣";
+  var six = "6️⃣";
+  var seven = "7️⃣";
+  var eight = "8️⃣";
+  var nine = "9️⃣";
+  var cn = "🇨🇳";
+  var de = "🇩🇪";
+  var es = "🇪🇸";
+  var fr = "🇫🇷";
+  var gb = "🇬🇧";
+  var uk = "🇬🇧";
+  var it = "🇮🇹";
+  var jp = "🇯🇵";
+  var kr = "🇰🇷";
+  var ru = "🇷🇺";
+  var us = "🇺🇸";
+  var emoji = {
+  	"100": "💯",
+  	"1234": "🔢",
+  	interrobang: interrobang,
+  	tm: tm,
+  	information_source: information_source,
+  	left_right_arrow: left_right_arrow,
+  	arrow_up_down: arrow_up_down,
+  	arrow_upper_left: arrow_upper_left,
+  	arrow_upper_right: arrow_upper_right,
+  	arrow_lower_right: arrow_lower_right,
+  	arrow_lower_left: arrow_lower_left,
+  	keyboard: keyboard,
+  	sunny: sunny,
+  	cloud: cloud,
+  	umbrella: umbrella,
+  	showman: showman,
+  	comet: comet,
+  	ballot_box_with_check: ballot_box_with_check,
+  	coffee: coffee,
+  	shamrock: shamrock,
+  	skull_and_crossbones: skull_and_crossbones,
+  	radioactive_sign: radioactive_sign,
+  	biohazard_sign: biohazard_sign,
+  	orthodox_cross: orthodox_cross,
+  	wheel_of_dharma: wheel_of_dharma,
+  	white_frowning_face: white_frowning_face,
+  	aries: aries,
+  	taurus: taurus,
+  	sagittarius: sagittarius,
+  	capricorn: capricorn,
+  	aquarius: aquarius,
+  	pisces: pisces,
+  	spades: spades,
+  	clubs: clubs,
+  	hearts: hearts,
+  	diamonds: diamonds,
+  	hotsprings: hotsprings,
+  	hammer_and_pick: hammer_and_pick,
+  	anchor: anchor,
+  	crossed_swords: crossed_swords,
+  	scales: scales,
+  	alembic: alembic,
+  	gear: gear,
+  	scissors: scissors,
+  	white_check_mark: white_check_mark,
+  	airplane: airplane,
+  	email: email,
+  	envelope: envelope,
+  	black_nib: black_nib,
+  	heavy_check_mark: heavy_check_mark,
+  	heavy_multiplication_x: heavy_multiplication_x,
+  	star_of_david: star_of_david,
+  	sparkles: sparkles,
+  	eight_spoked_asterisk: eight_spoked_asterisk,
+  	eight_pointed_black_star: eight_pointed_black_star,
+  	snowflake: snowflake,
+  	sparkle: sparkle,
+  	question: question,
+  	grey_question: grey_question,
+  	grey_exclamation: grey_exclamation,
+  	exclamation: exclamation,
+  	heavy_exclamation_mark: heavy_exclamation_mark,
+  	heavy_heart_exclamation_mark_ornament: heavy_heart_exclamation_mark_ornament,
+  	heart: heart,
+  	heavy_plus_sign: heavy_plus_sign,
+  	heavy_minus_sign: heavy_minus_sign,
+  	heavy_division_sign: heavy_division_sign,
+  	arrow_heading_up: arrow_heading_up,
+  	arrow_heading_down: arrow_heading_down,
+  	wavy_dash: wavy_dash,
+  	congratulations: congratulations,
+  	secret: secret,
+  	copyright: copyright,
+  	registered: registered,
+  	bangbang: bangbang,
+  	leftwards_arrow_with_hook: leftwards_arrow_with_hook,
+  	arrow_right_hook: arrow_right_hook,
+  	watch: watch,
+  	hourglass: hourglass,
+  	fast_forward: fast_forward,
+  	rewind: rewind,
+  	arrow_double_up: arrow_double_up,
+  	arrow_double_down: arrow_double_down,
+  	black_right_pointing_double_triangle_with_vertical_bar: black_right_pointing_double_triangle_with_vertical_bar,
+  	black_left_pointing_double_triangle_with_vertical_bar: black_left_pointing_double_triangle_with_vertical_bar,
+  	black_right_pointing_triangle_with_double_vertical_bar: black_right_pointing_triangle_with_double_vertical_bar,
+  	alarm_clock: alarm_clock,
+  	stopwatch: stopwatch,
+  	timer_clock: timer_clock,
+  	hourglass_flowing_sand: hourglass_flowing_sand,
+  	double_vertical_bar: double_vertical_bar,
+  	black_square_for_stop: black_square_for_stop,
+  	black_circle_for_record: black_circle_for_record,
+  	m: m,
+  	black_small_square: black_small_square,
+  	white_small_square: white_small_square,
+  	arrow_forward: arrow_forward,
+  	arrow_backward: arrow_backward,
+  	white_medium_square: white_medium_square,
+  	black_medium_square: black_medium_square,
+  	white_medium_small_square: white_medium_small_square,
+  	black_medium_small_square: black_medium_small_square,
+  	phone: phone,
+  	telephone: telephone,
+  	point_up: point_up,
+  	star_and_crescent: star_and_crescent,
+  	peace_symbol: peace_symbol,
+  	yin_yang: yin_yang,
+  	relaxed: relaxed,
+  	gemini: gemini,
+  	cancer: cancer,
+  	leo: leo,
+  	virgo: virgo,
+  	libra: libra,
+  	scorpius: scorpius,
+  	recycle: recycle,
+  	wheelchair: wheelchair,
+  	atom_symbol: atom_symbol,
+  	fleur_de_lis: fleur_de_lis,
+  	warning: warning,
+  	zap: zap,
+  	white_circle: white_circle,
+  	black_circle: black_circle,
+  	coffin: coffin,
+  	funeral_urn: funeral_urn,
+  	soccer: soccer,
+  	baseball: baseball,
+  	snowman: snowman,
+  	partly_sunny: partly_sunny,
+  	thunder_cloud_and_rain: thunder_cloud_and_rain,
+  	ophiuchus: ophiuchus,
+  	pick: pick,
+  	helmet_with_white_cross: helmet_with_white_cross,
+  	chains: chains,
+  	no_entry: no_entry,
+  	shinto_shrine: shinto_shrine,
+  	church: church,
+  	mountain: mountain,
+  	umbrella_on_ground: umbrella_on_ground,
+  	fountain: fountain,
+  	golf: golf,
+  	ferry: ferry,
+  	boat: boat,
+  	sailboat: sailboat,
+  	skier: skier,
+  	ice_skate: ice_skate,
+  	person_with_ball: person_with_ball,
+  	tent: tent,
+  	fuelpump: fuelpump,
+  	fist: fist,
+  	hand: hand,
+  	raised_hand: raised_hand,
+  	v: v,
+  	writing_hand: writing_hand,
+  	pencil2: pencil2,
+  	latin_cross: latin_cross,
+  	x: x,
+  	negative_squared_cross_mark: negative_squared_cross_mark,
+  	arrow_right: arrow_right,
+  	curly_loop: curly_loop,
+  	loop: loop,
+  	arrow_left: arrow_left,
+  	arrow_up: arrow_up,
+  	arrow_down: arrow_down,
+  	black_large_square: black_large_square,
+  	white_large_square: white_large_square,
+  	star: star,
+  	o: o,
+  	part_alternation_mark: part_alternation_mark,
+  	mahjong: mahjong,
+  	black_joker: black_joker,
+  	a: a,
+  	b: b,
+  	o2: o2,
+  	parking: parking,
+  	ab: ab,
+  	cl: cl,
+  	cool: cool,
+  	free: free,
+  	id: id,
+  	"new": "🆕",
+  	ng: ng,
+  	ok: ok,
+  	sos: sos,
+  	up: up,
+  	vs: vs,
+  	koko: koko,
+  	sa: sa,
+  	u7121: u7121,
+  	u6307: u6307,
+  	u7981: u7981,
+  	u7a7a: u7a7a,
+  	u5408: u5408,
+  	u6e80: u6e80,
+  	u6709: u6709,
+  	u6708: u6708,
+  	u7533: u7533,
+  	u5272: u5272,
+  	u55b6: u55b6,
+  	ideograph_advantage: ideograph_advantage,
+  	accept: accept,
+  	cyclone: cyclone,
+  	foggy: foggy,
+  	closed_umbrella: closed_umbrella,
+  	night_with_stars: night_with_stars,
+  	sunrise_over_mountains: sunrise_over_mountains,
+  	sunrise: sunrise,
+  	city_sunset: city_sunset,
+  	city_sunrise: city_sunrise,
+  	rainbow: rainbow,
+  	bridge_at_night: bridge_at_night,
+  	ocean: ocean,
+  	volcano: volcano,
+  	milky_way: milky_way,
+  	earth_africa: earth_africa,
+  	earth_americas: earth_americas,
+  	earth_asia: earth_asia,
+  	globe_with_meridians: globe_with_meridians,
+  	new_moon: new_moon,
+  	waxing_crescent_moon: waxing_crescent_moon,
+  	first_quarter_moon: first_quarter_moon,
+  	moon: moon,
+  	waxing_gibbous_moon: waxing_gibbous_moon,
+  	full_moon: full_moon,
+  	waning_gibbous_moon: waning_gibbous_moon,
+  	last_quarter_moon: last_quarter_moon,
+  	waning_crescent_moon: waning_crescent_moon,
+  	crescent_moon: crescent_moon,
+  	new_moon_with_face: new_moon_with_face,
+  	first_quarter_moon_with_face: first_quarter_moon_with_face,
+  	last_quarter_moon_with_face: last_quarter_moon_with_face,
+  	full_moon_with_face: full_moon_with_face,
+  	sun_with_face: sun_with_face,
+  	star2: star2,
+  	stars: stars,
+  	thermometer: thermometer,
+  	mostly_sunny: mostly_sunny,
+  	sun_small_cloud: sun_small_cloud,
+  	barely_sunny: barely_sunny,
+  	sun_behind_cloud: sun_behind_cloud,
+  	partly_sunny_rain: partly_sunny_rain,
+  	sun_behind_rain_cloud: sun_behind_rain_cloud,
+  	rain_cloud: rain_cloud,
+  	snow_cloud: snow_cloud,
+  	lightning: lightning,
+  	lightning_cloud: lightning_cloud,
+  	tornado: tornado,
+  	tornado_cloud: tornado_cloud,
+  	fog: fog,
+  	wind_blowing_face: wind_blowing_face,
+  	hotdog: hotdog,
+  	taco: taco,
+  	burrito: burrito,
+  	chestnut: chestnut,
+  	seedling: seedling,
+  	evergreen_tree: evergreen_tree,
+  	deciduous_tree: deciduous_tree,
+  	palm_tree: palm_tree,
+  	cactus: cactus,
+  	hot_pepper: hot_pepper,
+  	tulip: tulip,
+  	cherry_blossom: cherry_blossom,
+  	rose: rose,
+  	hibiscus: hibiscus,
+  	sunflower: sunflower,
+  	blossom: blossom,
+  	corn: corn,
+  	ear_of_rice: ear_of_rice,
+  	herb: herb,
+  	four_leaf_clover: four_leaf_clover,
+  	maple_leaf: maple_leaf,
+  	fallen_leaf: fallen_leaf,
+  	leaves: leaves,
+  	mushroom: mushroom,
+  	tomato: tomato,
+  	eggplant: eggplant,
+  	grapes: grapes,
+  	melon: melon,
+  	watermelon: watermelon,
+  	tangerine: tangerine,
+  	lemon: lemon,
+  	banana: banana,
+  	pineapple: pineapple,
+  	apple: apple,
+  	green_apple: green_apple,
+  	pear: pear,
+  	peach: peach,
+  	cherries: cherries,
+  	strawberry: strawberry,
+  	hamburger: hamburger,
+  	pizza: pizza,
+  	meat_on_bone: meat_on_bone,
+  	poultry_leg: poultry_leg,
+  	rice_cracker: rice_cracker,
+  	rice_ball: rice_ball,
+  	rice: rice,
+  	curry: curry,
+  	ramen: ramen,
+  	spaghetti: spaghetti,
+  	bread: bread,
+  	fries: fries,
+  	sweet_potato: sweet_potato,
+  	dango: dango,
+  	oden: oden,
+  	sushi: sushi,
+  	fried_shrimp: fried_shrimp,
+  	fish_cake: fish_cake,
+  	icecream: icecream,
+  	shaved_ice: shaved_ice,
+  	ice_cream: ice_cream,
+  	doughnut: doughnut,
+  	cookie: cookie,
+  	chocolate_bar: chocolate_bar,
+  	candy: candy,
+  	lollipop: lollipop,
+  	custard: custard,
+  	honey_pot: honey_pot,
+  	cake: cake,
+  	bento: bento,
+  	stew: stew,
+  	egg: egg,
+  	fork_and_knife: fork_and_knife,
+  	tea: tea,
+  	sake: sake,
+  	wine_glass: wine_glass,
+  	cocktail: cocktail,
+  	tropical_drink: tropical_drink,
+  	beer: beer,
+  	beers: beers,
+  	baby_bottle: baby_bottle,
+  	knife_fork_plate: knife_fork_plate,
+  	champagne: champagne,
+  	popcorn: popcorn,
+  	ribbon: ribbon,
+  	gift: gift,
+  	birthday: birthday,
+  	jack_o_lantern: jack_o_lantern,
+  	christmas_tree: christmas_tree,
+  	santa: santa,
+  	fireworks: fireworks,
+  	sparkler: sparkler,
+  	balloon: balloon,
+  	tada: tada,
+  	confetti_ball: confetti_ball,
+  	tanabata_tree: tanabata_tree,
+  	crossed_flags: crossed_flags,
+  	bamboo: bamboo,
+  	dolls: dolls,
+  	flags: flags,
+  	wind_chime: wind_chime,
+  	rice_scene: rice_scene,
+  	school_satchel: school_satchel,
+  	mortar_board: mortar_board,
+  	medal: medal,
+  	reminder_ribbon: reminder_ribbon,
+  	studio_microphone: studio_microphone,
+  	level_slider: level_slider,
+  	control_knobs: control_knobs,
+  	film_frames: film_frames,
+  	admission_tickets: admission_tickets,
+  	carousel_horse: carousel_horse,
+  	ferris_wheel: ferris_wheel,
+  	roller_coaster: roller_coaster,
+  	fishing_pole_and_fish: fishing_pole_and_fish,
+  	microphone: microphone,
+  	movie_camera: movie_camera,
+  	cinema: cinema,
+  	headphones: headphones,
+  	art: art,
+  	tophat: tophat,
+  	circus_tent: circus_tent,
+  	ticket: ticket,
+  	clapper: clapper,
+  	performing_arts: performing_arts,
+  	video_game: video_game,
+  	dart: dart,
+  	slot_machine: slot_machine,
+  	"8ball": "🎱",
+  	game_die: game_die,
+  	bowling: bowling,
+  	flower_playing_cards: flower_playing_cards,
+  	musical_note: musical_note,
+  	notes: notes,
+  	saxophone: saxophone,
+  	guitar: guitar,
+  	musical_keyboard: musical_keyboard,
+  	trumpet: trumpet,
+  	violin: violin,
+  	musical_score: musical_score,
+  	running_shirt_with_sash: running_shirt_with_sash,
+  	tennis: tennis,
+  	ski: ski,
+  	basketball: basketball,
+  	checkered_flag: checkered_flag,
+  	snowboarder: snowboarder,
+  	runner: runner,
+  	running: running,
+  	surfer: surfer,
+  	sports_medal: sports_medal,
+  	trophy: trophy,
+  	horse_racing: horse_racing,
+  	football: football,
+  	rugby_football: rugby_football,
+  	swimmer: swimmer,
+  	weight_lifter: weight_lifter,
+  	golfer: golfer,
+  	racing_motorcycle: racing_motorcycle,
+  	racing_car: racing_car,
+  	cricket_bat_and_ball: cricket_bat_and_ball,
+  	volleyball: volleyball,
+  	field_hockey_stick_and_ball: field_hockey_stick_and_ball,
+  	ice_hockey_stick_and_puck: ice_hockey_stick_and_puck,
+  	table_tennis_paddle_and_ball: table_tennis_paddle_and_ball,
+  	snow_capped_mountain: snow_capped_mountain,
+  	camping: camping,
+  	beach_with_umbrella: beach_with_umbrella,
+  	building_construction: building_construction,
+  	house_buildings: house_buildings,
+  	cityscape: cityscape,
+  	derelict_house_building: derelict_house_building,
+  	classical_building: classical_building,
+  	desert: desert,
+  	desert_island: desert_island,
+  	national_park: national_park,
+  	stadium: stadium,
+  	house: house,
+  	house_with_garden: house_with_garden,
+  	office: office,
+  	post_office: post_office,
+  	european_post_office: european_post_office,
+  	hospital: hospital,
+  	bank: bank,
+  	atm: atm,
+  	hotel: hotel,
+  	love_hotel: love_hotel,
+  	convenience_store: convenience_store,
+  	school: school,
+  	department_store: department_store,
+  	factory: factory,
+  	izakaya_lantern: izakaya_lantern,
+  	lantern: lantern,
+  	japanese_castle: japanese_castle,
+  	european_castle: european_castle,
+  	waving_white_flag: waving_white_flag,
+  	waving_black_flag: waving_black_flag,
+  	rosette: rosette,
+  	label: label,
+  	badminton_racquet_and_shuttlecock: badminton_racquet_and_shuttlecock,
+  	bow_and_arrow: bow_and_arrow,
+  	amphora: amphora,
+  	"skin-tone-2": "🏻",
+  	"skin-tone-3": "🏼",
+  	"skin-tone-4": "🏽",
+  	"skin-tone-5": "🏾",
+  	"skin-tone-6": "🏿",
+  	rat: rat,
+  	mouse2: mouse2,
+  	ox: ox,
+  	water_buffalo: water_buffalo,
+  	cow2: cow2,
+  	tiger2: tiger2,
+  	leopard: leopard,
+  	rabbit2: rabbit2,
+  	cat2: cat2,
+  	dragon: dragon,
+  	crocodile: crocodile,
+  	whale2: whale2,
+  	snail: snail,
+  	snake: snake,
+  	racehorse: racehorse,
+  	ram: ram,
+  	goat: goat,
+  	sheep: sheep,
+  	monkey: monkey,
+  	rooster: rooster,
+  	chicken: chicken,
+  	dog2: dog2,
+  	pig2: pig2,
+  	boar: boar,
+  	elephant: elephant,
+  	octopus: octopus,
+  	shell: shell,
+  	bug: bug,
+  	ant: ant,
+  	bee: bee,
+  	honeybee: honeybee,
+  	beetle: beetle,
+  	fish: fish,
+  	tropical_fish: tropical_fish,
+  	blowfish: blowfish,
+  	turtle: turtle,
+  	hatching_chick: hatching_chick,
+  	baby_chick: baby_chick,
+  	hatched_chick: hatched_chick,
+  	bird: bird,
+  	penguin: penguin,
+  	koala: koala,
+  	poodle: poodle,
+  	dromedary_camel: dromedary_camel,
+  	camel: camel,
+  	dolphin: dolphin,
+  	flipper: flipper,
+  	mouse: mouse,
+  	cow: cow,
+  	tiger: tiger,
+  	rabbit: rabbit,
+  	cat: cat,
+  	dragon_face: dragon_face,
+  	whale: whale,
+  	horse: horse,
+  	monkey_face: monkey_face,
+  	dog: dog,
+  	pig: pig,
+  	frog: frog,
+  	hamster: hamster,
+  	wolf: wolf,
+  	bear: bear,
+  	panda_face: panda_face,
+  	pig_nose: pig_nose,
+  	feet: feet,
+  	paw_prints: paw_prints,
+  	chipmunk: chipmunk,
+  	eyes: eyes,
+  	eye: eye,
+  	ear: ear,
+  	nose: nose,
+  	lips: lips,
+  	tongue: tongue,
+  	point_up_2: point_up_2,
+  	point_down: point_down,
+  	point_left: point_left,
+  	point_right: point_right,
+  	facepunch: facepunch,
+  	punch: punch,
+  	wave: wave,
+  	ok_hand: ok_hand,
+  	"+1": "👍",
+  	thumbsup: thumbsup,
+  	"-1": "👎",
+  	thumbsdown: thumbsdown,
+  	clap: clap,
+  	open_hands: open_hands,
+  	crown: crown,
+  	womans_hat: womans_hat,
+  	eyeglasses: eyeglasses,
+  	necktie: necktie,
+  	shirt: shirt,
+  	tshirt: tshirt,
+  	jeans: jeans,
+  	dress: dress,
+  	kimono: kimono,
+  	bikini: bikini,
+  	womans_clothes: womans_clothes,
+  	purse: purse,
+  	handbag: handbag,
+  	pouch: pouch,
+  	mans_shoe: mans_shoe,
+  	shoe: shoe,
+  	athletic_shoe: athletic_shoe,
+  	high_heel: high_heel,
+  	sandal: sandal,
+  	boot: boot,
+  	footprints: footprints,
+  	bust_in_silhouette: bust_in_silhouette,
+  	busts_in_silhouette: busts_in_silhouette,
+  	boy: boy,
+  	girl: girl,
+  	man: man,
+  	woman: woman,
+  	family: family,
+  	"man-woman-boy": "👨‍👩‍👦",
+  	couple: couple,
+  	man_and_woman_holding_hands: man_and_woman_holding_hands,
+  	two_men_holding_hands: two_men_holding_hands,
+  	two_women_holding_hands: two_women_holding_hands,
+  	cop: cop,
+  	dancers: dancers,
+  	bride_with_veil: bride_with_veil,
+  	person_with_blond_hair: person_with_blond_hair,
+  	man_with_gua_pi_mao: man_with_gua_pi_mao,
+  	man_with_turban: man_with_turban,
+  	older_man: older_man,
+  	older_woman: older_woman,
+  	baby: baby,
+  	construction_worker: construction_worker,
+  	princess: princess,
+  	japanese_ogre: japanese_ogre,
+  	japanese_goblin: japanese_goblin,
+  	ghost: ghost,
+  	angel: angel,
+  	alien: alien,
+  	space_invader: space_invader,
+  	imp: imp,
+  	skull: skull,
+  	information_desk_person: information_desk_person,
+  	guardsman: guardsman,
+  	dancer: dancer,
+  	lipstick: lipstick,
+  	nail_care: nail_care,
+  	massage: massage,
+  	haircut: haircut,
+  	barber: barber,
+  	syringe: syringe,
+  	pill: pill,
+  	kiss: kiss,
+  	love_letter: love_letter,
+  	ring: ring,
+  	gem: gem,
+  	couplekiss: couplekiss,
+  	bouquet: bouquet,
+  	couple_with_heart: couple_with_heart,
+  	wedding: wedding,
+  	heartbeat: heartbeat,
+  	broken_heart: broken_heart,
+  	two_hearts: two_hearts,
+  	sparkling_heart: sparkling_heart,
+  	heartpulse: heartpulse,
+  	cupid: cupid,
+  	blue_heart: blue_heart,
+  	green_heart: green_heart,
+  	yellow_heart: yellow_heart,
+  	purple_heart: purple_heart,
+  	gift_heart: gift_heart,
+  	revolving_hearts: revolving_hearts,
+  	heart_decoration: heart_decoration,
+  	diamond_shape_with_a_dot_inside: diamond_shape_with_a_dot_inside,
+  	bulb: bulb,
+  	anger: anger,
+  	bomb: bomb,
+  	zzz: zzz,
+  	boom: boom,
+  	collision: collision,
+  	sweat_drops: sweat_drops,
+  	droplet: droplet,
+  	dash: dash,
+  	hankey: hankey,
+  	poop: poop,
+  	shit: shit,
+  	muscle: muscle,
+  	dizzy: dizzy,
+  	speech_balloon: speech_balloon,
+  	thought_balloon: thought_balloon,
+  	white_flower: white_flower,
+  	moneybag: moneybag,
+  	currency_exchange: currency_exchange,
+  	heavy_dollar_sign: heavy_dollar_sign,
+  	credit_card: credit_card,
+  	yen: yen,
+  	dollar: dollar,
+  	euro: euro,
+  	pound: pound,
+  	money_with_wings: money_with_wings,
+  	chart: chart,
+  	seat: seat,
+  	computer: computer,
+  	briefcase: briefcase,
+  	minidisc: minidisc,
+  	floppy_disk: floppy_disk,
+  	cd: cd,
+  	dvd: dvd,
+  	file_folder: file_folder,
+  	open_file_folder: open_file_folder,
+  	page_with_curl: page_with_curl,
+  	page_facing_up: page_facing_up,
+  	date: date,
+  	calendar: calendar,
+  	card_index: card_index,
+  	chart_with_upwards_trend: chart_with_upwards_trend,
+  	chart_with_downwards_trend: chart_with_downwards_trend,
+  	bar_chart: bar_chart,
+  	clipboard: clipboard,
+  	pushpin: pushpin,
+  	round_pushpin: round_pushpin,
+  	paperclip: paperclip,
+  	straight_ruler: straight_ruler,
+  	triangular_ruler: triangular_ruler,
+  	bookmark_tabs: bookmark_tabs,
+  	ledger: ledger,
+  	notebook: notebook,
+  	notebook_with_decorative_cover: notebook_with_decorative_cover,
+  	closed_book: closed_book,
+  	book: book,
+  	open_book: open_book,
+  	green_book: green_book,
+  	blue_book: blue_book,
+  	orange_book: orange_book,
+  	books: books,
+  	name_badge: name_badge,
+  	scroll: scroll,
+  	memo: memo,
+  	pencil: pencil,
+  	telephone_receiver: telephone_receiver,
+  	pager: pager,
+  	fax: fax,
+  	satellite: satellite,
+  	loudspeaker: loudspeaker,
+  	mega: mega,
+  	outbox_tray: outbox_tray,
+  	inbox_tray: inbox_tray,
+  	"package": "📦",
+  	"e-mail": "📧",
+  	incoming_envelope: incoming_envelope,
+  	envelope_with_arrow: envelope_with_arrow,
+  	mailbox_closed: mailbox_closed,
+  	mailbox: mailbox,
+  	mailbox_with_mail: mailbox_with_mail,
+  	mailbox_with_no_mail: mailbox_with_no_mail,
+  	postbox: postbox,
+  	postal_horn: postal_horn,
+  	newspaper: newspaper,
+  	iphone: iphone,
+  	calling: calling,
+  	vibration_mode: vibration_mode,
+  	mobile_phone_off: mobile_phone_off,
+  	no_mobile_phones: no_mobile_phones,
+  	signal_strength: signal_strength,
+  	camera: camera,
+  	camera_with_flash: camera_with_flash,
+  	video_camera: video_camera,
+  	tv: tv,
+  	radio: radio,
+  	vhs: vhs,
+  	film_projector: film_projector,
+  	prayer_beads: prayer_beads,
+  	twisted_rightwards_arrows: twisted_rightwards_arrows,
+  	repeat: repeat,
+  	repeat_one: repeat_one,
+  	arrows_clockwise: arrows_clockwise,
+  	arrows_counterclockwise: arrows_counterclockwise,
+  	low_brightness: low_brightness,
+  	high_brightness: high_brightness,
+  	mute: mute,
+  	speaker: speaker,
+  	sound: sound,
+  	loud_sound: loud_sound,
+  	battery: battery,
+  	electric_plug: electric_plug,
+  	mag: mag,
+  	mag_right: mag_right,
+  	lock_with_ink_pen: lock_with_ink_pen,
+  	closed_lock_with_key: closed_lock_with_key,
+  	key: key,
+  	lock: lock,
+  	unlock: unlock,
+  	bell: bell,
+  	no_bell: no_bell,
+  	bookmark: bookmark,
+  	link: link,
+  	radio_button: radio_button,
+  	back: back,
+  	end: end,
+  	on: on,
+  	soon: soon,
+  	top: top,
+  	underage: underage,
+  	keycap_ten: keycap_ten,
+  	capital_abcd: capital_abcd,
+  	abcd: abcd,
+  	symbols: symbols,
+  	abc: abc,
+  	fire: fire,
+  	flashlight: flashlight,
+  	wrench: wrench,
+  	hammer: hammer,
+  	nut_and_bolt: nut_and_bolt,
+  	hocho: hocho,
+  	knife: knife,
+  	gun: gun,
+  	microscope: microscope,
+  	telescope: telescope,
+  	crystal_ball: crystal_ball,
+  	six_pointed_star: six_pointed_star,
+  	beginner: beginner,
+  	trident: trident,
+  	black_square_button: black_square_button,
+  	white_square_button: white_square_button,
+  	red_circle: red_circle,
+  	large_blue_circle: large_blue_circle,
+  	large_orange_diamond: large_orange_diamond,
+  	large_blue_diamond: large_blue_diamond,
+  	small_orange_diamond: small_orange_diamond,
+  	small_blue_diamond: small_blue_diamond,
+  	small_red_triangle: small_red_triangle,
+  	small_red_triangle_down: small_red_triangle_down,
+  	arrow_up_small: arrow_up_small,
+  	arrow_down_small: arrow_down_small,
+  	om_symbol: om_symbol,
+  	dove_of_peace: dove_of_peace,
+  	kaaba: kaaba,
+  	mosque: mosque,
+  	synagogue: synagogue,
+  	menorah_with_nine_branches: menorah_with_nine_branches,
+  	clock1: clock1,
+  	clock2: clock2,
+  	clock3: clock3,
+  	clock4: clock4,
+  	clock5: clock5,
+  	clock6: clock6,
+  	clock7: clock7,
+  	clock8: clock8,
+  	clock9: clock9,
+  	clock10: clock10,
+  	clock11: clock11,
+  	clock12: clock12,
+  	clock130: clock130,
+  	clock230: clock230,
+  	clock330: clock330,
+  	clock430: clock430,
+  	clock530: clock530,
+  	clock630: clock630,
+  	clock730: clock730,
+  	clock830: clock830,
+  	clock930: clock930,
+  	clock1030: clock1030,
+  	clock1130: clock1130,
+  	clock1230: clock1230,
+  	candle: candle,
+  	mantelpiece_clock: mantelpiece_clock,
+  	hole: hole,
+  	man_in_business_suit_levitating: man_in_business_suit_levitating,
+  	sleuth_or_spy: sleuth_or_spy,
+  	dark_sunglasses: dark_sunglasses,
+  	spider: spider,
+  	spider_web: spider_web,
+  	joystick: joystick,
+  	linked_paperclips: linked_paperclips,
+  	lower_left_ballpoint_pen: lower_left_ballpoint_pen,
+  	lower_left_fountain_pen: lower_left_fountain_pen,
+  	lower_left_paintbrush: lower_left_paintbrush,
+  	lower_left_crayon: lower_left_crayon,
+  	raised_hand_with_fingers_splayed: raised_hand_with_fingers_splayed,
+  	middle_finger: middle_finger,
+  	reversed_hand_with_middle_finger_extended: reversed_hand_with_middle_finger_extended,
+  	"spock-hand": "🖖",
+  	desktop_computer: desktop_computer,
+  	printer: printer,
+  	three_button_mouse: three_button_mouse,
+  	trackball: trackball,
+  	frame_with_picture: frame_with_picture,
+  	card_index_dividers: card_index_dividers,
+  	card_file_box: card_file_box,
+  	file_cabinet: file_cabinet,
+  	wastebasket: wastebasket,
+  	spiral_note_pad: spiral_note_pad,
+  	spiral_calendar_pad: spiral_calendar_pad,
+  	compression: compression,
+  	old_key: old_key,
+  	rolled_up_newspaper: rolled_up_newspaper,
+  	dagger_knife: dagger_knife,
+  	speaking_head_in_silhouette: speaking_head_in_silhouette,
+  	left_speech_bubble: left_speech_bubble,
+  	right_anger_bubble: right_anger_bubble,
+  	ballot_box_with_ballot: ballot_box_with_ballot,
+  	world_map: world_map,
+  	mount_fuji: mount_fuji,
+  	tokyo_tower: tokyo_tower,
+  	statue_of_liberty: statue_of_liberty,
+  	japan: japan,
+  	moyai: moyai,
+  	grinning: grinning,
+  	grin: grin,
+  	joy: joy,
+  	smiley: smiley,
+  	smile: smile,
+  	sweat_smile: sweat_smile,
+  	laughing: laughing,
+  	satisfied: satisfied,
+  	innocent: innocent,
+  	smiling_imp: smiling_imp,
+  	wink: wink,
+  	blush: blush,
+  	yum: yum,
+  	relieved: relieved,
+  	heart_eyes: heart_eyes,
+  	sunglasses: sunglasses,
+  	smirk: smirk,
+  	neutral_face: neutral_face,
+  	expressionless: expressionless,
+  	unamused: unamused,
+  	sweat: sweat,
+  	pensive: pensive,
+  	confused: confused,
+  	confounded: confounded,
+  	kissing: kissing,
+  	kissing_heart: kissing_heart,
+  	kissing_smiling_eyes: kissing_smiling_eyes,
+  	kissing_closed_eyes: kissing_closed_eyes,
+  	stuck_out_tongue: stuck_out_tongue,
+  	stuck_out_tongue_winking_eye: stuck_out_tongue_winking_eye,
+  	stuck_out_tongue_closed_eyes: stuck_out_tongue_closed_eyes,
+  	disappointed: disappointed,
+  	worried: worried,
+  	angry: angry,
+  	rage: rage,
+  	cry: cry,
+  	persevere: persevere,
+  	triumph: triumph,
+  	disappointed_relieved: disappointed_relieved,
+  	frowning: frowning,
+  	anguished: anguished,
+  	fearful: fearful,
+  	weary: weary,
+  	sleepy: sleepy,
+  	tired_face: tired_face,
+  	grimacing: grimacing,
+  	sob: sob,
+  	open_mouth: open_mouth,
+  	hushed: hushed,
+  	cold_sweat: cold_sweat,
+  	scream: scream,
+  	astonished: astonished,
+  	flushed: flushed,
+  	sleeping: sleeping,
+  	dizzy_face: dizzy_face,
+  	no_mouth: no_mouth,
+  	mask: mask,
+  	smile_cat: smile_cat,
+  	joy_cat: joy_cat,
+  	smiley_cat: smiley_cat,
+  	heart_eyes_cat: heart_eyes_cat,
+  	smirk_cat: smirk_cat,
+  	kissing_cat: kissing_cat,
+  	pouting_cat: pouting_cat,
+  	crying_cat_face: crying_cat_face,
+  	scream_cat: scream_cat,
+  	slightly_frowning_face: slightly_frowning_face,
+  	slightly_smiling_face: slightly_smiling_face,
+  	upside_down_face: upside_down_face,
+  	face_with_rolling_eyes: face_with_rolling_eyes,
+  	no_good: no_good,
+  	ok_woman: ok_woman,
+  	bow: bow,
+  	see_no_evil: see_no_evil,
+  	hear_no_evil: hear_no_evil,
+  	speak_no_evil: speak_no_evil,
+  	raising_hand: raising_hand,
+  	raised_hands: raised_hands,
+  	person_frowning: person_frowning,
+  	person_with_pouting_face: person_with_pouting_face,
+  	pray: pray,
+  	rocket: rocket,
+  	helicopter: helicopter,
+  	steam_locomotive: steam_locomotive,
+  	railway_car: railway_car,
+  	bullettrain_side: bullettrain_side,
+  	bullettrain_front: bullettrain_front,
+  	train2: train2,
+  	metro: metro,
+  	light_rail: light_rail,
+  	station: station,
+  	tram: tram,
+  	train: train,
+  	bus: bus,
+  	oncoming_bus: oncoming_bus,
+  	trolleybus: trolleybus,
+  	busstop: busstop,
+  	minibus: minibus,
+  	ambulance: ambulance,
+  	fire_engine: fire_engine,
+  	police_car: police_car,
+  	oncoming_police_car: oncoming_police_car,
+  	taxi: taxi,
+  	oncoming_taxi: oncoming_taxi,
+  	car: car,
+  	red_car: red_car,
+  	oncoming_automobile: oncoming_automobile,
+  	blue_car: blue_car,
+  	truck: truck,
+  	articulated_lorry: articulated_lorry,
+  	tractor: tractor,
+  	monorail: monorail,
+  	mountain_railway: mountain_railway,
+  	suspension_railway: suspension_railway,
+  	mountain_cableway: mountain_cableway,
+  	aerial_tramway: aerial_tramway,
+  	ship: ship,
+  	rowboat: rowboat,
+  	speedboat: speedboat,
+  	traffic_light: traffic_light,
+  	vertical_traffic_light: vertical_traffic_light,
+  	construction: construction,
+  	rotating_light: rotating_light,
+  	triangular_flag_on_post: triangular_flag_on_post,
+  	door: door,
+  	no_entry_sign: no_entry_sign,
+  	smoking: smoking,
+  	no_smoking: no_smoking,
+  	put_litter_in_its_place: put_litter_in_its_place,
+  	do_not_litter: do_not_litter,
+  	potable_water: potable_water,
+  	"non-potable_water": "🚱",
+  	bike: bike,
+  	no_bicycles: no_bicycles,
+  	bicyclist: bicyclist,
+  	mountain_bicyclist: mountain_bicyclist,
+  	walking: walking,
+  	no_pedestrians: no_pedestrians,
+  	children_crossing: children_crossing,
+  	mens: mens,
+  	womens: womens,
+  	restroom: restroom,
+  	baby_symbol: baby_symbol,
+  	toilet: toilet,
+  	wc: wc,
+  	shower: shower,
+  	bath: bath,
+  	bathtub: bathtub,
+  	passport_control: passport_control,
+  	customs: customs,
+  	baggage_claim: baggage_claim,
+  	left_luggage: left_luggage,
+  	couch_and_lamp: couch_and_lamp,
+  	sleeping_accommodation: sleeping_accommodation,
+  	shopping_bags: shopping_bags,
+  	bellhop_bell: bellhop_bell,
+  	bed: bed,
+  	place_of_worship: place_of_worship,
+  	hammer_and_wrench: hammer_and_wrench,
+  	shield: shield,
+  	oil_drum: oil_drum,
+  	motorway: motorway,
+  	railway_track: railway_track,
+  	motor_boat: motor_boat,
+  	small_airplane: small_airplane,
+  	airplane_departure: airplane_departure,
+  	airplane_arriving: airplane_arriving,
+  	passenger_ship: passenger_ship,
+  	zipper_mouth_face: zipper_mouth_face,
+  	money_mouth_face: money_mouth_face,
+  	face_with_thermometer: face_with_thermometer,
+  	nerd_face: nerd_face,
+  	thinking_face: thinking_face,
+  	face_with_head_bandage: face_with_head_bandage,
+  	robot_face: robot_face,
+  	hugging_face: hugging_face,
+  	the_horns: the_horns,
+  	sign_of_the_horns: sign_of_the_horns,
+  	crab: crab,
+  	lion_face: lion_face,
+  	scorpion: scorpion,
+  	turkey: turkey,
+  	unicorn_face: unicorn_face,
+  	cheese_wedge: cheese_wedge,
+  	hash: hash,
+  	keycap_star: keycap_star,
+  	zero: zero,
+  	one: one,
+  	two: two,
+  	three: three,
+  	four: four,
+  	five: five,
+  	six: six,
+  	seven: seven,
+  	eight: eight,
+  	nine: nine,
+  	"flag-ac": "🇦🇨",
+  	"flag-ad": "🇦🇩",
+  	"flag-ae": "🇦🇪",
+  	"flag-af": "🇦🇫",
+  	"flag-ag": "🇦🇬",
+  	"flag-ai": "🇦🇮",
+  	"flag-al": "🇦🇱",
+  	"flag-am": "🇦🇲",
+  	"flag-ao": "🇦🇴",
+  	"flag-aq": "🇦🇶",
+  	"flag-ar": "🇦🇷",
+  	"flag-as": "🇦🇸",
+  	"flag-at": "🇦🇹",
+  	"flag-au": "🇦🇺",
+  	"flag-aw": "🇦🇼",
+  	"flag-ax": "🇦🇽",
+  	"flag-az": "🇦🇿",
+  	"flag-ba": "🇧🇦",
+  	"flag-bb": "🇧🇧",
+  	"flag-bd": "🇧🇩",
+  	"flag-be": "🇧🇪",
+  	"flag-bf": "🇧🇫",
+  	"flag-bg": "🇧🇬",
+  	"flag-bh": "🇧🇭",
+  	"flag-bi": "🇧🇮",
+  	"flag-bj": "🇧🇯",
+  	"flag-bl": "🇧🇱",
+  	"flag-bm": "🇧🇲",
+  	"flag-bn": "🇧🇳",
+  	"flag-bo": "🇧🇴",
+  	"flag-bq": "🇧🇶",
+  	"flag-br": "🇧🇷",
+  	"flag-bs": "🇧🇸",
+  	"flag-bt": "🇧🇹",
+  	"flag-bv": "🇧🇻",
+  	"flag-bw": "🇧🇼",
+  	"flag-by": "🇧🇾",
+  	"flag-bz": "🇧🇿",
+  	"flag-ca": "🇨🇦",
+  	"flag-cc": "🇨🇨",
+  	"flag-cd": "🇨🇩",
+  	"flag-cf": "🇨🇫",
+  	"flag-cg": "🇨🇬",
+  	"flag-ch": "🇨🇭",
+  	"flag-ci": "🇨🇮",
+  	"flag-ck": "🇨🇰",
+  	"flag-cl": "🇨🇱",
+  	"flag-cm": "🇨🇲",
+  	"flag-cn": "🇨🇳",
+  	cn: cn,
+  	"flag-co": "🇨🇴",
+  	"flag-cp": "🇨🇵",
+  	"flag-cr": "🇨🇷",
+  	"flag-cu": "🇨🇺",
+  	"flag-cv": "🇨🇻",
+  	"flag-cw": "🇨🇼",
+  	"flag-cx": "🇨🇽",
+  	"flag-cy": "🇨🇾",
+  	"flag-cz": "🇨🇿",
+  	"flag-de": "🇩🇪",
+  	de: de,
+  	"flag-dg": "🇩🇬",
+  	"flag-dj": "🇩🇯",
+  	"flag-dk": "🇩🇰",
+  	"flag-dm": "🇩🇲",
+  	"flag-do": "🇩🇴",
+  	"flag-dz": "🇩🇿",
+  	"flag-ea": "🇪🇦",
+  	"flag-ec": "🇪🇨",
+  	"flag-ee": "🇪🇪",
+  	"flag-eg": "🇪🇬",
+  	"flag-eh": "🇪🇭",
+  	"flag-er": "🇪🇷",
+  	"flag-es": "🇪🇸",
+  	es: es,
+  	"flag-et": "🇪🇹",
+  	"flag-eu": "🇪🇺",
+  	"flag-fi": "🇫🇮",
+  	"flag-fj": "🇫🇯",
+  	"flag-fk": "🇫🇰",
+  	"flag-fm": "🇫🇲",
+  	"flag-fo": "🇫🇴",
+  	"flag-fr": "🇫🇷",
+  	fr: fr,
+  	"flag-ga": "🇬🇦",
+  	"flag-gb": "🇬🇧",
+  	gb: gb,
+  	uk: uk,
+  	"flag-gd": "🇬🇩",
+  	"flag-ge": "🇬🇪",
+  	"flag-gf": "🇬🇫",
+  	"flag-gg": "🇬🇬",
+  	"flag-gh": "🇬🇭",
+  	"flag-gi": "🇬🇮",
+  	"flag-gl": "🇬🇱",
+  	"flag-gm": "🇬🇲",
+  	"flag-gn": "🇬🇳",
+  	"flag-gp": "🇬🇵",
+  	"flag-gq": "🇬🇶",
+  	"flag-gr": "🇬🇷",
+  	"flag-gs": "🇬🇸",
+  	"flag-gt": "🇬🇹",
+  	"flag-gu": "🇬🇺",
+  	"flag-gw": "🇬🇼",
+  	"flag-gy": "🇬🇾",
+  	"flag-hk": "🇭🇰",
+  	"flag-hm": "🇭🇲",
+  	"flag-hn": "🇭🇳",
+  	"flag-hr": "🇭🇷",
+  	"flag-ht": "🇭🇹",
+  	"flag-hu": "🇭🇺",
+  	"flag-ic": "🇮🇨",
+  	"flag-id": "🇮🇩",
+  	"flag-ie": "🇮🇪",
+  	"flag-il": "🇮🇱",
+  	"flag-im": "🇮🇲",
+  	"flag-in": "🇮🇳",
+  	"flag-io": "🇮🇴",
+  	"flag-iq": "🇮🇶",
+  	"flag-ir": "🇮🇷",
+  	"flag-is": "🇮🇸",
+  	"flag-it": "🇮🇹",
+  	it: it,
+  	"flag-je": "🇯🇪",
+  	"flag-jm": "🇯🇲",
+  	"flag-jo": "🇯🇴",
+  	"flag-jp": "🇯🇵",
+  	jp: jp,
+  	"flag-ke": "🇰🇪",
+  	"flag-kg": "🇰🇬",
+  	"flag-kh": "🇰🇭",
+  	"flag-ki": "🇰🇮",
+  	"flag-km": "🇰🇲",
+  	"flag-kn": "🇰🇳",
+  	"flag-kp": "🇰🇵",
+  	"flag-kr": "🇰🇷",
+  	kr: kr,
+  	"flag-kw": "🇰🇼",
+  	"flag-ky": "🇰🇾",
+  	"flag-kz": "🇰🇿",
+  	"flag-la": "🇱🇦",
+  	"flag-lb": "🇱🇧",
+  	"flag-lc": "🇱🇨",
+  	"flag-li": "🇱🇮",
+  	"flag-lk": "🇱🇰",
+  	"flag-lr": "🇱🇷",
+  	"flag-ls": "🇱🇸",
+  	"flag-lt": "🇱🇹",
+  	"flag-lu": "🇱🇺",
+  	"flag-lv": "🇱🇻",
+  	"flag-ly": "🇱🇾",
+  	"flag-ma": "🇲🇦",
+  	"flag-mc": "🇲🇨",
+  	"flag-md": "🇲🇩",
+  	"flag-me": "🇲🇪",
+  	"flag-mf": "🇲🇫",
+  	"flag-mg": "🇲🇬",
+  	"flag-mh": "🇲🇭",
+  	"flag-mk": "🇲🇰",
+  	"flag-ml": "🇲🇱",
+  	"flag-mm": "🇲🇲",
+  	"flag-mn": "🇲🇳",
+  	"flag-mo": "🇲🇴",
+  	"flag-mp": "🇲🇵",
+  	"flag-mq": "🇲🇶",
+  	"flag-mr": "🇲🇷",
+  	"flag-ms": "🇲🇸",
+  	"flag-mt": "🇲🇹",
+  	"flag-mu": "🇲🇺",
+  	"flag-mv": "🇲🇻",
+  	"flag-mw": "🇲🇼",
+  	"flag-mx": "🇲🇽",
+  	"flag-my": "🇲🇾",
+  	"flag-mz": "🇲🇿",
+  	"flag-na": "🇳🇦",
+  	"flag-nc": "🇳🇨",
+  	"flag-ne": "🇳🇪",
+  	"flag-nf": "🇳🇫",
+  	"flag-ng": "🇳🇬",
+  	"flag-ni": "🇳🇮",
+  	"flag-nl": "🇳🇱",
+  	"flag-no": "🇳🇴",
+  	"flag-np": "🇳🇵",
+  	"flag-nr": "🇳🇷",
+  	"flag-nu": "🇳🇺",
+  	"flag-nz": "🇳🇿",
+  	"flag-om": "🇴🇲",
+  	"flag-pa": "🇵🇦",
+  	"flag-pe": "🇵🇪",
+  	"flag-pf": "🇵🇫",
+  	"flag-pg": "🇵🇬",
+  	"flag-ph": "🇵🇭",
+  	"flag-pk": "🇵🇰",
+  	"flag-pl": "🇵🇱",
+  	"flag-pm": "🇵🇲",
+  	"flag-pn": "🇵🇳",
+  	"flag-pr": "🇵🇷",
+  	"flag-ps": "🇵🇸",
+  	"flag-pt": "🇵🇹",
+  	"flag-pw": "🇵🇼",
+  	"flag-py": "🇵🇾",
+  	"flag-qa": "🇶🇦",
+  	"flag-re": "🇷🇪",
+  	"flag-ro": "🇷🇴",
+  	"flag-rs": "🇷🇸",
+  	"flag-ru": "🇷🇺",
+  	ru: ru,
+  	"flag-rw": "🇷🇼",
+  	"flag-sa": "🇸🇦",
+  	"flag-sb": "🇸🇧",
+  	"flag-sc": "🇸🇨",
+  	"flag-sd": "🇸🇩",
+  	"flag-se": "🇸🇪",
+  	"flag-sg": "🇸🇬",
+  	"flag-sh": "🇸🇭",
+  	"flag-si": "🇸🇮",
+  	"flag-sj": "🇸🇯",
+  	"flag-sk": "🇸🇰",
+  	"flag-sl": "🇸🇱",
+  	"flag-sm": "🇸🇲",
+  	"flag-sn": "🇸🇳",
+  	"flag-so": "🇸🇴",
+  	"flag-sr": "🇸🇷",
+  	"flag-ss": "🇸🇸",
+  	"flag-st": "🇸🇹",
+  	"flag-sv": "🇸🇻",
+  	"flag-sx": "🇸🇽",
+  	"flag-sy": "🇸🇾",
+  	"flag-sz": "🇸🇿",
+  	"flag-ta": "🇹🇦",
+  	"flag-tc": "🇹🇨",
+  	"flag-td": "🇹🇩",
+  	"flag-tf": "🇹🇫",
+  	"flag-tg": "🇹🇬",
+  	"flag-th": "🇹🇭",
+  	"flag-tj": "🇹🇯",
+  	"flag-tk": "🇹🇰",
+  	"flag-tl": "🇹🇱",
+  	"flag-tm": "🇹🇲",
+  	"flag-tn": "🇹🇳",
+  	"flag-to": "🇹🇴",
+  	"flag-tr": "🇹🇷",
+  	"flag-tt": "🇹🇹",
+  	"flag-tv": "🇹🇻",
+  	"flag-tw": "🇹🇼",
+  	"flag-tz": "🇹🇿",
+  	"flag-ua": "🇺🇦",
+  	"flag-ug": "🇺🇬",
+  	"flag-um": "🇺🇲",
+  	"flag-us": "🇺🇸",
+  	us: us,
+  	"flag-uy": "🇺🇾",
+  	"flag-uz": "🇺🇿",
+  	"flag-va": "🇻🇦",
+  	"flag-vc": "🇻🇨",
+  	"flag-ve": "🇻🇪",
+  	"flag-vg": "🇻🇬",
+  	"flag-vi": "🇻🇮",
+  	"flag-vn": "🇻🇳",
+  	"flag-vu": "🇻🇺",
+  	"flag-wf": "🇼🇫",
+  	"flag-ws": "🇼🇸",
+  	"flag-xk": "🇽🇰",
+  	"flag-ye": "🇾🇪",
+  	"flag-yt": "🇾🇹",
+  	"flag-za": "🇿🇦",
+  	"flag-zm": "🇿🇲",
+  	"flag-zw": "🇿🇼",
+  	"man-man-boy": "👨‍👨‍👦",
+  	"man-man-boy-boy": "👨‍👨‍👦‍👦",
+  	"man-man-girl": "👨‍👨‍👧",
+  	"man-man-girl-boy": "👨‍👨‍👧‍👦",
+  	"man-man-girl-girl": "👨‍👨‍👧‍👧",
+  	"man-woman-boy-boy": "👨‍👩‍👦‍👦",
+  	"man-woman-girl": "👨‍👩‍👧",
+  	"man-woman-girl-boy": "👨‍👩‍👧‍👦",
+  	"man-woman-girl-girl": "👨‍👩‍👧‍👧",
+  	"man-heart-man": "👨‍❤️‍👨",
+  	"man-kiss-man": "👨‍❤️‍💋‍👨",
+  	"woman-woman-boy": "👩‍👩‍👦",
+  	"woman-woman-boy-boy": "👩‍👩‍👦‍👦",
+  	"woman-woman-girl": "👩‍👩‍👧",
+  	"woman-woman-girl-boy": "👩‍👩‍👧‍👦",
+  	"woman-woman-girl-girl": "👩‍👩‍👧‍👧",
+  	"woman-heart-woman": "👩‍❤️‍👩",
+  	"woman-kiss-woman": "👩‍❤️‍💋‍👩"
+  };
+
+  var emoji$1 = /*#__PURE__*/Object.freeze({
+    interrobang: interrobang,
+    tm: tm,
+    information_source: information_source,
+    left_right_arrow: left_right_arrow,
+    arrow_up_down: arrow_up_down,
+    arrow_upper_left: arrow_upper_left,
+    arrow_upper_right: arrow_upper_right,
+    arrow_lower_right: arrow_lower_right,
+    arrow_lower_left: arrow_lower_left,
+    keyboard: keyboard,
+    sunny: sunny,
+    cloud: cloud,
+    umbrella: umbrella,
+    showman: showman,
+    comet: comet,
+    ballot_box_with_check: ballot_box_with_check,
+    coffee: coffee,
+    shamrock: shamrock,
+    skull_and_crossbones: skull_and_crossbones,
+    radioactive_sign: radioactive_sign,
+    biohazard_sign: biohazard_sign,
+    orthodox_cross: orthodox_cross,
+    wheel_of_dharma: wheel_of_dharma,
+    white_frowning_face: white_frowning_face,
+    aries: aries,
+    taurus: taurus,
+    sagittarius: sagittarius,
+    capricorn: capricorn,
+    aquarius: aquarius,
+    pisces: pisces,
+    spades: spades,
+    clubs: clubs,
+    hearts: hearts,
+    diamonds: diamonds,
+    hotsprings: hotsprings,
+    hammer_and_pick: hammer_and_pick,
+    anchor: anchor,
+    crossed_swords: crossed_swords,
+    scales: scales,
+    alembic: alembic,
+    gear: gear,
+    scissors: scissors,
+    white_check_mark: white_check_mark,
+    airplane: airplane,
+    email: email,
+    envelope: envelope,
+    black_nib: black_nib,
+    heavy_check_mark: heavy_check_mark,
+    heavy_multiplication_x: heavy_multiplication_x,
+    star_of_david: star_of_david,
+    sparkles: sparkles,
+    eight_spoked_asterisk: eight_spoked_asterisk,
+    eight_pointed_black_star: eight_pointed_black_star,
+    snowflake: snowflake,
+    sparkle: sparkle,
+    question: question,
+    grey_question: grey_question,
+    grey_exclamation: grey_exclamation,
+    exclamation: exclamation,
+    heavy_exclamation_mark: heavy_exclamation_mark,
+    heavy_heart_exclamation_mark_ornament: heavy_heart_exclamation_mark_ornament,
+    heart: heart,
+    heavy_plus_sign: heavy_plus_sign,
+    heavy_minus_sign: heavy_minus_sign,
+    heavy_division_sign: heavy_division_sign,
+    arrow_heading_up: arrow_heading_up,
+    arrow_heading_down: arrow_heading_down,
+    wavy_dash: wavy_dash,
+    congratulations: congratulations,
+    secret: secret,
+    copyright: copyright,
+    registered: registered,
+    bangbang: bangbang,
+    leftwards_arrow_with_hook: leftwards_arrow_with_hook,
+    arrow_right_hook: arrow_right_hook,
+    watch: watch,
+    hourglass: hourglass,
+    fast_forward: fast_forward,
+    rewind: rewind,
+    arrow_double_up: arrow_double_up,
+    arrow_double_down: arrow_double_down,
+    black_right_pointing_double_triangle_with_vertical_bar: black_right_pointing_double_triangle_with_vertical_bar,
+    black_left_pointing_double_triangle_with_vertical_bar: black_left_pointing_double_triangle_with_vertical_bar,
+    black_right_pointing_triangle_with_double_vertical_bar: black_right_pointing_triangle_with_double_vertical_bar,
+    alarm_clock: alarm_clock,
+    stopwatch: stopwatch,
+    timer_clock: timer_clock,
+    hourglass_flowing_sand: hourglass_flowing_sand,
+    double_vertical_bar: double_vertical_bar,
+    black_square_for_stop: black_square_for_stop,
+    black_circle_for_record: black_circle_for_record,
+    m: m,
+    black_small_square: black_small_square,
+    white_small_square: white_small_square,
+    arrow_forward: arrow_forward,
+    arrow_backward: arrow_backward,
+    white_medium_square: white_medium_square,
+    black_medium_square: black_medium_square,
+    white_medium_small_square: white_medium_small_square,
+    black_medium_small_square: black_medium_small_square,
+    phone: phone,
+    telephone: telephone,
+    point_up: point_up,
+    star_and_crescent: star_and_crescent,
+    peace_symbol: peace_symbol,
+    yin_yang: yin_yang,
+    relaxed: relaxed,
+    gemini: gemini,
+    cancer: cancer,
+    leo: leo,
+    virgo: virgo,
+    libra: libra,
+    scorpius: scorpius,
+    recycle: recycle,
+    wheelchair: wheelchair,
+    atom_symbol: atom_symbol,
+    fleur_de_lis: fleur_de_lis,
+    warning: warning,
+    zap: zap,
+    white_circle: white_circle,
+    black_circle: black_circle,
+    coffin: coffin,
+    funeral_urn: funeral_urn,
+    soccer: soccer,
+    baseball: baseball,
+    snowman: snowman,
+    partly_sunny: partly_sunny,
+    thunder_cloud_and_rain: thunder_cloud_and_rain,
+    ophiuchus: ophiuchus,
+    pick: pick,
+    helmet_with_white_cross: helmet_with_white_cross,
+    chains: chains,
+    no_entry: no_entry,
+    shinto_shrine: shinto_shrine,
+    church: church,
+    mountain: mountain,
+    umbrella_on_ground: umbrella_on_ground,
+    fountain: fountain,
+    golf: golf,
+    ferry: ferry,
+    boat: boat,
+    sailboat: sailboat,
+    skier: skier,
+    ice_skate: ice_skate,
+    person_with_ball: person_with_ball,
+    tent: tent,
+    fuelpump: fuelpump,
+    fist: fist,
+    hand: hand,
+    raised_hand: raised_hand,
+    v: v,
+    writing_hand: writing_hand,
+    pencil2: pencil2,
+    latin_cross: latin_cross,
+    x: x,
+    negative_squared_cross_mark: negative_squared_cross_mark,
+    arrow_right: arrow_right,
+    curly_loop: curly_loop,
+    loop: loop,
+    arrow_left: arrow_left,
+    arrow_up: arrow_up,
+    arrow_down: arrow_down,
+    black_large_square: black_large_square,
+    white_large_square: white_large_square,
+    star: star,
+    o: o,
+    part_alternation_mark: part_alternation_mark,
+    mahjong: mahjong,
+    black_joker: black_joker,
+    a: a,
+    b: b,
+    o2: o2,
+    parking: parking,
+    ab: ab,
+    cl: cl,
+    cool: cool,
+    free: free,
+    id: id,
+    ng: ng,
+    ok: ok,
+    sos: sos,
+    up: up,
+    vs: vs,
+    koko: koko,
+    sa: sa,
+    u7121: u7121,
+    u6307: u6307,
+    u7981: u7981,
+    u7a7a: u7a7a,
+    u5408: u5408,
+    u6e80: u6e80,
+    u6709: u6709,
+    u6708: u6708,
+    u7533: u7533,
+    u5272: u5272,
+    u55b6: u55b6,
+    ideograph_advantage: ideograph_advantage,
+    accept: accept,
+    cyclone: cyclone,
+    foggy: foggy,
+    closed_umbrella: closed_umbrella,
+    night_with_stars: night_with_stars,
+    sunrise_over_mountains: sunrise_over_mountains,
+    sunrise: sunrise,
+    city_sunset: city_sunset,
+    city_sunrise: city_sunrise,
+    rainbow: rainbow,
+    bridge_at_night: bridge_at_night,
+    ocean: ocean,
+    volcano: volcano,
+    milky_way: milky_way,
+    earth_africa: earth_africa,
+    earth_americas: earth_americas,
+    earth_asia: earth_asia,
+    globe_with_meridians: globe_with_meridians,
+    new_moon: new_moon,
+    waxing_crescent_moon: waxing_crescent_moon,
+    first_quarter_moon: first_quarter_moon,
+    moon: moon,
+    waxing_gibbous_moon: waxing_gibbous_moon,
+    full_moon: full_moon,
+    waning_gibbous_moon: waning_gibbous_moon,
+    last_quarter_moon: last_quarter_moon,
+    waning_crescent_moon: waning_crescent_moon,
+    crescent_moon: crescent_moon,
+    new_moon_with_face: new_moon_with_face,
+    first_quarter_moon_with_face: first_quarter_moon_with_face,
+    last_quarter_moon_with_face: last_quarter_moon_with_face,
+    full_moon_with_face: full_moon_with_face,
+    sun_with_face: sun_with_face,
+    star2: star2,
+    stars: stars,
+    thermometer: thermometer,
+    mostly_sunny: mostly_sunny,
+    sun_small_cloud: sun_small_cloud,
+    barely_sunny: barely_sunny,
+    sun_behind_cloud: sun_behind_cloud,
+    partly_sunny_rain: partly_sunny_rain,
+    sun_behind_rain_cloud: sun_behind_rain_cloud,
+    rain_cloud: rain_cloud,
+    snow_cloud: snow_cloud,
+    lightning: lightning,
+    lightning_cloud: lightning_cloud,
+    tornado: tornado,
+    tornado_cloud: tornado_cloud,
+    fog: fog,
+    wind_blowing_face: wind_blowing_face,
+    hotdog: hotdog,
+    taco: taco,
+    burrito: burrito,
+    chestnut: chestnut,
+    seedling: seedling,
+    evergreen_tree: evergreen_tree,
+    deciduous_tree: deciduous_tree,
+    palm_tree: palm_tree,
+    cactus: cactus,
+    hot_pepper: hot_pepper,
+    tulip: tulip,
+    cherry_blossom: cherry_blossom,
+    rose: rose,
+    hibiscus: hibiscus,
+    sunflower: sunflower,
+    blossom: blossom,
+    corn: corn,
+    ear_of_rice: ear_of_rice,
+    herb: herb,
+    four_leaf_clover: four_leaf_clover,
+    maple_leaf: maple_leaf,
+    fallen_leaf: fallen_leaf,
+    leaves: leaves,
+    mushroom: mushroom,
+    tomato: tomato,
+    eggplant: eggplant,
+    grapes: grapes,
+    melon: melon,
+    watermelon: watermelon,
+    tangerine: tangerine,
+    lemon: lemon,
+    banana: banana,
+    pineapple: pineapple,
+    apple: apple,
+    green_apple: green_apple,
+    pear: pear,
+    peach: peach,
+    cherries: cherries,
+    strawberry: strawberry,
+    hamburger: hamburger,
+    pizza: pizza,
+    meat_on_bone: meat_on_bone,
+    poultry_leg: poultry_leg,
+    rice_cracker: rice_cracker,
+    rice_ball: rice_ball,
+    rice: rice,
+    curry: curry,
+    ramen: ramen,
+    spaghetti: spaghetti,
+    bread: bread,
+    fries: fries,
+    sweet_potato: sweet_potato,
+    dango: dango,
+    oden: oden,
+    sushi: sushi,
+    fried_shrimp: fried_shrimp,
+    fish_cake: fish_cake,
+    icecream: icecream,
+    shaved_ice: shaved_ice,
+    ice_cream: ice_cream,
+    doughnut: doughnut,
+    cookie: cookie,
+    chocolate_bar: chocolate_bar,
+    candy: candy,
+    lollipop: lollipop,
+    custard: custard,
+    honey_pot: honey_pot,
+    cake: cake,
+    bento: bento,
+    stew: stew,
+    egg: egg,
+    fork_and_knife: fork_and_knife,
+    tea: tea,
+    sake: sake,
+    wine_glass: wine_glass,
+    cocktail: cocktail,
+    tropical_drink: tropical_drink,
+    beer: beer,
+    beers: beers,
+    baby_bottle: baby_bottle,
+    knife_fork_plate: knife_fork_plate,
+    champagne: champagne,
+    popcorn: popcorn,
+    ribbon: ribbon,
+    gift: gift,
+    birthday: birthday,
+    jack_o_lantern: jack_o_lantern,
+    christmas_tree: christmas_tree,
+    santa: santa,
+    fireworks: fireworks,
+    sparkler: sparkler,
+    balloon: balloon,
+    tada: tada,
+    confetti_ball: confetti_ball,
+    tanabata_tree: tanabata_tree,
+    crossed_flags: crossed_flags,
+    bamboo: bamboo,
+    dolls: dolls,
+    flags: flags,
+    wind_chime: wind_chime,
+    rice_scene: rice_scene,
+    school_satchel: school_satchel,
+    mortar_board: mortar_board,
+    medal: medal,
+    reminder_ribbon: reminder_ribbon,
+    studio_microphone: studio_microphone,
+    level_slider: level_slider,
+    control_knobs: control_knobs,
+    film_frames: film_frames,
+    admission_tickets: admission_tickets,
+    carousel_horse: carousel_horse,
+    ferris_wheel: ferris_wheel,
+    roller_coaster: roller_coaster,
+    fishing_pole_and_fish: fishing_pole_and_fish,
+    microphone: microphone,
+    movie_camera: movie_camera,
+    cinema: cinema,
+    headphones: headphones,
+    art: art,
+    tophat: tophat,
+    circus_tent: circus_tent,
+    ticket: ticket,
+    clapper: clapper,
+    performing_arts: performing_arts,
+    video_game: video_game,
+    dart: dart,
+    slot_machine: slot_machine,
+    game_die: game_die,
+    bowling: bowling,
+    flower_playing_cards: flower_playing_cards,
+    musical_note: musical_note,
+    notes: notes,
+    saxophone: saxophone,
+    guitar: guitar,
+    musical_keyboard: musical_keyboard,
+    trumpet: trumpet,
+    violin: violin,
+    musical_score: musical_score,
+    running_shirt_with_sash: running_shirt_with_sash,
+    tennis: tennis,
+    ski: ski,
+    basketball: basketball,
+    checkered_flag: checkered_flag,
+    snowboarder: snowboarder,
+    runner: runner,
+    running: running,
+    surfer: surfer,
+    sports_medal: sports_medal,
+    trophy: trophy,
+    horse_racing: horse_racing,
+    football: football,
+    rugby_football: rugby_football,
+    swimmer: swimmer,
+    weight_lifter: weight_lifter,
+    golfer: golfer,
+    racing_motorcycle: racing_motorcycle,
+    racing_car: racing_car,
+    cricket_bat_and_ball: cricket_bat_and_ball,
+    volleyball: volleyball,
+    field_hockey_stick_and_ball: field_hockey_stick_and_ball,
+    ice_hockey_stick_and_puck: ice_hockey_stick_and_puck,
+    table_tennis_paddle_and_ball: table_tennis_paddle_and_ball,
+    snow_capped_mountain: snow_capped_mountain,
+    camping: camping,
+    beach_with_umbrella: beach_with_umbrella,
+    building_construction: building_construction,
+    house_buildings: house_buildings,
+    cityscape: cityscape,
+    derelict_house_building: derelict_house_building,
+    classical_building: classical_building,
+    desert: desert,
+    desert_island: desert_island,
+    national_park: national_park,
+    stadium: stadium,
+    house: house,
+    house_with_garden: house_with_garden,
+    office: office,
+    post_office: post_office,
+    european_post_office: european_post_office,
+    hospital: hospital,
+    bank: bank,
+    atm: atm,
+    hotel: hotel,
+    love_hotel: love_hotel,
+    convenience_store: convenience_store,
+    school: school,
+    department_store: department_store,
+    factory: factory,
+    izakaya_lantern: izakaya_lantern,
+    lantern: lantern,
+    japanese_castle: japanese_castle,
+    european_castle: european_castle,
+    waving_white_flag: waving_white_flag,
+    waving_black_flag: waving_black_flag,
+    rosette: rosette,
+    label: label,
+    badminton_racquet_and_shuttlecock: badminton_racquet_and_shuttlecock,
+    bow_and_arrow: bow_and_arrow,
+    amphora: amphora,
+    rat: rat,
+    mouse2: mouse2,
+    ox: ox,
+    water_buffalo: water_buffalo,
+    cow2: cow2,
+    tiger2: tiger2,
+    leopard: leopard,
+    rabbit2: rabbit2,
+    cat2: cat2,
+    dragon: dragon,
+    crocodile: crocodile,
+    whale2: whale2,
+    snail: snail,
+    snake: snake,
+    racehorse: racehorse,
+    ram: ram,
+    goat: goat,
+    sheep: sheep,
+    monkey: monkey,
+    rooster: rooster,
+    chicken: chicken,
+    dog2: dog2,
+    pig2: pig2,
+    boar: boar,
+    elephant: elephant,
+    octopus: octopus,
+    shell: shell,
+    bug: bug,
+    ant: ant,
+    bee: bee,
+    honeybee: honeybee,
+    beetle: beetle,
+    fish: fish,
+    tropical_fish: tropical_fish,
+    blowfish: blowfish,
+    turtle: turtle,
+    hatching_chick: hatching_chick,
+    baby_chick: baby_chick,
+    hatched_chick: hatched_chick,
+    bird: bird,
+    penguin: penguin,
+    koala: koala,
+    poodle: poodle,
+    dromedary_camel: dromedary_camel,
+    camel: camel,
+    dolphin: dolphin,
+    flipper: flipper,
+    mouse: mouse,
+    cow: cow,
+    tiger: tiger,
+    rabbit: rabbit,
+    cat: cat,
+    dragon_face: dragon_face,
+    whale: whale,
+    horse: horse,
+    monkey_face: monkey_face,
+    dog: dog,
+    pig: pig,
+    frog: frog,
+    hamster: hamster,
+    wolf: wolf,
+    bear: bear,
+    panda_face: panda_face,
+    pig_nose: pig_nose,
+    feet: feet,
+    paw_prints: paw_prints,
+    chipmunk: chipmunk,
+    eyes: eyes,
+    eye: eye,
+    ear: ear,
+    nose: nose,
+    lips: lips,
+    tongue: tongue,
+    point_up_2: point_up_2,
+    point_down: point_down,
+    point_left: point_left,
+    point_right: point_right,
+    facepunch: facepunch,
+    punch: punch,
+    wave: wave,
+    ok_hand: ok_hand,
+    thumbsup: thumbsup,
+    thumbsdown: thumbsdown,
+    clap: clap,
+    open_hands: open_hands,
+    crown: crown,
+    womans_hat: womans_hat,
+    eyeglasses: eyeglasses,
+    necktie: necktie,
+    shirt: shirt,
+    tshirt: tshirt,
+    jeans: jeans,
+    dress: dress,
+    kimono: kimono,
+    bikini: bikini,
+    womans_clothes: womans_clothes,
+    purse: purse,
+    handbag: handbag,
+    pouch: pouch,
+    mans_shoe: mans_shoe,
+    shoe: shoe,
+    athletic_shoe: athletic_shoe,
+    high_heel: high_heel,
+    sandal: sandal,
+    boot: boot,
+    footprints: footprints,
+    bust_in_silhouette: bust_in_silhouette,
+    busts_in_silhouette: busts_in_silhouette,
+    boy: boy,
+    girl: girl,
+    man: man,
+    woman: woman,
+    family: family,
+    couple: couple,
+    man_and_woman_holding_hands: man_and_woman_holding_hands,
+    two_men_holding_hands: two_men_holding_hands,
+    two_women_holding_hands: two_women_holding_hands,
+    cop: cop,
+    dancers: dancers,
+    bride_with_veil: bride_with_veil,
+    person_with_blond_hair: person_with_blond_hair,
+    man_with_gua_pi_mao: man_with_gua_pi_mao,
+    man_with_turban: man_with_turban,
+    older_man: older_man,
+    older_woman: older_woman,
+    baby: baby,
+    construction_worker: construction_worker,
+    princess: princess,
+    japanese_ogre: japanese_ogre,
+    japanese_goblin: japanese_goblin,
+    ghost: ghost,
+    angel: angel,
+    alien: alien,
+    space_invader: space_invader,
+    imp: imp,
+    skull: skull,
+    information_desk_person: information_desk_person,
+    guardsman: guardsman,
+    dancer: dancer,
+    lipstick: lipstick,
+    nail_care: nail_care,
+    massage: massage,
+    haircut: haircut,
+    barber: barber,
+    syringe: syringe,
+    pill: pill,
+    kiss: kiss,
+    love_letter: love_letter,
+    ring: ring,
+    gem: gem,
+    couplekiss: couplekiss,
+    bouquet: bouquet,
+    couple_with_heart: couple_with_heart,
+    wedding: wedding,
+    heartbeat: heartbeat,
+    broken_heart: broken_heart,
+    two_hearts: two_hearts,
+    sparkling_heart: sparkling_heart,
+    heartpulse: heartpulse,
+    cupid: cupid,
+    blue_heart: blue_heart,
+    green_heart: green_heart,
+    yellow_heart: yellow_heart,
+    purple_heart: purple_heart,
+    gift_heart: gift_heart,
+    revolving_hearts: revolving_hearts,
+    heart_decoration: heart_decoration,
+    diamond_shape_with_a_dot_inside: diamond_shape_with_a_dot_inside,
+    bulb: bulb,
+    anger: anger,
+    bomb: bomb,
+    zzz: zzz,
+    boom: boom,
+    collision: collision,
+    sweat_drops: sweat_drops,
+    droplet: droplet,
+    dash: dash,
+    hankey: hankey,
+    poop: poop,
+    shit: shit,
+    muscle: muscle,
+    dizzy: dizzy,
+    speech_balloon: speech_balloon,
+    thought_balloon: thought_balloon,
+    white_flower: white_flower,
+    moneybag: moneybag,
+    currency_exchange: currency_exchange,
+    heavy_dollar_sign: heavy_dollar_sign,
+    credit_card: credit_card,
+    yen: yen,
+    dollar: dollar,
+    euro: euro,
+    pound: pound,
+    money_with_wings: money_with_wings,
+    chart: chart,
+    seat: seat,
+    computer: computer,
+    briefcase: briefcase,
+    minidisc: minidisc,
+    floppy_disk: floppy_disk,
+    cd: cd,
+    dvd: dvd,
+    file_folder: file_folder,
+    open_file_folder: open_file_folder,
+    page_with_curl: page_with_curl,
+    page_facing_up: page_facing_up,
+    date: date,
+    calendar: calendar,
+    card_index: card_index,
+    chart_with_upwards_trend: chart_with_upwards_trend,
+    chart_with_downwards_trend: chart_with_downwards_trend,
+    bar_chart: bar_chart,
+    clipboard: clipboard,
+    pushpin: pushpin,
+    round_pushpin: round_pushpin,
+    paperclip: paperclip,
+    straight_ruler: straight_ruler,
+    triangular_ruler: triangular_ruler,
+    bookmark_tabs: bookmark_tabs,
+    ledger: ledger,
+    notebook: notebook,
+    notebook_with_decorative_cover: notebook_with_decorative_cover,
+    closed_book: closed_book,
+    book: book,
+    open_book: open_book,
+    green_book: green_book,
+    blue_book: blue_book,
+    orange_book: orange_book,
+    books: books,
+    name_badge: name_badge,
+    scroll: scroll,
+    memo: memo,
+    pencil: pencil,
+    telephone_receiver: telephone_receiver,
+    pager: pager,
+    fax: fax,
+    satellite: satellite,
+    loudspeaker: loudspeaker,
+    mega: mega,
+    outbox_tray: outbox_tray,
+    inbox_tray: inbox_tray,
+    incoming_envelope: incoming_envelope,
+    envelope_with_arrow: envelope_with_arrow,
+    mailbox_closed: mailbox_closed,
+    mailbox: mailbox,
+    mailbox_with_mail: mailbox_with_mail,
+    mailbox_with_no_mail: mailbox_with_no_mail,
+    postbox: postbox,
+    postal_horn: postal_horn,
+    newspaper: newspaper,
+    iphone: iphone,
+    calling: calling,
+    vibration_mode: vibration_mode,
+    mobile_phone_off: mobile_phone_off,
+    no_mobile_phones: no_mobile_phones,
+    signal_strength: signal_strength,
+    camera: camera,
+    camera_with_flash: camera_with_flash,
+    video_camera: video_camera,
+    tv: tv,
+    radio: radio,
+    vhs: vhs,
+    film_projector: film_projector,
+    prayer_beads: prayer_beads,
+    twisted_rightwards_arrows: twisted_rightwards_arrows,
+    repeat: repeat,
+    repeat_one: repeat_one,
+    arrows_clockwise: arrows_clockwise,
+    arrows_counterclockwise: arrows_counterclockwise,
+    low_brightness: low_brightness,
+    high_brightness: high_brightness,
+    mute: mute,
+    speaker: speaker,
+    sound: sound,
+    loud_sound: loud_sound,
+    battery: battery,
+    electric_plug: electric_plug,
+    mag: mag,
+    mag_right: mag_right,
+    lock_with_ink_pen: lock_with_ink_pen,
+    closed_lock_with_key: closed_lock_with_key,
+    key: key,
+    lock: lock,
+    unlock: unlock,
+    bell: bell,
+    no_bell: no_bell,
+    bookmark: bookmark,
+    link: link,
+    radio_button: radio_button,
+    back: back,
+    end: end,
+    on: on,
+    soon: soon,
+    top: top,
+    underage: underage,
+    keycap_ten: keycap_ten,
+    capital_abcd: capital_abcd,
+    abcd: abcd,
+    symbols: symbols,
+    abc: abc,
+    fire: fire,
+    flashlight: flashlight,
+    wrench: wrench,
+    hammer: hammer,
+    nut_and_bolt: nut_and_bolt,
+    hocho: hocho,
+    knife: knife,
+    gun: gun,
+    microscope: microscope,
+    telescope: telescope,
+    crystal_ball: crystal_ball,
+    six_pointed_star: six_pointed_star,
+    beginner: beginner,
+    trident: trident,
+    black_square_button: black_square_button,
+    white_square_button: white_square_button,
+    red_circle: red_circle,
+    large_blue_circle: large_blue_circle,
+    large_orange_diamond: large_orange_diamond,
+    large_blue_diamond: large_blue_diamond,
+    small_orange_diamond: small_orange_diamond,
+    small_blue_diamond: small_blue_diamond,
+    small_red_triangle: small_red_triangle,
+    small_red_triangle_down: small_red_triangle_down,
+    arrow_up_small: arrow_up_small,
+    arrow_down_small: arrow_down_small,
+    om_symbol: om_symbol,
+    dove_of_peace: dove_of_peace,
+    kaaba: kaaba,
+    mosque: mosque,
+    synagogue: synagogue,
+    menorah_with_nine_branches: menorah_with_nine_branches,
+    clock1: clock1,
+    clock2: clock2,
+    clock3: clock3,
+    clock4: clock4,
+    clock5: clock5,
+    clock6: clock6,
+    clock7: clock7,
+    clock8: clock8,
+    clock9: clock9,
+    clock10: clock10,
+    clock11: clock11,
+    clock12: clock12,
+    clock130: clock130,
+    clock230: clock230,
+    clock330: clock330,
+    clock430: clock430,
+    clock530: clock530,
+    clock630: clock630,
+    clock730: clock730,
+    clock830: clock830,
+    clock930: clock930,
+    clock1030: clock1030,
+    clock1130: clock1130,
+    clock1230: clock1230,
+    candle: candle,
+    mantelpiece_clock: mantelpiece_clock,
+    hole: hole,
+    man_in_business_suit_levitating: man_in_business_suit_levitating,
+    sleuth_or_spy: sleuth_or_spy,
+    dark_sunglasses: dark_sunglasses,
+    spider: spider,
+    spider_web: spider_web,
+    joystick: joystick,
+    linked_paperclips: linked_paperclips,
+    lower_left_ballpoint_pen: lower_left_ballpoint_pen,
+    lower_left_fountain_pen: lower_left_fountain_pen,
+    lower_left_paintbrush: lower_left_paintbrush,
+    lower_left_crayon: lower_left_crayon,
+    raised_hand_with_fingers_splayed: raised_hand_with_fingers_splayed,
+    middle_finger: middle_finger,
+    reversed_hand_with_middle_finger_extended: reversed_hand_with_middle_finger_extended,
+    desktop_computer: desktop_computer,
+    printer: printer,
+    three_button_mouse: three_button_mouse,
+    trackball: trackball,
+    frame_with_picture: frame_with_picture,
+    card_index_dividers: card_index_dividers,
+    card_file_box: card_file_box,
+    file_cabinet: file_cabinet,
+    wastebasket: wastebasket,
+    spiral_note_pad: spiral_note_pad,
+    spiral_calendar_pad: spiral_calendar_pad,
+    compression: compression,
+    old_key: old_key,
+    rolled_up_newspaper: rolled_up_newspaper,
+    dagger_knife: dagger_knife,
+    speaking_head_in_silhouette: speaking_head_in_silhouette,
+    left_speech_bubble: left_speech_bubble,
+    right_anger_bubble: right_anger_bubble,
+    ballot_box_with_ballot: ballot_box_with_ballot,
+    world_map: world_map,
+    mount_fuji: mount_fuji,
+    tokyo_tower: tokyo_tower,
+    statue_of_liberty: statue_of_liberty,
+    japan: japan,
+    moyai: moyai,
+    grinning: grinning,
+    grin: grin,
+    joy: joy,
+    smiley: smiley,
+    smile: smile,
+    sweat_smile: sweat_smile,
+    laughing: laughing,
+    satisfied: satisfied,
+    innocent: innocent,
+    smiling_imp: smiling_imp,
+    wink: wink,
+    blush: blush,
+    yum: yum,
+    relieved: relieved,
+    heart_eyes: heart_eyes,
+    sunglasses: sunglasses,
+    smirk: smirk,
+    neutral_face: neutral_face,
+    expressionless: expressionless,
+    unamused: unamused,
+    sweat: sweat,
+    pensive: pensive,
+    confused: confused,
+    confounded: confounded,
+    kissing: kissing,
+    kissing_heart: kissing_heart,
+    kissing_smiling_eyes: kissing_smiling_eyes,
+    kissing_closed_eyes: kissing_closed_eyes,
+    stuck_out_tongue: stuck_out_tongue,
+    stuck_out_tongue_winking_eye: stuck_out_tongue_winking_eye,
+    stuck_out_tongue_closed_eyes: stuck_out_tongue_closed_eyes,
+    disappointed: disappointed,
+    worried: worried,
+    angry: angry,
+    rage: rage,
+    cry: cry,
+    persevere: persevere,
+    triumph: triumph,
+    disappointed_relieved: disappointed_relieved,
+    frowning: frowning,
+    anguished: anguished,
+    fearful: fearful,
+    weary: weary,
+    sleepy: sleepy,
+    tired_face: tired_face,
+    grimacing: grimacing,
+    sob: sob,
+    open_mouth: open_mouth,
+    hushed: hushed,
+    cold_sweat: cold_sweat,
+    scream: scream,
+    astonished: astonished,
+    flushed: flushed,
+    sleeping: sleeping,
+    dizzy_face: dizzy_face,
+    no_mouth: no_mouth,
+    mask: mask,
+    smile_cat: smile_cat,
+    joy_cat: joy_cat,
+    smiley_cat: smiley_cat,
+    heart_eyes_cat: heart_eyes_cat,
+    smirk_cat: smirk_cat,
+    kissing_cat: kissing_cat,
+    pouting_cat: pouting_cat,
+    crying_cat_face: crying_cat_face,
+    scream_cat: scream_cat,
+    slightly_frowning_face: slightly_frowning_face,
+    slightly_smiling_face: slightly_smiling_face,
+    upside_down_face: upside_down_face,
+    face_with_rolling_eyes: face_with_rolling_eyes,
+    no_good: no_good,
+    ok_woman: ok_woman,
+    bow: bow,
+    see_no_evil: see_no_evil,
+    hear_no_evil: hear_no_evil,
+    speak_no_evil: speak_no_evil,
+    raising_hand: raising_hand,
+    raised_hands: raised_hands,
+    person_frowning: person_frowning,
+    person_with_pouting_face: person_with_pouting_face,
+    pray: pray,
+    rocket: rocket,
+    helicopter: helicopter,
+    steam_locomotive: steam_locomotive,
+    railway_car: railway_car,
+    bullettrain_side: bullettrain_side,
+    bullettrain_front: bullettrain_front,
+    train2: train2,
+    metro: metro,
+    light_rail: light_rail,
+    station: station,
+    tram: tram,
+    train: train,
+    bus: bus,
+    oncoming_bus: oncoming_bus,
+    trolleybus: trolleybus,
+    busstop: busstop,
+    minibus: minibus,
+    ambulance: ambulance,
+    fire_engine: fire_engine,
+    police_car: police_car,
+    oncoming_police_car: oncoming_police_car,
+    taxi: taxi,
+    oncoming_taxi: oncoming_taxi,
+    car: car,
+    red_car: red_car,
+    oncoming_automobile: oncoming_automobile,
+    blue_car: blue_car,
+    truck: truck,
+    articulated_lorry: articulated_lorry,
+    tractor: tractor,
+    monorail: monorail,
+    mountain_railway: mountain_railway,
+    suspension_railway: suspension_railway,
+    mountain_cableway: mountain_cableway,
+    aerial_tramway: aerial_tramway,
+    ship: ship,
+    rowboat: rowboat,
+    speedboat: speedboat,
+    traffic_light: traffic_light,
+    vertical_traffic_light: vertical_traffic_light,
+    construction: construction,
+    rotating_light: rotating_light,
+    triangular_flag_on_post: triangular_flag_on_post,
+    door: door,
+    no_entry_sign: no_entry_sign,
+    smoking: smoking,
+    no_smoking: no_smoking,
+    put_litter_in_its_place: put_litter_in_its_place,
+    do_not_litter: do_not_litter,
+    potable_water: potable_water,
+    bike: bike,
+    no_bicycles: no_bicycles,
+    bicyclist: bicyclist,
+    mountain_bicyclist: mountain_bicyclist,
+    walking: walking,
+    no_pedestrians: no_pedestrians,
+    children_crossing: children_crossing,
+    mens: mens,
+    womens: womens,
+    restroom: restroom,
+    baby_symbol: baby_symbol,
+    toilet: toilet,
+    wc: wc,
+    shower: shower,
+    bath: bath,
+    bathtub: bathtub,
+    passport_control: passport_control,
+    customs: customs,
+    baggage_claim: baggage_claim,
+    left_luggage: left_luggage,
+    couch_and_lamp: couch_and_lamp,
+    sleeping_accommodation: sleeping_accommodation,
+    shopping_bags: shopping_bags,
+    bellhop_bell: bellhop_bell,
+    bed: bed,
+    place_of_worship: place_of_worship,
+    hammer_and_wrench: hammer_and_wrench,
+    shield: shield,
+    oil_drum: oil_drum,
+    motorway: motorway,
+    railway_track: railway_track,
+    motor_boat: motor_boat,
+    small_airplane: small_airplane,
+    airplane_departure: airplane_departure,
+    airplane_arriving: airplane_arriving,
+    passenger_ship: passenger_ship,
+    zipper_mouth_face: zipper_mouth_face,
+    money_mouth_face: money_mouth_face,
+    face_with_thermometer: face_with_thermometer,
+    nerd_face: nerd_face,
+    thinking_face: thinking_face,
+    face_with_head_bandage: face_with_head_bandage,
+    robot_face: robot_face,
+    hugging_face: hugging_face,
+    the_horns: the_horns,
+    sign_of_the_horns: sign_of_the_horns,
+    crab: crab,
+    lion_face: lion_face,
+    scorpion: scorpion,
+    turkey: turkey,
+    unicorn_face: unicorn_face,
+    cheese_wedge: cheese_wedge,
+    hash: hash,
+    keycap_star: keycap_star,
+    zero: zero,
+    one: one,
+    two: two,
+    three: three,
+    four: four,
+    five: five,
+    six: six,
+    seven: seven,
+    eight: eight,
+    nine: nine,
+    cn: cn,
+    de: de,
+    es: es,
+    fr: fr,
+    gb: gb,
+    uk: uk,
+    it: it,
+    jp: jp,
+    kr: kr,
+    ru: ru,
+    us: us,
+    default: emoji
+  });
+
+  var emojiByName = ( emoji$1 && emoji ) || emoji$1;
+
+  /**
+   * regex to parse emoji in a string - finds emoji, e.g. :coffee:
+   */
+  var emojiNameRegex = /:([a-zA-Z0-9_\-\+]+):/g;
+
+  /**
+   * regex to trim whitespace
+   * use instead of String.prototype.trim() for IE8 supprt
+   */
+  var trimSpaceRegex = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+
+  /**
+   * Removes colons on either side
+   * of the string if present
+   * @param  {string} str
+   * @return {string}
+   */
+  function stripColons(str) {
+    var colonIndex = str.indexOf(':');
+    if (colonIndex > -1) {
+      // :emoji: (http://www.emoji-cheat-sheet.com/)
+      if (colonIndex === str.length - 1) {
+        str = str.substring(0, colonIndex);
+        return stripColons(str);
+      } else {
+        str = str.substr(colonIndex + 1);
+        return stripColons(str);
+      }
+    }
+
+    return str;
+  }
+
+  /**
+   * Adds colons to either side
+   * of the string
+   * @param {string} str
+   * @return {string}
+   */
+  function wrapColons(str) {
+    return typeof str === 'string' && str.length > 0 ? ':' + str + ':' : str;
+  }
+
+  /**
+   * Ensure that the word is wrapped in colons
+   * by only adding them, if they are not there.
+   * @param {string} str
+   * @return {string}
+   */
+  function ensureColons(str) {
+    return typeof str === 'string' && str[0] !== ':' ? wrapColons(str) : str;
+  }
+
+  // Non spacing mark, some emoticons have them. It's the 'Variant Form',
+  // which provides more information so that emoticons can be rendered as
+  // more colorful graphics. FE0E is a unicode text version, where as FE0F
+  // should be rendered as a graphical version. The code gracefully degrades.
+  var NON_SPACING_MARK = String.fromCharCode(65039); // 65039 - '️' - 0xFE0F;
+  var nonSpacingRegex = new RegExp(NON_SPACING_MARK, 'g');
+
+  // Remove the non-spacing-mark from the code, never send a stripped version
+  // to the client, as it kills graphical emoticons.
+  function stripNSB(code) {
+    return code.replace(nonSpacingRegex, '');
+  }
+  // Reversed hash table, where as emojiByName contains a { heart: '❤' }
+  // dictionary emojiByCode contains { ❤: 'heart' }. The codes are normalized
+  // to the text version.
+  var emojiByCode = Object.keys(emojiByName).reduce(function (h, k) {
+    h[stripNSB(emojiByName[k])] = k;
+    return h;
+  }, {});
+
+  /**
+   * Emoji namespace
+   */
+  var Emoji = {
+    emoji: emojiByName
+  };
+
+  /**
+   * get emoji code from name
+   * @param  {string} emoji
+   * @return {string}
+   */
+  Emoji._get = function _get(emoji) {
+    if (emojiByName.hasOwnProperty(emoji)) {
+      return emojiByName[emoji];
+    }
+
+    return ensureColons(emoji);
+  };
+
+  /**
+   * get emoji code from :emoji: string or name
+   * @param  {string} emoji
+   * @return {string}
+   */
+  Emoji.get = function get(emoji) {
+    emoji = stripColons(emoji);
+
+    return Emoji._get(emoji);
+  };
+
+  /**
+   * find the emoji by either code or name
+   * @param {string} nameOrCode The emoji to find, either `coffee`, `:coffee:` or `☕`;
+   * @return {object}
+   */
+  Emoji.find = function find(nameOrCode) {
+    return Emoji.findByName(nameOrCode) || Emoji.findByCode(nameOrCode);
+  };
+
+  /**
+   * find the emoji by name
+   * @param {string} name The emoji to find either `coffee` or `:coffee:`;
+   * @return {object}
+   */
+  Emoji.findByName = function findByName(name) {
+    var stripped = stripColons(name);
+    var emoji = emojiByName[stripped];
+
+    return emoji ? { emoji: emoji, key: stripped } : undefined;
+  };
+
+  /**
+   * find the emoji by code (emoji)
+   * @param {string} code The emoji to find; for example `☕` or `☔`
+   * @return {object}
+   */
+  Emoji.findByCode = function findByCode(code) {
+    var stripped = stripNSB(code);
+    var name = emojiByCode[stripped];
+
+    // lookup emoji to ensure the Variant Form is returned
+    return name ? { emoji: emojiByName[name], key: name } : undefined;
+  };
+
+  /**
+   * Check if an emoji is known by this library
+   * @param {string} nameOrCode The emoji to validate, either `coffee`, `:coffee:` or `☕`;
+   * @return {object}
+   */
+  Emoji.hasEmoji = function hasEmoji(nameOrCode) {
+    return Emoji.hasEmojiByName(nameOrCode) || Emoji.hasEmojiByCode(nameOrCode);
+  };
+
+  /**
+   * Check if an emoji with given name is known by this library
+   * @param {string} name The emoji to validate either `coffee` or `:coffee:`;
+   * @return {object}
+   */
+  Emoji.hasEmojiByName = function hasEmojiByName(name) {
+    var result = Emoji.findByName(name);
+    return !!result && result.key === stripColons(name);
+  };
+
+  /**
+   * Check if a given emoji is known by this library
+   * @param {string} code The emoji to validate; for example `☕` or `☔`
+   * @return {object}
+   */
+  Emoji.hasEmojiByCode = function hasEmojiByCode(code) {
+    var result = Emoji.findByCode(code);
+    return !!result && stripNSB(result.emoji) === stripNSB(code);
+  };
+
+  /**
+   * get emoji name from code
+   * @param  {string} emoji
+   * @param  {boolean} includeColons should the result include the ::
+   * @return {string}
+   */
+  Emoji.which = function which(emoji_code, includeColons) {
+    var code = stripNSB(emoji_code);
+    var word = emojiByCode[code];
+
+    return includeColons ? wrapColons(word) : word;
+  };
+
+  /**
+   * emojify a string (replace :emoji: with an emoji)
+   * @param  {string} str
+   * @param  {function} on_missing (gets emoji name without :: and returns a proper emoji if no emoji was found)
+   * @param  {function} format (wrap the returned emoji in a custom element)
+   * @return {string}
+   */
+  Emoji.emojify = function emojify(str, on_missing, format) {
+    if (!str) return '';
+
+    return str.split(emojiNameRegex) // parse emoji via regex
+    .map(function parseEmoji(s, i) {
+      // every second element is an emoji, e.g. "test :fast_forward:" -> [ "test ", "fast_forward" ]
+      if (i % 2 === 0) return s;
+      var emoji = Emoji._get(s);
+      var isMissing = emoji.indexOf(':') > -1;
+
+      if (isMissing && typeof on_missing === 'function') {
+        return on_missing(s);
+      }
+
+      if (!isMissing && typeof format === 'function') {
+        return format(emoji, s);
+      }
+
+      return emoji;
+    }).join('') // convert back to string
+    ;
+  };
+
+  /**
+   * return a random emoji
+   * @return {string}
+   */
+  Emoji.random = function random() {
+    var emojiKeys = Object.keys(emojiByName);
+    var randomIndex = Math.floor(Math.random() * emojiKeys.length);
+    var key = emojiKeys[randomIndex];
+    var emoji = Emoji._get(key);
+    return { key: key, emoji: emoji };
+  };
+
+  /**
+   *  return an collection of potential emoji matches
+   *  @param {string} str
+   *  @return {Array.<Object>}
+   */
+  Emoji.search = function search(str) {
+    var emojiKeys = Object.keys(emojiByName);
+    var matcher = stripColons(str);
+    var matchingKeys = emojiKeys.filter(function (key) {
+      return key.toString().indexOf(matcher) === 0;
+    });
+    return matchingKeys.map(function (key) {
+      return {
+        key: key,
+        emoji: Emoji._get(key)
+      };
+    });
+  };
+
+  /**
+   * unemojify a string (replace emoji with :emoji:)
+   * @param  {string} str
+   * @return {string}
+   */
+  Emoji.unemojify = function unemojify(str) {
+    if (!str) return '';
+    var words = lodash_toarray(str);
+
+    return words.map(function (word) {
+      return Emoji.which(word, true) || word;
+    }).join('');
+  };
+
+  /**
+   * replace emojis with replacement value
+   * @param {string} str
+   * @param {function|string} the string or callback function to replace the emoji with
+   * @param {boolean} should trailing whitespaces be cleaned? Defaults false
+   * @return {string}
+   */
+  Emoji.replace = function replace(str, replacement, cleanSpaces) {
+    if (!str) return '';
+
+    var replace = typeof replacement === 'function' ? replacement : function () {
+      return replacement;
+    };
+    var words = lodash_toarray(str);
+
+    var replaced = words.map(function (word, idx) {
+      var emoji = Emoji.findByCode(word);
+
+      if (emoji && cleanSpaces && words[idx + 1] === ' ') {
+        words[idx + 1] = '';
+      }
+
+      return emoji ? replace(emoji) : word;
+    }).join('');
+
+    return cleanSpaces ? replaced.replace(trimSpaceRegex, '') : replaced;
+  };
+
+  /**
+   * remove all emojis from a string
+   * @param {string} str
+   * @return {string}
+   */
+  Emoji.strip = function strip(str) {
+    return Emoji.replace(str, '', true);
+  };
+
+  var emoji$2 = Emoji;
+
+  function styleInject(css, ref) {
+    if (ref === void 0) ref = {};
+    var insertAt = ref.insertAt;
+
+    if (!css || typeof document === 'undefined') {
+      return;
+    }
+
+    var head = document.head || document.getElementsByTagName('head')[0];
+    var style = document.createElement('style');
+    style.type = 'text/css';
+
+    if (insertAt === 'top') {
+      if (head.firstChild) {
+        head.insertBefore(style, head.firstChild);
+      } else {
+        head.appendChild(style);
+      }
+    } else {
+      head.appendChild(style);
+    }
+
+    if (style.styleSheet) {
+      style.styleSheet.cssText = css;
+    } else {
+      style.appendChild(document.createTextNode(css));
+    }
+  }
+
+  var css = ".icons {\n  display: flex;\n  flex-direction: row;\n}\n\n.icons.vertical {\n  flex-direction: column;\n}\n\n.icon {\n  cursor: pointer;\n  line-height: normal;\n  line-height: var(--reaction-icon-line-height, normal);\n  margin-right: 5px;\n  position: relative;\n}\n\n.count {\n  left: -5px;\n  left: var(--reaction-count-left, -5px);\n  position: inherit;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n";
+  styleInject(css);
+
+  var _slicedToArray = /*#__PURE__*/function () {
+    function sliceIterator(arr, i) {
+      var _arr = [];var _n = true;var _d = false;var _e = undefined;try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+          _arr.push(_s.value);if (i && _arr.length === i) break;
+        }
+      } catch (err) {
+        _d = true;_e = err;
+      } finally {
+        try {
+          if (!_n && _i["return"]) _i["return"]();
+        } finally {
+          if (_d) throw _e;
+        }
+      }return _arr;
+    }return function (arr, i) {
+      if (Array.isArray(arr)) {
+        return arr;
+      } else if (Symbol.iterator in Object(arr)) {
+        return sliceIterator(arr, i);
+      } else {
+        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+      }
+    };
+  }();
+
+  var _createClass = /*#__PURE__*/function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+  }();
+
+  var _templateObject$2 = /*#__PURE__*/_taggedTemplateLiteral(['<img src="', '" />'], ['<img src="', '" />']),
+      _templateObject2$2 = /*#__PURE__*/_taggedTemplateLiteral(['\n        <div class="icon" name=', ' on-click=', '>\n          <span>', '</span>\n          ', '\n        </div>\n      '], ['\n        <div class="icon" name=', ' on-click=', '>\n          <span>', '</span>\n          ', '\n        </div>\n      ']),
+      _templateObject3$1 = /*#__PURE__*/_taggedTemplateLiteral(['<span class="count">', '</span>'], ['<span class="count">', '</span>']),
+      _templateObject4 = /*#__PURE__*/_taggedTemplateLiteral(['\n      <div class$=', '>\n        ', '\n      </div>\n    '], ['\n      <div class$=', '>\n        ', '\n      </div>\n    ']);
+
+  function _taggedTemplateLiteral(strings, raw) {
+    return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } }));
+  }
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  function _possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }
+
+  function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  }
+
+  var Reactions = /*#__PURE__*/function (_LitElement) {
+    _inherits(Reactions, _LitElement);
+
+    _createClass(Reactions, null, [{
+      key: 'properties',
+      get: function get$$1() {
+        return {
+          config: Object,
+          direction: String,
+          displayname: String,
+          showcount: Boolean,
+          showall: Boolean
+        };
+      }
+    }]);
+
+    function Reactions(props) {
+      _classCallCheck(this, Reactions);
+
+      var _this = _possibleConstructorReturn(this, (Reactions.__proto__ || Object.getPrototypeOf(Reactions)).call(this, props));
+
+      _this.emoji = emoji$2;
+
+      _this._boundedClick = _this._handleClick.bind(_this);
+      _this.config = new Map();
+      _this.displayname = 'reactions';
+      _this.showall = false;
+      _this.showcount = false;
+      return _this;
+    }
+
+    _createClass(Reactions, [{
+      key: '_renderIcon',
+      value: function _renderIcon(data) {
+        return data.icon ? html$1(_templateObject$2, data.icon) : this.emoji.get(data.name);
+      }
+    }, {
+      key: '_handleClick',
+      value: function _handleClick(e) {
+        this.dispatchEvent(new CustomEvent(this.displayname + '-toggle', { detail: { reaction: e.currentTarget.name } }));
+      }
+    }, {
+      key: '_renderActions',
+      value: function _renderActions() {
+        var _this2 = this;
+
+        return this.config.toJSON().map(function () {
+          return _this2._renderReaction.apply(_this2, arguments);
+        });
+      }
+    }, {
+      key: '_renderReaction',
+      value: function _renderReaction(_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+            k = _ref2[0],
+            v = _ref2[1];
+
+        var count = Number(v.count || 0);
+        var shouldRender = count || this.showall;
+        var shouldCount = count > 0 && this.showcount;
+
+        return !shouldRender ? null : html$1(_templateObject2$2, k, this._boundedClick, this._renderIcon(v), shouldCount ? html$1(_templateObject3$1, count) : null);
+      }
+    }, {
+      key: '_configure',
+      value: function _configure(config) {
+        if (!(config instanceof Map)) throw new TypeError('Wrong configuration');
+        var data = new Map(config);
+
+        if (config !== data) this.config = data;
+      }
+    }, {
+      key: '_render',
+      value: function _render(props) {
+        var _props$direction = props.direction,
+            direction = _props$direction === undefined ? 'row' : _props$direction;
+
+        return html$1(_templateObject4, classString({ icons: true, vertical: direction === 'column' }), this._renderActions());
+      }
+    }]);
+
+    return Reactions;
+  }(LitElement);
+  var ReactionList = /*#__PURE__*/withStyle$1(Reactions, css);
+
   /** @license MIT License (c) copyright 2010-2016 original author or authors */
   /** @author Brian Cavalier */
   /** @author John Hann */
@@ -3864,45 +8631,16 @@
 
   var entry = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDEyIDEyKSI+CiAgICAgICAgPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiM0OEExRTYiLz4KICAgICAgICA8cGF0aCBmaWxsPSIjRkZGIiBmaWxsLXJ1bGU9Im5vbnplcm8iIGQ9Ik0xMC4yIDguNjQ5bC44NDktLjg0OSA0LjAyNCA0LjAyNC00LjAyNCA0LjAyNUwxMC4yIDE1bDMuMTc2LTMuMTc2eiIvPgogICAgPC9nPgo8L3N2Zz4=';
 
-  function styleInject(css, ref) {
-    if (ref === void 0) ref = {};
-    var insertAt = ref.insertAt;
+  var css$1 = ".enter:disabled {\n  cursor: not-allowed;\n  -webkit-filter: grayscale(100%) !important;\n          filter: grayscale(100%) !important;\n  -webkit-transform: none !important;\n          transform: none !important;\n}\n\n.enter:hover:not(:disabled) {\n  -webkit-filter: brightness(95%);\n          filter: brightness(95%);\n  -webkit-filter: brightness(var(--darken-hover, 95%));\n          filter: brightness(var(--darken-hover, 95%));\n}\n\n.enter:active:not(:disabled) {\n  -webkit-filter: brightness(85%);\n          filter: brightness(85%);\n  -webkit-filter: brightness(var(--darken-active, 85%));\n          filter: brightness(var(--darken-active, 85%));\n  -webkit-transform: translateY(1px);\n          transform: translateY(1px);\n}\n";
+  styleInject(css$1);
 
-    if (!css || typeof document === 'undefined') {
-      return;
-    }
-
-    var head = document.head || document.getElementsByTagName('head')[0];
-    var style = document.createElement('style');
-    style.type = 'text/css';
-
-    if (insertAt === 'top') {
-      if (head.firstChild) {
-        head.insertBefore(style, head.firstChild);
-      } else {
-        head.appendChild(style);
-      }
-    } else {
-      head.appendChild(style);
-    }
-
-    if (style.styleSheet) {
-      style.styleSheet.cssText = css;
-    } else {
-      style.appendChild(document.createTextNode(css));
-    }
-  }
-
-  var css = ".enter:disabled {\n  cursor: not-allowed;\n  -webkit-filter: grayscale(100%) !important;\n          filter: grayscale(100%) !important;\n  -webkit-transform: none !important;\n          transform: none !important;\n}\n\n.enter:hover:not(:disabled) {\n  -webkit-filter: brightness(95%);\n          filter: brightness(95%);\n  -webkit-filter: brightness(var(--darken-hover, 95%));\n          filter: brightness(var(--darken-hover, 95%));\n}\n\n.enter:active:not(:disabled) {\n  -webkit-filter: brightness(85%);\n          filter: brightness(85%);\n  -webkit-filter: brightness(var(--darken-active, 85%));\n          filter: brightness(var(--darken-active, 85%));\n  -webkit-transform: translateY(1px);\n          transform: translateY(1px);\n}\n";
-  styleInject(css);
-
-  var _templateObject$1 = taggedTemplateLiteral(['\n  <button\n    class=\'enter\'\n    disabled=', '\n  >', '</button>\n'], ['\n  <button\n    class=\'enter\'\n    disabled=', '\n  >', '</button>\n']),
-      _templateObject2$1 = taggedTemplateLiteral(['<img src=\'', '\' />'], ['<img src=\'', '\' />']);
+  var _templateObject$3 = taggedTemplateLiteral(['\n  <button\n    class=\'enter\'\n    disabled=', '\n  >', '</button>\n'], ['\n  <button\n    class=\'enter\'\n    disabled=', '\n  >', '</button>\n']),
+      _templateObject2$3 = taggedTemplateLiteral(['<img src=\'', '\' />'], ['<img src=\'', '\' />']);
 
   var button = function button(_ref) {
     var disabled = _ref.disabled,
         children = _ref.children;
-    return html$1(_templateObject$1, disabled, children || html$1(_templateObject2$1, entry));
+    return html$1(_templateObject$3, disabled, children || html$1(_templateObject2$3, entry));
   };
 
   /**
@@ -6226,7 +10964,7 @@
    * @param {string} path Path string
    * @return {string} Root property name
    */
-  function root(path) {
+  function root$1(path) {
     var dotIndex = path.indexOf('.');
     if (dotIndex === -1) {
       return path;
@@ -7411,7 +12149,7 @@
    */
   function runEffectsForProperty(inst, effects, dedupeId, prop, props, oldProps, hasPaths, extraArgs) {
     var ran = false;
-    var rootProperty = hasPaths ? root(prop) : prop;
+    var rootProperty = hasPaths ? root$1(prop) : prop;
     var fxs = effects[rootProperty];
     if (fxs) {
       for (var i = 0, l = fxs.length, fx; i < l && (fx = fxs[i]); i++) {
@@ -7531,7 +12269,7 @@
    * @private
    */
   function notifyPath(inst, path, props) {
-    var rootProperty = root(path);
+    var rootProperty = root$1(path);
     if (rootProperty !== path) {
       var eventName = camelToDashCase(rootProperty) + '-changed';
       dispatchNotifyEvent(inst, eventName, props[path], path);
@@ -7580,7 +12318,7 @@
    * @private
    */
   function runNotifyEffect(inst, property, props, oldProps, info, hasPaths) {
-    var rootProperty = hasPaths ? root(property) : property;
+    var rootProperty = hasPaths ? root$1(property) : property;
     var path = rootProperty != property ? property : null;
     var value = path ? get$1(inst, path) : inst.__data[property];
     if (path && value === undefined) {
@@ -8203,7 +12941,7 @@
     }
     // if not literal, look for structured path
     if (!a.literal) {
-      a.rootProperty = root(arg);
+      a.rootProperty = root$1(arg);
       // detect structured path (has dots)
       a.structured = isPath(arg);
       if (a.structured) {
@@ -8654,7 +13392,7 @@
       }, {
         key: '_setPendingPropertyOrPath',
         value: function _setPendingPropertyOrPath(path, value, shouldNotify, isPathNotification) {
-          if (isPathNotification || root(Array.isArray(path) ? path[0] : path) !== path) {
+          if (isPathNotification || root$1(Array.isArray(path) ? path[0] : path) !== path) {
             // Dirty check changes being set to a path against the actual object,
             // since this is the entry point for paths into the system; from here
             // the only dirty checks are against the `__dataTemp` cache to prevent
@@ -14681,8 +19419,8 @@
       }, {
         key: 'domHost',
         get: function get$$1() {
-          var root$$1 = this.getRootNode();
-          return root$$1 instanceof DocumentFragment ? /** @type {ShadowRoot} */root$$1.host : root$$1;
+          var root = this.getRootNode();
+          return root instanceof DocumentFragment ? /** @type {ShadowRoot} */root.host : root;
         }
       }], [{
         key: 'importMeta',
@@ -17264,7 +22002,7 @@
                     // properties so `__syncHostProperties` can sync them the next
                     // time `if` becomes true
                     this.__invalidProps = this.__invalidProps || Object.create(null);
-                    this.__invalidProps[root(prop)] = true;
+                    this.__invalidProps[root$1(prop)] = true;
                   }
                 }
               }
@@ -18051,7 +22789,7 @@
   // bc
   var Base = LegacyElementMixin(HTMLElement).prototype;
 
-  var _templateObject$2 = taggedTemplateLiteral(['\n<custom-style>\n  <style is="custom-style">\n    [hidden] {\n      display: none !important;\n    }\n  </style>\n</custom-style>\n<custom-style>\n  <style is="custom-style">\n    html {\n\n      --layout: {\n        display: -ms-flexbox;\n        display: -webkit-flex;\n        display: flex;\n      };\n\n      --layout-inline: {\n        display: -ms-inline-flexbox;\n        display: -webkit-inline-flex;\n        display: inline-flex;\n      };\n\n      --layout-horizontal: {\n        @apply --layout;\n\n        -ms-flex-direction: row;\n        -webkit-flex-direction: row;\n        flex-direction: row;\n      };\n\n      --layout-horizontal-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: row-reverse;\n        -webkit-flex-direction: row-reverse;\n        flex-direction: row-reverse;\n      };\n\n      --layout-vertical: {\n        @apply --layout;\n\n        -ms-flex-direction: column;\n        -webkit-flex-direction: column;\n        flex-direction: column;\n      };\n\n      --layout-vertical-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: column-reverse;\n        -webkit-flex-direction: column-reverse;\n        flex-direction: column-reverse;\n      };\n\n      --layout-wrap: {\n        -ms-flex-wrap: wrap;\n        -webkit-flex-wrap: wrap;\n        flex-wrap: wrap;\n      };\n\n      --layout-wrap-reverse: {\n        -ms-flex-wrap: wrap-reverse;\n        -webkit-flex-wrap: wrap-reverse;\n        flex-wrap: wrap-reverse;\n      };\n\n      --layout-flex-auto: {\n        -ms-flex: 1 1 auto;\n        -webkit-flex: 1 1 auto;\n        flex: 1 1 auto;\n      };\n\n      --layout-flex-none: {\n        -ms-flex: none;\n        -webkit-flex: none;\n        flex: none;\n      };\n\n      --layout-flex: {\n        -ms-flex: 1 1 0.000000001px;\n        -webkit-flex: 1;\n        flex: 1;\n        -webkit-flex-basis: 0.000000001px;\n        flex-basis: 0.000000001px;\n      };\n\n      --layout-flex-2: {\n        -ms-flex: 2;\n        -webkit-flex: 2;\n        flex: 2;\n      };\n\n      --layout-flex-3: {\n        -ms-flex: 3;\n        -webkit-flex: 3;\n        flex: 3;\n      };\n\n      --layout-flex-4: {\n        -ms-flex: 4;\n        -webkit-flex: 4;\n        flex: 4;\n      };\n\n      --layout-flex-5: {\n        -ms-flex: 5;\n        -webkit-flex: 5;\n        flex: 5;\n      };\n\n      --layout-flex-6: {\n        -ms-flex: 6;\n        -webkit-flex: 6;\n        flex: 6;\n      };\n\n      --layout-flex-7: {\n        -ms-flex: 7;\n        -webkit-flex: 7;\n        flex: 7;\n      };\n\n      --layout-flex-8: {\n        -ms-flex: 8;\n        -webkit-flex: 8;\n        flex: 8;\n      };\n\n      --layout-flex-9: {\n        -ms-flex: 9;\n        -webkit-flex: 9;\n        flex: 9;\n      };\n\n      --layout-flex-10: {\n        -ms-flex: 10;\n        -webkit-flex: 10;\n        flex: 10;\n      };\n\n      --layout-flex-11: {\n        -ms-flex: 11;\n        -webkit-flex: 11;\n        flex: 11;\n      };\n\n      --layout-flex-12: {\n        -ms-flex: 12;\n        -webkit-flex: 12;\n        flex: 12;\n      };\n\n      /* alignment in cross axis */\n\n      --layout-start: {\n        -ms-flex-align: start;\n        -webkit-align-items: flex-start;\n        align-items: flex-start;\n      };\n\n      --layout-center: {\n        -ms-flex-align: center;\n        -webkit-align-items: center;\n        align-items: center;\n      };\n\n      --layout-end: {\n        -ms-flex-align: end;\n        -webkit-align-items: flex-end;\n        align-items: flex-end;\n      };\n\n      --layout-baseline: {\n        -ms-flex-align: baseline;\n        -webkit-align-items: baseline;\n        align-items: baseline;\n      };\n\n      /* alignment in main axis */\n\n      --layout-start-justified: {\n        -ms-flex-pack: start;\n        -webkit-justify-content: flex-start;\n        justify-content: flex-start;\n      };\n\n      --layout-center-justified: {\n        -ms-flex-pack: center;\n        -webkit-justify-content: center;\n        justify-content: center;\n      };\n\n      --layout-end-justified: {\n        -ms-flex-pack: end;\n        -webkit-justify-content: flex-end;\n        justify-content: flex-end;\n      };\n\n      --layout-around-justified: {\n        -ms-flex-pack: distribute;\n        -webkit-justify-content: space-around;\n        justify-content: space-around;\n      };\n\n      --layout-justified: {\n        -ms-flex-pack: justify;\n        -webkit-justify-content: space-between;\n        justify-content: space-between;\n      };\n\n      --layout-center-center: {\n        @apply --layout-center;\n        @apply --layout-center-justified;\n      };\n\n      /* self alignment */\n\n      --layout-self-start: {\n        -ms-align-self: flex-start;\n        -webkit-align-self: flex-start;\n        align-self: flex-start;\n      };\n\n      --layout-self-center: {\n        -ms-align-self: center;\n        -webkit-align-self: center;\n        align-self: center;\n      };\n\n      --layout-self-end: {\n        -ms-align-self: flex-end;\n        -webkit-align-self: flex-end;\n        align-self: flex-end;\n      };\n\n      --layout-self-stretch: {\n        -ms-align-self: stretch;\n        -webkit-align-self: stretch;\n        align-self: stretch;\n      };\n\n      --layout-self-baseline: {\n        -ms-align-self: baseline;\n        -webkit-align-self: baseline;\n        align-self: baseline;\n      };\n\n      /* multi-line alignment in main axis */\n\n      --layout-start-aligned: {\n        -ms-flex-line-pack: start;  /* IE10 */\n        -ms-align-content: flex-start;\n        -webkit-align-content: flex-start;\n        align-content: flex-start;\n      };\n\n      --layout-end-aligned: {\n        -ms-flex-line-pack: end;  /* IE10 */\n        -ms-align-content: flex-end;\n        -webkit-align-content: flex-end;\n        align-content: flex-end;\n      };\n\n      --layout-center-aligned: {\n        -ms-flex-line-pack: center;  /* IE10 */\n        -ms-align-content: center;\n        -webkit-align-content: center;\n        align-content: center;\n      };\n\n      --layout-between-aligned: {\n        -ms-flex-line-pack: justify;  /* IE10 */\n        -ms-align-content: space-between;\n        -webkit-align-content: space-between;\n        align-content: space-between;\n      };\n\n      --layout-around-aligned: {\n        -ms-flex-line-pack: distribute;  /* IE10 */\n        -ms-align-content: space-around;\n        -webkit-align-content: space-around;\n        align-content: space-around;\n      };\n\n      /*******************************\n                Other Layout\n      *******************************/\n\n      --layout-block: {\n        display: block;\n      };\n\n      --layout-invisible: {\n        visibility: hidden !important;\n      };\n\n      --layout-relative: {\n        position: relative;\n      };\n\n      --layout-fit: {\n        position: absolute;\n        top: 0;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-scroll: {\n        -webkit-overflow-scrolling: touch;\n        overflow: auto;\n      };\n\n      --layout-fullbleed: {\n        margin: 0;\n        height: 100vh;\n      };\n\n      /* fixed position */\n\n      --layout-fixed-top: {\n        position: fixed;\n        top: 0;\n        left: 0;\n        right: 0;\n      };\n\n      --layout-fixed-right: {\n        position: fixed;\n        top: 0;\n        right: 0;\n        bottom: 0;\n      };\n\n      --layout-fixed-bottom: {\n        position: fixed;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-fixed-left: {\n        position: fixed;\n        top: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n    }\n  </style>\n</custom-style>'], ['\n<custom-style>\n  <style is="custom-style">\n    [hidden] {\n      display: none !important;\n    }\n  </style>\n</custom-style>\n<custom-style>\n  <style is="custom-style">\n    html {\n\n      --layout: {\n        display: -ms-flexbox;\n        display: -webkit-flex;\n        display: flex;\n      };\n\n      --layout-inline: {\n        display: -ms-inline-flexbox;\n        display: -webkit-inline-flex;\n        display: inline-flex;\n      };\n\n      --layout-horizontal: {\n        @apply --layout;\n\n        -ms-flex-direction: row;\n        -webkit-flex-direction: row;\n        flex-direction: row;\n      };\n\n      --layout-horizontal-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: row-reverse;\n        -webkit-flex-direction: row-reverse;\n        flex-direction: row-reverse;\n      };\n\n      --layout-vertical: {\n        @apply --layout;\n\n        -ms-flex-direction: column;\n        -webkit-flex-direction: column;\n        flex-direction: column;\n      };\n\n      --layout-vertical-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: column-reverse;\n        -webkit-flex-direction: column-reverse;\n        flex-direction: column-reverse;\n      };\n\n      --layout-wrap: {\n        -ms-flex-wrap: wrap;\n        -webkit-flex-wrap: wrap;\n        flex-wrap: wrap;\n      };\n\n      --layout-wrap-reverse: {\n        -ms-flex-wrap: wrap-reverse;\n        -webkit-flex-wrap: wrap-reverse;\n        flex-wrap: wrap-reverse;\n      };\n\n      --layout-flex-auto: {\n        -ms-flex: 1 1 auto;\n        -webkit-flex: 1 1 auto;\n        flex: 1 1 auto;\n      };\n\n      --layout-flex-none: {\n        -ms-flex: none;\n        -webkit-flex: none;\n        flex: none;\n      };\n\n      --layout-flex: {\n        -ms-flex: 1 1 0.000000001px;\n        -webkit-flex: 1;\n        flex: 1;\n        -webkit-flex-basis: 0.000000001px;\n        flex-basis: 0.000000001px;\n      };\n\n      --layout-flex-2: {\n        -ms-flex: 2;\n        -webkit-flex: 2;\n        flex: 2;\n      };\n\n      --layout-flex-3: {\n        -ms-flex: 3;\n        -webkit-flex: 3;\n        flex: 3;\n      };\n\n      --layout-flex-4: {\n        -ms-flex: 4;\n        -webkit-flex: 4;\n        flex: 4;\n      };\n\n      --layout-flex-5: {\n        -ms-flex: 5;\n        -webkit-flex: 5;\n        flex: 5;\n      };\n\n      --layout-flex-6: {\n        -ms-flex: 6;\n        -webkit-flex: 6;\n        flex: 6;\n      };\n\n      --layout-flex-7: {\n        -ms-flex: 7;\n        -webkit-flex: 7;\n        flex: 7;\n      };\n\n      --layout-flex-8: {\n        -ms-flex: 8;\n        -webkit-flex: 8;\n        flex: 8;\n      };\n\n      --layout-flex-9: {\n        -ms-flex: 9;\n        -webkit-flex: 9;\n        flex: 9;\n      };\n\n      --layout-flex-10: {\n        -ms-flex: 10;\n        -webkit-flex: 10;\n        flex: 10;\n      };\n\n      --layout-flex-11: {\n        -ms-flex: 11;\n        -webkit-flex: 11;\n        flex: 11;\n      };\n\n      --layout-flex-12: {\n        -ms-flex: 12;\n        -webkit-flex: 12;\n        flex: 12;\n      };\n\n      /* alignment in cross axis */\n\n      --layout-start: {\n        -ms-flex-align: start;\n        -webkit-align-items: flex-start;\n        align-items: flex-start;\n      };\n\n      --layout-center: {\n        -ms-flex-align: center;\n        -webkit-align-items: center;\n        align-items: center;\n      };\n\n      --layout-end: {\n        -ms-flex-align: end;\n        -webkit-align-items: flex-end;\n        align-items: flex-end;\n      };\n\n      --layout-baseline: {\n        -ms-flex-align: baseline;\n        -webkit-align-items: baseline;\n        align-items: baseline;\n      };\n\n      /* alignment in main axis */\n\n      --layout-start-justified: {\n        -ms-flex-pack: start;\n        -webkit-justify-content: flex-start;\n        justify-content: flex-start;\n      };\n\n      --layout-center-justified: {\n        -ms-flex-pack: center;\n        -webkit-justify-content: center;\n        justify-content: center;\n      };\n\n      --layout-end-justified: {\n        -ms-flex-pack: end;\n        -webkit-justify-content: flex-end;\n        justify-content: flex-end;\n      };\n\n      --layout-around-justified: {\n        -ms-flex-pack: distribute;\n        -webkit-justify-content: space-around;\n        justify-content: space-around;\n      };\n\n      --layout-justified: {\n        -ms-flex-pack: justify;\n        -webkit-justify-content: space-between;\n        justify-content: space-between;\n      };\n\n      --layout-center-center: {\n        @apply --layout-center;\n        @apply --layout-center-justified;\n      };\n\n      /* self alignment */\n\n      --layout-self-start: {\n        -ms-align-self: flex-start;\n        -webkit-align-self: flex-start;\n        align-self: flex-start;\n      };\n\n      --layout-self-center: {\n        -ms-align-self: center;\n        -webkit-align-self: center;\n        align-self: center;\n      };\n\n      --layout-self-end: {\n        -ms-align-self: flex-end;\n        -webkit-align-self: flex-end;\n        align-self: flex-end;\n      };\n\n      --layout-self-stretch: {\n        -ms-align-self: stretch;\n        -webkit-align-self: stretch;\n        align-self: stretch;\n      };\n\n      --layout-self-baseline: {\n        -ms-align-self: baseline;\n        -webkit-align-self: baseline;\n        align-self: baseline;\n      };\n\n      /* multi-line alignment in main axis */\n\n      --layout-start-aligned: {\n        -ms-flex-line-pack: start;  /* IE10 */\n        -ms-align-content: flex-start;\n        -webkit-align-content: flex-start;\n        align-content: flex-start;\n      };\n\n      --layout-end-aligned: {\n        -ms-flex-line-pack: end;  /* IE10 */\n        -ms-align-content: flex-end;\n        -webkit-align-content: flex-end;\n        align-content: flex-end;\n      };\n\n      --layout-center-aligned: {\n        -ms-flex-line-pack: center;  /* IE10 */\n        -ms-align-content: center;\n        -webkit-align-content: center;\n        align-content: center;\n      };\n\n      --layout-between-aligned: {\n        -ms-flex-line-pack: justify;  /* IE10 */\n        -ms-align-content: space-between;\n        -webkit-align-content: space-between;\n        align-content: space-between;\n      };\n\n      --layout-around-aligned: {\n        -ms-flex-line-pack: distribute;  /* IE10 */\n        -ms-align-content: space-around;\n        -webkit-align-content: space-around;\n        align-content: space-around;\n      };\n\n      /*******************************\n                Other Layout\n      *******************************/\n\n      --layout-block: {\n        display: block;\n      };\n\n      --layout-invisible: {\n        visibility: hidden !important;\n      };\n\n      --layout-relative: {\n        position: relative;\n      };\n\n      --layout-fit: {\n        position: absolute;\n        top: 0;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-scroll: {\n        -webkit-overflow-scrolling: touch;\n        overflow: auto;\n      };\n\n      --layout-fullbleed: {\n        margin: 0;\n        height: 100vh;\n      };\n\n      /* fixed position */\n\n      --layout-fixed-top: {\n        position: fixed;\n        top: 0;\n        left: 0;\n        right: 0;\n      };\n\n      --layout-fixed-right: {\n        position: fixed;\n        top: 0;\n        right: 0;\n        bottom: 0;\n      };\n\n      --layout-fixed-bottom: {\n        position: fixed;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-fixed-left: {\n        position: fixed;\n        top: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n    }\n  </style>\n</custom-style>']);
+  var _templateObject$4 = taggedTemplateLiteral(['\n<custom-style>\n  <style is="custom-style">\n    [hidden] {\n      display: none !important;\n    }\n  </style>\n</custom-style>\n<custom-style>\n  <style is="custom-style">\n    html {\n\n      --layout: {\n        display: -ms-flexbox;\n        display: -webkit-flex;\n        display: flex;\n      };\n\n      --layout-inline: {\n        display: -ms-inline-flexbox;\n        display: -webkit-inline-flex;\n        display: inline-flex;\n      };\n\n      --layout-horizontal: {\n        @apply --layout;\n\n        -ms-flex-direction: row;\n        -webkit-flex-direction: row;\n        flex-direction: row;\n      };\n\n      --layout-horizontal-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: row-reverse;\n        -webkit-flex-direction: row-reverse;\n        flex-direction: row-reverse;\n      };\n\n      --layout-vertical: {\n        @apply --layout;\n\n        -ms-flex-direction: column;\n        -webkit-flex-direction: column;\n        flex-direction: column;\n      };\n\n      --layout-vertical-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: column-reverse;\n        -webkit-flex-direction: column-reverse;\n        flex-direction: column-reverse;\n      };\n\n      --layout-wrap: {\n        -ms-flex-wrap: wrap;\n        -webkit-flex-wrap: wrap;\n        flex-wrap: wrap;\n      };\n\n      --layout-wrap-reverse: {\n        -ms-flex-wrap: wrap-reverse;\n        -webkit-flex-wrap: wrap-reverse;\n        flex-wrap: wrap-reverse;\n      };\n\n      --layout-flex-auto: {\n        -ms-flex: 1 1 auto;\n        -webkit-flex: 1 1 auto;\n        flex: 1 1 auto;\n      };\n\n      --layout-flex-none: {\n        -ms-flex: none;\n        -webkit-flex: none;\n        flex: none;\n      };\n\n      --layout-flex: {\n        -ms-flex: 1 1 0.000000001px;\n        -webkit-flex: 1;\n        flex: 1;\n        -webkit-flex-basis: 0.000000001px;\n        flex-basis: 0.000000001px;\n      };\n\n      --layout-flex-2: {\n        -ms-flex: 2;\n        -webkit-flex: 2;\n        flex: 2;\n      };\n\n      --layout-flex-3: {\n        -ms-flex: 3;\n        -webkit-flex: 3;\n        flex: 3;\n      };\n\n      --layout-flex-4: {\n        -ms-flex: 4;\n        -webkit-flex: 4;\n        flex: 4;\n      };\n\n      --layout-flex-5: {\n        -ms-flex: 5;\n        -webkit-flex: 5;\n        flex: 5;\n      };\n\n      --layout-flex-6: {\n        -ms-flex: 6;\n        -webkit-flex: 6;\n        flex: 6;\n      };\n\n      --layout-flex-7: {\n        -ms-flex: 7;\n        -webkit-flex: 7;\n        flex: 7;\n      };\n\n      --layout-flex-8: {\n        -ms-flex: 8;\n        -webkit-flex: 8;\n        flex: 8;\n      };\n\n      --layout-flex-9: {\n        -ms-flex: 9;\n        -webkit-flex: 9;\n        flex: 9;\n      };\n\n      --layout-flex-10: {\n        -ms-flex: 10;\n        -webkit-flex: 10;\n        flex: 10;\n      };\n\n      --layout-flex-11: {\n        -ms-flex: 11;\n        -webkit-flex: 11;\n        flex: 11;\n      };\n\n      --layout-flex-12: {\n        -ms-flex: 12;\n        -webkit-flex: 12;\n        flex: 12;\n      };\n\n      /* alignment in cross axis */\n\n      --layout-start: {\n        -ms-flex-align: start;\n        -webkit-align-items: flex-start;\n        align-items: flex-start;\n      };\n\n      --layout-center: {\n        -ms-flex-align: center;\n        -webkit-align-items: center;\n        align-items: center;\n      };\n\n      --layout-end: {\n        -ms-flex-align: end;\n        -webkit-align-items: flex-end;\n        align-items: flex-end;\n      };\n\n      --layout-baseline: {\n        -ms-flex-align: baseline;\n        -webkit-align-items: baseline;\n        align-items: baseline;\n      };\n\n      /* alignment in main axis */\n\n      --layout-start-justified: {\n        -ms-flex-pack: start;\n        -webkit-justify-content: flex-start;\n        justify-content: flex-start;\n      };\n\n      --layout-center-justified: {\n        -ms-flex-pack: center;\n        -webkit-justify-content: center;\n        justify-content: center;\n      };\n\n      --layout-end-justified: {\n        -ms-flex-pack: end;\n        -webkit-justify-content: flex-end;\n        justify-content: flex-end;\n      };\n\n      --layout-around-justified: {\n        -ms-flex-pack: distribute;\n        -webkit-justify-content: space-around;\n        justify-content: space-around;\n      };\n\n      --layout-justified: {\n        -ms-flex-pack: justify;\n        -webkit-justify-content: space-between;\n        justify-content: space-between;\n      };\n\n      --layout-center-center: {\n        @apply --layout-center;\n        @apply --layout-center-justified;\n      };\n\n      /* self alignment */\n\n      --layout-self-start: {\n        -ms-align-self: flex-start;\n        -webkit-align-self: flex-start;\n        align-self: flex-start;\n      };\n\n      --layout-self-center: {\n        -ms-align-self: center;\n        -webkit-align-self: center;\n        align-self: center;\n      };\n\n      --layout-self-end: {\n        -ms-align-self: flex-end;\n        -webkit-align-self: flex-end;\n        align-self: flex-end;\n      };\n\n      --layout-self-stretch: {\n        -ms-align-self: stretch;\n        -webkit-align-self: stretch;\n        align-self: stretch;\n      };\n\n      --layout-self-baseline: {\n        -ms-align-self: baseline;\n        -webkit-align-self: baseline;\n        align-self: baseline;\n      };\n\n      /* multi-line alignment in main axis */\n\n      --layout-start-aligned: {\n        -ms-flex-line-pack: start;  /* IE10 */\n        -ms-align-content: flex-start;\n        -webkit-align-content: flex-start;\n        align-content: flex-start;\n      };\n\n      --layout-end-aligned: {\n        -ms-flex-line-pack: end;  /* IE10 */\n        -ms-align-content: flex-end;\n        -webkit-align-content: flex-end;\n        align-content: flex-end;\n      };\n\n      --layout-center-aligned: {\n        -ms-flex-line-pack: center;  /* IE10 */\n        -ms-align-content: center;\n        -webkit-align-content: center;\n        align-content: center;\n      };\n\n      --layout-between-aligned: {\n        -ms-flex-line-pack: justify;  /* IE10 */\n        -ms-align-content: space-between;\n        -webkit-align-content: space-between;\n        align-content: space-between;\n      };\n\n      --layout-around-aligned: {\n        -ms-flex-line-pack: distribute;  /* IE10 */\n        -ms-align-content: space-around;\n        -webkit-align-content: space-around;\n        align-content: space-around;\n      };\n\n      /*******************************\n                Other Layout\n      *******************************/\n\n      --layout-block: {\n        display: block;\n      };\n\n      --layout-invisible: {\n        visibility: hidden !important;\n      };\n\n      --layout-relative: {\n        position: relative;\n      };\n\n      --layout-fit: {\n        position: absolute;\n        top: 0;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-scroll: {\n        -webkit-overflow-scrolling: touch;\n        overflow: auto;\n      };\n\n      --layout-fullbleed: {\n        margin: 0;\n        height: 100vh;\n      };\n\n      /* fixed position */\n\n      --layout-fixed-top: {\n        position: fixed;\n        top: 0;\n        left: 0;\n        right: 0;\n      };\n\n      --layout-fixed-right: {\n        position: fixed;\n        top: 0;\n        right: 0;\n        bottom: 0;\n      };\n\n      --layout-fixed-bottom: {\n        position: fixed;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-fixed-left: {\n        position: fixed;\n        top: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n    }\n  </style>\n</custom-style>'], ['\n<custom-style>\n  <style is="custom-style">\n    [hidden] {\n      display: none !important;\n    }\n  </style>\n</custom-style>\n<custom-style>\n  <style is="custom-style">\n    html {\n\n      --layout: {\n        display: -ms-flexbox;\n        display: -webkit-flex;\n        display: flex;\n      };\n\n      --layout-inline: {\n        display: -ms-inline-flexbox;\n        display: -webkit-inline-flex;\n        display: inline-flex;\n      };\n\n      --layout-horizontal: {\n        @apply --layout;\n\n        -ms-flex-direction: row;\n        -webkit-flex-direction: row;\n        flex-direction: row;\n      };\n\n      --layout-horizontal-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: row-reverse;\n        -webkit-flex-direction: row-reverse;\n        flex-direction: row-reverse;\n      };\n\n      --layout-vertical: {\n        @apply --layout;\n\n        -ms-flex-direction: column;\n        -webkit-flex-direction: column;\n        flex-direction: column;\n      };\n\n      --layout-vertical-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: column-reverse;\n        -webkit-flex-direction: column-reverse;\n        flex-direction: column-reverse;\n      };\n\n      --layout-wrap: {\n        -ms-flex-wrap: wrap;\n        -webkit-flex-wrap: wrap;\n        flex-wrap: wrap;\n      };\n\n      --layout-wrap-reverse: {\n        -ms-flex-wrap: wrap-reverse;\n        -webkit-flex-wrap: wrap-reverse;\n        flex-wrap: wrap-reverse;\n      };\n\n      --layout-flex-auto: {\n        -ms-flex: 1 1 auto;\n        -webkit-flex: 1 1 auto;\n        flex: 1 1 auto;\n      };\n\n      --layout-flex-none: {\n        -ms-flex: none;\n        -webkit-flex: none;\n        flex: none;\n      };\n\n      --layout-flex: {\n        -ms-flex: 1 1 0.000000001px;\n        -webkit-flex: 1;\n        flex: 1;\n        -webkit-flex-basis: 0.000000001px;\n        flex-basis: 0.000000001px;\n      };\n\n      --layout-flex-2: {\n        -ms-flex: 2;\n        -webkit-flex: 2;\n        flex: 2;\n      };\n\n      --layout-flex-3: {\n        -ms-flex: 3;\n        -webkit-flex: 3;\n        flex: 3;\n      };\n\n      --layout-flex-4: {\n        -ms-flex: 4;\n        -webkit-flex: 4;\n        flex: 4;\n      };\n\n      --layout-flex-5: {\n        -ms-flex: 5;\n        -webkit-flex: 5;\n        flex: 5;\n      };\n\n      --layout-flex-6: {\n        -ms-flex: 6;\n        -webkit-flex: 6;\n        flex: 6;\n      };\n\n      --layout-flex-7: {\n        -ms-flex: 7;\n        -webkit-flex: 7;\n        flex: 7;\n      };\n\n      --layout-flex-8: {\n        -ms-flex: 8;\n        -webkit-flex: 8;\n        flex: 8;\n      };\n\n      --layout-flex-9: {\n        -ms-flex: 9;\n        -webkit-flex: 9;\n        flex: 9;\n      };\n\n      --layout-flex-10: {\n        -ms-flex: 10;\n        -webkit-flex: 10;\n        flex: 10;\n      };\n\n      --layout-flex-11: {\n        -ms-flex: 11;\n        -webkit-flex: 11;\n        flex: 11;\n      };\n\n      --layout-flex-12: {\n        -ms-flex: 12;\n        -webkit-flex: 12;\n        flex: 12;\n      };\n\n      /* alignment in cross axis */\n\n      --layout-start: {\n        -ms-flex-align: start;\n        -webkit-align-items: flex-start;\n        align-items: flex-start;\n      };\n\n      --layout-center: {\n        -ms-flex-align: center;\n        -webkit-align-items: center;\n        align-items: center;\n      };\n\n      --layout-end: {\n        -ms-flex-align: end;\n        -webkit-align-items: flex-end;\n        align-items: flex-end;\n      };\n\n      --layout-baseline: {\n        -ms-flex-align: baseline;\n        -webkit-align-items: baseline;\n        align-items: baseline;\n      };\n\n      /* alignment in main axis */\n\n      --layout-start-justified: {\n        -ms-flex-pack: start;\n        -webkit-justify-content: flex-start;\n        justify-content: flex-start;\n      };\n\n      --layout-center-justified: {\n        -ms-flex-pack: center;\n        -webkit-justify-content: center;\n        justify-content: center;\n      };\n\n      --layout-end-justified: {\n        -ms-flex-pack: end;\n        -webkit-justify-content: flex-end;\n        justify-content: flex-end;\n      };\n\n      --layout-around-justified: {\n        -ms-flex-pack: distribute;\n        -webkit-justify-content: space-around;\n        justify-content: space-around;\n      };\n\n      --layout-justified: {\n        -ms-flex-pack: justify;\n        -webkit-justify-content: space-between;\n        justify-content: space-between;\n      };\n\n      --layout-center-center: {\n        @apply --layout-center;\n        @apply --layout-center-justified;\n      };\n\n      /* self alignment */\n\n      --layout-self-start: {\n        -ms-align-self: flex-start;\n        -webkit-align-self: flex-start;\n        align-self: flex-start;\n      };\n\n      --layout-self-center: {\n        -ms-align-self: center;\n        -webkit-align-self: center;\n        align-self: center;\n      };\n\n      --layout-self-end: {\n        -ms-align-self: flex-end;\n        -webkit-align-self: flex-end;\n        align-self: flex-end;\n      };\n\n      --layout-self-stretch: {\n        -ms-align-self: stretch;\n        -webkit-align-self: stretch;\n        align-self: stretch;\n      };\n\n      --layout-self-baseline: {\n        -ms-align-self: baseline;\n        -webkit-align-self: baseline;\n        align-self: baseline;\n      };\n\n      /* multi-line alignment in main axis */\n\n      --layout-start-aligned: {\n        -ms-flex-line-pack: start;  /* IE10 */\n        -ms-align-content: flex-start;\n        -webkit-align-content: flex-start;\n        align-content: flex-start;\n      };\n\n      --layout-end-aligned: {\n        -ms-flex-line-pack: end;  /* IE10 */\n        -ms-align-content: flex-end;\n        -webkit-align-content: flex-end;\n        align-content: flex-end;\n      };\n\n      --layout-center-aligned: {\n        -ms-flex-line-pack: center;  /* IE10 */\n        -ms-align-content: center;\n        -webkit-align-content: center;\n        align-content: center;\n      };\n\n      --layout-between-aligned: {\n        -ms-flex-line-pack: justify;  /* IE10 */\n        -ms-align-content: space-between;\n        -webkit-align-content: space-between;\n        align-content: space-between;\n      };\n\n      --layout-around-aligned: {\n        -ms-flex-line-pack: distribute;  /* IE10 */\n        -ms-align-content: space-around;\n        -webkit-align-content: space-around;\n        align-content: space-around;\n      };\n\n      /*******************************\n                Other Layout\n      *******************************/\n\n      --layout-block: {\n        display: block;\n      };\n\n      --layout-invisible: {\n        visibility: hidden !important;\n      };\n\n      --layout-relative: {\n        position: relative;\n      };\n\n      --layout-fit: {\n        position: absolute;\n        top: 0;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-scroll: {\n        -webkit-overflow-scrolling: touch;\n        overflow: auto;\n      };\n\n      --layout-fullbleed: {\n        margin: 0;\n        height: 100vh;\n      };\n\n      /* fixed position */\n\n      --layout-fixed-top: {\n        position: fixed;\n        top: 0;\n        left: 0;\n        right: 0;\n      };\n\n      --layout-fixed-right: {\n        position: fixed;\n        top: 0;\n        right: 0;\n        bottom: 0;\n      };\n\n      --layout-fixed-bottom: {\n        position: fixed;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-fixed-left: {\n        position: fixed;\n        top: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n    }\n  </style>\n</custom-style>']);
 
   /**
   The `<iron-flex-layout>` component provides simple ways to use
@@ -18115,7 +22853,7 @@
   @pseudoElement iron-flex-layout
   @demo demo/index.html
   */
-  var template = html$2(_templateObject$2);
+  var template = html$2(_templateObject$4);
 
   template.setAttribute('style', 'display: none;');
   document.head.appendChild(template.content);
@@ -18572,7 +23310,7 @@
     }
   };
 
-  var _templateObject$3 = taggedTemplateLiteral(['\n    <style>\n      :host {\n        display: inline-block;\n        position: relative;\n        width: 400px;\n        border: 1px solid;\n        padding: 2px;\n        -moz-appearance: textarea;\n        -webkit-appearance: textarea;\n        overflow: hidden;\n      }\n\n      .mirror-text {\n        visibility: hidden;\n        word-wrap: break-word;\n        @apply --iron-autogrow-textarea;\n      }\n\n      .fit {\n        @apply --layout-fit;\n      }\n\n      textarea {\n        position: relative;\n        outline: none;\n        border: none;\n        resize: none;\n        background: inherit;\n        color: inherit;\n        /* see comments in template */\n        width: 100%;\n        height: 100%;\n        font-size: inherit;\n        font-family: inherit;\n        line-height: inherit;\n        text-align: inherit;\n        @apply --iron-autogrow-textarea;\n      }\n\n      textarea::-webkit-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea::-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-ms-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n    </style>\n\n    <!-- the mirror sizes the input/textarea so it grows with typing -->\n    <!-- use &#160; instead &nbsp; of to allow this element to be used in XHTML -->\n    <div id="mirror" class="mirror-text" aria-hidden="true">&nbsp;</div>\n\n    <!-- size the input/textarea with a div, because the textarea has intrinsic size in ff -->\n    <div class="textarea-container fit">\n      <textarea id="textarea" name$="[[name]]" aria-label$="[[label]]" autocomplete$="[[autocomplete]]" autofocus$="[[autofocus]]" inputmode$="[[inputmode]]" placeholder$="[[placeholder]]" readonly$="[[readonly]]" required$="[[required]]" disabled$="[[disabled]]" rows$="[[rows]]" minlength$="[[minlength]]" maxlength$="[[maxlength]]"></textarea>\n    </div>\n'], ['\n    <style>\n      :host {\n        display: inline-block;\n        position: relative;\n        width: 400px;\n        border: 1px solid;\n        padding: 2px;\n        -moz-appearance: textarea;\n        -webkit-appearance: textarea;\n        overflow: hidden;\n      }\n\n      .mirror-text {\n        visibility: hidden;\n        word-wrap: break-word;\n        @apply --iron-autogrow-textarea;\n      }\n\n      .fit {\n        @apply --layout-fit;\n      }\n\n      textarea {\n        position: relative;\n        outline: none;\n        border: none;\n        resize: none;\n        background: inherit;\n        color: inherit;\n        /* see comments in template */\n        width: 100%;\n        height: 100%;\n        font-size: inherit;\n        font-family: inherit;\n        line-height: inherit;\n        text-align: inherit;\n        @apply --iron-autogrow-textarea;\n      }\n\n      textarea::-webkit-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea::-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-ms-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n    </style>\n\n    <!-- the mirror sizes the input/textarea so it grows with typing -->\n    <!-- use &#160; instead &nbsp; of to allow this element to be used in XHTML -->\n    <div id="mirror" class="mirror-text" aria-hidden="true">&nbsp;</div>\n\n    <!-- size the input/textarea with a div, because the textarea has intrinsic size in ff -->\n    <div class="textarea-container fit">\n      <textarea id="textarea" name\\$="[[name]]" aria-label\\$="[[label]]" autocomplete\\$="[[autocomplete]]" autofocus\\$="[[autofocus]]" inputmode\\$="[[inputmode]]" placeholder\\$="[[placeholder]]" readonly\\$="[[readonly]]" required\\$="[[required]]" disabled\\$="[[disabled]]" rows\\$="[[rows]]" minlength\\$="[[minlength]]" maxlength\\$="[[maxlength]]"></textarea>\n    </div>\n']);
+  var _templateObject$5 = taggedTemplateLiteral(['\n    <style>\n      :host {\n        display: inline-block;\n        position: relative;\n        width: 400px;\n        border: 1px solid;\n        padding: 2px;\n        -moz-appearance: textarea;\n        -webkit-appearance: textarea;\n        overflow: hidden;\n      }\n\n      .mirror-text {\n        visibility: hidden;\n        word-wrap: break-word;\n        @apply --iron-autogrow-textarea;\n      }\n\n      .fit {\n        @apply --layout-fit;\n      }\n\n      textarea {\n        position: relative;\n        outline: none;\n        border: none;\n        resize: none;\n        background: inherit;\n        color: inherit;\n        /* see comments in template */\n        width: 100%;\n        height: 100%;\n        font-size: inherit;\n        font-family: inherit;\n        line-height: inherit;\n        text-align: inherit;\n        @apply --iron-autogrow-textarea;\n      }\n\n      textarea::-webkit-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea::-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-ms-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n    </style>\n\n    <!-- the mirror sizes the input/textarea so it grows with typing -->\n    <!-- use &#160; instead &nbsp; of to allow this element to be used in XHTML -->\n    <div id="mirror" class="mirror-text" aria-hidden="true">&nbsp;</div>\n\n    <!-- size the input/textarea with a div, because the textarea has intrinsic size in ff -->\n    <div class="textarea-container fit">\n      <textarea id="textarea" name$="[[name]]" aria-label$="[[label]]" autocomplete$="[[autocomplete]]" autofocus$="[[autofocus]]" inputmode$="[[inputmode]]" placeholder$="[[placeholder]]" readonly$="[[readonly]]" required$="[[required]]" disabled$="[[disabled]]" rows$="[[rows]]" minlength$="[[minlength]]" maxlength$="[[maxlength]]"></textarea>\n    </div>\n'], ['\n    <style>\n      :host {\n        display: inline-block;\n        position: relative;\n        width: 400px;\n        border: 1px solid;\n        padding: 2px;\n        -moz-appearance: textarea;\n        -webkit-appearance: textarea;\n        overflow: hidden;\n      }\n\n      .mirror-text {\n        visibility: hidden;\n        word-wrap: break-word;\n        @apply --iron-autogrow-textarea;\n      }\n\n      .fit {\n        @apply --layout-fit;\n      }\n\n      textarea {\n        position: relative;\n        outline: none;\n        border: none;\n        resize: none;\n        background: inherit;\n        color: inherit;\n        /* see comments in template */\n        width: 100%;\n        height: 100%;\n        font-size: inherit;\n        font-family: inherit;\n        line-height: inherit;\n        text-align: inherit;\n        @apply --iron-autogrow-textarea;\n      }\n\n      textarea::-webkit-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea::-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-ms-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n    </style>\n\n    <!-- the mirror sizes the input/textarea so it grows with typing -->\n    <!-- use &#160; instead &nbsp; of to allow this element to be used in XHTML -->\n    <div id="mirror" class="mirror-text" aria-hidden="true">&nbsp;</div>\n\n    <!-- size the input/textarea with a div, because the textarea has intrinsic size in ff -->\n    <div class="textarea-container fit">\n      <textarea id="textarea" name\\$="[[name]]" aria-label\\$="[[label]]" autocomplete\\$="[[autocomplete]]" autofocus\\$="[[autofocus]]" inputmode\\$="[[inputmode]]" placeholder\\$="[[placeholder]]" readonly\\$="[[readonly]]" required\\$="[[required]]" disabled\\$="[[disabled]]" rows\\$="[[rows]]" minlength\\$="[[minlength]]" maxlength\\$="[[maxlength]]"></textarea>\n    </div>\n']);
 
   /**
   `iron-autogrow-textarea` is an element containing a textarea that grows in
@@ -18597,7 +23335,7 @@
   @demo demo/index.html
   */
   Polymer({
-    _template: html$2(_templateObject$3),
+    _template: html$2(_templateObject$5),
 
     is: 'iron-autogrow-textarea',
     behaviors: [IronValidatableBehavior, IronControlState],
@@ -18821,10 +23559,10 @@
     }
   });
 
-  var css$1 = "/* stylelint-disable selector-type-no-unknown */\niron-autogrow-textarea {\n  -webkit-appearance: none;\n  background: #fff;\n  background: var(--bg-color, var(--theme-color-white, #fff));\n  border: 1px solid #d4d4d4;\n  border: 1px solid var(--border-color, var(--theme-color-alto, #d4d4d4));\n  border-radius: 5px;\n  box-sizing: border-box;\n  caret-color: #48a1e6;\n  caret-color: var(--caret-color, var(--theme-color-pictonblue, #48a1e6));\n  font-size: 16px;\n  font-size: var(--font-size, var(--theme-font-size, 16px));\n  height: inherit;\n  line-height: 1.2em;\n  min-height: 52px;\n  outline: none;\n  width: 100%;\n\n  --iron-autogrow-textarea: {\n    box-sizing: border-box;\n    padding: 16px 70px 14px 20px;\n  };\n\n  --iron-autogrow-textarea-placeholder: {\n    color: #d4d4d4;\n    color: var(--ph-color, var(--theme-color-alto, #d4d4d4));\n  };\n}\niron-autogrow-textarea:hover {\n  border-color: #b8b8b8;\n  border-color: var(--border-color-hover, var(--theme-color-silver, #b8b8b8));\n}\niron-autogrow-textarea[focus-within] {\n  border-color: #48a1e6;\n  border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));\n}\niron-autogrow-textarea:focus-within {\n  border-color: #48a1e6;\n  border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));\n}\n";
-  styleInject(css$1);
+  var css$2 = "/* stylelint-disable selector-type-no-unknown */\niron-autogrow-textarea {\n  -webkit-appearance: none;\n  background: #fff;\n  background: var(--bg-color, var(--theme-color-white, #fff));\n  border: 1px solid #d4d4d4;\n  border: 1px solid var(--border-color, var(--theme-color-alto, #d4d4d4));\n  border-radius: 5px;\n  box-sizing: border-box;\n  caret-color: #48a1e6;\n  caret-color: var(--caret-color, var(--theme-color-pictonblue, #48a1e6));\n  font-size: 16px;\n  font-size: var(--font-size, var(--theme-font-size, 16px));\n  height: inherit;\n  line-height: 1.2em;\n  min-height: 52px;\n  outline: none;\n  -ms-overflow-style: none;\n  width: 100%;\n\n  --iron-autogrow-textarea: {\n    box-sizing: border-box;\n    padding: 16px 70px 14px 20px;\n  };\n\n  --iron-autogrow-textarea-placeholder: {\n    color: #d4d4d4;\n    color: var(--ph-color, var(--theme-color-alto, #d4d4d4));\n  };\n}\niron-autogrow-textarea:hover {\n  border-color: #b8b8b8;\n  border-color: var(--border-color-hover, var(--theme-color-silver, #b8b8b8));\n}\niron-autogrow-textarea[focus-within] {\n  border-color: #48a1e6;\n  border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));\n}\niron-autogrow-textarea:focus-within {\n  border-color: #48a1e6;\n  border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));\n}\n";
+  styleInject(css$2);
 
-  var _templateObject$4 = taggedTemplateLiteral(['\n  <iron-autogrow-textarea\n    disabled=\'', '\'\n    id=\'', '\'\n    maxRows=\'', '\'\n    on-input=\'', '\'\n    on-keypress=\'', '\'\n    placeholder=\'', '\'\n    value=\'', '\'\n  />\n'], ['\n  <iron-autogrow-textarea\n    disabled=\'', '\'\n    id=\'', '\'\n    maxRows=\'', '\'\n    on-input=\'', '\'\n    on-keypress=\'', '\'\n    placeholder=\'', '\'\n    value=\'', '\'\n  />\n']);
+  var _templateObject$6 = taggedTemplateLiteral(['\n  <iron-autogrow-textarea\n    disabled=\'', '\'\n    id=\'', '\'\n    maxRows=\'', '\'\n    on-input=\'', '\'\n    on-keypress=\'', '\'\n    placeholder=\'', '\'\n    value=\'', '\'\n  />\n'], ['\n  <iron-autogrow-textarea\n    disabled=\'', '\'\n    id=\'', '\'\n    maxRows=\'', '\'\n    on-input=\'', '\'\n    on-keypress=\'', '\'\n    placeholder=\'', '\'\n    value=\'', '\'\n  />\n']);
 
   var _placeholder = 'Just type something...';
 
@@ -18836,7 +23574,7 @@
         onKeyPress = _ref.onKeyPress,
         placeholder = _ref.placeholder,
         value = _ref.value;
-    return html$1(_templateObject$4, disabled, id, maxRows, function oninput(e) {
+    return html$1(_templateObject$6, disabled, id, maxRows, function oninput(e) {
       onInput(e, this.textarea);
     }, onKeyPress, placeholder || _placeholder, value);
   };
@@ -18940,7 +23678,7 @@
 
   /** @license MIT License (c) copyright 2010-2016 original author or authors */
 
-  function Map$1(f, source) {
+  function Map$2(f, source) {
     this.f = f;
     this.source = source;
   }
@@ -18952,19 +23690,19 @@
    * @param {{run:function}} source source to map
    * @returns {Map|FilterMap} mapped source, possibly fused
    */
-  Map$1.create = function createMap(f, source) {
-    if (source instanceof Map$1) {
-      return new Map$1(compose(f, source.f), source.source);
+  Map$2.create = function createMap(f, source) {
+    if (source instanceof Map$2) {
+      return new Map$2(compose(f, source.f), source.source);
     }
 
     if (source instanceof Filter) {
       return new FilterMap(source.p, f, source.source);
     }
 
-    return new Map$1(f, source);
+    return new Map$2(f, source);
   };
 
-  Map$1.prototype.run = function (sink, scheduler) {
+  Map$2.prototype.run = function (sink, scheduler) {
     // eslint-disable-line no-extend-native
     return this.source.run(new MapSink(this.f, sink), scheduler);
   };
@@ -18991,7 +23729,7 @@
    * @returns {Stream} stream containing items transformed by f
    */
   function map$2(f, stream) {
-    return new Stream(Map$1.create(f, stream.source));
+    return new Stream(Map$2.create(f, stream.source));
   }
 
   /**
@@ -19052,7 +23790,7 @@
   };
 
   PropagateTask.end = function (value, sink) {
-    return new PropagateTask(end, value, sink);
+    return new PropagateTask(end$1, value, sink);
   };
 
   PropagateTask.error = function (value, sink) {
@@ -19085,7 +23823,7 @@
     sink.event(t, x);
   }
 
-  function end(t, x, sink) {
+  function end$1(t, x, sink) {
     sink.end(t, x);
   }
 
@@ -19279,11 +24017,11 @@
   }
 
   function throttleSource(period, source) {
-    return source instanceof Map$1 ? commuteMapThrottle(period, source) : source instanceof Throttle ? fuseThrottle(period, source) : new Throttle(period, source);
+    return source instanceof Map$2 ? commuteMapThrottle(period, source) : source instanceof Throttle ? fuseThrottle(period, source) : new Throttle(period, source);
   }
 
   function commuteMapThrottle(period, source) {
-    return Map$1.create(source.f, throttleSource(period, source.source));
+    return Map$2.create(source.f, throttleSource(period, source.source));
   }
 
   function fuseThrottle(period, source) {
@@ -19935,28 +24673,28 @@
    *      var g = f(3);
    *      g(4); //=> 10
    */
-  var curry = /*#__PURE__*/_curry1(function curry(fn) {
+  var curry$1 = /*#__PURE__*/_curry1(function curry(fn) {
     return curryN(fn.length, fn);
   });
 
-  var combineC = curry(combine);
+  var combineC = curry$1(combine);
 
-  var debounceC = curry(debounce);
+  var debounceC = curry$1(debounce);
 
-  var delayC = curry(delay);
+  var delayC = curry$1(delay);
 
-  var filterC = curry(filter);
+  var filterC = curry$1(filter);
 
-  var mapC = curry(map$2);
+  var mapC = curry$1(map$2);
 
-  var observeC = curry(observe);
+  var observeC = curry$1(observe);
 
-  var throttleC = curry(throttle);
+  var throttleC = curry$1(throttle);
 
-  var css$2 = "/* :root, */\n:host {\n  bottom: initial;\n  bottom: var(--chat-input-bottom, initial);\n  display: block;\n  position: relative;\n  position: var(--chat-input-position, relative);\n  width: 100%;\n  z-index: initial;\n  z-index: var(--chat-input-z-index, initial);\n}\n.input {\n  background: #f8f8f8;\n  background: var(--alabaster, #f8f8f8);\n  bottom: 0;\n  box-sizing: border-box;\n  font-size: 16px;\n  padding: 0 20px 20px;\n  width: 100%;\n}\n.input.disabled {\n  color: #b8b8b8;\n  color: var(--silver, #b8b8b8);\n}\n.input > * {\n  line-height: 0;\n  position: relative;\n}\n.enter {\n  background: no-repeat center center;\n  border: none;\n  bottom: 14px;\n  cursor: pointer;\n  height: 24px;\n  outline: none;\n  padding: 0;\n  position: absolute;\n  right: 18px;\n}\n.enter:active:not(:disabled) {\n  -webkit-transform: translateY(1px);\n          transform: translateY(1px);\n}\n";
-  styleInject(css$2);
+  var css$3 = "/* :root, */\n:host {\n  bottom: initial;\n  bottom: var(--chat-input-bottom, initial);\n  display: block;\n  position: relative;\n  position: var(--chat-input-position, relative);\n  width: 100%;\n  z-index: initial;\n  z-index: var(--chat-input-z-index, initial);\n}\n.input {\n  background: #f8f8f8;\n  background: var(--alabaster, #f8f8f8);\n  bottom: 0;\n  box-sizing: border-box;\n  font-size: 16px;\n  padding: 0 20px 20px;\n  width: 100%;\n}\n.input.disabled {\n  color: #b8b8b8;\n  color: var(--silver, #b8b8b8);\n}\n.input > * {\n  line-height: 0;\n  position: relative;\n}\n.enter {\n  background: no-repeat center center;\n  border: none;\n  bottom: 14px;\n  cursor: pointer;\n  height: 24px;\n  outline: none;\n  padding: 0;\n  position: absolute;\n  right: 18px;\n}\n.enter:active:not(:disabled) {\n  -webkit-transform: translateY(1px);\n          transform: translateY(1px);\n}\n";
+  styleInject(css$3);
 
-  var _templateObject$5 = taggedTemplateLiteral(['\n      <section class$=\'', '\'>\n        <form on-submit=\'', '\'>\n          ', '\n          ', '\n        <form>\n      </section>\n    '], ['\n      <section class$=\'', '\'>\n        <form on-submit=\'', '\'>\n          ', '\n          ', '\n        <form>\n      </section>\n    ']);
+  var _templateObject$7 = taggedTemplateLiteral(['\n      <section class$=\'', '\'>\n        <form on-submit=\'', '\'>\n          ', '\n          ', '\n        <form>\n      </section>\n    '], ['\n      <section class$=\'', '\'>\n        <form on-submit=\'', '\'>\n          ', '\n          ', '\n        <form>\n      </section>\n    ']);
 
   var isKeyCode = function isKeyCode(keyCode, code) {
     return keyCode === code;
@@ -20162,7 +24900,7 @@
           value: value
         });
 
-        return html$1(_templateObject$5, classString({ input: true, disabled: disabled }), function (e) {
+        return html$1(_templateObject$7, classString({ input: true, disabled: disabled }), function (e) {
           return _this3._handleSubmit(e);
         }, textarea$$1, button$$1);
       }
@@ -20170,32 +24908,122 @@
     return MessageInput;
   }(LitElement);
 
-  var Input = withStyle(html$1)(MessageInput, css$2, css, css$1);
+  var Input = withStyle(html$1)(MessageInput, css$3, css$1, css$2);
 
-  var css$3 = ".actions {\n  cursor: default;\n  display: flex;\n  flex-direction: row;\n  line-height: 18px;\n  opacity: 0;\n  position: absolute;\n  right: 0;\n  right: 14px;\n  text-align: center;\n  top: -10px;\n  -webkit-transform: translateX(89%);\n          transform: translateX(89%);\n  transition: all ease-out 0.7s;\n  z-index: 100;\n}\n\n.action-group {\n  border-color: #b8b8b8;\n  color: #b8b8b8;\n  position: relative;\n  text-align: left;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.action-group:hover {\n  border-color: #48a1e6;\n  border-color: var(--action-group-border-color-hover, var(--theme-color-pictonblue, #48a1e6));\n  color: #48a1e6;\n  color: var(--action-group-color-hover, var(--theme-color-pictonblue, #48a1e6));\n}\n\n.action-group > span {\n  background-color: #fff;\n  background-color: var(--bg-color, var(--theme-color-white, #fff));\n  border: 1px solid #b8b8b8;\n  border-radius: 5px;\n  box-sizing: border-box;\n  display: inline-block;\n  font-size: 15px;\n  height: 24px;\n  letter-spacing: 0.1px;\n  line-height: 17px;\n  text-align: center;\n  width: 22px;\n}\n\n.action-subgroup {\n  cursor: pointer;\n  margin-left: -1px;\n  opacity: 0;\n  padding-top: 1px;\n  transition: all ease-out 0.5s;\n}\n\n.action-group:hover .action-subgroup {\n  opacity: 1;\n  -webkit-transform: translateY(2px);\n          transform: translateY(2px);\n  z-index: 300;\n}\n\n.action-subgroup-inner {\n  background: no-repeat center center #fff;\n  background: no-repeat center center var(--bg-color, var(--theme-color-white, #fff));\n  border: 1px solid #c6e6ff;\n  border-radius: 5px;\n  box-sizing: content-box;\n  display: flex;\n  flex-direction: row;\n}\n\n.action-subgroup-item {\n  background-color: transparent;\n  border: none;\n  cursor: pointer;\n  height: 39px;\n  margin: 1px;\n  outline: none;\n  padding: 0;\n  width: 39px;\n}\n\n.action-subgroup-item:disabled {\n  cursor: not-allowed;\n}\n\n.action-subgroup-item #delete {\n  padding: 12px;\n}\n\n.action-subgroup-item #warning {\n  padding: 13px;\n}\n\n.action-subgroup-item > svg {\n  padding: 10px;\n}\n\n.action-subgroup-item > svg path {\n  display: inline-block;\n  fill: #b8b8b8;\n  fill: var(--subgroup-fill-color, var(--theme-color-silver, #b8b8b8));\n}\n\n.action-subgroup-item:hover > svg path {\n  fill: #48a1e6;\n  fill: var(--subgroup-fill-color-hover, var(--theme-color-pictonblue, #48a1e6));\n}\n\n/* client styles */\n\n.action-group-reactions,\n.action-group-reactions:hover {\n  border-color: #b8b8b8 !important;\n  color: #b8b8b8 !important;\n}\n\n.action-group > * {\n  left: -1px;\n  position: relative;\n  z-index: 0;\n}\n\n.action-group *:hover {\n  z-index: 100 !important;\n}\n\n.action-group:first-child > * {\n  left: 0 !important;\n}\n\n.action-group > *:hover {\n  border-color: #1682d7;\n  border-color: var(--action-group-border-color-hover, var(--theme-color-pictonblue, #1682d7));\n  color: #1682d7;\n  color: var(--action-group-color-hover, var(--theme-color-pictonblue, #1682d7));\n}\n\n.action-group:nth-child(2) span {\n  border-radius: 0 5px 5px 0;\n}\n\n.action-group:nth-child(2):hover span {\n  border-color: inherit;\n  border-radius: 0 5px 5px 0;\n  color: inherit;\n}\n\n.message:hover .actions {\n  opacity: 1;\n  -webkit-transform: translateX(90%);\n          transform: translateX(90%);\n}\n\n.reaction-add {\n  background: center center no-repeat;\n  background-color: #fff;\n  border: 1px solid;\n  border-color: inherit;\n  border-radius: 5px 0 0 5px;\n  box-sizing: border-box;\n  color: inherit;\n  cursor: pointer;\n  display: block;\n  height: 24px;\n  line-height: 17px;\n  outline: none;\n  padding: 0;\n  text-align: center;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  width: 32px;\n}\n\n.reaction-add.disabled {\n  border-color: #b8b8b8;\n  color: #b8b8b8;\n  cursor: not-allowed;\n}\n\n.reaction-add.standalone {\n  border-radius: 5px;\n}\n\n.reaction-add:hover:not(.disabled) svg path {\n  fill: #1682d7;\n  fill: var(--action-group-color-hover, var(--theme-color-pictonblue, #1682d7));\n}\n\n.reaction-add svg {\n  height: inherit;\n  position: relative;\n  top: -1px;\n}\n";
-  styleInject(css$3);
+  var _templateObject$8 = taggedTemplateLiteral(['<svg id="warninig" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm0 2A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>\n    <path d="M9 9H7V4h2zM9 12H7v-2h2z"/>\n  </g>\n</svg>'], ['<svg id="warninig" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm0 2A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>\n    <path d="M9 9H7V4h2zM9 12H7v-2h2z"/>\n  </g>\n</svg>']),
+      _templateObject2$4 = taggedTemplateLiteral(['<svg id="delete" xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M9 7h2v7H9zM5 7h2v7H5z"/>\n    <path fill-rule="nonzero" d="M3 5v11h10V5H3zM1 3h14v15H1V3z"/>\n    <path d="M4 0h8v5H4V0zm2 2v1h4V2H6z"/>\n    <path fill-rule="nonzero" d="M0 5h16V3H0z"/>\n  </g>\n</svg>'], ['<svg id="delete" xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M9 7h2v7H9zM5 7h2v7H5z"/>\n    <path fill-rule="nonzero" d="M3 5v11h10V5H3zM1 3h14v15H1V3z"/>\n    <path d="M4 0h8v5H4V0zm2 2v1h4V2H6z"/>\n    <path fill-rule="nonzero" d="M0 5h16V3H0z"/>\n  </g>\n</svg>']),
+      _templateObject3$2 = taggedTemplateLiteral(['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23859 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90912C1.30243 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81818 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM2 2.90912C2 2.40704 2.40704 2 2.90912 2H13.0909C13.593 2 14 2.40704 14 2.90912V10.1818C14 12.2905 12.2905 14 10.1818 14H5.81818C3.70947 14 2 12.2905 2 10.1818V2.90912Z" transform="translate(0 6)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.18188 2.64374C2.61658 2.3988 2.90906 1.94104 2.90906 1.41669C2.90906 0.634277 2.25781 0 1.45459 0C0.651245 0 0 0.634277 0 1.41669C0 1.94104 0.29248 2.39886 0.727295 2.6438V3.52277C0.727295 3.92444 1.05286 4.25 1.45459 4.25C1.8562 4.25 2.18188 3.92444 2.18188 3.52277V2.64374Z" transform="translate(6.54541 11.375)" fill="#B8B8B8"/>\n</svg>'], ['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23859 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90912C1.30243 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81818 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM2 2.90912C2 2.40704 2.40704 2 2.90912 2H13.0909C13.593 2 14 2.40704 14 2.90912V10.1818C14 12.2905 12.2905 14 10.1818 14H5.81818C3.70947 14 2 12.2905 2 10.1818V2.90912Z" transform="translate(0 6)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.18188 2.64374C2.61658 2.3988 2.90906 1.94104 2.90906 1.41669C2.90906 0.634277 2.25781 0 1.45459 0C0.651245 0 0 0.634277 0 1.41669C0 1.94104 0.29248 2.39886 0.727295 2.6438V3.52277C0.727295 3.92444 1.05286 4.25 1.45459 4.25C1.8562 4.25 2.18188 3.92444 2.18188 3.52277V2.64374Z" transform="translate(6.54541 11.375)" fill="#B8B8B8"/>\n</svg>']),
+      _templateObject4$1 = taggedTemplateLiteral(['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23853 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#48A1E6"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90906C1.30249 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81824 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM9.45447 6.79169C9.45447 7.31604 9.16199 7.7738 8.72729 8.01874V8.89777C8.72729 9.29944 8.40161 9.625 8 9.625C7.59827 9.625 7.27271 9.29944 7.27271 8.89777V8.0188C6.83789 7.77386 6.54541 7.31604 6.54541 6.79169C6.54541 6.00928 7.19666 5.375 8 5.375C8.80322 5.375 9.45447 6.00928 9.45447 6.79169Z" transform="translate(0 6)" fill="#48A1E6"/>\n</svg>'], ['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23853 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#48A1E6"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90906C1.30249 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81824 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM9.45447 6.79169C9.45447 7.31604 9.16199 7.7738 8.72729 8.01874V8.89777C8.72729 9.29944 8.40161 9.625 8 9.625C7.59827 9.625 7.27271 9.29944 7.27271 8.89777V8.0188C6.83789 7.77386 6.54541 7.31604 6.54541 6.79169C6.54541 6.00928 7.19666 5.375 8 5.375C8.80322 5.375 9.45447 6.00928 9.45447 6.79169Z" transform="translate(0 6)" fill="#48A1E6"/>\n</svg>']),
+      _templateObject5 = taggedTemplateLiteral(['<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="15" viewBox="0 0 16 15">\n  <defs>\n    <path id="a" d="M0 0h16v16H0z"/>\n  </defs>\n  <g fill="none" fill-rule="evenodd" transform="translate(0 -1)">\n    <mask id="b" fill="#fff">\n      <use xlink:href="#a"/>\n    </mask>\n    <path fill="#B8B8B8" fill-rule="nonzero" d="M6.121 2.485v12.172l1 1 1-1V2.485h-2zm-2-2h6v15l-3 3-3-3v-15z" mask="url(#b)" transform="rotate(45 7.121 9.485)"/>\n    <path fill="#B8B8B8" fill-rule="nonzero" d="M9 16v-2h7v2z" mask="url(#b)"/>\n  </g>\n</svg>'], ['<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="15" viewBox="0 0 16 15">\n  <defs>\n    <path id="a" d="M0 0h16v16H0z"/>\n  </defs>\n  <g fill="none" fill-rule="evenodd" transform="translate(0 -1)">\n    <mask id="b" fill="#fff">\n      <use xlink:href="#a"/>\n    </mask>\n    <path fill="#B8B8B8" fill-rule="nonzero" d="M6.121 2.485v12.172l1 1 1-1V2.485h-2zm-2-2h6v15l-3 3-3-3v-15z" mask="url(#b)" transform="rotate(45 7.121 9.485)"/>\n    <path fill="#B8B8B8" fill-rule="nonzero" d="M9 16v-2h7v2z" mask="url(#b)"/>\n  </g>\n</svg>']),
+      _templateObject6 = taggedTemplateLiteral(['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\n  <g fill="none" fill-rule="evenodd" transform="rotate(-90 12 12)">\n    <circle cx="12" cy="12" r="12" fill="#48A1E6"/>\n    <path fill="#FFF" fill-rule="nonzero" d="M10.2 8.649l.849-.849 4.024 4.024-4.024 4.025L10.2 15l3.176-3.176z"/>\n  </g>\n</svg>'], ['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\n  <g fill="none" fill-rule="evenodd" transform="rotate(-90 12 12)">\n    <circle cx="12" cy="12" r="12" fill="#48A1E6"/>\n    <path fill="#FFF" fill-rule="nonzero" d="M10.2 8.649l.849-.849 4.024 4.024-4.024 4.025L10.2 15l3.176-3.176z"/>\n  </g>\n</svg>']),
+      _templateObject7 = taggedTemplateLiteral(['<svg width="26" height="16" viewBox="0 0 26 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0 8C0 12.4182 3.58167 16 8 16C12.4183 16 16 12.4182 16 8C16 3.58179 12.4183 0 8 0C3.58167 0 0 3.58179 0 8ZM15 8C15 11.866 11.866 15 8 15C4.13403 15 1 11.866 1 8C1 4.13403 4.13403 1 8 1C11.866 1 15 4.13403 15 8Z" fill="#B8B8B8"/>\n<path d="M0.0684113 0.760408C-0.0678355 0.522532 0.00581659 0.213915 0.232567 0.0713954C0.458845 -0.0708268 0.752265 0.00601634 0.888225 0.243391C1.18372 0.759298 1.53889 0.996346 2 0.996346C2.46111 0.996346 2.81628 0.759298 3.11177 0.243391C3.24773 0.00601634 3.54116 -0.0708268 3.76743 0.0713954C3.99418 0.213915 4.06784 0.522532 3.93159 0.760408C3.46598 1.57332 2.8061 2 2 2C1.1939 2 0.534021 1.57332 0.0684113 0.760408Z" transform="translate(6 9)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1 2C1.55228 2 2 1.55228 2 1C2 0.447715 1.55228 0 1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2Z" transform="translate(4 6)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1 2C1.55228 2 2 1.55228 2 1C2 0.447715 1.55228 0 1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2Z" transform="translate(10 6)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0H3.5V3.5H0V4.5H3.5V8H4.5V4.5H8V3.5H4.5V0Z" transform="translate(18 4)" fill="#B8B8B8"/>\n</svg>\n'], ['<svg width="26" height="16" viewBox="0 0 26 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0 8C0 12.4182 3.58167 16 8 16C12.4183 16 16 12.4182 16 8C16 3.58179 12.4183 0 8 0C3.58167 0 0 3.58179 0 8ZM15 8C15 11.866 11.866 15 8 15C4.13403 15 1 11.866 1 8C1 4.13403 4.13403 1 8 1C11.866 1 15 4.13403 15 8Z" fill="#B8B8B8"/>\n<path d="M0.0684113 0.760408C-0.0678355 0.522532 0.00581659 0.213915 0.232567 0.0713954C0.458845 -0.0708268 0.752265 0.00601634 0.888225 0.243391C1.18372 0.759298 1.53889 0.996346 2 0.996346C2.46111 0.996346 2.81628 0.759298 3.11177 0.243391C3.24773 0.00601634 3.54116 -0.0708268 3.76743 0.0713954C3.99418 0.213915 4.06784 0.522532 3.93159 0.760408C3.46598 1.57332 2.8061 2 2 2C1.1939 2 0.534021 1.57332 0.0684113 0.760408Z" transform="translate(6 9)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1 2C1.55228 2 2 1.55228 2 1C2 0.447715 1.55228 0 1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2Z" transform="translate(4 6)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1 2C1.55228 2 2 1.55228 2 1C2 0.447715 1.55228 0 1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2Z" transform="translate(10 6)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0H3.5V3.5H0V4.5H3.5V8H4.5V4.5H8V3.5H4.5V0Z" transform="translate(18 4)" fill="#B8B8B8"/>\n</svg>\n']),
+      _templateObject8 = taggedTemplateLiteral(['<svg width="14" height="3" viewBox="0 0 14 3" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 3C2.32843 3 3 2.32843 3 1.5C3 0.671573 2.32843 0 1.5 0C0.671573 0 0 0.671573 0 1.5C0 2.32843 0.671573 3 1.5 3Z" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M12.5 3C13.3284 3 14 2.32843 14 1.5C14 0.671573 13.3284 0 12.5 0C11.6716 0 11 0.671573 11 1.5C11 2.32843 11.6716 3 12.5 3Z" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M7 3C7.82843 3 8.5 2.32843 8.5 1.5C8.5 0.671573 7.82843 0 7 0C6.17157 0 5.5 0.671573 5.5 1.5C5.5 2.32843 6.17157 3 7 3Z" fill="#B8B8B8"/>\n</svg>'], ['<svg width="14" height="3" viewBox="0 0 14 3" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 3C2.32843 3 3 2.32843 3 1.5C3 0.671573 2.32843 0 1.5 0C0.671573 0 0 0.671573 0 1.5C0 2.32843 0.671573 3 1.5 3Z" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M12.5 3C13.3284 3 14 2.32843 14 1.5C14 0.671573 13.3284 0 12.5 0C11.6716 0 11 0.671573 11 1.5C11 2.32843 11.6716 3 12.5 3Z" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M7 3C7.82843 3 8.5 2.32843 8.5 1.5C8.5 0.671573 7.82843 0 7 0C6.17157 0 5.5 0.671573 5.5 1.5C5.5 2.32843 6.17157 3 7 3Z" fill="#B8B8B8"/>\n</svg>']),
+      _templateObject9 = taggedTemplateLiteral(['<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0 8C0 12.4183 3.58203 16 8 16C12.418 16 16 12.4183 16 8C16 3.58167 12.418 0 8 0C3.58203 0 0 3.58167 0 8ZM14 8C14 11.3137 11.3135 14 8 14C4.68652 14 2 11.3137 2 8C2 4.68628 4.68652 2 8 2C11.3135 2 14 4.68628 14 8Z" fill="#B8B8B8"/>\n<path d="M5.85148 9.88464C5.6492 9.53148 5.75819 9.07425 6.09953 8.85971C6.4473 8.64113 6.89926 8.75963 7.10516 9.11911C7.35768 9.55998 7.63379 9.74632 8 9.74632C8.36622 9.74632 8.64233 9.55998 8.89484 9.11911C9.10074 8.75963 9.55271 8.64113 9.90047 8.85971C10.2418 9.07425 10.3508 9.53148 10.1485 9.88464C9.63928 10.7737 8.8986 11.25 8 11.25C7.1014 11.25 6.36072 10.7737 5.85148 9.88464Z" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M5 8C5.55228 8 6 7.55228 6 7C6 6.44772 5.55228 6 5 6C4.44772 6 4 6.44772 4 7C4 7.55228 4.44772 8 5 8Z" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M11 8C11.5523 8 12 7.55228 12 7C12 6.44772 11.5523 6 11 6C10.4477 6 10 6.44772 10 7C10 7.55228 10.4477 8 11 8Z" fill="#B8B8B8"/>\n</svg>'], ['<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0 8C0 12.4183 3.58203 16 8 16C12.418 16 16 12.4183 16 8C16 3.58167 12.418 0 8 0C3.58203 0 0 3.58167 0 8ZM14 8C14 11.3137 11.3135 14 8 14C4.68652 14 2 11.3137 2 8C2 4.68628 4.68652 2 8 2C11.3135 2 14 4.68628 14 8Z" fill="#B8B8B8"/>\n<path d="M5.85148 9.88464C5.6492 9.53148 5.75819 9.07425 6.09953 8.85971C6.4473 8.64113 6.89926 8.75963 7.10516 9.11911C7.35768 9.55998 7.63379 9.74632 8 9.74632C8.36622 9.74632 8.64233 9.55998 8.89484 9.11911C9.10074 8.75963 9.55271 8.64113 9.90047 8.85971C10.2418 9.07425 10.3508 9.53148 10.1485 9.88464C9.63928 10.7737 8.8986 11.25 8 11.25C7.1014 11.25 6.36072 10.7737 5.85148 9.88464Z" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M5 8C5.55228 8 6 7.55228 6 7C6 6.44772 5.55228 6 5 6C4.44772 6 4 6.44772 4 7C4 7.55228 4.44772 8 5 8Z" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M11 8C11.5523 8 12 7.55228 12 7C12 6.44772 11.5523 6 11 6C10.4477 6 10 6.44772 10 7C10 7.55228 10.4477 8 11 8Z" fill="#B8B8B8"/>\n</svg>']),
+      _templateObject10 = taggedTemplateLiteral(['<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">\n<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">\n<rect width="10" height="10" fill="#C4C4C4"/>\n</mask>\n<g mask="url(#mask0)">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M8.29297 9.70706L0.292969 1.70706L1.70718 0.292847L9.70718 8.29285L8.29297 9.70706Z" fill="white"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0.292969 8.29285L8.29297 0.292847L9.70718 1.70706L1.70718 9.70706L0.292969 8.29285Z" fill="white"/>\n</g>\n</svg>\n'], ['<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">\n<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">\n<rect width="10" height="10" fill="#C4C4C4"/>\n</mask>\n<g mask="url(#mask0)">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M8.29297 9.70706L0.292969 1.70706L1.70718 0.292847L9.70718 8.29285L8.29297 9.70706Z" fill="white"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0.292969 8.29285L8.29297 0.292847L9.70718 1.70706L1.70718 9.70706L0.292969 8.29285Z" fill="white"/>\n</g>\n</svg>\n']);
 
-  var _templateObject$6 = taggedTemplateLiteral(['\n  <div class=\'action-group action-group-reactions\'>\n    ', '\n  </div>\n'], ['\n  <div class=\'action-group action-group-reactions\'>\n    ', '\n  </div>\n']),
-      _templateObject2$2 = taggedTemplateLiteral(['\n  <div class=\'action-group action-group-actions\'>\n    <span>...</span>\n    <div class=\'action-subgroup\'>\n      <div class=\'action-subgroup-inner\'>\n        ', '\n      </div>\n    </div>\n  </div>\n'], ['\n  <div class=\'action-group action-group-actions\'>\n    <span>...</span>\n    <div class=\'action-subgroup\'>\n      <div class=\'action-subgroup-inner\'>\n        ', '\n      </div>\n    </div>\n  </div>\n']),
-      _templateObject3$1 = taggedTemplateLiteral(['\n  <div class=\'actions\'>\n    ', '\n    ', '\n  </div>\n'], ['\n  <div class=\'actions\'>\n    ', '\n    ', '\n  </div>\n']);
+  var warning$1 = html$1(_templateObject$8);
+
+  var del = html$1(_templateObject2$4);
+
+  var lock$1 = html$1(_templateObject3$2);
+
+  var locked = html$1(_templateObject4$1);
+
+  var amend = html$1(_templateObject5);
+
+  var entry$1 = html$1(_templateObject6);
+
+  var smile$1 = html$1(_templateObject7);
+
+  var menu = html$1(_templateObject8);
+
+  var smiley$1 = html$1(_templateObject9);
+
+  var cross = html$1(_templateObject10);
+
+  var _templateObject$9 = taggedTemplateLiteral(['\n    <button\n      class$=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n  '], ['\n    <button\n      class$=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n  ']),
+      _templateObject2$5 = taggedTemplateLiteral(['\n    <button\n      class$=\'', '\'\n      disabled=\'', '\'\n      on-click=\'', '\'\n    >\n      <wc-chat-reactions direction=\'column\' config=\'', '\' showall></wc-chat-reactions>\n    </button>\n'], ['\n    <button\n      class$=\'', '\'\n      disabled=\'', '\'\n      on-click=\'', '\'\n    >\n      <wc-chat-reactions direction=\'column\' config=\'', '\' showall></wc-chat-reactions>\n    </button>\n']);
+
+  var cn$1 = function cn() {
+    for (var _len = arguments.length, argv = Array(_len), _key = 0; _key < _len; _key++) {
+      argv[_key] = arguments[_key];
+    }
+
+    return argv.filter(function (x) {
+      return !!x;
+    }).join(' ').trim();
+  };
+
+  var actionImages = new Map([['message-delete', del], ['user-disable', lock$1]]);
+
+  var action = function action(_ref) {
+    var allowed = _ref.allowed,
+        children = _ref.children,
+        classname = _ref.classname,
+        disabled = _ref.disabled,
+        handler = _ref.handler,
+        key = _ref.key,
+        message = _ref.message,
+        name = _ref.name;
+
+    var cls = cn$1('action', classname, key, name, classString({ disabled: disabled, allowed: allowed }));
+
+    if (!allowed) return null;
+
+    return html$1(_templateObject$9, cls, function (e) {
+      return handler && handler(e, message);
+    }, children);
+  };
+
+  var reaction = function reaction(_ref2) {
+    var disabled = _ref2.disabled,
+        handler = _ref2.handler,
+        message = _ref2.message;
+
+    var cls = cn$1('reaction-add', classString({ disabled: disabled }));
+    var config = function config() {
+      return new Map([['thumbsup', { name: ':thumbsup' }]]);
+    };
+
+    return html$1(_templateObject2$5, cls, disabled, function (e) {
+      return handler && handler(e, { message: message });
+    }, config());
+  };
+
+  var css$4 = ":root {\n  --actions-action-icon-size: 16px;\n  --actions-background-color: #fff;\n  --actions-background-color: var(--chat-message-actions-background-color, var(--white, #fff));\n  --actions-border-color-disabled: #b8b8b8;\n  --actions-border-color-disabled: var(--chat-message-actions-border-color-disabled, var(--silver, #b8b8b8));\n  --actions-border-color-hover: #48a1e6;\n  --actions-border-color-hover: var(--chat-message-actions-border-color-hover, var(--pictonblue, #48a1e6));\n  --actions-border-color: #b8b8b8;\n  --actions-border-color: var(--chat-message-actions-border-color, var(--silver, #b8b8b8));\n  --actions-color-disabled: #b8b8b8;\n  --actions-color-disabled: var(--chat-message-actions-color-disabled, var(--silver, #b8b8b8));\n  --actions-color-fill-hover: #48a1e6;\n  --actions-color-fill-hover: var(--chat-message-actions-color-fill-hover, var(--pictonblue, #48a1e6));\n  --actions-color-fill: #b8b8b8;\n  --actions-color-fill: var(--chat-message-actions-color-fill, var(--silver, #b8b8b8));\n  --actions-color: #b8b8b8;\n  --actions-color: var(--chat-message-actions-color, var(--silver, #b8b8b8));\n  --actions-color-hover: #48a1e6;\n  --actions-color-hover: var(--chat-message-actions-color-hover, var(--pictonblue, #48a1e6));\n  --actions-reactions-shift: -1px;\n  --actions-transition-delay: 0.25s;\n  --actions-transition-delay: var(--chat-message-transition-delay, 0.25s);\n}\n\n/* reactions */\n\n.reaction {\n  height: 36px;\n}\n\n.reactions-group {\n  background: #fff;\n  background: var(--actions-background-color);\n  border: 1px solid;\n  border-color: #b8b8b8;\n  border-color: var(--actions-border-color);\n  border-radius: 5px;\n  left: -1px;\n  left: var(--actions-reactions-shift);\n  min-height: 100%;\n  opacity: 0;\n  position: absolute;\n  top: -1px;\n  top: var(--actions-reactions-shift);\n  transition: all ease-out 0.25s;\n  transition: all ease-out var(--actions-transition-delay);\n  width: 100%;\n  z-index: -1;\n}\n\n.reactions:hover .reactions-group {\n  border-color: #48a1e6;\n  border-color: var(--actions-border-color-hover);\n  opacity: 1;\n  z-index: 200;\n}\n\n.reaction > svg,\n.action > svg {\n  height: 16px;\n  height: var(--actions-action-icon-size);\n  padding: 10px 11px;\n  transition: all ease-out 0.25s;\n  transition: all ease-out var(--actions-transition-delay);\n  width: 16px;\n  width: var(--actions-action-icon-size);\n}\n\n/* actions */\n\n.action {\n  background-color: transparent;\n  border: none;\n  cursor: pointer;\n  outline: none;\n  padding: 0;\n}\n\n.action:disabled {\n  cursor: not-allowed;\n}\n\n.action > svg path {\n  fill: #b8b8b8;\n  fill: var(--actions-color-fill);\n}\n\n.action.user-disable > svg {\n  height: calc(16px + 2px);\n  height: calc(var(--actions-action-icon-size) + 2px);\n}\n\n.action:hover:not(:disabled) > svg path {\n  fill: #48a1e6;\n  fill: var(--actions-color-fill-hover);\n}\n\n.actions {\n  cursor: default;\n  float: right;\n  height: 24px;\n  line-height: 18px;\n  position: relative;\n  text-align: center;\n  width: 24px;\n}\n\n.actions:hover {\n  opacity: 1;\n}\n\n/* stylelint-disable-next-line no-descending-specificity */\n\n.actions:hover > svg path {\n  fill: #48a1e6;\n  fill: var(--actions-color-fill-hover);\n}\n\n.actions-inner {\n  display: none;\n  flex-direction: column;\n  margin-left: -8px;\n  opacity: 0;\n  position: absolute;\n  z-index: -1;\n}\n\n.actions:hover .actions-inner {\n  display: flex;\n  opacity: 1;\n  z-index: 100;\n}\n\n.actions-group {\n  background: #fff;\n  background: var(--actions-background-color);\n  border: 1px solid;\n  border-color: #b8b8b8;\n  border-color: var(--actions-border-color);\n  border-radius: 5px;\n  color: #b8b8b8;\n  color: var(--actions-color);\n  display: flex;\n  flex-direction: column;\n  position: relative;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.actions-group:hover {\n  border-color: #48a1e6;\n  border-color: var(--actions-border-color-hover);\n  color: #48a1e6;\n  color: var(--actions-color-hover);\n}\n\n.reaction:hover > svg,\n.action:hover:not(:disabled) > svg {\n  -webkit-transform: scale(1.2);\n          transform: scale(1.2);\n}\n\n.reaction-add {\n  background: transparent;\n  border: 0;\n  border-radius: 100%;\n  font-size: 16px;\n  font-size: var(--actions-action-icon-size);\n  outline: none;\n  padding: 5px 11px;\n  transition: -webkit-transform ease-out 0.25s;\n  transition: transform ease-out 0.25s;\n  transition: transform ease-out 0.25s, -webkit-transform ease-out 0.25s;\n  transition: -webkit-transform ease-out var(--actions-transition-delay);\n  transition: transform ease-out var(--actions-transition-delay);\n  transition: transform ease-out var(--actions-transition-delay), -webkit-transform ease-out var(--actions-transition-delay);\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  width: 100%;\n}\n\n.reaction-add:hover {\n  -webkit-transform: scale(1.2);\n          transform: scale(1.2);\n}\n\n.reaction-add.disabled {\n  border-color: #b8b8b8;\n  border-color: var(--actions-border-color-disabled);\n  color: #b8b8b8;\n  color: var(--actions-color-disabled);\n  cursor: not-allowed;\n}\n\n.reaction-add:hover:not(.disabled) svg path {\n  fill: #48a1e6;\n  fill: var(--actions-color-hover);\n}\n\n.quickdelete {\n  background: rgba(0, 0, 0, 0.47);\n  border-radius: 100%;\n  height: 32px;\n  left: 0;\n  opacity: 0;\n  position: absolute;\n  top: 0;\n  transition: opacity ease-out 0.25s;\n  transition: opacity ease-out var(--actions-transition-delay);\n  width: 32px;\n}\n\n.quickdelete:hover {\n  opacity: 1;\n}\n\n/* stylelint-disable-next-line no-descending-specificity */\n\n.quickdelete > svg {\n  height: 10px;\n  padding: 0;\n  padding-top: 2px;\n}\n\n/* stylelint-disable-next-line no-descending-specificity */\n\n.quickdelete > svg path {\n  fill: #fff !important;\n  fill: var(--actions-background-color) !important;\n}\n";
+  styleInject(css$4);
+
+  var _templateObject$a = taggedTemplateLiteral(['\n  <div class=\'reactions\'>\n    <div class=\'reaction\'>', '</div>\n    <div class=\'reactions-group\'>\n      ', '\n    </div>\n</div>\n'], ['\n  <div class=\'reactions\'>\n    <div class=\'reaction\'>', '</div>\n    <div class=\'reactions-group\'>\n      ', '\n    </div>\n</div>\n']),
+      _templateObject2$6 = taggedTemplateLiteral(['\n  <div class=\'actions-group\'>\n    ', '\n    ', '\n  </div>\n'], ['\n  <div class=\'actions-group\'>\n    ', '\n    ', '\n  </div>\n']),
+      _templateObject3$3 = taggedTemplateLiteral(['\n  ', '\n  <div class=\'actions\'>\n    ', '\n    <div class=\'actions-inner\'>\n      ', '\n    </div>\n  </div>\n'], ['\n  ', '\n  <div class=\'actions\'>\n    ', '\n    <div class=\'actions-inner\'>\n      ', '\n    </div>\n  </div>\n']),
+      _templateObject4$2 = taggedTemplateLiteral(['', ''], ['', '']);
+
+  var toList = function toList(map) {
+    return map.toJSON().map(function (tuple) {
+      return tuple[1];
+    });
+  };
 
   var _reactions = function _reactions(props) {
-    return html$1(_templateObject$6, props.children);
+    return html$1(_templateObject$a, smiley$1, props.children);
   };
 
   var _actions = function _actions(props) {
-    return html$1(_templateObject2$2, props.children);
+    return html$1(_templateObject2$6, toList(props.children), props.reactions.size ? _reactions({ children: toList(props.reactions) }) : null);
   };
 
   var actions = function actions(props) {
-    return html$1(_templateObject3$1, props.reactions.length ? _reactions({ children: props.reactions }) : null, props.children.length ? _actions(props) : null);
+    return html$1(_templateObject3$3, props.children.has('message-delete') ? html$1(_templateObject4$2, action(_extends({}, props.actions.get('message-delete'), {
+      classname: 'quickdelete',
+      children: cross
+    }))) : null, menu, _actions(props));
   };
 
-  var css$4 = "wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */\n  --reaction-count-left: 0;\n}\n\n.avatar {\n  background: no-repeat center center;\n  background-color: transparent;\n  background-color: var(--message-avatar-color-moderator, transparent);\n  background-size: contain;\n  border-radius: 100%;\n  display: inline-block;\n  height: 32px;\n  margin-right: 8px;\n  overflow: hidden;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  vertical-align: top;\n  width: 32px;\n}\n\n.avatar.moderator {\n  background-color: transparent;\n  background-color: var(--message-avatar-color, transparent);\n}\n\n.message {\n  background-color: #fff;\n  border-radius: 5px;\n  display: inline-block;\n  margin-bottom: 16px;\n  max-width: 80%;\n  max-width: 55% !important;\n  padding: 8px 22px 8px 14px;\n  position: relative;\n  text-align: left;\n}\n\n.message-block.deleted .message {\n  background: rgba(0, 0, 0, 0.04);\n}\n\n.message-block.deleted .avatar,\n.message-block.deleted .message {\n  -webkit-filter: grayscale(75%);\n          filter: grayscale(75%);\n}\n\n.message-meta {\n  margin-bottom: 5px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.message-line {\n  line-height: 1.25em;\n  margin: 0;\n  margin-bottom: 12px;\n}\n\n.message-line:last-child {\n  margin-bottom: 0;\n}\n\n.message-status {\n  margin-bottom: 3px;\n}\n\n.message-stamp,\n.message-status {\n  color: #b8b8b8;\n  color: var(--message-status-color, var(--silver, #b8b8b8));\n  font-size: 0.75em;\n}\n\n.message-author {\n  font-weight: bold;\n  margin-right: 8px;\n}\n\n.message.moderator {\n  background-color: rgba(255, 114, 86, 0.08);\n}\n\n.message.me {\n  background-color: rgba(72, 161, 230, 0.08);\n}\n";
-  styleInject(css$4);
+  var css$5 = "wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */\n  --reaction-count-left: 0;\n}\n\n:root {\n  --message-aggregated-content-border-radius: 5px;\n  --message-aggregated-content-border-radius: var(--chat-aggregated-content-border-radius, var(--message-border-radius));\n  --message-aggregated-margin: 5px;\n  --message-aggregated-margin: var(--chat-message-aggregated-margin, var(--message-border-radius));\n  --message-avatar-margin: 8px;\n  --message-avatar-size: 32px;\n  --message-border-radius: 5px;\n  --message-color-deleted-hover: rgba(238, 238, 238, 0.70196);\n  --message-color-deleted-hover: var(--chat-message-color-deleted-hover, rgba(238, 238, 238, 0.70196));\n  --message-color-deleted: #eee;\n  --message-color-deleted: var(--chat-message-color-watchdog, var(--gallery, #eee));\n  --message-color-hover: rgba(255, 255, 255, 0.50196);\n  --message-color-hover: var(--chat-message-color-hover, rgba(255, 255, 255, 0.50196));\n  --message-color-me-hover: rgba(235, 242, 247, 0.70196);\n  --message-color-me-hover: var(--chat-message-color-me-hover, rgba(235, 242, 247, 0.70196));\n  --message-color-me: #ebf2f7;\n  --message-color-me: var(--chat-message-color-me, var(--cornflowerBlue, #ebf2f7));\n  --message-color-watchdog-hover: rgba(250, 239, 235, 0.70196);\n  --message-color-watchdog-hover: var(--chat-message-color-watchdog-hover, rgba(250, 239, 235, 0.70196));\n  --message-color-watchdog: #faefeb;\n  --message-color-watchdog: var(--chat-message-color-watchdog, var(--whiteLinen, #faefeb));\n  --message-margin-between: 16px;\n  --message-status-color: #b8b8b8;\n  --message-status-color: var(--chat-message-status-color, var(--silver, #b8b8b8));\n}\n\n.avatar {\n  float: left;\n  margin-right: 8px;\n  margin-right: var(--message-avatar-margin);\n  overflow: hidden;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  vertical-align: top;\n  width: 32px;\n  width: var(--message-avatar-size);\n}\n\n.avatar > div:first-child {\n  background: no-repeat center center;\n  background-color: transparent;\n  background-color: var(--message-avatar-color-moderator, transparent);\n  background-size: contain;\n  border-radius: 100%;\n  height: 32px;\n  height: var(--message-avatar-size);\n  width: 32px;\n  width: var(--message-avatar-size);\n}\n\n.avatar.moderator {\n  background-color: transparent;\n  background-color: var(--message-avatar-color, transparent);\n}\n\n.content {\n  background-color: #fff;\n  border-radius: 5px;\n  border-radius: var(--message-border-radius);\n  box-sizing: border-box;\n  display: inline-block;\n  padding: 8px 16px 8px 14px;\n  text-align: left;\n  width: calc(100% - 32px - 8px);\n  width: calc(100% - var(--message-avatar-size) - var(--message-avatar-margin));\n}\n\n.content > [class^=\"actions\"] {\n  opacity: 0;\n}\n\n.content:hover > [class^=\"actions\"] {\n  opacity: 1;\n}\n\n.content.moderator {\n  background-color: #faefeb;\n  background-color: var(--message-color-watchdog);\n}\n\n.content.me {\n  background-color: #ebf2f7;\n  background-color: var(--message-color-me);\n}\n\n.message {\n  position: relative;\n}\n\n.message:hover .content {\n  background-color: rgba(255, 255, 255, 0.50196);\n  background-color: var(--message-color-hover);\n}\n\n.message:hover .content.moderator {\n  background-color: rgba(250, 239, 235, 0.70196);\n  background-color: var(--message-color-watchdog-hover);\n}\n\n.message:hover .content.me {\n  background-color: rgba(235, 242, 247, 0.70196);\n  background-color: var(--message-color-me-hover);\n}\n\n.message + .message:not(.aggregated) {\n  margin-top: 16px;\n  margin-top: var(--message-margin-between);\n}\n\n.message.aggregated {\n  margin-top: 5px;\n  margin-top: var(--message-aggregated-margin);\n}\n\n.message.aggregated .avatar {\n  height: 1px;\n  visibility: hidden;\n}\n\n.message.aggregated .content {\n  border-radius: 5px;\n  border-radius: var(--message-border-radius);\n}\n\n.message.deleted .avatar,\n.message.deleted .content {\n  -webkit-filter: grayscale(75%);\n          filter: grayscale(75%);\n}\n\n.message.deleted .content {\n  background: #eee;\n  background: var(--message-color-deleted);\n}\n\n.message.deleted:hover .content {\n  background: rgba(238, 238, 238, 0.70196);\n  background: var(--message-color-deleted-hover);\n}\n\n.message-meta {\n  margin-bottom: 5px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.message.aggregated .message-meta {\n  display: none;\n}\n\n.message-line {\n  line-height: 1.25em;\n  margin: 0;\n  margin-bottom: 12px;\n}\n\n.message-line:last-child {\n  margin-bottom: 0;\n}\n\n.message-status {\n  margin-bottom: 3px;\n}\n\n.message-stamp,\n.message-status,\n.message-identity {\n  color: #b8b8b8;\n  color: var(--message-status-color);\n  font-size: 0.75em;\n}\n\n.message-author {\n  font-weight: bold;\n  margin-right: 8px;\n}\n\n.moderator .message-status {\n  display: inline-block;\n}\n\n.user.avatar .message-identity {\n  text-align: center;\n}\n\n.moderator .message-author {\n  background: url(\"data:image/svg+xml,%3Csvg width%3D%228%22 height%3D%229%22 viewBox%3D%220 0 8 9%22 fill%3D%22none%22 xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath d%3D%22M6 2C6 3.10457 5.10457 4 4 4C2.89543 4 2 3.10457 2 2C2 0.895431 2.89543 0 4 0C5.10457 0 6 0.895431 6 2Z%22 fill%3D%22%23B8B8B8%22%2F%3E%3Cpath d%3D%22M0 7C0 5.89543 0.895431 5 2 5H6C7.10457 5 8 5.89543 8 7V9H0V7Z%22 fill%3D%22%23B8B8B8%22%2F%3E%3C%2Fsvg%3E\") no-repeat right center transparent;\n  padding-right: 12px;\n}\n\n.message-body {\n  padding-right: 24px;\n}\n";
+  styleInject(css$5);
 
-  var _templateObject$7 = taggedTemplateLiteral(['<p class=\'message-line\'>', '</p>'], ['<p class=\'message-line\'>', '</p>']),
-      _templateObject2$3 = taggedTemplateLiteral(['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'background-image: url(', ');\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-status\'>', '</span>\n        </div>\n        <div>', '</div>\n        ', '\n      </section>\n    </div>\n  '], ['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'background-image: url(', ');\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-status\'>', '</span>\n        </div>\n        <div>', '</div>\n        ', '\n      </section>\n    </div>\n  ']);
+  var _templateObject$b = taggedTemplateLiteral(['<p class=\'message-line\'>', '</p>'], ['<p class=\'message-line\'>', '</p>']),
+      _templateObject2$7 = taggedTemplateLiteral(['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'background-image: url(', ');\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-status\'>', '</span>\n        </div>\n        <div>', '</div>\n        ', '\n      </section>\n    </div>\n  '], ['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'background-image: url(', ');\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-status\'>', '</span>\n        </div>\n        <div>', '</div>\n        ', '\n      </section>\n    </div>\n  ']);
 
   var stampToDate = function stampToDate(stamp) {
     return new Date(stamp * 1e3);
@@ -20209,13 +25037,15 @@
   var text = function text() {
     var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     return message.split('\n').map(function (it) {
-      return html$1(_templateObject$7, it);
+      return html$1(_templateObject$b, it);
     });
   };
 
-  var _templateObject$8 = taggedTemplateLiteral(['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'', '\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-stamp\'>', '</span>\n          <div class=\'message-status\'>', '</div>\n        </div>\n        <div>', '</div>\n        <wc-chat-reactions config=', ' showcount></wc-chat-reactions>\n        ', '\n      </section>\n    </div>\n  '], ['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'', '\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-stamp\'>', '</span>\n          <div class=\'message-status\'>', '</div>\n        </div>\n        <div>', '</div>\n        <wc-chat-reactions config=', ' showcount></wc-chat-reactions>\n        ', '\n      </section>\n    </div>\n  ']);
+  var _templateObject$c = taggedTemplateLiteral(['\n    <div class$=\'', '\'>\n      <div class$=\'', '\'>\n        <div style$=\'', '\'></div>\n        ', '\n      </div>\n      <section class$=\'', '\'>\n        ', '\n        <div class=\'message-meta\'>\n          <span class=\'message-author\' title=\'', '\'>', '</span>\n          <span class=\'message-stamp\'>', '</span>\n          ', '\n        </div>\n        <div class=\'message-body\'>', '</div>\n        ', '\n      </section>\n    </div>\n  '], ['\n    <div class$=\'', '\'>\n      <div class$=\'', '\'>\n        <div style$=\'', '\'></div>\n        ', '\n      </div>\n      <section class$=\'', '\'>\n        ', '\n        <div class=\'message-meta\'>\n          <span class=\'message-author\' title=\'', '\'>', '</span>\n          <span class=\'message-stamp\'>', '</span>\n          ', '\n        </div>\n        <div class=\'message-body\'>', '</div>\n        ', '\n      </section>\n    </div>\n  ']),
+      _templateObject2$8 = taggedTemplateLiteral(['<div class=\'message-identity\'>', '</div>'], ['<div class=\'message-identity\'>', '</div>']),
+      _templateObject3$4 = taggedTemplateLiteral(['<div class=\'message-status\'>', '</div>'], ['<div class=\'message-status\'>', '</div>']);
 
-  var cn$1 = function cn() {
+  var cn$3 = function cn() {
     for (var _len = arguments.length, argv = Array(_len), _key = 0; _key < _len; _key++) {
       argv[_key] = arguments[_key];
     }
@@ -20227,16 +25057,18 @@
     var message = props.message;
 
 
-    var config = new Map([['thumbsup', { name: ':thumbsup', count: message.rating }]]);
+    var isWatchdog = message.user_role === 'moderator';
 
-    return html$1(_templateObject$8, classString({ 'message-block': true, deleted: props.deleted }), cn$1(message.user_role, 'avatar'), !message.avatar ? '' : 'background-image: url(' + message.avatar + ');', cn$1(message.user_role, 'message'), message.user_name, formatDate(stampToDate(message.timestamp)), message.status, text(message.body), config, props.children);
+    return html$1(_templateObject$c, classString({
+      message: true, deleted: props.deleted, aggregated: message.aggregated
+    }), cn$3(message.user_role, 'avatar'), !message.avatar ? '' : 'background-image: url(' + message.avatar + ');', !isWatchdog ? html$1(_templateObject2$8, message.identity) : null, cn$3(message.user_role, 'content', classString({ me: message.user_id === message.current_user_id })), props.actions, isWatchdog ? message.identity : '', message.user_name, formatDate(stampToDate(message.timestamp)), !isWatchdog ? html$1(_templateObject3$4, message.status) : null, text(message.body), props.children);
   };
 
-  var css$5 = ":host {\n  display: block;\n  height: inherit;\n  height: var(--chat-messages-height, inherit);\n}\n\n.messages {\n  box-sizing: border-box;\n  font-size: inherit;\n  font-size: var(--messages-font-size, inherit);\n  height: 87%;\n  overflow-y: auto !important;\n  padding-left: 20px;\n  padding-top: 20px;\n  width: 93%;\n}\n\n.action-subgroup-item.lock.disabled {\n  cursor: not-allowed;\n}\n\n.action-subgroup-item.lock.allowed {\n  cursor: pointer !important;\n}\n\n.action-subgroup-item.lock svg {\n  padding: 10px 12px;\n}\n\n.action-subgroup-item.lock svg path {\n  fill: #b8b8b8;\n}\n\n.action-subgroup-item.lock:hover svg path,\n.action-subgroup-item.lock.disabled svg path {\n  fill: #48a1e6;\n}\n\n.reactions {\n  margin-top: 10px;\n}\n";
-  styleInject(css$5);
+  var css$6 = ":root {\n  --messages-width: 100%;\n  --messages-width: var(--chat-messages-list-width, 100%);\n  --messages-height: 100%;\n  --messages-height: var(--chat-messages-list-height, 100%);\n}\n\n:host {\n  height: inherit;\n  height: var(--chat-messages-height, inherit);\n}\n\n.messages {\n  box-sizing: border-box;\n  font-size: inherit;\n  font-size: var(--messages-font-size, inherit);\n  height: 100%;\n  height: var(--messages-height);\n  overflow-y: auto;\n  padding: 20px;\n  width: 100%;\n  width: var(--messages-width);\n}\n";
+  styleInject(css$6);
 
-  var _templateObject$9 = taggedTemplateLiteral(['<div class=\'messages\'></div>'], ['<div class=\'messages\'></div>']),
-      _templateObject2$4 = taggedTemplateLiteral(['\n      <div class=\'messages\'>\n        <div class=\'messages-inner\'>\n          ', '\n        </div>\n      </div>\n    '], ['\n      <div class=\'messages\'>\n        <div class=\'messages-inner\'>\n          ', '\n        </div>\n      </div>\n    ']);
+  var _templateObject$d = taggedTemplateLiteral(['<div class=\'messages-inner\'>\n        ', '\n      </div>'], ['<div class=\'messages-inner\'>\n        ', '\n      </div>']),
+      _templateObject2$9 = taggedTemplateLiteral(['<div class=\'messages\'>', '</div>'], ['<div class=\'messages\'>', '</div>']);
 
   var MessagesElement = function (_LitElement) {
     inherits(MessagesElement, _LitElement);
@@ -20253,18 +25085,26 @@
         return messageExtended({ message: message });
       }
     }, {
-      key: '_render',
-      value: function _render(_ref) {
+      key: '__renderMessages',
+      value: function __renderMessages(list) {
         var _this2 = this;
 
+        return list.map(function (it, i, arr) {
+          var aggregated = !i ? false : arr[i].user_id === arr[i - 1].user_id;
+          var message = _extends({}, it, { current_user_id: _this2.user });
+
+          return _this2.__renderMessage(aggregated ? _extends({}, message, { aggregated: aggregated }) : message);
+        });
+      }
+    }, {
+      key: '_render',
+      value: function _render(_ref) {
         var _ref$list = _ref.list,
             list = _ref$list === undefined ? [] : _ref$list;
 
-        if (!list.length) return html$1(_templateObject$9);
+        var content = !list.length ? null : html$1(_templateObject$d, this.__renderMessages(list));
 
-        return html$1(_templateObject2$4, list.map(function (it) {
-          return _this2.__renderMessage(it);
-        }));
+        return html$1(_templateObject2$9, content);
       }
     }, {
       key: '_didRender',
@@ -20285,68 +25125,12 @@
     return MessagesElement;
   }(LitElement);
 
-  withStyle(html$1)(MessagesElement, css$5, css$4, css$3);
+  withStyle(html$1)(MessagesElement, css$6, css$5, css$4);
 
-  var _templateObject$a = taggedTemplateLiteral(['<svg id="warninig" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm0 2A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>\n    <path d="M9 9H7V4h2zM9 12H7v-2h2z"/>\n  </g>\n</svg>'], ['<svg id="warninig" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm0 2A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>\n    <path d="M9 9H7V4h2zM9 12H7v-2h2z"/>\n  </g>\n</svg>']),
-      _templateObject2$5 = taggedTemplateLiteral(['<svg id="delete" xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M9 7h2v7H9zM5 7h2v7H5z"/>\n    <path fill-rule="nonzero" d="M3 5v11h10V5H3zM1 3h14v15H1V3z"/>\n    <path d="M4 0h8v5H4V0zm2 2v1h4V2H6z"/>\n    <path fill-rule="nonzero" d="M0 5h16V3H0z"/>\n  </g>\n</svg>'], ['<svg id="delete" xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M9 7h2v7H9zM5 7h2v7H5z"/>\n    <path fill-rule="nonzero" d="M3 5v11h10V5H3zM1 3h14v15H1V3z"/>\n    <path d="M4 0h8v5H4V0zm2 2v1h4V2H6z"/>\n    <path fill-rule="nonzero" d="M0 5h16V3H0z"/>\n  </g>\n</svg>']),
-      _templateObject3$2 = taggedTemplateLiteral(['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23859 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90912C1.30243 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81818 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM2 2.90912C2 2.40704 2.40704 2 2.90912 2H13.0909C13.593 2 14 2.40704 14 2.90912V10.1818C14 12.2905 12.2905 14 10.1818 14H5.81818C3.70947 14 2 12.2905 2 10.1818V2.90912Z" transform="translate(0 6)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.18188 2.64374C2.61658 2.3988 2.90906 1.94104 2.90906 1.41669C2.90906 0.634277 2.25781 0 1.45459 0C0.651245 0 0 0.634277 0 1.41669C0 1.94104 0.29248 2.39886 0.727295 2.6438V3.52277C0.727295 3.92444 1.05286 4.25 1.45459 4.25C1.8562 4.25 2.18188 3.92444 2.18188 3.52277V2.64374Z" transform="translate(6.54541 11.375)" fill="#B8B8B8"/>\n</svg>'], ['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23859 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90912C1.30243 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81818 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM2 2.90912C2 2.40704 2.40704 2 2.90912 2H13.0909C13.593 2 14 2.40704 14 2.90912V10.1818C14 12.2905 12.2905 14 10.1818 14H5.81818C3.70947 14 2 12.2905 2 10.1818V2.90912Z" transform="translate(0 6)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.18188 2.64374C2.61658 2.3988 2.90906 1.94104 2.90906 1.41669C2.90906 0.634277 2.25781 0 1.45459 0C0.651245 0 0 0.634277 0 1.41669C0 1.94104 0.29248 2.39886 0.727295 2.6438V3.52277C0.727295 3.92444 1.05286 4.25 1.45459 4.25C1.8562 4.25 2.18188 3.92444 2.18188 3.52277V2.64374Z" transform="translate(6.54541 11.375)" fill="#B8B8B8"/>\n</svg>']),
-      _templateObject4 = taggedTemplateLiteral(['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23853 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#48A1E6"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90906C1.30249 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81824 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM9.45447 6.79169C9.45447 7.31604 9.16199 7.7738 8.72729 8.01874V8.89777C8.72729 9.29944 8.40161 9.625 8 9.625C7.59827 9.625 7.27271 9.29944 7.27271 8.89777V8.0188C6.83789 7.77386 6.54541 7.31604 6.54541 6.79169C6.54541 6.00928 7.19666 5.375 8 5.375C8.80322 5.375 9.45447 6.00928 9.45447 6.79169Z" transform="translate(0 6)" fill="#48A1E6"/>\n</svg>'], ['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23853 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#48A1E6"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90906C1.30249 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81824 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM9.45447 6.79169C9.45447 7.31604 9.16199 7.7738 8.72729 8.01874V8.89777C8.72729 9.29944 8.40161 9.625 8 9.625C7.59827 9.625 7.27271 9.29944 7.27271 8.89777V8.0188C6.83789 7.77386 6.54541 7.31604 6.54541 6.79169C6.54541 6.00928 7.19666 5.375 8 5.375C8.80322 5.375 9.45447 6.00928 9.45447 6.79169Z" transform="translate(0 6)" fill="#48A1E6"/>\n</svg>']),
-      _templateObject5 = taggedTemplateLiteral(['<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="15" viewBox="0 0 16 15">\n  <defs>\n    <path id="a" d="M0 0h16v16H0z"/>\n  </defs>\n  <g fill="none" fill-rule="evenodd" transform="translate(0 -1)">\n    <mask id="b" fill="#fff">\n      <use xlink:href="#a"/>\n    </mask>\n    <path fill="#B8B8B8" fill-rule="nonzero" d="M6.121 2.485v12.172l1 1 1-1V2.485h-2zm-2-2h6v15l-3 3-3-3v-15z" mask="url(#b)" transform="rotate(45 7.121 9.485)"/>\n    <path fill="#B8B8B8" fill-rule="nonzero" d="M9 16v-2h7v2z" mask="url(#b)"/>\n  </g>\n</svg>'], ['<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="15" viewBox="0 0 16 15">\n  <defs>\n    <path id="a" d="M0 0h16v16H0z"/>\n  </defs>\n  <g fill="none" fill-rule="evenodd" transform="translate(0 -1)">\n    <mask id="b" fill="#fff">\n      <use xlink:href="#a"/>\n    </mask>\n    <path fill="#B8B8B8" fill-rule="nonzero" d="M6.121 2.485v12.172l1 1 1-1V2.485h-2zm-2-2h6v15l-3 3-3-3v-15z" mask="url(#b)" transform="rotate(45 7.121 9.485)"/>\n    <path fill="#B8B8B8" fill-rule="nonzero" d="M9 16v-2h7v2z" mask="url(#b)"/>\n  </g>\n</svg>']),
-      _templateObject6 = taggedTemplateLiteral(['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\n  <g fill="none" fill-rule="evenodd" transform="rotate(-90 12 12)">\n    <circle cx="12" cy="12" r="12" fill="#48A1E6"/>\n    <path fill="#FFF" fill-rule="nonzero" d="M10.2 8.649l.849-.849 4.024 4.024-4.024 4.025L10.2 15l3.176-3.176z"/>\n  </g>\n</svg>'], ['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\n  <g fill="none" fill-rule="evenodd" transform="rotate(-90 12 12)">\n    <circle cx="12" cy="12" r="12" fill="#48A1E6"/>\n    <path fill="#FFF" fill-rule="nonzero" d="M10.2 8.649l.849-.849 4.024 4.024-4.024 4.025L10.2 15l3.176-3.176z"/>\n  </g>\n</svg>']),
-      _templateObject7 = taggedTemplateLiteral(['<svg width="26" height="16" viewBox="0 0 26 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0 8C0 12.4182 3.58167 16 8 16C12.4183 16 16 12.4182 16 8C16 3.58179 12.4183 0 8 0C3.58167 0 0 3.58179 0 8ZM15 8C15 11.866 11.866 15 8 15C4.13403 15 1 11.866 1 8C1 4.13403 4.13403 1 8 1C11.866 1 15 4.13403 15 8Z" fill="#B8B8B8"/>\n<path d="M0.0684113 0.760408C-0.0678355 0.522532 0.00581659 0.213915 0.232567 0.0713954C0.458845 -0.0708268 0.752265 0.00601634 0.888225 0.243391C1.18372 0.759298 1.53889 0.996346 2 0.996346C2.46111 0.996346 2.81628 0.759298 3.11177 0.243391C3.24773 0.00601634 3.54116 -0.0708268 3.76743 0.0713954C3.99418 0.213915 4.06784 0.522532 3.93159 0.760408C3.46598 1.57332 2.8061 2 2 2C1.1939 2 0.534021 1.57332 0.0684113 0.760408Z" transform="translate(6 9)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1 2C1.55228 2 2 1.55228 2 1C2 0.447715 1.55228 0 1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2Z" transform="translate(4 6)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1 2C1.55228 2 2 1.55228 2 1C2 0.447715 1.55228 0 1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2Z" transform="translate(10 6)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0H3.5V3.5H0V4.5H3.5V8H4.5V4.5H8V3.5H4.5V0Z" transform="translate(18 4)" fill="#B8B8B8"/>\n</svg>\n'], ['<svg width="26" height="16" viewBox="0 0 26 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0 8C0 12.4182 3.58167 16 8 16C12.4183 16 16 12.4182 16 8C16 3.58179 12.4183 0 8 0C3.58167 0 0 3.58179 0 8ZM15 8C15 11.866 11.866 15 8 15C4.13403 15 1 11.866 1 8C1 4.13403 4.13403 1 8 1C11.866 1 15 4.13403 15 8Z" fill="#B8B8B8"/>\n<path d="M0.0684113 0.760408C-0.0678355 0.522532 0.00581659 0.213915 0.232567 0.0713954C0.458845 -0.0708268 0.752265 0.00601634 0.888225 0.243391C1.18372 0.759298 1.53889 0.996346 2 0.996346C2.46111 0.996346 2.81628 0.759298 3.11177 0.243391C3.24773 0.00601634 3.54116 -0.0708268 3.76743 0.0713954C3.99418 0.213915 4.06784 0.522532 3.93159 0.760408C3.46598 1.57332 2.8061 2 2 2C1.1939 2 0.534021 1.57332 0.0684113 0.760408Z" transform="translate(6 9)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1 2C1.55228 2 2 1.55228 2 1C2 0.447715 1.55228 0 1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2Z" transform="translate(4 6)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M1 2C1.55228 2 2 1.55228 2 1C2 0.447715 1.55228 0 1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2Z" transform="translate(10 6)" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0H3.5V3.5H0V4.5H3.5V8H4.5V4.5H8V3.5H4.5V0Z" transform="translate(18 4)" fill="#B8B8B8"/>\n</svg>\n']);
+  var _templateObject$e = taggedTemplateLiteral(['<wc-chat-reactions config=\'', '\' showcount></wc-chat-reactions>'], ['<wc-chat-reactions config=\'', '\' showcount></wc-chat-reactions>']);
 
-  var warning = html$1(_templateObject$a);
-
-  var del = html$1(_templateObject2$5);
-
-  var lock = html$1(_templateObject3$2);
-
-  var locked = html$1(_templateObject4);
-
-  var amend = html$1(_templateObject5);
-
-  var entry$1 = html$1(_templateObject6);
-
-  var smile = html$1(_templateObject7);
-
-  var _templateObject$b = taggedTemplateLiteral(['\n    <button\n      class$=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n  '], ['\n    <button\n      class$=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n  ']),
-      _templateObject2$6 = taggedTemplateLiteral(['\n    <button\n      class$=\'', '\'\n      disabled=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n'], ['\n    <button\n      class$=\'', '\'\n      disabled=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n']);
-
-  var actionImages = new Map([['message-delete', del], ['user-disable', lock], ['message-react', null]]);
-
-  var action = function action(_ref) {
-    var allowed = _ref.allowed,
-        children = _ref.children,
-        classname = _ref.classname,
-        disabled = _ref.disabled,
-        handler = _ref.handler,
-        message = _ref.message,
-        name = _ref.name;
-
-    var cls = classString(Object.assign({ 'action-subgroup-item': true }, name ? defineProperty({}, name, true) : {}, classname ? defineProperty({}, classname, true) : {}, disabled ? { disabled: true } : {}, allowed ? { allowed: true } : {}));
-
-    if (!allowed) return null;
-
-    return html$1(_templateObject$b, cls, function (e) {
-      return handler && handler(e, message);
-    }, children);
-  };
-
-  var reaction = function reaction(_ref4) {
-    var disabled = _ref4.disabled,
-        handler = _ref4.handler,
-        message = _ref4.message,
-        standalone = _ref4.standalone;
-
-    var cls = classString({
-      'reaction-add': true,
-      disabled: disabled,
-      standalone: standalone
-    });
-
-    return html$1(_templateObject2$6, cls, disabled, function (e) {
-      return handler && handler(e, { message: message });
-    }, smile);
+  var config = function config(message) {
+    return new Map([['thumbsup', { name: ':thumbsup', count: message.rating }]]);
   };
 
   var XMessagesElement = function (_MessagesElement) {
@@ -20360,52 +25144,47 @@
     createClass(XMessagesElement, [{
       key: '__renderMessage',
       value: function __renderMessage(message) {
-        return messageExtended({ message: message, children: this.__renderActions(_extends({}, message)) });
+        return messageExtended({
+          message: message,
+          actions: this.__renderActions(_extends({}, message)),
+          children: html$1(_templateObject$e, config(message))
+        });
       }
     }, {
       key: '__renderActions',
       value: function __renderActions(data) {
         var _this2 = this;
 
-        var children = [];
-        var reactions = [];
+        var children = new Map();
+        var reactions = new Map();
+        var actionsOpts = new Map();
 
         var isAllowed = function isAllowed(action$$1, d) {
           return d.current_user_id !== d.user_id || d.current_user_id === d.user_id && action$$1.self;
         };
 
-        var hasOnlyReactions = this.actionsallowed.filter(function (key) {
-          return key !== 'message-reaction';
-        }).filter(function (key) {
-          return isAllowed(_this2._actions.get(key) || {}, data);
-        });
-
         this.actionsallowed.forEach(function (key) {
           var _action = _this2._actions.get(key) || {};
+          var actionOpts = {
+            message: data,
+            allowed: isAllowed(_action, data) || undefined,
+            children: actionImages.get(key),
+            handler: function handler(e, detail) {
+              _this2.dispatchEvent(new CustomEvent(key, { detail: detail }));
+            }
+          };
+
+          actionsOpts.set(key, actionOpts);
 
           if (key === 'message-reaction') {
-            reactions = reactions.concat(reaction({
-              message: data,
-              allowed: isAllowed(_action, data) || undefined,
-              children: actionImages.get(key),
-              standalone: hasOnlyReactions.length === 0,
-              handler: function handler(e, detail) {
-                _this2.dispatchEvent(new CustomEvent(key, { detail: detail }));
-              }
-            }));
+            reactions.set(key, reaction(actionOpts));
           } else {
-            children = children.concat(action({
-              message: data,
-              allowed: isAllowed(_action, data) || undefined,
-              children: actionImages.get(key),
-              handler: function handler(e, detail) {
-                _this2.dispatchEvent(new CustomEvent(key, { detail: detail }));
-              }
-            }));
+            children.set(key, action(actionOpts));
           }
         });
 
-        return actions({ children: children, reactions: reactions });
+        // eslint-disable-next-line object-curly-newline
+        return actions({ children: children, reactions: reactions, actions: actionsOpts });
       }
     }, {
       key: '_actions',
@@ -20424,7 +25203,7 @@
     return XMessagesElement;
   }(MessagesElement);
 
-  var Messages = withStyle(html$1)(XMessagesElement, css$5, css$4, css$3);
+  var Messages = withStyle(html$1)(XMessagesElement, css$6, css$5, css$4);
 
   /**
    * Copyright (c) 2013-present, Facebook, Inc.
@@ -20487,10 +25266,10 @@
     };
   };
 
-  var css$6 = ":host {\n  box-sizing: content-box;\n  box-sizing: var(--chat-scrollable-box-sizing, content-box);\n  display: block;\n  display: var(--chat-scrollable-display, block);\n  height: 100%;\n  height: var(--chat-scrollable-height, 100%);\n  padding: 0;\n  padding: var(--chat-scrollable-padding, 0);\n}\n\n.scrollable {\n  height: 100%;\n  overflow-y: scroll;\n}\n";
-  styleInject(css$6);
+  var css$7 = ":host {\n  box-sizing: content-box;\n  box-sizing: var(--chat-scrollable-box-sizing, content-box);\n  display: block;\n  display: var(--chat-scrollable-display, block);\n  height: 100%;\n  height: var(--chat-scrollable-height, 100%);\n  padding: 0;\n  padding: var(--chat-scrollable-padding, 0);\n}\n\n.scrollable {\n  height: 100%;\n  overflow-y: scroll;\n}\n";
+  styleInject(css$7);
 
-  var _templateObject$c = taggedTemplateLiteral(['\n      <div class=\'scrollable\' on-scroll=\'', '\'>\n        ', '\n      </div>\n    '], ['\n      <div class=\'scrollable\' on-scroll=\'', '\'>\n        ', '\n      </div>\n    ']);
+  var _templateObject$f = taggedTemplateLiteral(['\n      <div class=\'scrollable\' on-scroll=\'', '\'>\n        ', '\n      </div>\n    '], ['\n      <div class=\'scrollable\' on-scroll=\'', '\'>\n        ', '\n      </div>\n    ']);
 
   var debug = Debug('wc:scrollable');
 
@@ -20641,7 +25420,7 @@
     }, {
       key: '_render',
       value: function _render() {
-        return html$1(_templateObject$c, this.__boundScrollHandler, this.children);
+        return html$1(_templateObject$f, this.__boundScrollHandler, this.children);
       }
     }, {
       key: '_rootElement',
@@ -20662,4750 +25441,13 @@
     return Scrollable;
   }(LitElement);
 
-  var Scroll = withStyle(html$1)(Scrollable, css$6);
+  var Scroll = withStyle(html$1)(Scrollable, css$7);
 
-  var _templateObject$d = taggedTemplateLiteral(['<style>', '</style>'], ['<style>', '</style>']),
-      _templateObject2$7 = taggedTemplateLiteral(['\n      ', '\n      ', '\n    '], ['\n      ', '\n      ', '\n    ']);
-
-  var withStyle$1 = function withStyle(base) {
-    for (var _len = arguments.length, styles = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      styles[_key - 1] = arguments[_key];
-    }
-
-    return function (_base) {
-      inherits(_class, _base);
-
-      function _class() {
-        classCallCheck(this, _class);
-        return possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
-      }
-
-      createClass(_class, [{
-        key: '_renderStyles',
-        value: function _renderStyles() {
-          for (var _len2 = arguments.length, argv = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-            argv[_key2] = arguments[_key2];
-          }
-
-          // eslint-disable-line class-methods-use-this
-          return html$1(_templateObject$d, argv.join(' '));
-        }
-      }, {
-        key: '_render',
-        value: function _render(props) {
-          return html$1(_templateObject2$7, this._renderStyles.apply(this, styles), get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), '_render', this).call(this, props));
-        }
-      }]);
-      return _class;
-    }(base);
-  };
-
-  var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-  /**
-   * lodash (Custom Build) <https://lodash.com/>
-   * Build: `lodash modularize exports="npm" -o ./`
-   * Copyright jQuery Foundation and other contributors <https://jquery.org/>
-   * Released under MIT license <https://lodash.com/license>
-   * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-   * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-   */
-
-  /** Used as references for various `Number` constants. */
-  var MAX_SAFE_INTEGER = 9007199254740991;
-
-  /** `Object#toString` result references. */
-  var argsTag = '[object Arguments]',
-      funcTag = '[object Function]',
-      genTag = '[object GeneratorFunction]',
-      mapTag = '[object Map]',
-      objectTag = '[object Object]',
-      promiseTag = '[object Promise]',
-      setTag = '[object Set]',
-      stringTag = '[object String]',
-      weakMapTag = '[object WeakMap]';
-
-  var dataViewTag = '[object DataView]';
-
-  /**
-   * Used to match `RegExp`
-   * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
-   */
-  var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-
-  /** Used to detect host constructors (Safari). */
-  var reIsHostCtor = /^\[object .+?Constructor\]$/;
-
-  /** Used to detect unsigned integer values. */
-  var reIsUint = /^(?:0|[1-9]\d*)$/;
-
-  /** Used to compose unicode character classes. */
-  var rsAstralRange = '\\ud800-\\udfff',
-      rsComboMarksRange = '\\u0300-\\u036f\\ufe20-\\ufe23',
-      rsComboSymbolsRange = '\\u20d0-\\u20f0',
-      rsVarRange = '\\ufe0e\\ufe0f';
-
-  /** Used to compose unicode capture groups. */
-  var rsAstral = '[' + rsAstralRange + ']',
-      rsCombo = '[' + rsComboMarksRange + rsComboSymbolsRange + ']',
-      rsFitz = '\\ud83c[\\udffb-\\udfff]',
-      rsModifier = '(?:' + rsCombo + '|' + rsFitz + ')',
-      rsNonAstral = '[^' + rsAstralRange + ']',
-      rsRegional = '(?:\\ud83c[\\udde6-\\uddff]){2}',
-      rsSurrPair = '[\\ud800-\\udbff][\\udc00-\\udfff]',
-      rsZWJ = '\\u200d';
-
-  /** Used to compose unicode regexes. */
-  var reOptMod = rsModifier + '?',
-      rsOptVar = '[' + rsVarRange + ']?',
-      rsOptJoin = '(?:' + rsZWJ + '(?:' + [rsNonAstral, rsRegional, rsSurrPair].join('|') + ')' + rsOptVar + reOptMod + ')*',
-      rsSeq = rsOptVar + reOptMod + rsOptJoin,
-      rsSymbol = '(?:' + [rsNonAstral + rsCombo + '?', rsCombo, rsRegional, rsSurrPair, rsAstral].join('|') + ')';
-
-  /** Used to match [string symbols](https://mathiasbynens.be/notes/javascript-unicode). */
-  var reUnicode = RegExp(rsFitz + '(?=' + rsFitz + ')|' + rsSymbol + rsSeq, 'g');
-
-  /** Used to detect strings with [zero-width joiners or code points from the astral planes](http://eev.ee/blog/2015/09/12/dark-corners-of-unicode/). */
-  var reHasUnicode = RegExp('[' + rsZWJ + rsAstralRange + rsComboMarksRange + rsComboSymbolsRange + rsVarRange + ']');
-
-  /** Detect free variable `global` from Node.js. */
-  var freeGlobal = _typeof(commonjsGlobal) == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
-
-  /** Detect free variable `self`. */
-  var freeSelf = (typeof self === 'undefined' ? 'undefined' : _typeof(self)) == 'object' && self && self.Object === Object && self;
-
-  /** Used as a reference to the global object. */
-  var root$1 = freeGlobal || freeSelf || Function('return this')();
-
-  /**
-   * A specialized version of `_.map` for arrays without support for iteratee
-   * shorthands.
-   *
-   * @private
-   * @param {Array} [array] The array to iterate over.
-   * @param {Function} iteratee The function invoked per iteration.
-   * @returns {Array} Returns the new mapped array.
-   */
-  function arrayMap(array, iteratee) {
-    var index = -1,
-        length = array ? array.length : 0,
-        result = Array(length);
-
-    while (++index < length) {
-      result[index] = iteratee(array[index], index, array);
-    }
-    return result;
-  }
-
-  /**
-   * Converts an ASCII `string` to an array.
-   *
-   * @private
-   * @param {string} string The string to convert.
-   * @returns {Array} Returns the converted array.
-   */
-  function asciiToArray(string) {
-    return string.split('');
-  }
-
-  /**
-   * The base implementation of `_.times` without support for iteratee shorthands
-   * or max array length checks.
-   *
-   * @private
-   * @param {number} n The number of times to invoke `iteratee`.
-   * @param {Function} iteratee The function invoked per iteration.
-   * @returns {Array} Returns the array of results.
-   */
-  function baseTimes(n, iteratee) {
-    var index = -1,
-        result = Array(n);
-
-    while (++index < n) {
-      result[index] = iteratee(index);
-    }
-    return result;
-  }
-
-  /**
-   * The base implementation of `_.values` and `_.valuesIn` which creates an
-   * array of `object` property values corresponding to the property names
-   * of `props`.
-   *
-   * @private
-   * @param {Object} object The object to query.
-   * @param {Array} props The property names to get values for.
-   * @returns {Object} Returns the array of property values.
-   */
-  function baseValues(object, props) {
-    return arrayMap(props, function (key) {
-      return object[key];
-    });
-  }
-
-  /**
-   * Gets the value at `key` of `object`.
-   *
-   * @private
-   * @param {Object} [object] The object to query.
-   * @param {string} key The key of the property to get.
-   * @returns {*} Returns the property value.
-   */
-  function getValue$1(object, key) {
-    return object == null ? undefined : object[key];
-  }
-
-  /**
-   * Checks if `string` contains Unicode symbols.
-   *
-   * @private
-   * @param {string} string The string to inspect.
-   * @returns {boolean} Returns `true` if a symbol is found, else `false`.
-   */
-  function hasUnicode(string) {
-    return reHasUnicode.test(string);
-  }
-
-  /**
-   * Checks if `value` is a host object in IE < 9.
-   *
-   * @private
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
-   */
-  function isHostObject(value) {
-    // Many host objects are `Object` objects that can coerce to strings
-    // despite having improperly defined `toString` methods.
-    var result = false;
-    if (value != null && typeof value.toString != 'function') {
-      try {
-        result = !!(value + '');
-      } catch (e) {}
-    }
-    return result;
-  }
-
-  /**
-   * Converts `iterator` to an array.
-   *
-   * @private
-   * @param {Object} iterator The iterator to convert.
-   * @returns {Array} Returns the converted array.
-   */
-  function iteratorToArray(iterator) {
-    var data,
-        result = [];
-
-    while (!(data = iterator.next()).done) {
-      result.push(data.value);
-    }
-    return result;
-  }
-
-  /**
-   * Converts `map` to its key-value pairs.
-   *
-   * @private
-   * @param {Object} map The map to convert.
-   * @returns {Array} Returns the key-value pairs.
-   */
-  function mapToArray(map) {
-    var index = -1,
-        result = Array(map.size);
-
-    map.forEach(function (value, key) {
-      result[++index] = [key, value];
-    });
-    return result;
-  }
-
-  /**
-   * Creates a unary function that invokes `func` with its argument transformed.
-   *
-   * @private
-   * @param {Function} func The function to wrap.
-   * @param {Function} transform The argument transform.
-   * @returns {Function} Returns the new function.
-   */
-  function overArg(func, transform) {
-    return function (arg) {
-      return func(transform(arg));
-    };
-  }
-
-  /**
-   * Converts `set` to an array of its values.
-   *
-   * @private
-   * @param {Object} set The set to convert.
-   * @returns {Array} Returns the values.
-   */
-  function setToArray(set$$1) {
-    var index = -1,
-        result = Array(set$$1.size);
-
-    set$$1.forEach(function (value) {
-      result[++index] = value;
-    });
-    return result;
-  }
-
-  /**
-   * Converts `string` to an array.
-   *
-   * @private
-   * @param {string} string The string to convert.
-   * @returns {Array} Returns the converted array.
-   */
-  function stringToArray(string) {
-    return hasUnicode(string) ? unicodeToArray(string) : asciiToArray(string);
-  }
-
-  /**
-   * Converts a Unicode `string` to an array.
-   *
-   * @private
-   * @param {string} string The string to convert.
-   * @returns {Array} Returns the converted array.
-   */
-  function unicodeToArray(string) {
-    return string.match(reUnicode) || [];
-  }
-
-  /** Used for built-in method references. */
-  var funcProto = Function.prototype,
-      objectProto = Object.prototype;
-
-  /** Used to detect overreaching core-js shims. */
-  var coreJsData = root$1['__core-js_shared__'];
-
-  /** Used to detect methods masquerading as native. */
-  var maskSrcKey = function () {
-    var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
-    return uid ? 'Symbol(src)_1.' + uid : '';
-  }();
-
-  /** Used to resolve the decompiled source of functions. */
-  var funcToString = funcProto.toString;
-
-  /** Used to check objects for own properties. */
-  var hasOwnProperty = objectProto.hasOwnProperty;
-
-  /**
-   * Used to resolve the
-   * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
-   * of values.
-   */
-  var objectToString = objectProto.toString;
-
-  /** Used to detect if a method is native. */
-  var reIsNative = RegExp('^' + funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&').replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$');
-
-  /** Built-in value references. */
-  var _Symbol = root$1.Symbol,
-      iteratorSymbol = _Symbol ? _Symbol.iterator : undefined,
-      propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
-  /* Built-in method references for those with the same name as other `lodash` methods. */
-  var nativeKeys = overArg(Object.keys, Object);
-
-  /* Built-in method references that are verified to be native. */
-  var DataView = getNative(root$1, 'DataView'),
-      Map$2 = getNative(root$1, 'Map'),
-      Promise$1 = getNative(root$1, 'Promise'),
-      Set$1 = getNative(root$1, 'Set'),
-      WeakMap$1 = getNative(root$1, 'WeakMap');
-
-  /** Used to detect maps, sets, and weakmaps. */
-  var dataViewCtorString = toSource(DataView),
-      mapCtorString = toSource(Map$2),
-      promiseCtorString = toSource(Promise$1),
-      setCtorString = toSource(Set$1),
-      weakMapCtorString = toSource(WeakMap$1);
-
-  /**
-   * Creates an array of the enumerable property names of the array-like `value`.
-   *
-   * @private
-   * @param {*} value The value to query.
-   * @param {boolean} inherited Specify returning inherited property names.
-   * @returns {Array} Returns the array of property names.
-   */
-  function arrayLikeKeys(value, inherited) {
-    // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
-    // Safari 9 makes `arguments.length` enumerable in strict mode.
-    var result = isArray(value) || isArguments(value) ? baseTimes(value.length, String) : [];
-
-    var length = result.length,
-        skipIndexes = !!length;
-
-    for (var key in value) {
-      if ((inherited || hasOwnProperty.call(value, key)) && !(skipIndexes && (key == 'length' || isIndex(key, length)))) {
-        result.push(key);
-      }
-    }
-    return result;
-  }
-
-  /**
-   * The base implementation of `getTag`.
-   *
-   * @private
-   * @param {*} value The value to query.
-   * @returns {string} Returns the `toStringTag`.
-   */
-  function baseGetTag(value) {
-    return objectToString.call(value);
-  }
-
-  /**
-   * The base implementation of `_.isNative` without bad shim checks.
-   *
-   * @private
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is a native function,
-   *  else `false`.
-   */
-  function baseIsNative(value) {
-    if (!isObject(value) || isMasked(value)) {
-      return false;
-    }
-    var pattern = isFunction(value) || isHostObject(value) ? reIsNative : reIsHostCtor;
-    return pattern.test(toSource(value));
-  }
-
-  /**
-   * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
-   *
-   * @private
-   * @param {Object} object The object to query.
-   * @returns {Array} Returns the array of property names.
-   */
-  function baseKeys(object) {
-    if (!isPrototype(object)) {
-      return nativeKeys(object);
-    }
-    var result = [];
-    for (var key in Object(object)) {
-      if (hasOwnProperty.call(object, key) && key != 'constructor') {
-        result.push(key);
-      }
-    }
-    return result;
-  }
-
-  /**
-   * Copies the values of `source` to `array`.
-   *
-   * @private
-   * @param {Array} source The array to copy values from.
-   * @param {Array} [array=[]] The array to copy values to.
-   * @returns {Array} Returns `array`.
-   */
-  function copyArray(source, array) {
-    var index = -1,
-        length = source.length;
-
-    array || (array = Array(length));
-    while (++index < length) {
-      array[index] = source[index];
-    }
-    return array;
-  }
-
-  /**
-   * Gets the native function at `key` of `object`.
-   *
-   * @private
-   * @param {Object} object The object to query.
-   * @param {string} key The key of the method to get.
-   * @returns {*} Returns the function if it's native, else `undefined`.
-   */
-  function getNative(object, key) {
-    var value = getValue$1(object, key);
-    return baseIsNative(value) ? value : undefined;
-  }
-
-  /**
-   * Gets the `toStringTag` of `value`.
-   *
-   * @private
-   * @param {*} value The value to query.
-   * @returns {string} Returns the `toStringTag`.
-   */
-  var getTag = baseGetTag;
-
-  // Fallback for data views, maps, sets, and weak maps in IE 11,
-  // for data views in Edge < 14, and promises in Node.js.
-  if (DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag || Map$2 && getTag(new Map$2()) != mapTag || Promise$1 && getTag(Promise$1.resolve()) != promiseTag || Set$1 && getTag(new Set$1()) != setTag || WeakMap$1 && getTag(new WeakMap$1()) != weakMapTag) {
-    getTag = function getTag(value) {
-      var result = objectToString.call(value),
-          Ctor = result == objectTag ? value.constructor : undefined,
-          ctorString = Ctor ? toSource(Ctor) : undefined;
-
-      if (ctorString) {
-        switch (ctorString) {
-          case dataViewCtorString:
-            return dataViewTag;
-          case mapCtorString:
-            return mapTag;
-          case promiseCtorString:
-            return promiseTag;
-          case setCtorString:
-            return setTag;
-          case weakMapCtorString:
-            return weakMapTag;
-        }
-      }
-      return result;
-    };
-  }
-
-  /**
-   * Checks if `value` is a valid array-like index.
-   *
-   * @private
-   * @param {*} value The value to check.
-   * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
-   * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
-   */
-  function isIndex(value, length) {
-    length = length == null ? MAX_SAFE_INTEGER : length;
-    return !!length && (typeof value == 'number' || reIsUint.test(value)) && value > -1 && value % 1 == 0 && value < length;
-  }
-
-  /**
-   * Checks if `func` has its source masked.
-   *
-   * @private
-   * @param {Function} func The function to check.
-   * @returns {boolean} Returns `true` if `func` is masked, else `false`.
-   */
-  function isMasked(func) {
-    return !!maskSrcKey && maskSrcKey in func;
-  }
-
-  /**
-   * Checks if `value` is likely a prototype object.
-   *
-   * @private
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
-   */
-  function isPrototype(value) {
-    var Ctor = value && value.constructor,
-        proto = typeof Ctor == 'function' && Ctor.prototype || objectProto;
-
-    return value === proto;
-  }
-
-  /**
-   * Converts `func` to its source code.
-   *
-   * @private
-   * @param {Function} func The function to process.
-   * @returns {string} Returns the source code.
-   */
-  function toSource(func) {
-    if (func != null) {
-      try {
-        return funcToString.call(func);
-      } catch (e) {}
-      try {
-        return func + '';
-      } catch (e) {}
-    }
-    return '';
-  }
-
-  /**
-   * Checks if `value` is likely an `arguments` object.
-   *
-   * @static
-   * @memberOf _
-   * @since 0.1.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is an `arguments` object,
-   *  else `false`.
-   * @example
-   *
-   * _.isArguments(function() { return arguments; }());
-   * // => true
-   *
-   * _.isArguments([1, 2, 3]);
-   * // => false
-   */
-  function isArguments(value) {
-    // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
-    return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') && (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);
-  }
-
-  /**
-   * Checks if `value` is classified as an `Array` object.
-   *
-   * @static
-   * @memberOf _
-   * @since 0.1.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is an array, else `false`.
-   * @example
-   *
-   * _.isArray([1, 2, 3]);
-   * // => true
-   *
-   * _.isArray(document.body.children);
-   * // => false
-   *
-   * _.isArray('abc');
-   * // => false
-   *
-   * _.isArray(_.noop);
-   * // => false
-   */
-  var isArray = Array.isArray;
-
-  /**
-   * Checks if `value` is array-like. A value is considered array-like if it's
-   * not a function and has a `value.length` that's an integer greater than or
-   * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
-   *
-   * @static
-   * @memberOf _
-   * @since 4.0.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
-   * @example
-   *
-   * _.isArrayLike([1, 2, 3]);
-   * // => true
-   *
-   * _.isArrayLike(document.body.children);
-   * // => true
-   *
-   * _.isArrayLike('abc');
-   * // => true
-   *
-   * _.isArrayLike(_.noop);
-   * // => false
-   */
-  function isArrayLike$1(value) {
-    return value != null && isLength(value.length) && !isFunction(value);
-  }
-
-  /**
-   * This method is like `_.isArrayLike` except that it also checks if `value`
-   * is an object.
-   *
-   * @static
-   * @memberOf _
-   * @since 4.0.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is an array-like object,
-   *  else `false`.
-   * @example
-   *
-   * _.isArrayLikeObject([1, 2, 3]);
-   * // => true
-   *
-   * _.isArrayLikeObject(document.body.children);
-   * // => true
-   *
-   * _.isArrayLikeObject('abc');
-   * // => false
-   *
-   * _.isArrayLikeObject(_.noop);
-   * // => false
-   */
-  function isArrayLikeObject(value) {
-    return isObjectLike(value) && isArrayLike$1(value);
-  }
-
-  /**
-   * Checks if `value` is classified as a `Function` object.
-   *
-   * @static
-   * @memberOf _
-   * @since 0.1.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is a function, else `false`.
-   * @example
-   *
-   * _.isFunction(_);
-   * // => true
-   *
-   * _.isFunction(/abc/);
-   * // => false
-   */
-  function isFunction(value) {
-    // The use of `Object#toString` avoids issues with the `typeof` operator
-    // in Safari 8-9 which returns 'object' for typed array and other constructors.
-    var tag = isObject(value) ? objectToString.call(value) : '';
-    return tag == funcTag || tag == genTag;
-  }
-
-  /**
-   * Checks if `value` is a valid array-like length.
-   *
-   * **Note:** This method is loosely based on
-   * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
-   *
-   * @static
-   * @memberOf _
-   * @since 4.0.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-   * @example
-   *
-   * _.isLength(3);
-   * // => true
-   *
-   * _.isLength(Number.MIN_VALUE);
-   * // => false
-   *
-   * _.isLength(Infinity);
-   * // => false
-   *
-   * _.isLength('3');
-   * // => false
-   */
-  function isLength(value) {
-    return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-  }
-
-  /**
-   * Checks if `value` is the
-   * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
-   * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-   *
-   * @static
-   * @memberOf _
-   * @since 0.1.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-   * @example
-   *
-   * _.isObject({});
-   * // => true
-   *
-   * _.isObject([1, 2, 3]);
-   * // => true
-   *
-   * _.isObject(_.noop);
-   * // => true
-   *
-   * _.isObject(null);
-   * // => false
-   */
-  function isObject(value) {
-    var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
-    return !!value && (type == 'object' || type == 'function');
-  }
-
-  /**
-   * Checks if `value` is object-like. A value is object-like if it's not `null`
-   * and has a `typeof` result of "object".
-   *
-   * @static
-   * @memberOf _
-   * @since 4.0.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-   * @example
-   *
-   * _.isObjectLike({});
-   * // => true
-   *
-   * _.isObjectLike([1, 2, 3]);
-   * // => true
-   *
-   * _.isObjectLike(_.noop);
-   * // => false
-   *
-   * _.isObjectLike(null);
-   * // => false
-   */
-  function isObjectLike(value) {
-    return !!value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) == 'object';
-  }
-
-  /**
-   * Checks if `value` is classified as a `String` primitive or object.
-   *
-   * @static
-   * @since 0.1.0
-   * @memberOf _
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is a string, else `false`.
-   * @example
-   *
-   * _.isString('abc');
-   * // => true
-   *
-   * _.isString(1);
-   * // => false
-   */
-  function isString(value) {
-    return typeof value == 'string' || !isArray(value) && isObjectLike(value) && objectToString.call(value) == stringTag;
-  }
-
-  /**
-   * Converts `value` to an array.
-   *
-   * @static
-   * @since 0.1.0
-   * @memberOf _
-   * @category Lang
-   * @param {*} value The value to convert.
-   * @returns {Array} Returns the converted array.
-   * @example
-   *
-   * _.toArray({ 'a': 1, 'b': 2 });
-   * // => [1, 2]
-   *
-   * _.toArray('abc');
-   * // => ['a', 'b', 'c']
-   *
-   * _.toArray(1);
-   * // => []
-   *
-   * _.toArray(null);
-   * // => []
-   */
-  function toArray$1(value) {
-    if (!value) {
-      return [];
-    }
-    if (isArrayLike$1(value)) {
-      return isString(value) ? stringToArray(value) : copyArray(value);
-    }
-    if (iteratorSymbol && value[iteratorSymbol]) {
-      return iteratorToArray(value[iteratorSymbol]());
-    }
-    var tag = getTag(value),
-        func = tag == mapTag ? mapToArray : tag == setTag ? setToArray : values;
-
-    return func(value);
-  }
-
-  /**
-   * Creates an array of the own enumerable property names of `object`.
-   *
-   * **Note:** Non-object values are coerced to objects. See the
-   * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
-   * for more details.
-   *
-   * @static
-   * @since 0.1.0
-   * @memberOf _
-   * @category Object
-   * @param {Object} object The object to query.
-   * @returns {Array} Returns the array of property names.
-   * @example
-   *
-   * function Foo() {
-   *   this.a = 1;
-   *   this.b = 2;
-   * }
-   *
-   * Foo.prototype.c = 3;
-   *
-   * _.keys(new Foo);
-   * // => ['a', 'b'] (iteration order is not guaranteed)
-   *
-   * _.keys('hi');
-   * // => ['0', '1']
-   */
-  function keys(object) {
-    return isArrayLike$1(object) ? arrayLikeKeys(object) : baseKeys(object);
-  }
-
-  /**
-   * Creates an array of the own enumerable string keyed property values of `object`.
-   *
-   * **Note:** Non-object values are coerced to objects.
-   *
-   * @static
-   * @since 0.1.0
-   * @memberOf _
-   * @category Object
-   * @param {Object} object The object to query.
-   * @returns {Array} Returns the array of property values.
-   * @example
-   *
-   * function Foo() {
-   *   this.a = 1;
-   *   this.b = 2;
-   * }
-   *
-   * Foo.prototype.c = 3;
-   *
-   * _.values(new Foo);
-   * // => [1, 2] (iteration order is not guaranteed)
-   *
-   * _.values('hi');
-   * // => ['h', 'i']
-   */
-  function values(object) {
-    return object ? baseValues(object, keys(object)) : [];
-  }
-
-  var lodash_toarray = toArray$1;
-
-  var interrobang = "⁉️";
-  var tm = "™️";
-  var information_source = "ℹ️";
-  var left_right_arrow = "↔️";
-  var arrow_up_down = "↕️";
-  var arrow_upper_left = "↖️";
-  var arrow_upper_right = "↗️";
-  var arrow_lower_right = "↘️";
-  var arrow_lower_left = "↙️";
-  var keyboard = "⌨";
-  var sunny = "☀️";
-  var cloud = "☁️";
-  var umbrella = "☔️";
-  var showman = "☃";
-  var comet = "☄";
-  var ballot_box_with_check = "☑️";
-  var coffee = "☕️";
-  var shamrock = "☘";
-  var skull_and_crossbones = "☠";
-  var radioactive_sign = "☢";
-  var biohazard_sign = "☣";
-  var orthodox_cross = "☦";
-  var wheel_of_dharma = "☸";
-  var white_frowning_face = "☹";
-  var aries = "♈️";
-  var taurus = "♉️";
-  var sagittarius = "♐️";
-  var capricorn = "♑️";
-  var aquarius = "♒️";
-  var pisces = "♓️";
-  var spades = "♠️";
-  var clubs = "♣️";
-  var hearts = "♥️";
-  var diamonds = "♦️";
-  var hotsprings = "♨️";
-  var hammer_and_pick = "⚒";
-  var anchor = "⚓️";
-  var crossed_swords = "⚔";
-  var scales = "⚖";
-  var alembic = "⚗";
-  var gear = "⚙";
-  var scissors = "✂️";
-  var white_check_mark = "✅";
-  var airplane = "✈️";
-  var email = "✉️";
-  var envelope = "✉️";
-  var black_nib = "✒️";
-  var heavy_check_mark = "✔️";
-  var heavy_multiplication_x = "✖️";
-  var star_of_david = "✡";
-  var sparkles = "✨";
-  var eight_spoked_asterisk = "✳️";
-  var eight_pointed_black_star = "✴️";
-  var snowflake = "❄️";
-  var sparkle = "❇️";
-  var question = "❓";
-  var grey_question = "❔";
-  var grey_exclamation = "❕";
-  var exclamation = "❗️";
-  var heavy_exclamation_mark = "❗️";
-  var heavy_heart_exclamation_mark_ornament = "❣";
-  var heart = "❤️";
-  var heavy_plus_sign = "➕";
-  var heavy_minus_sign = "➖";
-  var heavy_division_sign = "➗";
-  var arrow_heading_up = "⤴️";
-  var arrow_heading_down = "⤵️";
-  var wavy_dash = "〰️";
-  var congratulations = "㊗️";
-  var secret = "㊙️";
-  var copyright = "©️";
-  var registered = "®️";
-  var bangbang = "‼️";
-  var leftwards_arrow_with_hook = "↩️";
-  var arrow_right_hook = "↪️";
-  var watch = "⌚️";
-  var hourglass = "⌛️";
-  var fast_forward = "⏩";
-  var rewind = "⏪";
-  var arrow_double_up = "⏫";
-  var arrow_double_down = "⏬";
-  var black_right_pointing_double_triangle_with_vertical_bar = "⏭";
-  var black_left_pointing_double_triangle_with_vertical_bar = "⏮";
-  var black_right_pointing_triangle_with_double_vertical_bar = "⏯";
-  var alarm_clock = "⏰";
-  var stopwatch = "⏱";
-  var timer_clock = "⏲";
-  var hourglass_flowing_sand = "⏳";
-  var double_vertical_bar = "⏸";
-  var black_square_for_stop = "⏹";
-  var black_circle_for_record = "⏺";
-  var m = "Ⓜ️";
-  var black_small_square = "▪️";
-  var white_small_square = "▫️";
-  var arrow_forward = "▶️";
-  var arrow_backward = "◀️";
-  var white_medium_square = "◻️";
-  var black_medium_square = "◼️";
-  var white_medium_small_square = "◽️";
-  var black_medium_small_square = "◾️";
-  var phone = "☎️";
-  var telephone = "☎️";
-  var point_up = "☝️";
-  var star_and_crescent = "☪";
-  var peace_symbol = "☮";
-  var yin_yang = "☯";
-  var relaxed = "☺️";
-  var gemini = "♊️";
-  var cancer = "♋️";
-  var leo = "♌️";
-  var virgo = "♍️";
-  var libra = "♎️";
-  var scorpius = "♏️";
-  var recycle = "♻️";
-  var wheelchair = "♿️";
-  var atom_symbol = "⚛";
-  var fleur_de_lis = "⚜";
-  var warning$1 = "⚠️";
-  var zap = "⚡️";
-  var white_circle = "⚪️";
-  var black_circle = "⚫️";
-  var coffin = "⚰";
-  var funeral_urn = "⚱";
-  var soccer = "⚽️";
-  var baseball = "⚾️";
-  var snowman = "⛄️";
-  var partly_sunny = "⛅️";
-  var thunder_cloud_and_rain = "⛈";
-  var ophiuchus = "⛎";
-  var pick = "⛏";
-  var helmet_with_white_cross = "⛑";
-  var chains = "⛓";
-  var no_entry = "⛔️";
-  var shinto_shrine = "⛩";
-  var church = "⛪️";
-  var mountain = "⛰";
-  var umbrella_on_ground = "⛱";
-  var fountain = "⛲️";
-  var golf = "⛳️";
-  var ferry = "⛴";
-  var boat = "⛵️";
-  var sailboat = "⛵️";
-  var skier = "⛷";
-  var ice_skate = "⛸";
-  var person_with_ball = "⛹";
-  var tent = "⛺️";
-  var fuelpump = "⛽️";
-  var fist = "✊";
-  var hand = "✋";
-  var raised_hand = "✋";
-  var v = "✌️";
-  var writing_hand = "✍";
-  var pencil2 = "✏️";
-  var latin_cross = "✝";
-  var x = "❌";
-  var negative_squared_cross_mark = "❎";
-  var arrow_right = "➡️";
-  var curly_loop = "➰";
-  var loop = "➿";
-  var arrow_left = "⬅️";
-  var arrow_up = "⬆️";
-  var arrow_down = "⬇️";
-  var black_large_square = "⬛️";
-  var white_large_square = "⬜️";
-  var star = "⭐️";
-  var o = "⭕️";
-  var part_alternation_mark = "〽️";
-  var mahjong = "🀄️";
-  var black_joker = "🃏";
-  var a = "🅰️";
-  var b = "🅱️";
-  var o2 = "🅾️";
-  var parking = "🅿️";
-  var ab = "🆎";
-  var cl = "🆑";
-  var cool = "🆒";
-  var free = "🆓";
-  var id$1 = "🆔";
-  var ng = "🆖";
-  var ok = "🆗";
-  var sos = "🆘";
-  var up = "🆙";
-  var vs = "🆚";
-  var koko = "🈁";
-  var sa = "🈂️";
-  var u7121 = "🈚️";
-  var u6307 = "🈯️";
-  var u7981 = "🈲";
-  var u7a7a = "🈳";
-  var u5408 = "🈴";
-  var u6e80 = "🈵";
-  var u6709 = "🈶";
-  var u6708 = "🈷️";
-  var u7533 = "🈸";
-  var u5272 = "🈹";
-  var u55b6 = "🈺";
-  var ideograph_advantage = "🉐";
-  var accept = "🉑";
-  var cyclone = "🌀";
-  var foggy = "🌁";
-  var closed_umbrella = "🌂";
-  var night_with_stars = "🌃";
-  var sunrise_over_mountains = "🌄";
-  var sunrise = "🌅";
-  var city_sunset = "🌆";
-  var city_sunrise = "🌇";
-  var rainbow = "🌈";
-  var bridge_at_night = "🌉";
-  var ocean = "🌊";
-  var volcano = "🌋";
-  var milky_way = "🌌";
-  var earth_africa = "🌍";
-  var earth_americas = "🌎";
-  var earth_asia = "🌏";
-  var globe_with_meridians = "🌐";
-  var new_moon = "🌑";
-  var waxing_crescent_moon = "🌒";
-  var first_quarter_moon = "🌓";
-  var moon = "🌔";
-  var waxing_gibbous_moon = "🌔";
-  var full_moon = "🌕";
-  var waning_gibbous_moon = "🌖";
-  var last_quarter_moon = "🌗";
-  var waning_crescent_moon = "🌘";
-  var crescent_moon = "🌙";
-  var new_moon_with_face = "🌚";
-  var first_quarter_moon_with_face = "🌛";
-  var last_quarter_moon_with_face = "🌜";
-  var full_moon_with_face = "🌝";
-  var sun_with_face = "🌞";
-  var star2 = "🌟";
-  var stars = "🌠";
-  var thermometer = "🌡";
-  var mostly_sunny = "🌤";
-  var sun_small_cloud = "🌤";
-  var barely_sunny = "🌥";
-  var sun_behind_cloud = "🌥";
-  var partly_sunny_rain = "🌦";
-  var sun_behind_rain_cloud = "🌦";
-  var rain_cloud = "🌧";
-  var snow_cloud = "🌨";
-  var lightning = "🌩";
-  var lightning_cloud = "🌩";
-  var tornado = "🌪";
-  var tornado_cloud = "🌪";
-  var fog = "🌫";
-  var wind_blowing_face = "🌬";
-  var hotdog = "🌭";
-  var taco = "🌮";
-  var burrito = "🌯";
-  var chestnut = "🌰";
-  var seedling = "🌱";
-  var evergreen_tree = "🌲";
-  var deciduous_tree = "🌳";
-  var palm_tree = "🌴";
-  var cactus = "🌵";
-  var hot_pepper = "🌶";
-  var tulip = "🌷";
-  var cherry_blossom = "🌸";
-  var rose = "🌹";
-  var hibiscus = "🌺";
-  var sunflower = "🌻";
-  var blossom = "🌼";
-  var corn = "🌽";
-  var ear_of_rice = "🌾";
-  var herb = "🌿";
-  var four_leaf_clover = "🍀";
-  var maple_leaf = "🍁";
-  var fallen_leaf = "🍂";
-  var leaves = "🍃";
-  var mushroom = "🍄";
-  var tomato = "🍅";
-  var eggplant = "🍆";
-  var grapes = "🍇";
-  var melon = "🍈";
-  var watermelon = "🍉";
-  var tangerine = "🍊";
-  var lemon = "🍋";
-  var banana = "🍌";
-  var pineapple = "🍍";
-  var apple = "🍎";
-  var green_apple = "🍏";
-  var pear = "🍐";
-  var peach = "🍑";
-  var cherries = "🍒";
-  var strawberry = "🍓";
-  var hamburger = "🍔";
-  var pizza = "🍕";
-  var meat_on_bone = "🍖";
-  var poultry_leg = "🍗";
-  var rice_cracker = "🍘";
-  var rice_ball = "🍙";
-  var rice = "🍚";
-  var curry$1 = "🍛";
-  var ramen = "🍜";
-  var spaghetti = "🍝";
-  var bread = "🍞";
-  var fries = "🍟";
-  var sweet_potato = "🍠";
-  var dango = "🍡";
-  var oden = "🍢";
-  var sushi = "🍣";
-  var fried_shrimp = "🍤";
-  var fish_cake = "🍥";
-  var icecream = "🍦";
-  var shaved_ice = "🍧";
-  var ice_cream = "🍨";
-  var doughnut = "🍩";
-  var cookie = "🍪";
-  var chocolate_bar = "🍫";
-  var candy = "🍬";
-  var lollipop = "🍭";
-  var custard = "🍮";
-  var honey_pot = "🍯";
-  var cake = "🍰";
-  var bento = "🍱";
-  var stew = "🍲";
-  var egg = "🍳";
-  var fork_and_knife = "🍴";
-  var tea = "🍵";
-  var sake = "🍶";
-  var wine_glass = "🍷";
-  var cocktail = "🍸";
-  var tropical_drink = "🍹";
-  var beer = "🍺";
-  var beers = "🍻";
-  var baby_bottle = "🍼";
-  var knife_fork_plate = "🍽";
-  var champagne = "🍾";
-  var popcorn = "🍿";
-  var ribbon = "🎀";
-  var gift = "🎁";
-  var birthday = "🎂";
-  var jack_o_lantern = "🎃";
-  var christmas_tree = "🎄";
-  var santa = "🎅";
-  var fireworks = "🎆";
-  var sparkler = "🎇";
-  var balloon = "🎈";
-  var tada = "🎉";
-  var confetti_ball = "🎊";
-  var tanabata_tree = "🎋";
-  var crossed_flags = "🎌";
-  var bamboo = "🎍";
-  var dolls = "🎎";
-  var flags = "🎏";
-  var wind_chime = "🎐";
-  var rice_scene = "🎑";
-  var school_satchel = "🎒";
-  var mortar_board = "🎓";
-  var medal = "🎖";
-  var reminder_ribbon = "🎗";
-  var studio_microphone = "🎙";
-  var level_slider = "🎚";
-  var control_knobs = "🎛";
-  var film_frames = "🎞";
-  var admission_tickets = "🎟";
-  var carousel_horse = "🎠";
-  var ferris_wheel = "🎡";
-  var roller_coaster = "🎢";
-  var fishing_pole_and_fish = "🎣";
-  var microphone = "🎤";
-  var movie_camera = "🎥";
-  var cinema = "🎦";
-  var headphones = "🎧";
-  var art = "🎨";
-  var tophat = "🎩";
-  var circus_tent = "🎪";
-  var ticket = "🎫";
-  var clapper = "🎬";
-  var performing_arts = "🎭";
-  var video_game = "🎮";
-  var dart = "🎯";
-  var slot_machine = "🎰";
-  var game_die = "🎲";
-  var bowling = "🎳";
-  var flower_playing_cards = "🎴";
-  var musical_note = "🎵";
-  var notes = "🎶";
-  var saxophone = "🎷";
-  var guitar = "🎸";
-  var musical_keyboard = "🎹";
-  var trumpet = "🎺";
-  var violin = "🎻";
-  var musical_score = "🎼";
-  var running_shirt_with_sash = "🎽";
-  var tennis = "🎾";
-  var ski = "🎿";
-  var basketball = "🏀";
-  var checkered_flag = "🏁";
-  var snowboarder = "🏂";
-  var runner = "🏃";
-  var running = "🏃";
-  var surfer = "🏄";
-  var sports_medal = "🏅";
-  var trophy = "🏆";
-  var horse_racing = "🏇";
-  var football = "🏈";
-  var rugby_football = "🏉";
-  var swimmer = "🏊";
-  var weight_lifter = "🏋";
-  var golfer = "🏌";
-  var racing_motorcycle = "🏍";
-  var racing_car = "🏎";
-  var cricket_bat_and_ball = "🏏";
-  var volleyball = "🏐";
-  var field_hockey_stick_and_ball = "🏑";
-  var ice_hockey_stick_and_puck = "🏒";
-  var table_tennis_paddle_and_ball = "🏓";
-  var snow_capped_mountain = "🏔";
-  var camping = "🏕";
-  var beach_with_umbrella = "🏖";
-  var building_construction = "🏗";
-  var house_buildings = "🏘";
-  var cityscape = "🏙";
-  var derelict_house_building = "🏚";
-  var classical_building = "🏛";
-  var desert = "🏜";
-  var desert_island = "🏝";
-  var national_park = "🏞";
-  var stadium = "🏟";
-  var house = "🏠";
-  var house_with_garden = "🏡";
-  var office = "🏢";
-  var post_office = "🏣";
-  var european_post_office = "🏤";
-  var hospital = "🏥";
-  var bank = "🏦";
-  var atm = "🏧";
-  var hotel = "🏨";
-  var love_hotel = "🏩";
-  var convenience_store = "🏪";
-  var school = "🏫";
-  var department_store = "🏬";
-  var factory = "🏭";
-  var izakaya_lantern = "🏮";
-  var lantern = "🏮";
-  var japanese_castle = "🏯";
-  var european_castle = "🏰";
-  var waving_white_flag = "🏳";
-  var waving_black_flag = "🏴";
-  var rosette = "🏵";
-  var label = "🏷";
-  var badminton_racquet_and_shuttlecock = "🏸";
-  var bow_and_arrow = "🏹";
-  var amphora = "🏺";
-  var rat = "🐀";
-  var mouse2 = "🐁";
-  var ox = "🐂";
-  var water_buffalo = "🐃";
-  var cow2 = "🐄";
-  var tiger2 = "🐅";
-  var leopard = "🐆";
-  var rabbit2 = "🐇";
-  var cat2 = "🐈";
-  var dragon = "🐉";
-  var crocodile = "🐊";
-  var whale2 = "🐋";
-  var snail = "🐌";
-  var snake = "🐍";
-  var racehorse = "🐎";
-  var ram = "🐏";
-  var goat = "🐐";
-  var sheep = "🐑";
-  var monkey = "🐒";
-  var rooster = "🐓";
-  var chicken = "🐔";
-  var dog2 = "🐕";
-  var pig2 = "🐖";
-  var boar = "🐗";
-  var elephant = "🐘";
-  var octopus = "🐙";
-  var shell = "🐚";
-  var bug = "🐛";
-  var ant = "🐜";
-  var bee = "🐝";
-  var honeybee = "🐝";
-  var beetle = "🐞";
-  var fish = "🐟";
-  var tropical_fish = "🐠";
-  var blowfish = "🐡";
-  var turtle = "🐢";
-  var hatching_chick = "🐣";
-  var baby_chick = "🐤";
-  var hatched_chick = "🐥";
-  var bird = "🐦";
-  var penguin = "🐧";
-  var koala = "🐨";
-  var poodle = "🐩";
-  var dromedary_camel = "🐪";
-  var camel = "🐫";
-  var dolphin = "🐬";
-  var flipper = "🐬";
-  var mouse = "🐭";
-  var cow = "🐮";
-  var tiger = "🐯";
-  var rabbit = "🐰";
-  var cat = "🐱";
-  var dragon_face = "🐲";
-  var whale = "🐳";
-  var horse = "🐴";
-  var monkey_face = "🐵";
-  var dog = "🐶";
-  var pig = "🐷";
-  var frog = "🐸";
-  var hamster = "🐹";
-  var wolf = "🐺";
-  var bear = "🐻";
-  var panda_face = "🐼";
-  var pig_nose = "🐽";
-  var feet = "🐾";
-  var paw_prints = "🐾";
-  var chipmunk = "🐿";
-  var eyes = "👀";
-  var eye = "👁";
-  var ear = "👂";
-  var nose = "👃";
-  var lips = "👄";
-  var tongue = "👅";
-  var point_up_2 = "👆";
-  var point_down = "👇";
-  var point_left = "👈";
-  var point_right = "👉";
-  var facepunch = "👊";
-  var punch = "👊";
-  var wave = "👋";
-  var ok_hand = "👌";
-  var thumbsup = "👍";
-  var thumbsdown = "👎";
-  var clap = "👏";
-  var open_hands = "👐";
-  var crown = "👑";
-  var womans_hat = "👒";
-  var eyeglasses = "👓";
-  var necktie = "👔";
-  var shirt = "👕";
-  var tshirt = "👕";
-  var jeans = "👖";
-  var dress = "👗";
-  var kimono = "👘";
-  var bikini = "👙";
-  var womans_clothes = "👚";
-  var purse = "👛";
-  var handbag = "👜";
-  var pouch = "👝";
-  var mans_shoe = "👞";
-  var shoe = "👞";
-  var athletic_shoe = "👟";
-  var high_heel = "👠";
-  var sandal = "👡";
-  var boot = "👢";
-  var footprints = "👣";
-  var bust_in_silhouette = "👤";
-  var busts_in_silhouette = "👥";
-  var boy = "👦";
-  var girl = "👧";
-  var man = "👨";
-  var woman = "👩";
-  var family = "👨‍👩‍👦";
-  var couple = "👫";
-  var man_and_woman_holding_hands = "👫";
-  var two_men_holding_hands = "👬";
-  var two_women_holding_hands = "👭";
-  var cop = "👮";
-  var dancers = "👯";
-  var bride_with_veil = "👰";
-  var person_with_blond_hair = "👱";
-  var man_with_gua_pi_mao = "👲";
-  var man_with_turban = "👳";
-  var older_man = "👴";
-  var older_woman = "👵";
-  var baby = "👶";
-  var construction_worker = "👷";
-  var princess = "👸";
-  var japanese_ogre = "👹";
-  var japanese_goblin = "👺";
-  var ghost = "👻";
-  var angel = "👼";
-  var alien = "👽";
-  var space_invader = "👾";
-  var imp = "👿";
-  var skull = "💀";
-  var information_desk_person = "💁";
-  var guardsman = "💂";
-  var dancer = "💃";
-  var lipstick = "💄";
-  var nail_care = "💅";
-  var massage = "💆";
-  var haircut = "💇";
-  var barber = "💈";
-  var syringe = "💉";
-  var pill = "💊";
-  var kiss = "💋";
-  var love_letter = "💌";
-  var ring = "💍";
-  var gem = "💎";
-  var couplekiss = "💏";
-  var bouquet = "💐";
-  var couple_with_heart = "💑";
-  var wedding = "💒";
-  var heartbeat = "💓";
-  var broken_heart = "💔";
-  var two_hearts = "💕";
-  var sparkling_heart = "💖";
-  var heartpulse = "💗";
-  var cupid = "💘";
-  var blue_heart = "💙";
-  var green_heart = "💚";
-  var yellow_heart = "💛";
-  var purple_heart = "💜";
-  var gift_heart = "💝";
-  var revolving_hearts = "💞";
-  var heart_decoration = "💟";
-  var diamond_shape_with_a_dot_inside = "💠";
-  var bulb = "💡";
-  var anger = "💢";
-  var bomb = "💣";
-  var zzz = "💤";
-  var boom = "💥";
-  var collision = "💥";
-  var sweat_drops = "💦";
-  var droplet = "💧";
-  var dash = "💨";
-  var hankey = "💩";
-  var poop = "💩";
-  var shit = "💩";
-  var muscle = "💪";
-  var dizzy = "💫";
-  var speech_balloon = "💬";
-  var thought_balloon = "💭";
-  var white_flower = "💮";
-  var moneybag = "💰";
-  var currency_exchange = "💱";
-  var heavy_dollar_sign = "💲";
-  var credit_card = "💳";
-  var yen = "💴";
-  var dollar = "💵";
-  var euro = "💶";
-  var pound = "💷";
-  var money_with_wings = "💸";
-  var chart = "💹";
-  var seat = "💺";
-  var computer = "💻";
-  var briefcase = "💼";
-  var minidisc = "💽";
-  var floppy_disk = "💾";
-  var cd = "💿";
-  var dvd = "📀";
-  var file_folder = "📁";
-  var open_file_folder = "📂";
-  var page_with_curl = "📃";
-  var page_facing_up = "📄";
-  var date = "📅";
-  var calendar = "📆";
-  var card_index = "📇";
-  var chart_with_upwards_trend = "📈";
-  var chart_with_downwards_trend = "📉";
-  var bar_chart = "📊";
-  var clipboard = "📋";
-  var pushpin = "📌";
-  var round_pushpin = "📍";
-  var paperclip = "📎";
-  var straight_ruler = "📏";
-  var triangular_ruler = "📐";
-  var bookmark_tabs = "📑";
-  var ledger = "📒";
-  var notebook = "📓";
-  var notebook_with_decorative_cover = "📔";
-  var closed_book = "📕";
-  var book = "📖";
-  var open_book = "📖";
-  var green_book = "📗";
-  var blue_book = "📘";
-  var orange_book = "📙";
-  var books = "📚";
-  var name_badge = "📛";
-  var scroll = "📜";
-  var memo = "📝";
-  var pencil = "📝";
-  var telephone_receiver = "📞";
-  var pager = "📟";
-  var fax = "📠";
-  var satellite = "🛰";
-  var loudspeaker = "📢";
-  var mega = "📣";
-  var outbox_tray = "📤";
-  var inbox_tray = "📥";
-  var incoming_envelope = "📨";
-  var envelope_with_arrow = "📩";
-  var mailbox_closed = "📪";
-  var mailbox = "📫";
-  var mailbox_with_mail = "📬";
-  var mailbox_with_no_mail = "📭";
-  var postbox = "📮";
-  var postal_horn = "📯";
-  var newspaper = "📰";
-  var iphone = "📱";
-  var calling = "📲";
-  var vibration_mode = "📳";
-  var mobile_phone_off = "📴";
-  var no_mobile_phones = "📵";
-  var signal_strength = "📶";
-  var camera = "📷";
-  var camera_with_flash = "📸";
-  var video_camera = "📹";
-  var tv = "📺";
-  var radio = "📻";
-  var vhs = "📼";
-  var film_projector = "📽";
-  var prayer_beads = "📿";
-  var twisted_rightwards_arrows = "🔀";
-  var repeat = "🔁";
-  var repeat_one = "🔂";
-  var arrows_clockwise = "🔃";
-  var arrows_counterclockwise = "🔄";
-  var low_brightness = "🔅";
-  var high_brightness = "🔆";
-  var mute = "🔇";
-  var speaker = "🔈";
-  var sound = "🔉";
-  var loud_sound = "🔊";
-  var battery = "🔋";
-  var electric_plug = "🔌";
-  var mag = "🔍";
-  var mag_right = "🔎";
-  var lock_with_ink_pen = "🔏";
-  var closed_lock_with_key = "🔐";
-  var key = "🔑";
-  var lock$1 = "🔒";
-  var unlock = "🔓";
-  var bell = "🔔";
-  var no_bell = "🔕";
-  var bookmark = "🔖";
-  var link = "🔗";
-  var radio_button = "🔘";
-  var back = "🔙";
-  var end$1 = "🔚";
-  var on = "🔛";
-  var soon = "🔜";
-  var top = "🔝";
-  var underage = "🔞";
-  var keycap_ten = "🔟";
-  var capital_abcd = "🔠";
-  var abcd = "🔡";
-  var symbols = "🔣";
-  var abc = "🔤";
-  var fire = "🔥";
-  var flashlight = "🔦";
-  var wrench = "🔧";
-  var hammer = "🔨";
-  var nut_and_bolt = "🔩";
-  var hocho = "🔪";
-  var knife = "🔪";
-  var gun = "🔫";
-  var microscope = "🔬";
-  var telescope = "🔭";
-  var crystal_ball = "🔮";
-  var six_pointed_star = "🔯";
-  var beginner = "🔰";
-  var trident = "🔱";
-  var black_square_button = "🔲";
-  var white_square_button = "🔳";
-  var red_circle = "🔴";
-  var large_blue_circle = "🔵";
-  var large_orange_diamond = "🔶";
-  var large_blue_diamond = "🔷";
-  var small_orange_diamond = "🔸";
-  var small_blue_diamond = "🔹";
-  var small_red_triangle = "🔺";
-  var small_red_triangle_down = "🔻";
-  var arrow_up_small = "🔼";
-  var arrow_down_small = "🔽";
-  var om_symbol = "🕉";
-  var dove_of_peace = "🕊";
-  var kaaba = "🕋";
-  var mosque = "🕌";
-  var synagogue = "🕍";
-  var menorah_with_nine_branches = "🕎";
-  var clock1 = "🕐";
-  var clock2 = "🕑";
-  var clock3 = "🕒";
-  var clock4 = "🕓";
-  var clock5 = "🕔";
-  var clock6 = "🕕";
-  var clock7 = "🕖";
-  var clock8 = "🕗";
-  var clock9 = "🕘";
-  var clock10 = "🕙";
-  var clock11 = "🕚";
-  var clock12 = "🕛";
-  var clock130 = "🕜";
-  var clock230 = "🕝";
-  var clock330 = "🕞";
-  var clock430 = "🕟";
-  var clock530 = "🕠";
-  var clock630 = "🕡";
-  var clock730 = "🕢";
-  var clock830 = "🕣";
-  var clock930 = "🕤";
-  var clock1030 = "🕥";
-  var clock1130 = "🕦";
-  var clock1230 = "🕧";
-  var candle = "🕯";
-  var mantelpiece_clock = "🕰";
-  var hole = "🕳";
-  var man_in_business_suit_levitating = "🕴";
-  var sleuth_or_spy = "🕵";
-  var dark_sunglasses = "🕶";
-  var spider = "🕷";
-  var spider_web = "🕸";
-  var joystick = "🕹";
-  var linked_paperclips = "🖇";
-  var lower_left_ballpoint_pen = "🖊";
-  var lower_left_fountain_pen = "🖋";
-  var lower_left_paintbrush = "🖌";
-  var lower_left_crayon = "🖍";
-  var raised_hand_with_fingers_splayed = "🖐";
-  var middle_finger = "🖕";
-  var reversed_hand_with_middle_finger_extended = "🖕";
-  var desktop_computer = "🖥";
-  var printer = "🖨";
-  var three_button_mouse = "🖱";
-  var trackball = "🖲";
-  var frame_with_picture = "🖼";
-  var card_index_dividers = "🗂";
-  var card_file_box = "🗃";
-  var file_cabinet = "🗄";
-  var wastebasket = "🗑";
-  var spiral_note_pad = "🗒";
-  var spiral_calendar_pad = "🗓";
-  var compression = "🗜";
-  var old_key = "🗝";
-  var rolled_up_newspaper = "🗞";
-  var dagger_knife = "🗡";
-  var speaking_head_in_silhouette = "🗣";
-  var left_speech_bubble = "🗨";
-  var right_anger_bubble = "🗯";
-  var ballot_box_with_ballot = "🗳";
-  var world_map = "🗺";
-  var mount_fuji = "🗻";
-  var tokyo_tower = "🗼";
-  var statue_of_liberty = "🗽";
-  var japan = "🗾";
-  var moyai = "🗿";
-  var grinning = "😀";
-  var grin = "😁";
-  var joy = "😂";
-  var smiley = "😃";
-  var smile$1 = "😄";
-  var sweat_smile = "😅";
-  var laughing = "😆";
-  var satisfied = "😆";
-  var innocent = "😇";
-  var smiling_imp = "😈";
-  var wink = "😉";
-  var blush = "😊";
-  var yum = "😋";
-  var relieved = "😌";
-  var heart_eyes = "😍";
-  var sunglasses = "😎";
-  var smirk = "😏";
-  var neutral_face = "😐";
-  var expressionless = "😑";
-  var unamused = "😒";
-  var sweat = "😓";
-  var pensive = "😔";
-  var confused = "😕";
-  var confounded = "😖";
-  var kissing = "😗";
-  var kissing_heart = "😘";
-  var kissing_smiling_eyes = "😙";
-  var kissing_closed_eyes = "😚";
-  var stuck_out_tongue = "😛";
-  var stuck_out_tongue_winking_eye = "😜";
-  var stuck_out_tongue_closed_eyes = "😝";
-  var disappointed = "😞";
-  var worried = "😟";
-  var angry = "😠";
-  var rage = "😡";
-  var cry = "😢";
-  var persevere = "😣";
-  var triumph = "😤";
-  var disappointed_relieved = "😥";
-  var frowning = "😦";
-  var anguished = "😧";
-  var fearful = "😨";
-  var weary = "😩";
-  var sleepy = "😪";
-  var tired_face = "😫";
-  var grimacing = "😬";
-  var sob = "😭";
-  var open_mouth = "😮";
-  var hushed = "😯";
-  var cold_sweat = "😰";
-  var scream = "😱";
-  var astonished = "😲";
-  var flushed = "😳";
-  var sleeping = "😴";
-  var dizzy_face = "😵";
-  var no_mouth = "😶";
-  var mask = "😷";
-  var smile_cat = "😸";
-  var joy_cat = "😹";
-  var smiley_cat = "😺";
-  var heart_eyes_cat = "😻";
-  var smirk_cat = "😼";
-  var kissing_cat = "😽";
-  var pouting_cat = "😾";
-  var crying_cat_face = "😿";
-  var scream_cat = "🙀";
-  var slightly_frowning_face = "🙁";
-  var slightly_smiling_face = "🙂";
-  var upside_down_face = "🙃";
-  var face_with_rolling_eyes = "🙄";
-  var no_good = "🙅";
-  var ok_woman = "🙆";
-  var bow = "🙇";
-  var see_no_evil = "🙈";
-  var hear_no_evil = "🙉";
-  var speak_no_evil = "🙊";
-  var raising_hand = "🙋";
-  var raised_hands = "🙌";
-  var person_frowning = "🙍";
-  var person_with_pouting_face = "🙎";
-  var pray = "🙏";
-  var rocket = "🚀";
-  var helicopter = "🚁";
-  var steam_locomotive = "🚂";
-  var railway_car = "🚃";
-  var bullettrain_side = "🚄";
-  var bullettrain_front = "🚅";
-  var train2 = "🚆";
-  var metro = "🚇";
-  var light_rail = "🚈";
-  var station = "🚉";
-  var tram = "🚊";
-  var train = "🚋";
-  var bus = "🚌";
-  var oncoming_bus = "🚍";
-  var trolleybus = "🚎";
-  var busstop = "🚏";
-  var minibus = "🚐";
-  var ambulance = "🚑";
-  var fire_engine = "🚒";
-  var police_car = "🚓";
-  var oncoming_police_car = "🚔";
-  var taxi = "🚕";
-  var oncoming_taxi = "🚖";
-  var car = "🚗";
-  var red_car = "🚗";
-  var oncoming_automobile = "🚘";
-  var blue_car = "🚙";
-  var truck = "🚚";
-  var articulated_lorry = "🚛";
-  var tractor = "🚜";
-  var monorail = "🚝";
-  var mountain_railway = "🚞";
-  var suspension_railway = "🚟";
-  var mountain_cableway = "🚠";
-  var aerial_tramway = "🚡";
-  var ship = "🚢";
-  var rowboat = "🚣";
-  var speedboat = "🚤";
-  var traffic_light = "🚥";
-  var vertical_traffic_light = "🚦";
-  var construction = "🚧";
-  var rotating_light = "🚨";
-  var triangular_flag_on_post = "🚩";
-  var door = "🚪";
-  var no_entry_sign = "🚫";
-  var smoking = "🚬";
-  var no_smoking = "🚭";
-  var put_litter_in_its_place = "🚮";
-  var do_not_litter = "🚯";
-  var potable_water = "🚰";
-  var bike = "🚲";
-  var no_bicycles = "🚳";
-  var bicyclist = "🚴";
-  var mountain_bicyclist = "🚵";
-  var walking = "🚶";
-  var no_pedestrians = "🚷";
-  var children_crossing = "🚸";
-  var mens = "🚹";
-  var womens = "🚺";
-  var restroom = "🚻";
-  var baby_symbol = "🚼";
-  var toilet = "🚽";
-  var wc = "🚾";
-  var shower = "🚿";
-  var bath = "🛀";
-  var bathtub = "🛁";
-  var passport_control = "🛂";
-  var customs = "🛃";
-  var baggage_claim = "🛄";
-  var left_luggage = "🛅";
-  var couch_and_lamp = "🛋";
-  var sleeping_accommodation = "🛌";
-  var shopping_bags = "🛍";
-  var bellhop_bell = "🛎";
-  var bed = "🛏";
-  var place_of_worship = "🛐";
-  var hammer_and_wrench = "🛠";
-  var shield = "🛡";
-  var oil_drum = "🛢";
-  var motorway = "🛣";
-  var railway_track = "🛤";
-  var motor_boat = "🛥";
-  var small_airplane = "🛩";
-  var airplane_departure = "🛫";
-  var airplane_arriving = "🛬";
-  var passenger_ship = "🛳";
-  var zipper_mouth_face = "🤐";
-  var money_mouth_face = "🤑";
-  var face_with_thermometer = "🤒";
-  var nerd_face = "🤓";
-  var thinking_face = "🤔";
-  var face_with_head_bandage = "🤕";
-  var robot_face = "🤖";
-  var hugging_face = "🤗";
-  var the_horns = "🤘";
-  var sign_of_the_horns = "🤘";
-  var crab = "🦀";
-  var lion_face = "🦁";
-  var scorpion = "🦂";
-  var turkey = "🦃";
-  var unicorn_face = "🦄";
-  var cheese_wedge = "🧀";
-  var hash = "#️⃣";
-  var keycap_star = "*⃣";
-  var zero = "0️⃣";
-  var one = "1️⃣";
-  var two = "2️⃣";
-  var three = "3️⃣";
-  var four = "4️⃣";
-  var five = "5️⃣";
-  var six = "6️⃣";
-  var seven = "7️⃣";
-  var eight = "8️⃣";
-  var nine = "9️⃣";
-  var cn$2 = "🇨🇳";
-  var de = "🇩🇪";
-  var es = "🇪🇸";
-  var fr = "🇫🇷";
-  var gb = "🇬🇧";
-  var uk = "🇬🇧";
-  var it = "🇮🇹";
-  var jp = "🇯🇵";
-  var kr = "🇰🇷";
-  var ru = "🇷🇺";
-  var us = "🇺🇸";
-  var emoji = {
-  	"100": "💯",
-  	"1234": "🔢",
-  	interrobang: interrobang,
-  	tm: tm,
-  	information_source: information_source,
-  	left_right_arrow: left_right_arrow,
-  	arrow_up_down: arrow_up_down,
-  	arrow_upper_left: arrow_upper_left,
-  	arrow_upper_right: arrow_upper_right,
-  	arrow_lower_right: arrow_lower_right,
-  	arrow_lower_left: arrow_lower_left,
-  	keyboard: keyboard,
-  	sunny: sunny,
-  	cloud: cloud,
-  	umbrella: umbrella,
-  	showman: showman,
-  	comet: comet,
-  	ballot_box_with_check: ballot_box_with_check,
-  	coffee: coffee,
-  	shamrock: shamrock,
-  	skull_and_crossbones: skull_and_crossbones,
-  	radioactive_sign: radioactive_sign,
-  	biohazard_sign: biohazard_sign,
-  	orthodox_cross: orthodox_cross,
-  	wheel_of_dharma: wheel_of_dharma,
-  	white_frowning_face: white_frowning_face,
-  	aries: aries,
-  	taurus: taurus,
-  	sagittarius: sagittarius,
-  	capricorn: capricorn,
-  	aquarius: aquarius,
-  	pisces: pisces,
-  	spades: spades,
-  	clubs: clubs,
-  	hearts: hearts,
-  	diamonds: diamonds,
-  	hotsprings: hotsprings,
-  	hammer_and_pick: hammer_and_pick,
-  	anchor: anchor,
-  	crossed_swords: crossed_swords,
-  	scales: scales,
-  	alembic: alembic,
-  	gear: gear,
-  	scissors: scissors,
-  	white_check_mark: white_check_mark,
-  	airplane: airplane,
-  	email: email,
-  	envelope: envelope,
-  	black_nib: black_nib,
-  	heavy_check_mark: heavy_check_mark,
-  	heavy_multiplication_x: heavy_multiplication_x,
-  	star_of_david: star_of_david,
-  	sparkles: sparkles,
-  	eight_spoked_asterisk: eight_spoked_asterisk,
-  	eight_pointed_black_star: eight_pointed_black_star,
-  	snowflake: snowflake,
-  	sparkle: sparkle,
-  	question: question,
-  	grey_question: grey_question,
-  	grey_exclamation: grey_exclamation,
-  	exclamation: exclamation,
-  	heavy_exclamation_mark: heavy_exclamation_mark,
-  	heavy_heart_exclamation_mark_ornament: heavy_heart_exclamation_mark_ornament,
-  	heart: heart,
-  	heavy_plus_sign: heavy_plus_sign,
-  	heavy_minus_sign: heavy_minus_sign,
-  	heavy_division_sign: heavy_division_sign,
-  	arrow_heading_up: arrow_heading_up,
-  	arrow_heading_down: arrow_heading_down,
-  	wavy_dash: wavy_dash,
-  	congratulations: congratulations,
-  	secret: secret,
-  	copyright: copyright,
-  	registered: registered,
-  	bangbang: bangbang,
-  	leftwards_arrow_with_hook: leftwards_arrow_with_hook,
-  	arrow_right_hook: arrow_right_hook,
-  	watch: watch,
-  	hourglass: hourglass,
-  	fast_forward: fast_forward,
-  	rewind: rewind,
-  	arrow_double_up: arrow_double_up,
-  	arrow_double_down: arrow_double_down,
-  	black_right_pointing_double_triangle_with_vertical_bar: black_right_pointing_double_triangle_with_vertical_bar,
-  	black_left_pointing_double_triangle_with_vertical_bar: black_left_pointing_double_triangle_with_vertical_bar,
-  	black_right_pointing_triangle_with_double_vertical_bar: black_right_pointing_triangle_with_double_vertical_bar,
-  	alarm_clock: alarm_clock,
-  	stopwatch: stopwatch,
-  	timer_clock: timer_clock,
-  	hourglass_flowing_sand: hourglass_flowing_sand,
-  	double_vertical_bar: double_vertical_bar,
-  	black_square_for_stop: black_square_for_stop,
-  	black_circle_for_record: black_circle_for_record,
-  	m: m,
-  	black_small_square: black_small_square,
-  	white_small_square: white_small_square,
-  	arrow_forward: arrow_forward,
-  	arrow_backward: arrow_backward,
-  	white_medium_square: white_medium_square,
-  	black_medium_square: black_medium_square,
-  	white_medium_small_square: white_medium_small_square,
-  	black_medium_small_square: black_medium_small_square,
-  	phone: phone,
-  	telephone: telephone,
-  	point_up: point_up,
-  	star_and_crescent: star_and_crescent,
-  	peace_symbol: peace_symbol,
-  	yin_yang: yin_yang,
-  	relaxed: relaxed,
-  	gemini: gemini,
-  	cancer: cancer,
-  	leo: leo,
-  	virgo: virgo,
-  	libra: libra,
-  	scorpius: scorpius,
-  	recycle: recycle,
-  	wheelchair: wheelchair,
-  	atom_symbol: atom_symbol,
-  	fleur_de_lis: fleur_de_lis,
-  	warning: warning$1,
-  	zap: zap,
-  	white_circle: white_circle,
-  	black_circle: black_circle,
-  	coffin: coffin,
-  	funeral_urn: funeral_urn,
-  	soccer: soccer,
-  	baseball: baseball,
-  	snowman: snowman,
-  	partly_sunny: partly_sunny,
-  	thunder_cloud_and_rain: thunder_cloud_and_rain,
-  	ophiuchus: ophiuchus,
-  	pick: pick,
-  	helmet_with_white_cross: helmet_with_white_cross,
-  	chains: chains,
-  	no_entry: no_entry,
-  	shinto_shrine: shinto_shrine,
-  	church: church,
-  	mountain: mountain,
-  	umbrella_on_ground: umbrella_on_ground,
-  	fountain: fountain,
-  	golf: golf,
-  	ferry: ferry,
-  	boat: boat,
-  	sailboat: sailboat,
-  	skier: skier,
-  	ice_skate: ice_skate,
-  	person_with_ball: person_with_ball,
-  	tent: tent,
-  	fuelpump: fuelpump,
-  	fist: fist,
-  	hand: hand,
-  	raised_hand: raised_hand,
-  	v: v,
-  	writing_hand: writing_hand,
-  	pencil2: pencil2,
-  	latin_cross: latin_cross,
-  	x: x,
-  	negative_squared_cross_mark: negative_squared_cross_mark,
-  	arrow_right: arrow_right,
-  	curly_loop: curly_loop,
-  	loop: loop,
-  	arrow_left: arrow_left,
-  	arrow_up: arrow_up,
-  	arrow_down: arrow_down,
-  	black_large_square: black_large_square,
-  	white_large_square: white_large_square,
-  	star: star,
-  	o: o,
-  	part_alternation_mark: part_alternation_mark,
-  	mahjong: mahjong,
-  	black_joker: black_joker,
-  	a: a,
-  	b: b,
-  	o2: o2,
-  	parking: parking,
-  	ab: ab,
-  	cl: cl,
-  	cool: cool,
-  	free: free,
-  	id: id$1,
-  	"new": "🆕",
-  	ng: ng,
-  	ok: ok,
-  	sos: sos,
-  	up: up,
-  	vs: vs,
-  	koko: koko,
-  	sa: sa,
-  	u7121: u7121,
-  	u6307: u6307,
-  	u7981: u7981,
-  	u7a7a: u7a7a,
-  	u5408: u5408,
-  	u6e80: u6e80,
-  	u6709: u6709,
-  	u6708: u6708,
-  	u7533: u7533,
-  	u5272: u5272,
-  	u55b6: u55b6,
-  	ideograph_advantage: ideograph_advantage,
-  	accept: accept,
-  	cyclone: cyclone,
-  	foggy: foggy,
-  	closed_umbrella: closed_umbrella,
-  	night_with_stars: night_with_stars,
-  	sunrise_over_mountains: sunrise_over_mountains,
-  	sunrise: sunrise,
-  	city_sunset: city_sunset,
-  	city_sunrise: city_sunrise,
-  	rainbow: rainbow,
-  	bridge_at_night: bridge_at_night,
-  	ocean: ocean,
-  	volcano: volcano,
-  	milky_way: milky_way,
-  	earth_africa: earth_africa,
-  	earth_americas: earth_americas,
-  	earth_asia: earth_asia,
-  	globe_with_meridians: globe_with_meridians,
-  	new_moon: new_moon,
-  	waxing_crescent_moon: waxing_crescent_moon,
-  	first_quarter_moon: first_quarter_moon,
-  	moon: moon,
-  	waxing_gibbous_moon: waxing_gibbous_moon,
-  	full_moon: full_moon,
-  	waning_gibbous_moon: waning_gibbous_moon,
-  	last_quarter_moon: last_quarter_moon,
-  	waning_crescent_moon: waning_crescent_moon,
-  	crescent_moon: crescent_moon,
-  	new_moon_with_face: new_moon_with_face,
-  	first_quarter_moon_with_face: first_quarter_moon_with_face,
-  	last_quarter_moon_with_face: last_quarter_moon_with_face,
-  	full_moon_with_face: full_moon_with_face,
-  	sun_with_face: sun_with_face,
-  	star2: star2,
-  	stars: stars,
-  	thermometer: thermometer,
-  	mostly_sunny: mostly_sunny,
-  	sun_small_cloud: sun_small_cloud,
-  	barely_sunny: barely_sunny,
-  	sun_behind_cloud: sun_behind_cloud,
-  	partly_sunny_rain: partly_sunny_rain,
-  	sun_behind_rain_cloud: sun_behind_rain_cloud,
-  	rain_cloud: rain_cloud,
-  	snow_cloud: snow_cloud,
-  	lightning: lightning,
-  	lightning_cloud: lightning_cloud,
-  	tornado: tornado,
-  	tornado_cloud: tornado_cloud,
-  	fog: fog,
-  	wind_blowing_face: wind_blowing_face,
-  	hotdog: hotdog,
-  	taco: taco,
-  	burrito: burrito,
-  	chestnut: chestnut,
-  	seedling: seedling,
-  	evergreen_tree: evergreen_tree,
-  	deciduous_tree: deciduous_tree,
-  	palm_tree: palm_tree,
-  	cactus: cactus,
-  	hot_pepper: hot_pepper,
-  	tulip: tulip,
-  	cherry_blossom: cherry_blossom,
-  	rose: rose,
-  	hibiscus: hibiscus,
-  	sunflower: sunflower,
-  	blossom: blossom,
-  	corn: corn,
-  	ear_of_rice: ear_of_rice,
-  	herb: herb,
-  	four_leaf_clover: four_leaf_clover,
-  	maple_leaf: maple_leaf,
-  	fallen_leaf: fallen_leaf,
-  	leaves: leaves,
-  	mushroom: mushroom,
-  	tomato: tomato,
-  	eggplant: eggplant,
-  	grapes: grapes,
-  	melon: melon,
-  	watermelon: watermelon,
-  	tangerine: tangerine,
-  	lemon: lemon,
-  	banana: banana,
-  	pineapple: pineapple,
-  	apple: apple,
-  	green_apple: green_apple,
-  	pear: pear,
-  	peach: peach,
-  	cherries: cherries,
-  	strawberry: strawberry,
-  	hamburger: hamburger,
-  	pizza: pizza,
-  	meat_on_bone: meat_on_bone,
-  	poultry_leg: poultry_leg,
-  	rice_cracker: rice_cracker,
-  	rice_ball: rice_ball,
-  	rice: rice,
-  	curry: curry$1,
-  	ramen: ramen,
-  	spaghetti: spaghetti,
-  	bread: bread,
-  	fries: fries,
-  	sweet_potato: sweet_potato,
-  	dango: dango,
-  	oden: oden,
-  	sushi: sushi,
-  	fried_shrimp: fried_shrimp,
-  	fish_cake: fish_cake,
-  	icecream: icecream,
-  	shaved_ice: shaved_ice,
-  	ice_cream: ice_cream,
-  	doughnut: doughnut,
-  	cookie: cookie,
-  	chocolate_bar: chocolate_bar,
-  	candy: candy,
-  	lollipop: lollipop,
-  	custard: custard,
-  	honey_pot: honey_pot,
-  	cake: cake,
-  	bento: bento,
-  	stew: stew,
-  	egg: egg,
-  	fork_and_knife: fork_and_knife,
-  	tea: tea,
-  	sake: sake,
-  	wine_glass: wine_glass,
-  	cocktail: cocktail,
-  	tropical_drink: tropical_drink,
-  	beer: beer,
-  	beers: beers,
-  	baby_bottle: baby_bottle,
-  	knife_fork_plate: knife_fork_plate,
-  	champagne: champagne,
-  	popcorn: popcorn,
-  	ribbon: ribbon,
-  	gift: gift,
-  	birthday: birthday,
-  	jack_o_lantern: jack_o_lantern,
-  	christmas_tree: christmas_tree,
-  	santa: santa,
-  	fireworks: fireworks,
-  	sparkler: sparkler,
-  	balloon: balloon,
-  	tada: tada,
-  	confetti_ball: confetti_ball,
-  	tanabata_tree: tanabata_tree,
-  	crossed_flags: crossed_flags,
-  	bamboo: bamboo,
-  	dolls: dolls,
-  	flags: flags,
-  	wind_chime: wind_chime,
-  	rice_scene: rice_scene,
-  	school_satchel: school_satchel,
-  	mortar_board: mortar_board,
-  	medal: medal,
-  	reminder_ribbon: reminder_ribbon,
-  	studio_microphone: studio_microphone,
-  	level_slider: level_slider,
-  	control_knobs: control_knobs,
-  	film_frames: film_frames,
-  	admission_tickets: admission_tickets,
-  	carousel_horse: carousel_horse,
-  	ferris_wheel: ferris_wheel,
-  	roller_coaster: roller_coaster,
-  	fishing_pole_and_fish: fishing_pole_and_fish,
-  	microphone: microphone,
-  	movie_camera: movie_camera,
-  	cinema: cinema,
-  	headphones: headphones,
-  	art: art,
-  	tophat: tophat,
-  	circus_tent: circus_tent,
-  	ticket: ticket,
-  	clapper: clapper,
-  	performing_arts: performing_arts,
-  	video_game: video_game,
-  	dart: dart,
-  	slot_machine: slot_machine,
-  	"8ball": "🎱",
-  	game_die: game_die,
-  	bowling: bowling,
-  	flower_playing_cards: flower_playing_cards,
-  	musical_note: musical_note,
-  	notes: notes,
-  	saxophone: saxophone,
-  	guitar: guitar,
-  	musical_keyboard: musical_keyboard,
-  	trumpet: trumpet,
-  	violin: violin,
-  	musical_score: musical_score,
-  	running_shirt_with_sash: running_shirt_with_sash,
-  	tennis: tennis,
-  	ski: ski,
-  	basketball: basketball,
-  	checkered_flag: checkered_flag,
-  	snowboarder: snowboarder,
-  	runner: runner,
-  	running: running,
-  	surfer: surfer,
-  	sports_medal: sports_medal,
-  	trophy: trophy,
-  	horse_racing: horse_racing,
-  	football: football,
-  	rugby_football: rugby_football,
-  	swimmer: swimmer,
-  	weight_lifter: weight_lifter,
-  	golfer: golfer,
-  	racing_motorcycle: racing_motorcycle,
-  	racing_car: racing_car,
-  	cricket_bat_and_ball: cricket_bat_and_ball,
-  	volleyball: volleyball,
-  	field_hockey_stick_and_ball: field_hockey_stick_and_ball,
-  	ice_hockey_stick_and_puck: ice_hockey_stick_and_puck,
-  	table_tennis_paddle_and_ball: table_tennis_paddle_and_ball,
-  	snow_capped_mountain: snow_capped_mountain,
-  	camping: camping,
-  	beach_with_umbrella: beach_with_umbrella,
-  	building_construction: building_construction,
-  	house_buildings: house_buildings,
-  	cityscape: cityscape,
-  	derelict_house_building: derelict_house_building,
-  	classical_building: classical_building,
-  	desert: desert,
-  	desert_island: desert_island,
-  	national_park: national_park,
-  	stadium: stadium,
-  	house: house,
-  	house_with_garden: house_with_garden,
-  	office: office,
-  	post_office: post_office,
-  	european_post_office: european_post_office,
-  	hospital: hospital,
-  	bank: bank,
-  	atm: atm,
-  	hotel: hotel,
-  	love_hotel: love_hotel,
-  	convenience_store: convenience_store,
-  	school: school,
-  	department_store: department_store,
-  	factory: factory,
-  	izakaya_lantern: izakaya_lantern,
-  	lantern: lantern,
-  	japanese_castle: japanese_castle,
-  	european_castle: european_castle,
-  	waving_white_flag: waving_white_flag,
-  	waving_black_flag: waving_black_flag,
-  	rosette: rosette,
-  	label: label,
-  	badminton_racquet_and_shuttlecock: badminton_racquet_and_shuttlecock,
-  	bow_and_arrow: bow_and_arrow,
-  	amphora: amphora,
-  	"skin-tone-2": "🏻",
-  	"skin-tone-3": "🏼",
-  	"skin-tone-4": "🏽",
-  	"skin-tone-5": "🏾",
-  	"skin-tone-6": "🏿",
-  	rat: rat,
-  	mouse2: mouse2,
-  	ox: ox,
-  	water_buffalo: water_buffalo,
-  	cow2: cow2,
-  	tiger2: tiger2,
-  	leopard: leopard,
-  	rabbit2: rabbit2,
-  	cat2: cat2,
-  	dragon: dragon,
-  	crocodile: crocodile,
-  	whale2: whale2,
-  	snail: snail,
-  	snake: snake,
-  	racehorse: racehorse,
-  	ram: ram,
-  	goat: goat,
-  	sheep: sheep,
-  	monkey: monkey,
-  	rooster: rooster,
-  	chicken: chicken,
-  	dog2: dog2,
-  	pig2: pig2,
-  	boar: boar,
-  	elephant: elephant,
-  	octopus: octopus,
-  	shell: shell,
-  	bug: bug,
-  	ant: ant,
-  	bee: bee,
-  	honeybee: honeybee,
-  	beetle: beetle,
-  	fish: fish,
-  	tropical_fish: tropical_fish,
-  	blowfish: blowfish,
-  	turtle: turtle,
-  	hatching_chick: hatching_chick,
-  	baby_chick: baby_chick,
-  	hatched_chick: hatched_chick,
-  	bird: bird,
-  	penguin: penguin,
-  	koala: koala,
-  	poodle: poodle,
-  	dromedary_camel: dromedary_camel,
-  	camel: camel,
-  	dolphin: dolphin,
-  	flipper: flipper,
-  	mouse: mouse,
-  	cow: cow,
-  	tiger: tiger,
-  	rabbit: rabbit,
-  	cat: cat,
-  	dragon_face: dragon_face,
-  	whale: whale,
-  	horse: horse,
-  	monkey_face: monkey_face,
-  	dog: dog,
-  	pig: pig,
-  	frog: frog,
-  	hamster: hamster,
-  	wolf: wolf,
-  	bear: bear,
-  	panda_face: panda_face,
-  	pig_nose: pig_nose,
-  	feet: feet,
-  	paw_prints: paw_prints,
-  	chipmunk: chipmunk,
-  	eyes: eyes,
-  	eye: eye,
-  	ear: ear,
-  	nose: nose,
-  	lips: lips,
-  	tongue: tongue,
-  	point_up_2: point_up_2,
-  	point_down: point_down,
-  	point_left: point_left,
-  	point_right: point_right,
-  	facepunch: facepunch,
-  	punch: punch,
-  	wave: wave,
-  	ok_hand: ok_hand,
-  	"+1": "👍",
-  	thumbsup: thumbsup,
-  	"-1": "👎",
-  	thumbsdown: thumbsdown,
-  	clap: clap,
-  	open_hands: open_hands,
-  	crown: crown,
-  	womans_hat: womans_hat,
-  	eyeglasses: eyeglasses,
-  	necktie: necktie,
-  	shirt: shirt,
-  	tshirt: tshirt,
-  	jeans: jeans,
-  	dress: dress,
-  	kimono: kimono,
-  	bikini: bikini,
-  	womans_clothes: womans_clothes,
-  	purse: purse,
-  	handbag: handbag,
-  	pouch: pouch,
-  	mans_shoe: mans_shoe,
-  	shoe: shoe,
-  	athletic_shoe: athletic_shoe,
-  	high_heel: high_heel,
-  	sandal: sandal,
-  	boot: boot,
-  	footprints: footprints,
-  	bust_in_silhouette: bust_in_silhouette,
-  	busts_in_silhouette: busts_in_silhouette,
-  	boy: boy,
-  	girl: girl,
-  	man: man,
-  	woman: woman,
-  	family: family,
-  	"man-woman-boy": "👨‍👩‍👦",
-  	couple: couple,
-  	man_and_woman_holding_hands: man_and_woman_holding_hands,
-  	two_men_holding_hands: two_men_holding_hands,
-  	two_women_holding_hands: two_women_holding_hands,
-  	cop: cop,
-  	dancers: dancers,
-  	bride_with_veil: bride_with_veil,
-  	person_with_blond_hair: person_with_blond_hair,
-  	man_with_gua_pi_mao: man_with_gua_pi_mao,
-  	man_with_turban: man_with_turban,
-  	older_man: older_man,
-  	older_woman: older_woman,
-  	baby: baby,
-  	construction_worker: construction_worker,
-  	princess: princess,
-  	japanese_ogre: japanese_ogre,
-  	japanese_goblin: japanese_goblin,
-  	ghost: ghost,
-  	angel: angel,
-  	alien: alien,
-  	space_invader: space_invader,
-  	imp: imp,
-  	skull: skull,
-  	information_desk_person: information_desk_person,
-  	guardsman: guardsman,
-  	dancer: dancer,
-  	lipstick: lipstick,
-  	nail_care: nail_care,
-  	massage: massage,
-  	haircut: haircut,
-  	barber: barber,
-  	syringe: syringe,
-  	pill: pill,
-  	kiss: kiss,
-  	love_letter: love_letter,
-  	ring: ring,
-  	gem: gem,
-  	couplekiss: couplekiss,
-  	bouquet: bouquet,
-  	couple_with_heart: couple_with_heart,
-  	wedding: wedding,
-  	heartbeat: heartbeat,
-  	broken_heart: broken_heart,
-  	two_hearts: two_hearts,
-  	sparkling_heart: sparkling_heart,
-  	heartpulse: heartpulse,
-  	cupid: cupid,
-  	blue_heart: blue_heart,
-  	green_heart: green_heart,
-  	yellow_heart: yellow_heart,
-  	purple_heart: purple_heart,
-  	gift_heart: gift_heart,
-  	revolving_hearts: revolving_hearts,
-  	heart_decoration: heart_decoration,
-  	diamond_shape_with_a_dot_inside: diamond_shape_with_a_dot_inside,
-  	bulb: bulb,
-  	anger: anger,
-  	bomb: bomb,
-  	zzz: zzz,
-  	boom: boom,
-  	collision: collision,
-  	sweat_drops: sweat_drops,
-  	droplet: droplet,
-  	dash: dash,
-  	hankey: hankey,
-  	poop: poop,
-  	shit: shit,
-  	muscle: muscle,
-  	dizzy: dizzy,
-  	speech_balloon: speech_balloon,
-  	thought_balloon: thought_balloon,
-  	white_flower: white_flower,
-  	moneybag: moneybag,
-  	currency_exchange: currency_exchange,
-  	heavy_dollar_sign: heavy_dollar_sign,
-  	credit_card: credit_card,
-  	yen: yen,
-  	dollar: dollar,
-  	euro: euro,
-  	pound: pound,
-  	money_with_wings: money_with_wings,
-  	chart: chart,
-  	seat: seat,
-  	computer: computer,
-  	briefcase: briefcase,
-  	minidisc: minidisc,
-  	floppy_disk: floppy_disk,
-  	cd: cd,
-  	dvd: dvd,
-  	file_folder: file_folder,
-  	open_file_folder: open_file_folder,
-  	page_with_curl: page_with_curl,
-  	page_facing_up: page_facing_up,
-  	date: date,
-  	calendar: calendar,
-  	card_index: card_index,
-  	chart_with_upwards_trend: chart_with_upwards_trend,
-  	chart_with_downwards_trend: chart_with_downwards_trend,
-  	bar_chart: bar_chart,
-  	clipboard: clipboard,
-  	pushpin: pushpin,
-  	round_pushpin: round_pushpin,
-  	paperclip: paperclip,
-  	straight_ruler: straight_ruler,
-  	triangular_ruler: triangular_ruler,
-  	bookmark_tabs: bookmark_tabs,
-  	ledger: ledger,
-  	notebook: notebook,
-  	notebook_with_decorative_cover: notebook_with_decorative_cover,
-  	closed_book: closed_book,
-  	book: book,
-  	open_book: open_book,
-  	green_book: green_book,
-  	blue_book: blue_book,
-  	orange_book: orange_book,
-  	books: books,
-  	name_badge: name_badge,
-  	scroll: scroll,
-  	memo: memo,
-  	pencil: pencil,
-  	telephone_receiver: telephone_receiver,
-  	pager: pager,
-  	fax: fax,
-  	satellite: satellite,
-  	loudspeaker: loudspeaker,
-  	mega: mega,
-  	outbox_tray: outbox_tray,
-  	inbox_tray: inbox_tray,
-  	"package": "📦",
-  	"e-mail": "📧",
-  	incoming_envelope: incoming_envelope,
-  	envelope_with_arrow: envelope_with_arrow,
-  	mailbox_closed: mailbox_closed,
-  	mailbox: mailbox,
-  	mailbox_with_mail: mailbox_with_mail,
-  	mailbox_with_no_mail: mailbox_with_no_mail,
-  	postbox: postbox,
-  	postal_horn: postal_horn,
-  	newspaper: newspaper,
-  	iphone: iphone,
-  	calling: calling,
-  	vibration_mode: vibration_mode,
-  	mobile_phone_off: mobile_phone_off,
-  	no_mobile_phones: no_mobile_phones,
-  	signal_strength: signal_strength,
-  	camera: camera,
-  	camera_with_flash: camera_with_flash,
-  	video_camera: video_camera,
-  	tv: tv,
-  	radio: radio,
-  	vhs: vhs,
-  	film_projector: film_projector,
-  	prayer_beads: prayer_beads,
-  	twisted_rightwards_arrows: twisted_rightwards_arrows,
-  	repeat: repeat,
-  	repeat_one: repeat_one,
-  	arrows_clockwise: arrows_clockwise,
-  	arrows_counterclockwise: arrows_counterclockwise,
-  	low_brightness: low_brightness,
-  	high_brightness: high_brightness,
-  	mute: mute,
-  	speaker: speaker,
-  	sound: sound,
-  	loud_sound: loud_sound,
-  	battery: battery,
-  	electric_plug: electric_plug,
-  	mag: mag,
-  	mag_right: mag_right,
-  	lock_with_ink_pen: lock_with_ink_pen,
-  	closed_lock_with_key: closed_lock_with_key,
-  	key: key,
-  	lock: lock$1,
-  	unlock: unlock,
-  	bell: bell,
-  	no_bell: no_bell,
-  	bookmark: bookmark,
-  	link: link,
-  	radio_button: radio_button,
-  	back: back,
-  	end: end$1,
-  	on: on,
-  	soon: soon,
-  	top: top,
-  	underage: underage,
-  	keycap_ten: keycap_ten,
-  	capital_abcd: capital_abcd,
-  	abcd: abcd,
-  	symbols: symbols,
-  	abc: abc,
-  	fire: fire,
-  	flashlight: flashlight,
-  	wrench: wrench,
-  	hammer: hammer,
-  	nut_and_bolt: nut_and_bolt,
-  	hocho: hocho,
-  	knife: knife,
-  	gun: gun,
-  	microscope: microscope,
-  	telescope: telescope,
-  	crystal_ball: crystal_ball,
-  	six_pointed_star: six_pointed_star,
-  	beginner: beginner,
-  	trident: trident,
-  	black_square_button: black_square_button,
-  	white_square_button: white_square_button,
-  	red_circle: red_circle,
-  	large_blue_circle: large_blue_circle,
-  	large_orange_diamond: large_orange_diamond,
-  	large_blue_diamond: large_blue_diamond,
-  	small_orange_diamond: small_orange_diamond,
-  	small_blue_diamond: small_blue_diamond,
-  	small_red_triangle: small_red_triangle,
-  	small_red_triangle_down: small_red_triangle_down,
-  	arrow_up_small: arrow_up_small,
-  	arrow_down_small: arrow_down_small,
-  	om_symbol: om_symbol,
-  	dove_of_peace: dove_of_peace,
-  	kaaba: kaaba,
-  	mosque: mosque,
-  	synagogue: synagogue,
-  	menorah_with_nine_branches: menorah_with_nine_branches,
-  	clock1: clock1,
-  	clock2: clock2,
-  	clock3: clock3,
-  	clock4: clock4,
-  	clock5: clock5,
-  	clock6: clock6,
-  	clock7: clock7,
-  	clock8: clock8,
-  	clock9: clock9,
-  	clock10: clock10,
-  	clock11: clock11,
-  	clock12: clock12,
-  	clock130: clock130,
-  	clock230: clock230,
-  	clock330: clock330,
-  	clock430: clock430,
-  	clock530: clock530,
-  	clock630: clock630,
-  	clock730: clock730,
-  	clock830: clock830,
-  	clock930: clock930,
-  	clock1030: clock1030,
-  	clock1130: clock1130,
-  	clock1230: clock1230,
-  	candle: candle,
-  	mantelpiece_clock: mantelpiece_clock,
-  	hole: hole,
-  	man_in_business_suit_levitating: man_in_business_suit_levitating,
-  	sleuth_or_spy: sleuth_or_spy,
-  	dark_sunglasses: dark_sunglasses,
-  	spider: spider,
-  	spider_web: spider_web,
-  	joystick: joystick,
-  	linked_paperclips: linked_paperclips,
-  	lower_left_ballpoint_pen: lower_left_ballpoint_pen,
-  	lower_left_fountain_pen: lower_left_fountain_pen,
-  	lower_left_paintbrush: lower_left_paintbrush,
-  	lower_left_crayon: lower_left_crayon,
-  	raised_hand_with_fingers_splayed: raised_hand_with_fingers_splayed,
-  	middle_finger: middle_finger,
-  	reversed_hand_with_middle_finger_extended: reversed_hand_with_middle_finger_extended,
-  	"spock-hand": "🖖",
-  	desktop_computer: desktop_computer,
-  	printer: printer,
-  	three_button_mouse: three_button_mouse,
-  	trackball: trackball,
-  	frame_with_picture: frame_with_picture,
-  	card_index_dividers: card_index_dividers,
-  	card_file_box: card_file_box,
-  	file_cabinet: file_cabinet,
-  	wastebasket: wastebasket,
-  	spiral_note_pad: spiral_note_pad,
-  	spiral_calendar_pad: spiral_calendar_pad,
-  	compression: compression,
-  	old_key: old_key,
-  	rolled_up_newspaper: rolled_up_newspaper,
-  	dagger_knife: dagger_knife,
-  	speaking_head_in_silhouette: speaking_head_in_silhouette,
-  	left_speech_bubble: left_speech_bubble,
-  	right_anger_bubble: right_anger_bubble,
-  	ballot_box_with_ballot: ballot_box_with_ballot,
-  	world_map: world_map,
-  	mount_fuji: mount_fuji,
-  	tokyo_tower: tokyo_tower,
-  	statue_of_liberty: statue_of_liberty,
-  	japan: japan,
-  	moyai: moyai,
-  	grinning: grinning,
-  	grin: grin,
-  	joy: joy,
-  	smiley: smiley,
-  	smile: smile$1,
-  	sweat_smile: sweat_smile,
-  	laughing: laughing,
-  	satisfied: satisfied,
-  	innocent: innocent,
-  	smiling_imp: smiling_imp,
-  	wink: wink,
-  	blush: blush,
-  	yum: yum,
-  	relieved: relieved,
-  	heart_eyes: heart_eyes,
-  	sunglasses: sunglasses,
-  	smirk: smirk,
-  	neutral_face: neutral_face,
-  	expressionless: expressionless,
-  	unamused: unamused,
-  	sweat: sweat,
-  	pensive: pensive,
-  	confused: confused,
-  	confounded: confounded,
-  	kissing: kissing,
-  	kissing_heart: kissing_heart,
-  	kissing_smiling_eyes: kissing_smiling_eyes,
-  	kissing_closed_eyes: kissing_closed_eyes,
-  	stuck_out_tongue: stuck_out_tongue,
-  	stuck_out_tongue_winking_eye: stuck_out_tongue_winking_eye,
-  	stuck_out_tongue_closed_eyes: stuck_out_tongue_closed_eyes,
-  	disappointed: disappointed,
-  	worried: worried,
-  	angry: angry,
-  	rage: rage,
-  	cry: cry,
-  	persevere: persevere,
-  	triumph: triumph,
-  	disappointed_relieved: disappointed_relieved,
-  	frowning: frowning,
-  	anguished: anguished,
-  	fearful: fearful,
-  	weary: weary,
-  	sleepy: sleepy,
-  	tired_face: tired_face,
-  	grimacing: grimacing,
-  	sob: sob,
-  	open_mouth: open_mouth,
-  	hushed: hushed,
-  	cold_sweat: cold_sweat,
-  	scream: scream,
-  	astonished: astonished,
-  	flushed: flushed,
-  	sleeping: sleeping,
-  	dizzy_face: dizzy_face,
-  	no_mouth: no_mouth,
-  	mask: mask,
-  	smile_cat: smile_cat,
-  	joy_cat: joy_cat,
-  	smiley_cat: smiley_cat,
-  	heart_eyes_cat: heart_eyes_cat,
-  	smirk_cat: smirk_cat,
-  	kissing_cat: kissing_cat,
-  	pouting_cat: pouting_cat,
-  	crying_cat_face: crying_cat_face,
-  	scream_cat: scream_cat,
-  	slightly_frowning_face: slightly_frowning_face,
-  	slightly_smiling_face: slightly_smiling_face,
-  	upside_down_face: upside_down_face,
-  	face_with_rolling_eyes: face_with_rolling_eyes,
-  	no_good: no_good,
-  	ok_woman: ok_woman,
-  	bow: bow,
-  	see_no_evil: see_no_evil,
-  	hear_no_evil: hear_no_evil,
-  	speak_no_evil: speak_no_evil,
-  	raising_hand: raising_hand,
-  	raised_hands: raised_hands,
-  	person_frowning: person_frowning,
-  	person_with_pouting_face: person_with_pouting_face,
-  	pray: pray,
-  	rocket: rocket,
-  	helicopter: helicopter,
-  	steam_locomotive: steam_locomotive,
-  	railway_car: railway_car,
-  	bullettrain_side: bullettrain_side,
-  	bullettrain_front: bullettrain_front,
-  	train2: train2,
-  	metro: metro,
-  	light_rail: light_rail,
-  	station: station,
-  	tram: tram,
-  	train: train,
-  	bus: bus,
-  	oncoming_bus: oncoming_bus,
-  	trolleybus: trolleybus,
-  	busstop: busstop,
-  	minibus: minibus,
-  	ambulance: ambulance,
-  	fire_engine: fire_engine,
-  	police_car: police_car,
-  	oncoming_police_car: oncoming_police_car,
-  	taxi: taxi,
-  	oncoming_taxi: oncoming_taxi,
-  	car: car,
-  	red_car: red_car,
-  	oncoming_automobile: oncoming_automobile,
-  	blue_car: blue_car,
-  	truck: truck,
-  	articulated_lorry: articulated_lorry,
-  	tractor: tractor,
-  	monorail: monorail,
-  	mountain_railway: mountain_railway,
-  	suspension_railway: suspension_railway,
-  	mountain_cableway: mountain_cableway,
-  	aerial_tramway: aerial_tramway,
-  	ship: ship,
-  	rowboat: rowboat,
-  	speedboat: speedboat,
-  	traffic_light: traffic_light,
-  	vertical_traffic_light: vertical_traffic_light,
-  	construction: construction,
-  	rotating_light: rotating_light,
-  	triangular_flag_on_post: triangular_flag_on_post,
-  	door: door,
-  	no_entry_sign: no_entry_sign,
-  	smoking: smoking,
-  	no_smoking: no_smoking,
-  	put_litter_in_its_place: put_litter_in_its_place,
-  	do_not_litter: do_not_litter,
-  	potable_water: potable_water,
-  	"non-potable_water": "🚱",
-  	bike: bike,
-  	no_bicycles: no_bicycles,
-  	bicyclist: bicyclist,
-  	mountain_bicyclist: mountain_bicyclist,
-  	walking: walking,
-  	no_pedestrians: no_pedestrians,
-  	children_crossing: children_crossing,
-  	mens: mens,
-  	womens: womens,
-  	restroom: restroom,
-  	baby_symbol: baby_symbol,
-  	toilet: toilet,
-  	wc: wc,
-  	shower: shower,
-  	bath: bath,
-  	bathtub: bathtub,
-  	passport_control: passport_control,
-  	customs: customs,
-  	baggage_claim: baggage_claim,
-  	left_luggage: left_luggage,
-  	couch_and_lamp: couch_and_lamp,
-  	sleeping_accommodation: sleeping_accommodation,
-  	shopping_bags: shopping_bags,
-  	bellhop_bell: bellhop_bell,
-  	bed: bed,
-  	place_of_worship: place_of_worship,
-  	hammer_and_wrench: hammer_and_wrench,
-  	shield: shield,
-  	oil_drum: oil_drum,
-  	motorway: motorway,
-  	railway_track: railway_track,
-  	motor_boat: motor_boat,
-  	small_airplane: small_airplane,
-  	airplane_departure: airplane_departure,
-  	airplane_arriving: airplane_arriving,
-  	passenger_ship: passenger_ship,
-  	zipper_mouth_face: zipper_mouth_face,
-  	money_mouth_face: money_mouth_face,
-  	face_with_thermometer: face_with_thermometer,
-  	nerd_face: nerd_face,
-  	thinking_face: thinking_face,
-  	face_with_head_bandage: face_with_head_bandage,
-  	robot_face: robot_face,
-  	hugging_face: hugging_face,
-  	the_horns: the_horns,
-  	sign_of_the_horns: sign_of_the_horns,
-  	crab: crab,
-  	lion_face: lion_face,
-  	scorpion: scorpion,
-  	turkey: turkey,
-  	unicorn_face: unicorn_face,
-  	cheese_wedge: cheese_wedge,
-  	hash: hash,
-  	keycap_star: keycap_star,
-  	zero: zero,
-  	one: one,
-  	two: two,
-  	three: three,
-  	four: four,
-  	five: five,
-  	six: six,
-  	seven: seven,
-  	eight: eight,
-  	nine: nine,
-  	"flag-ac": "🇦🇨",
-  	"flag-ad": "🇦🇩",
-  	"flag-ae": "🇦🇪",
-  	"flag-af": "🇦🇫",
-  	"flag-ag": "🇦🇬",
-  	"flag-ai": "🇦🇮",
-  	"flag-al": "🇦🇱",
-  	"flag-am": "🇦🇲",
-  	"flag-ao": "🇦🇴",
-  	"flag-aq": "🇦🇶",
-  	"flag-ar": "🇦🇷",
-  	"flag-as": "🇦🇸",
-  	"flag-at": "🇦🇹",
-  	"flag-au": "🇦🇺",
-  	"flag-aw": "🇦🇼",
-  	"flag-ax": "🇦🇽",
-  	"flag-az": "🇦🇿",
-  	"flag-ba": "🇧🇦",
-  	"flag-bb": "🇧🇧",
-  	"flag-bd": "🇧🇩",
-  	"flag-be": "🇧🇪",
-  	"flag-bf": "🇧🇫",
-  	"flag-bg": "🇧🇬",
-  	"flag-bh": "🇧🇭",
-  	"flag-bi": "🇧🇮",
-  	"flag-bj": "🇧🇯",
-  	"flag-bl": "🇧🇱",
-  	"flag-bm": "🇧🇲",
-  	"flag-bn": "🇧🇳",
-  	"flag-bo": "🇧🇴",
-  	"flag-bq": "🇧🇶",
-  	"flag-br": "🇧🇷",
-  	"flag-bs": "🇧🇸",
-  	"flag-bt": "🇧🇹",
-  	"flag-bv": "🇧🇻",
-  	"flag-bw": "🇧🇼",
-  	"flag-by": "🇧🇾",
-  	"flag-bz": "🇧🇿",
-  	"flag-ca": "🇨🇦",
-  	"flag-cc": "🇨🇨",
-  	"flag-cd": "🇨🇩",
-  	"flag-cf": "🇨🇫",
-  	"flag-cg": "🇨🇬",
-  	"flag-ch": "🇨🇭",
-  	"flag-ci": "🇨🇮",
-  	"flag-ck": "🇨🇰",
-  	"flag-cl": "🇨🇱",
-  	"flag-cm": "🇨🇲",
-  	"flag-cn": "🇨🇳",
-  	cn: cn$2,
-  	"flag-co": "🇨🇴",
-  	"flag-cp": "🇨🇵",
-  	"flag-cr": "🇨🇷",
-  	"flag-cu": "🇨🇺",
-  	"flag-cv": "🇨🇻",
-  	"flag-cw": "🇨🇼",
-  	"flag-cx": "🇨🇽",
-  	"flag-cy": "🇨🇾",
-  	"flag-cz": "🇨🇿",
-  	"flag-de": "🇩🇪",
-  	de: de,
-  	"flag-dg": "🇩🇬",
-  	"flag-dj": "🇩🇯",
-  	"flag-dk": "🇩🇰",
-  	"flag-dm": "🇩🇲",
-  	"flag-do": "🇩🇴",
-  	"flag-dz": "🇩🇿",
-  	"flag-ea": "🇪🇦",
-  	"flag-ec": "🇪🇨",
-  	"flag-ee": "🇪🇪",
-  	"flag-eg": "🇪🇬",
-  	"flag-eh": "🇪🇭",
-  	"flag-er": "🇪🇷",
-  	"flag-es": "🇪🇸",
-  	es: es,
-  	"flag-et": "🇪🇹",
-  	"flag-eu": "🇪🇺",
-  	"flag-fi": "🇫🇮",
-  	"flag-fj": "🇫🇯",
-  	"flag-fk": "🇫🇰",
-  	"flag-fm": "🇫🇲",
-  	"flag-fo": "🇫🇴",
-  	"flag-fr": "🇫🇷",
-  	fr: fr,
-  	"flag-ga": "🇬🇦",
-  	"flag-gb": "🇬🇧",
-  	gb: gb,
-  	uk: uk,
-  	"flag-gd": "🇬🇩",
-  	"flag-ge": "🇬🇪",
-  	"flag-gf": "🇬🇫",
-  	"flag-gg": "🇬🇬",
-  	"flag-gh": "🇬🇭",
-  	"flag-gi": "🇬🇮",
-  	"flag-gl": "🇬🇱",
-  	"flag-gm": "🇬🇲",
-  	"flag-gn": "🇬🇳",
-  	"flag-gp": "🇬🇵",
-  	"flag-gq": "🇬🇶",
-  	"flag-gr": "🇬🇷",
-  	"flag-gs": "🇬🇸",
-  	"flag-gt": "🇬🇹",
-  	"flag-gu": "🇬🇺",
-  	"flag-gw": "🇬🇼",
-  	"flag-gy": "🇬🇾",
-  	"flag-hk": "🇭🇰",
-  	"flag-hm": "🇭🇲",
-  	"flag-hn": "🇭🇳",
-  	"flag-hr": "🇭🇷",
-  	"flag-ht": "🇭🇹",
-  	"flag-hu": "🇭🇺",
-  	"flag-ic": "🇮🇨",
-  	"flag-id": "🇮🇩",
-  	"flag-ie": "🇮🇪",
-  	"flag-il": "🇮🇱",
-  	"flag-im": "🇮🇲",
-  	"flag-in": "🇮🇳",
-  	"flag-io": "🇮🇴",
-  	"flag-iq": "🇮🇶",
-  	"flag-ir": "🇮🇷",
-  	"flag-is": "🇮🇸",
-  	"flag-it": "🇮🇹",
-  	it: it,
-  	"flag-je": "🇯🇪",
-  	"flag-jm": "🇯🇲",
-  	"flag-jo": "🇯🇴",
-  	"flag-jp": "🇯🇵",
-  	jp: jp,
-  	"flag-ke": "🇰🇪",
-  	"flag-kg": "🇰🇬",
-  	"flag-kh": "🇰🇭",
-  	"flag-ki": "🇰🇮",
-  	"flag-km": "🇰🇲",
-  	"flag-kn": "🇰🇳",
-  	"flag-kp": "🇰🇵",
-  	"flag-kr": "🇰🇷",
-  	kr: kr,
-  	"flag-kw": "🇰🇼",
-  	"flag-ky": "🇰🇾",
-  	"flag-kz": "🇰🇿",
-  	"flag-la": "🇱🇦",
-  	"flag-lb": "🇱🇧",
-  	"flag-lc": "🇱🇨",
-  	"flag-li": "🇱🇮",
-  	"flag-lk": "🇱🇰",
-  	"flag-lr": "🇱🇷",
-  	"flag-ls": "🇱🇸",
-  	"flag-lt": "🇱🇹",
-  	"flag-lu": "🇱🇺",
-  	"flag-lv": "🇱🇻",
-  	"flag-ly": "🇱🇾",
-  	"flag-ma": "🇲🇦",
-  	"flag-mc": "🇲🇨",
-  	"flag-md": "🇲🇩",
-  	"flag-me": "🇲🇪",
-  	"flag-mf": "🇲🇫",
-  	"flag-mg": "🇲🇬",
-  	"flag-mh": "🇲🇭",
-  	"flag-mk": "🇲🇰",
-  	"flag-ml": "🇲🇱",
-  	"flag-mm": "🇲🇲",
-  	"flag-mn": "🇲🇳",
-  	"flag-mo": "🇲🇴",
-  	"flag-mp": "🇲🇵",
-  	"flag-mq": "🇲🇶",
-  	"flag-mr": "🇲🇷",
-  	"flag-ms": "🇲🇸",
-  	"flag-mt": "🇲🇹",
-  	"flag-mu": "🇲🇺",
-  	"flag-mv": "🇲🇻",
-  	"flag-mw": "🇲🇼",
-  	"flag-mx": "🇲🇽",
-  	"flag-my": "🇲🇾",
-  	"flag-mz": "🇲🇿",
-  	"flag-na": "🇳🇦",
-  	"flag-nc": "🇳🇨",
-  	"flag-ne": "🇳🇪",
-  	"flag-nf": "🇳🇫",
-  	"flag-ng": "🇳🇬",
-  	"flag-ni": "🇳🇮",
-  	"flag-nl": "🇳🇱",
-  	"flag-no": "🇳🇴",
-  	"flag-np": "🇳🇵",
-  	"flag-nr": "🇳🇷",
-  	"flag-nu": "🇳🇺",
-  	"flag-nz": "🇳🇿",
-  	"flag-om": "🇴🇲",
-  	"flag-pa": "🇵🇦",
-  	"flag-pe": "🇵🇪",
-  	"flag-pf": "🇵🇫",
-  	"flag-pg": "🇵🇬",
-  	"flag-ph": "🇵🇭",
-  	"flag-pk": "🇵🇰",
-  	"flag-pl": "🇵🇱",
-  	"flag-pm": "🇵🇲",
-  	"flag-pn": "🇵🇳",
-  	"flag-pr": "🇵🇷",
-  	"flag-ps": "🇵🇸",
-  	"flag-pt": "🇵🇹",
-  	"flag-pw": "🇵🇼",
-  	"flag-py": "🇵🇾",
-  	"flag-qa": "🇶🇦",
-  	"flag-re": "🇷🇪",
-  	"flag-ro": "🇷🇴",
-  	"flag-rs": "🇷🇸",
-  	"flag-ru": "🇷🇺",
-  	ru: ru,
-  	"flag-rw": "🇷🇼",
-  	"flag-sa": "🇸🇦",
-  	"flag-sb": "🇸🇧",
-  	"flag-sc": "🇸🇨",
-  	"flag-sd": "🇸🇩",
-  	"flag-se": "🇸🇪",
-  	"flag-sg": "🇸🇬",
-  	"flag-sh": "🇸🇭",
-  	"flag-si": "🇸🇮",
-  	"flag-sj": "🇸🇯",
-  	"flag-sk": "🇸🇰",
-  	"flag-sl": "🇸🇱",
-  	"flag-sm": "🇸🇲",
-  	"flag-sn": "🇸🇳",
-  	"flag-so": "🇸🇴",
-  	"flag-sr": "🇸🇷",
-  	"flag-ss": "🇸🇸",
-  	"flag-st": "🇸🇹",
-  	"flag-sv": "🇸🇻",
-  	"flag-sx": "🇸🇽",
-  	"flag-sy": "🇸🇾",
-  	"flag-sz": "🇸🇿",
-  	"flag-ta": "🇹🇦",
-  	"flag-tc": "🇹🇨",
-  	"flag-td": "🇹🇩",
-  	"flag-tf": "🇹🇫",
-  	"flag-tg": "🇹🇬",
-  	"flag-th": "🇹🇭",
-  	"flag-tj": "🇹🇯",
-  	"flag-tk": "🇹🇰",
-  	"flag-tl": "🇹🇱",
-  	"flag-tm": "🇹🇲",
-  	"flag-tn": "🇹🇳",
-  	"flag-to": "🇹🇴",
-  	"flag-tr": "🇹🇷",
-  	"flag-tt": "🇹🇹",
-  	"flag-tv": "🇹🇻",
-  	"flag-tw": "🇹🇼",
-  	"flag-tz": "🇹🇿",
-  	"flag-ua": "🇺🇦",
-  	"flag-ug": "🇺🇬",
-  	"flag-um": "🇺🇲",
-  	"flag-us": "🇺🇸",
-  	us: us,
-  	"flag-uy": "🇺🇾",
-  	"flag-uz": "🇺🇿",
-  	"flag-va": "🇻🇦",
-  	"flag-vc": "🇻🇨",
-  	"flag-ve": "🇻🇪",
-  	"flag-vg": "🇻🇬",
-  	"flag-vi": "🇻🇮",
-  	"flag-vn": "🇻🇳",
-  	"flag-vu": "🇻🇺",
-  	"flag-wf": "🇼🇫",
-  	"flag-ws": "🇼🇸",
-  	"flag-xk": "🇽🇰",
-  	"flag-ye": "🇾🇪",
-  	"flag-yt": "🇾🇹",
-  	"flag-za": "🇿🇦",
-  	"flag-zm": "🇿🇲",
-  	"flag-zw": "🇿🇼",
-  	"man-man-boy": "👨‍👨‍👦",
-  	"man-man-boy-boy": "👨‍👨‍👦‍👦",
-  	"man-man-girl": "👨‍👨‍👧",
-  	"man-man-girl-boy": "👨‍👨‍👧‍👦",
-  	"man-man-girl-girl": "👨‍👨‍👧‍👧",
-  	"man-woman-boy-boy": "👨‍👩‍👦‍👦",
-  	"man-woman-girl": "👨‍👩‍👧",
-  	"man-woman-girl-boy": "👨‍👩‍👧‍👦",
-  	"man-woman-girl-girl": "👨‍👩‍👧‍👧",
-  	"man-heart-man": "👨‍❤️‍👨",
-  	"man-kiss-man": "👨‍❤️‍💋‍👨",
-  	"woman-woman-boy": "👩‍👩‍👦",
-  	"woman-woman-boy-boy": "👩‍👩‍👦‍👦",
-  	"woman-woman-girl": "👩‍👩‍👧",
-  	"woman-woman-girl-boy": "👩‍👩‍👧‍👦",
-  	"woman-woman-girl-girl": "👩‍👩‍👧‍👧",
-  	"woman-heart-woman": "👩‍❤️‍👩",
-  	"woman-kiss-woman": "👩‍❤️‍💋‍👩"
-  };
-
-  var emoji$1 = /*#__PURE__*/Object.freeze({
-    interrobang: interrobang,
-    tm: tm,
-    information_source: information_source,
-    left_right_arrow: left_right_arrow,
-    arrow_up_down: arrow_up_down,
-    arrow_upper_left: arrow_upper_left,
-    arrow_upper_right: arrow_upper_right,
-    arrow_lower_right: arrow_lower_right,
-    arrow_lower_left: arrow_lower_left,
-    keyboard: keyboard,
-    sunny: sunny,
-    cloud: cloud,
-    umbrella: umbrella,
-    showman: showman,
-    comet: comet,
-    ballot_box_with_check: ballot_box_with_check,
-    coffee: coffee,
-    shamrock: shamrock,
-    skull_and_crossbones: skull_and_crossbones,
-    radioactive_sign: radioactive_sign,
-    biohazard_sign: biohazard_sign,
-    orthodox_cross: orthodox_cross,
-    wheel_of_dharma: wheel_of_dharma,
-    white_frowning_face: white_frowning_face,
-    aries: aries,
-    taurus: taurus,
-    sagittarius: sagittarius,
-    capricorn: capricorn,
-    aquarius: aquarius,
-    pisces: pisces,
-    spades: spades,
-    clubs: clubs,
-    hearts: hearts,
-    diamonds: diamonds,
-    hotsprings: hotsprings,
-    hammer_and_pick: hammer_and_pick,
-    anchor: anchor,
-    crossed_swords: crossed_swords,
-    scales: scales,
-    alembic: alembic,
-    gear: gear,
-    scissors: scissors,
-    white_check_mark: white_check_mark,
-    airplane: airplane,
-    email: email,
-    envelope: envelope,
-    black_nib: black_nib,
-    heavy_check_mark: heavy_check_mark,
-    heavy_multiplication_x: heavy_multiplication_x,
-    star_of_david: star_of_david,
-    sparkles: sparkles,
-    eight_spoked_asterisk: eight_spoked_asterisk,
-    eight_pointed_black_star: eight_pointed_black_star,
-    snowflake: snowflake,
-    sparkle: sparkle,
-    question: question,
-    grey_question: grey_question,
-    grey_exclamation: grey_exclamation,
-    exclamation: exclamation,
-    heavy_exclamation_mark: heavy_exclamation_mark,
-    heavy_heart_exclamation_mark_ornament: heavy_heart_exclamation_mark_ornament,
-    heart: heart,
-    heavy_plus_sign: heavy_plus_sign,
-    heavy_minus_sign: heavy_minus_sign,
-    heavy_division_sign: heavy_division_sign,
-    arrow_heading_up: arrow_heading_up,
-    arrow_heading_down: arrow_heading_down,
-    wavy_dash: wavy_dash,
-    congratulations: congratulations,
-    secret: secret,
-    copyright: copyright,
-    registered: registered,
-    bangbang: bangbang,
-    leftwards_arrow_with_hook: leftwards_arrow_with_hook,
-    arrow_right_hook: arrow_right_hook,
-    watch: watch,
-    hourglass: hourglass,
-    fast_forward: fast_forward,
-    rewind: rewind,
-    arrow_double_up: arrow_double_up,
-    arrow_double_down: arrow_double_down,
-    black_right_pointing_double_triangle_with_vertical_bar: black_right_pointing_double_triangle_with_vertical_bar,
-    black_left_pointing_double_triangle_with_vertical_bar: black_left_pointing_double_triangle_with_vertical_bar,
-    black_right_pointing_triangle_with_double_vertical_bar: black_right_pointing_triangle_with_double_vertical_bar,
-    alarm_clock: alarm_clock,
-    stopwatch: stopwatch,
-    timer_clock: timer_clock,
-    hourglass_flowing_sand: hourglass_flowing_sand,
-    double_vertical_bar: double_vertical_bar,
-    black_square_for_stop: black_square_for_stop,
-    black_circle_for_record: black_circle_for_record,
-    m: m,
-    black_small_square: black_small_square,
-    white_small_square: white_small_square,
-    arrow_forward: arrow_forward,
-    arrow_backward: arrow_backward,
-    white_medium_square: white_medium_square,
-    black_medium_square: black_medium_square,
-    white_medium_small_square: white_medium_small_square,
-    black_medium_small_square: black_medium_small_square,
-    phone: phone,
-    telephone: telephone,
-    point_up: point_up,
-    star_and_crescent: star_and_crescent,
-    peace_symbol: peace_symbol,
-    yin_yang: yin_yang,
-    relaxed: relaxed,
-    gemini: gemini,
-    cancer: cancer,
-    leo: leo,
-    virgo: virgo,
-    libra: libra,
-    scorpius: scorpius,
-    recycle: recycle,
-    wheelchair: wheelchair,
-    atom_symbol: atom_symbol,
-    fleur_de_lis: fleur_de_lis,
-    warning: warning$1,
-    zap: zap,
-    white_circle: white_circle,
-    black_circle: black_circle,
-    coffin: coffin,
-    funeral_urn: funeral_urn,
-    soccer: soccer,
-    baseball: baseball,
-    snowman: snowman,
-    partly_sunny: partly_sunny,
-    thunder_cloud_and_rain: thunder_cloud_and_rain,
-    ophiuchus: ophiuchus,
-    pick: pick,
-    helmet_with_white_cross: helmet_with_white_cross,
-    chains: chains,
-    no_entry: no_entry,
-    shinto_shrine: shinto_shrine,
-    church: church,
-    mountain: mountain,
-    umbrella_on_ground: umbrella_on_ground,
-    fountain: fountain,
-    golf: golf,
-    ferry: ferry,
-    boat: boat,
-    sailboat: sailboat,
-    skier: skier,
-    ice_skate: ice_skate,
-    person_with_ball: person_with_ball,
-    tent: tent,
-    fuelpump: fuelpump,
-    fist: fist,
-    hand: hand,
-    raised_hand: raised_hand,
-    v: v,
-    writing_hand: writing_hand,
-    pencil2: pencil2,
-    latin_cross: latin_cross,
-    x: x,
-    negative_squared_cross_mark: negative_squared_cross_mark,
-    arrow_right: arrow_right,
-    curly_loop: curly_loop,
-    loop: loop,
-    arrow_left: arrow_left,
-    arrow_up: arrow_up,
-    arrow_down: arrow_down,
-    black_large_square: black_large_square,
-    white_large_square: white_large_square,
-    star: star,
-    o: o,
-    part_alternation_mark: part_alternation_mark,
-    mahjong: mahjong,
-    black_joker: black_joker,
-    a: a,
-    b: b,
-    o2: o2,
-    parking: parking,
-    ab: ab,
-    cl: cl,
-    cool: cool,
-    free: free,
-    id: id$1,
-    ng: ng,
-    ok: ok,
-    sos: sos,
-    up: up,
-    vs: vs,
-    koko: koko,
-    sa: sa,
-    u7121: u7121,
-    u6307: u6307,
-    u7981: u7981,
-    u7a7a: u7a7a,
-    u5408: u5408,
-    u6e80: u6e80,
-    u6709: u6709,
-    u6708: u6708,
-    u7533: u7533,
-    u5272: u5272,
-    u55b6: u55b6,
-    ideograph_advantage: ideograph_advantage,
-    accept: accept,
-    cyclone: cyclone,
-    foggy: foggy,
-    closed_umbrella: closed_umbrella,
-    night_with_stars: night_with_stars,
-    sunrise_over_mountains: sunrise_over_mountains,
-    sunrise: sunrise,
-    city_sunset: city_sunset,
-    city_sunrise: city_sunrise,
-    rainbow: rainbow,
-    bridge_at_night: bridge_at_night,
-    ocean: ocean,
-    volcano: volcano,
-    milky_way: milky_way,
-    earth_africa: earth_africa,
-    earth_americas: earth_americas,
-    earth_asia: earth_asia,
-    globe_with_meridians: globe_with_meridians,
-    new_moon: new_moon,
-    waxing_crescent_moon: waxing_crescent_moon,
-    first_quarter_moon: first_quarter_moon,
-    moon: moon,
-    waxing_gibbous_moon: waxing_gibbous_moon,
-    full_moon: full_moon,
-    waning_gibbous_moon: waning_gibbous_moon,
-    last_quarter_moon: last_quarter_moon,
-    waning_crescent_moon: waning_crescent_moon,
-    crescent_moon: crescent_moon,
-    new_moon_with_face: new_moon_with_face,
-    first_quarter_moon_with_face: first_quarter_moon_with_face,
-    last_quarter_moon_with_face: last_quarter_moon_with_face,
-    full_moon_with_face: full_moon_with_face,
-    sun_with_face: sun_with_face,
-    star2: star2,
-    stars: stars,
-    thermometer: thermometer,
-    mostly_sunny: mostly_sunny,
-    sun_small_cloud: sun_small_cloud,
-    barely_sunny: barely_sunny,
-    sun_behind_cloud: sun_behind_cloud,
-    partly_sunny_rain: partly_sunny_rain,
-    sun_behind_rain_cloud: sun_behind_rain_cloud,
-    rain_cloud: rain_cloud,
-    snow_cloud: snow_cloud,
-    lightning: lightning,
-    lightning_cloud: lightning_cloud,
-    tornado: tornado,
-    tornado_cloud: tornado_cloud,
-    fog: fog,
-    wind_blowing_face: wind_blowing_face,
-    hotdog: hotdog,
-    taco: taco,
-    burrito: burrito,
-    chestnut: chestnut,
-    seedling: seedling,
-    evergreen_tree: evergreen_tree,
-    deciduous_tree: deciduous_tree,
-    palm_tree: palm_tree,
-    cactus: cactus,
-    hot_pepper: hot_pepper,
-    tulip: tulip,
-    cherry_blossom: cherry_blossom,
-    rose: rose,
-    hibiscus: hibiscus,
-    sunflower: sunflower,
-    blossom: blossom,
-    corn: corn,
-    ear_of_rice: ear_of_rice,
-    herb: herb,
-    four_leaf_clover: four_leaf_clover,
-    maple_leaf: maple_leaf,
-    fallen_leaf: fallen_leaf,
-    leaves: leaves,
-    mushroom: mushroom,
-    tomato: tomato,
-    eggplant: eggplant,
-    grapes: grapes,
-    melon: melon,
-    watermelon: watermelon,
-    tangerine: tangerine,
-    lemon: lemon,
-    banana: banana,
-    pineapple: pineapple,
-    apple: apple,
-    green_apple: green_apple,
-    pear: pear,
-    peach: peach,
-    cherries: cherries,
-    strawberry: strawberry,
-    hamburger: hamburger,
-    pizza: pizza,
-    meat_on_bone: meat_on_bone,
-    poultry_leg: poultry_leg,
-    rice_cracker: rice_cracker,
-    rice_ball: rice_ball,
-    rice: rice,
-    curry: curry$1,
-    ramen: ramen,
-    spaghetti: spaghetti,
-    bread: bread,
-    fries: fries,
-    sweet_potato: sweet_potato,
-    dango: dango,
-    oden: oden,
-    sushi: sushi,
-    fried_shrimp: fried_shrimp,
-    fish_cake: fish_cake,
-    icecream: icecream,
-    shaved_ice: shaved_ice,
-    ice_cream: ice_cream,
-    doughnut: doughnut,
-    cookie: cookie,
-    chocolate_bar: chocolate_bar,
-    candy: candy,
-    lollipop: lollipop,
-    custard: custard,
-    honey_pot: honey_pot,
-    cake: cake,
-    bento: bento,
-    stew: stew,
-    egg: egg,
-    fork_and_knife: fork_and_knife,
-    tea: tea,
-    sake: sake,
-    wine_glass: wine_glass,
-    cocktail: cocktail,
-    tropical_drink: tropical_drink,
-    beer: beer,
-    beers: beers,
-    baby_bottle: baby_bottle,
-    knife_fork_plate: knife_fork_plate,
-    champagne: champagne,
-    popcorn: popcorn,
-    ribbon: ribbon,
-    gift: gift,
-    birthday: birthday,
-    jack_o_lantern: jack_o_lantern,
-    christmas_tree: christmas_tree,
-    santa: santa,
-    fireworks: fireworks,
-    sparkler: sparkler,
-    balloon: balloon,
-    tada: tada,
-    confetti_ball: confetti_ball,
-    tanabata_tree: tanabata_tree,
-    crossed_flags: crossed_flags,
-    bamboo: bamboo,
-    dolls: dolls,
-    flags: flags,
-    wind_chime: wind_chime,
-    rice_scene: rice_scene,
-    school_satchel: school_satchel,
-    mortar_board: mortar_board,
-    medal: medal,
-    reminder_ribbon: reminder_ribbon,
-    studio_microphone: studio_microphone,
-    level_slider: level_slider,
-    control_knobs: control_knobs,
-    film_frames: film_frames,
-    admission_tickets: admission_tickets,
-    carousel_horse: carousel_horse,
-    ferris_wheel: ferris_wheel,
-    roller_coaster: roller_coaster,
-    fishing_pole_and_fish: fishing_pole_and_fish,
-    microphone: microphone,
-    movie_camera: movie_camera,
-    cinema: cinema,
-    headphones: headphones,
-    art: art,
-    tophat: tophat,
-    circus_tent: circus_tent,
-    ticket: ticket,
-    clapper: clapper,
-    performing_arts: performing_arts,
-    video_game: video_game,
-    dart: dart,
-    slot_machine: slot_machine,
-    game_die: game_die,
-    bowling: bowling,
-    flower_playing_cards: flower_playing_cards,
-    musical_note: musical_note,
-    notes: notes,
-    saxophone: saxophone,
-    guitar: guitar,
-    musical_keyboard: musical_keyboard,
-    trumpet: trumpet,
-    violin: violin,
-    musical_score: musical_score,
-    running_shirt_with_sash: running_shirt_with_sash,
-    tennis: tennis,
-    ski: ski,
-    basketball: basketball,
-    checkered_flag: checkered_flag,
-    snowboarder: snowboarder,
-    runner: runner,
-    running: running,
-    surfer: surfer,
-    sports_medal: sports_medal,
-    trophy: trophy,
-    horse_racing: horse_racing,
-    football: football,
-    rugby_football: rugby_football,
-    swimmer: swimmer,
-    weight_lifter: weight_lifter,
-    golfer: golfer,
-    racing_motorcycle: racing_motorcycle,
-    racing_car: racing_car,
-    cricket_bat_and_ball: cricket_bat_and_ball,
-    volleyball: volleyball,
-    field_hockey_stick_and_ball: field_hockey_stick_and_ball,
-    ice_hockey_stick_and_puck: ice_hockey_stick_and_puck,
-    table_tennis_paddle_and_ball: table_tennis_paddle_and_ball,
-    snow_capped_mountain: snow_capped_mountain,
-    camping: camping,
-    beach_with_umbrella: beach_with_umbrella,
-    building_construction: building_construction,
-    house_buildings: house_buildings,
-    cityscape: cityscape,
-    derelict_house_building: derelict_house_building,
-    classical_building: classical_building,
-    desert: desert,
-    desert_island: desert_island,
-    national_park: national_park,
-    stadium: stadium,
-    house: house,
-    house_with_garden: house_with_garden,
-    office: office,
-    post_office: post_office,
-    european_post_office: european_post_office,
-    hospital: hospital,
-    bank: bank,
-    atm: atm,
-    hotel: hotel,
-    love_hotel: love_hotel,
-    convenience_store: convenience_store,
-    school: school,
-    department_store: department_store,
-    factory: factory,
-    izakaya_lantern: izakaya_lantern,
-    lantern: lantern,
-    japanese_castle: japanese_castle,
-    european_castle: european_castle,
-    waving_white_flag: waving_white_flag,
-    waving_black_flag: waving_black_flag,
-    rosette: rosette,
-    label: label,
-    badminton_racquet_and_shuttlecock: badminton_racquet_and_shuttlecock,
-    bow_and_arrow: bow_and_arrow,
-    amphora: amphora,
-    rat: rat,
-    mouse2: mouse2,
-    ox: ox,
-    water_buffalo: water_buffalo,
-    cow2: cow2,
-    tiger2: tiger2,
-    leopard: leopard,
-    rabbit2: rabbit2,
-    cat2: cat2,
-    dragon: dragon,
-    crocodile: crocodile,
-    whale2: whale2,
-    snail: snail,
-    snake: snake,
-    racehorse: racehorse,
-    ram: ram,
-    goat: goat,
-    sheep: sheep,
-    monkey: monkey,
-    rooster: rooster,
-    chicken: chicken,
-    dog2: dog2,
-    pig2: pig2,
-    boar: boar,
-    elephant: elephant,
-    octopus: octopus,
-    shell: shell,
-    bug: bug,
-    ant: ant,
-    bee: bee,
-    honeybee: honeybee,
-    beetle: beetle,
-    fish: fish,
-    tropical_fish: tropical_fish,
-    blowfish: blowfish,
-    turtle: turtle,
-    hatching_chick: hatching_chick,
-    baby_chick: baby_chick,
-    hatched_chick: hatched_chick,
-    bird: bird,
-    penguin: penguin,
-    koala: koala,
-    poodle: poodle,
-    dromedary_camel: dromedary_camel,
-    camel: camel,
-    dolphin: dolphin,
-    flipper: flipper,
-    mouse: mouse,
-    cow: cow,
-    tiger: tiger,
-    rabbit: rabbit,
-    cat: cat,
-    dragon_face: dragon_face,
-    whale: whale,
-    horse: horse,
-    monkey_face: monkey_face,
-    dog: dog,
-    pig: pig,
-    frog: frog,
-    hamster: hamster,
-    wolf: wolf,
-    bear: bear,
-    panda_face: panda_face,
-    pig_nose: pig_nose,
-    feet: feet,
-    paw_prints: paw_prints,
-    chipmunk: chipmunk,
-    eyes: eyes,
-    eye: eye,
-    ear: ear,
-    nose: nose,
-    lips: lips,
-    tongue: tongue,
-    point_up_2: point_up_2,
-    point_down: point_down,
-    point_left: point_left,
-    point_right: point_right,
-    facepunch: facepunch,
-    punch: punch,
-    wave: wave,
-    ok_hand: ok_hand,
-    thumbsup: thumbsup,
-    thumbsdown: thumbsdown,
-    clap: clap,
-    open_hands: open_hands,
-    crown: crown,
-    womans_hat: womans_hat,
-    eyeglasses: eyeglasses,
-    necktie: necktie,
-    shirt: shirt,
-    tshirt: tshirt,
-    jeans: jeans,
-    dress: dress,
-    kimono: kimono,
-    bikini: bikini,
-    womans_clothes: womans_clothes,
-    purse: purse,
-    handbag: handbag,
-    pouch: pouch,
-    mans_shoe: mans_shoe,
-    shoe: shoe,
-    athletic_shoe: athletic_shoe,
-    high_heel: high_heel,
-    sandal: sandal,
-    boot: boot,
-    footprints: footprints,
-    bust_in_silhouette: bust_in_silhouette,
-    busts_in_silhouette: busts_in_silhouette,
-    boy: boy,
-    girl: girl,
-    man: man,
-    woman: woman,
-    family: family,
-    couple: couple,
-    man_and_woman_holding_hands: man_and_woman_holding_hands,
-    two_men_holding_hands: two_men_holding_hands,
-    two_women_holding_hands: two_women_holding_hands,
-    cop: cop,
-    dancers: dancers,
-    bride_with_veil: bride_with_veil,
-    person_with_blond_hair: person_with_blond_hair,
-    man_with_gua_pi_mao: man_with_gua_pi_mao,
-    man_with_turban: man_with_turban,
-    older_man: older_man,
-    older_woman: older_woman,
-    baby: baby,
-    construction_worker: construction_worker,
-    princess: princess,
-    japanese_ogre: japanese_ogre,
-    japanese_goblin: japanese_goblin,
-    ghost: ghost,
-    angel: angel,
-    alien: alien,
-    space_invader: space_invader,
-    imp: imp,
-    skull: skull,
-    information_desk_person: information_desk_person,
-    guardsman: guardsman,
-    dancer: dancer,
-    lipstick: lipstick,
-    nail_care: nail_care,
-    massage: massage,
-    haircut: haircut,
-    barber: barber,
-    syringe: syringe,
-    pill: pill,
-    kiss: kiss,
-    love_letter: love_letter,
-    ring: ring,
-    gem: gem,
-    couplekiss: couplekiss,
-    bouquet: bouquet,
-    couple_with_heart: couple_with_heart,
-    wedding: wedding,
-    heartbeat: heartbeat,
-    broken_heart: broken_heart,
-    two_hearts: two_hearts,
-    sparkling_heart: sparkling_heart,
-    heartpulse: heartpulse,
-    cupid: cupid,
-    blue_heart: blue_heart,
-    green_heart: green_heart,
-    yellow_heart: yellow_heart,
-    purple_heart: purple_heart,
-    gift_heart: gift_heart,
-    revolving_hearts: revolving_hearts,
-    heart_decoration: heart_decoration,
-    diamond_shape_with_a_dot_inside: diamond_shape_with_a_dot_inside,
-    bulb: bulb,
-    anger: anger,
-    bomb: bomb,
-    zzz: zzz,
-    boom: boom,
-    collision: collision,
-    sweat_drops: sweat_drops,
-    droplet: droplet,
-    dash: dash,
-    hankey: hankey,
-    poop: poop,
-    shit: shit,
-    muscle: muscle,
-    dizzy: dizzy,
-    speech_balloon: speech_balloon,
-    thought_balloon: thought_balloon,
-    white_flower: white_flower,
-    moneybag: moneybag,
-    currency_exchange: currency_exchange,
-    heavy_dollar_sign: heavy_dollar_sign,
-    credit_card: credit_card,
-    yen: yen,
-    dollar: dollar,
-    euro: euro,
-    pound: pound,
-    money_with_wings: money_with_wings,
-    chart: chart,
-    seat: seat,
-    computer: computer,
-    briefcase: briefcase,
-    minidisc: minidisc,
-    floppy_disk: floppy_disk,
-    cd: cd,
-    dvd: dvd,
-    file_folder: file_folder,
-    open_file_folder: open_file_folder,
-    page_with_curl: page_with_curl,
-    page_facing_up: page_facing_up,
-    date: date,
-    calendar: calendar,
-    card_index: card_index,
-    chart_with_upwards_trend: chart_with_upwards_trend,
-    chart_with_downwards_trend: chart_with_downwards_trend,
-    bar_chart: bar_chart,
-    clipboard: clipboard,
-    pushpin: pushpin,
-    round_pushpin: round_pushpin,
-    paperclip: paperclip,
-    straight_ruler: straight_ruler,
-    triangular_ruler: triangular_ruler,
-    bookmark_tabs: bookmark_tabs,
-    ledger: ledger,
-    notebook: notebook,
-    notebook_with_decorative_cover: notebook_with_decorative_cover,
-    closed_book: closed_book,
-    book: book,
-    open_book: open_book,
-    green_book: green_book,
-    blue_book: blue_book,
-    orange_book: orange_book,
-    books: books,
-    name_badge: name_badge,
-    scroll: scroll,
-    memo: memo,
-    pencil: pencil,
-    telephone_receiver: telephone_receiver,
-    pager: pager,
-    fax: fax,
-    satellite: satellite,
-    loudspeaker: loudspeaker,
-    mega: mega,
-    outbox_tray: outbox_tray,
-    inbox_tray: inbox_tray,
-    incoming_envelope: incoming_envelope,
-    envelope_with_arrow: envelope_with_arrow,
-    mailbox_closed: mailbox_closed,
-    mailbox: mailbox,
-    mailbox_with_mail: mailbox_with_mail,
-    mailbox_with_no_mail: mailbox_with_no_mail,
-    postbox: postbox,
-    postal_horn: postal_horn,
-    newspaper: newspaper,
-    iphone: iphone,
-    calling: calling,
-    vibration_mode: vibration_mode,
-    mobile_phone_off: mobile_phone_off,
-    no_mobile_phones: no_mobile_phones,
-    signal_strength: signal_strength,
-    camera: camera,
-    camera_with_flash: camera_with_flash,
-    video_camera: video_camera,
-    tv: tv,
-    radio: radio,
-    vhs: vhs,
-    film_projector: film_projector,
-    prayer_beads: prayer_beads,
-    twisted_rightwards_arrows: twisted_rightwards_arrows,
-    repeat: repeat,
-    repeat_one: repeat_one,
-    arrows_clockwise: arrows_clockwise,
-    arrows_counterclockwise: arrows_counterclockwise,
-    low_brightness: low_brightness,
-    high_brightness: high_brightness,
-    mute: mute,
-    speaker: speaker,
-    sound: sound,
-    loud_sound: loud_sound,
-    battery: battery,
-    electric_plug: electric_plug,
-    mag: mag,
-    mag_right: mag_right,
-    lock_with_ink_pen: lock_with_ink_pen,
-    closed_lock_with_key: closed_lock_with_key,
-    key: key,
-    lock: lock$1,
-    unlock: unlock,
-    bell: bell,
-    no_bell: no_bell,
-    bookmark: bookmark,
-    link: link,
-    radio_button: radio_button,
-    back: back,
-    end: end$1,
-    on: on,
-    soon: soon,
-    top: top,
-    underage: underage,
-    keycap_ten: keycap_ten,
-    capital_abcd: capital_abcd,
-    abcd: abcd,
-    symbols: symbols,
-    abc: abc,
-    fire: fire,
-    flashlight: flashlight,
-    wrench: wrench,
-    hammer: hammer,
-    nut_and_bolt: nut_and_bolt,
-    hocho: hocho,
-    knife: knife,
-    gun: gun,
-    microscope: microscope,
-    telescope: telescope,
-    crystal_ball: crystal_ball,
-    six_pointed_star: six_pointed_star,
-    beginner: beginner,
-    trident: trident,
-    black_square_button: black_square_button,
-    white_square_button: white_square_button,
-    red_circle: red_circle,
-    large_blue_circle: large_blue_circle,
-    large_orange_diamond: large_orange_diamond,
-    large_blue_diamond: large_blue_diamond,
-    small_orange_diamond: small_orange_diamond,
-    small_blue_diamond: small_blue_diamond,
-    small_red_triangle: small_red_triangle,
-    small_red_triangle_down: small_red_triangle_down,
-    arrow_up_small: arrow_up_small,
-    arrow_down_small: arrow_down_small,
-    om_symbol: om_symbol,
-    dove_of_peace: dove_of_peace,
-    kaaba: kaaba,
-    mosque: mosque,
-    synagogue: synagogue,
-    menorah_with_nine_branches: menorah_with_nine_branches,
-    clock1: clock1,
-    clock2: clock2,
-    clock3: clock3,
-    clock4: clock4,
-    clock5: clock5,
-    clock6: clock6,
-    clock7: clock7,
-    clock8: clock8,
-    clock9: clock9,
-    clock10: clock10,
-    clock11: clock11,
-    clock12: clock12,
-    clock130: clock130,
-    clock230: clock230,
-    clock330: clock330,
-    clock430: clock430,
-    clock530: clock530,
-    clock630: clock630,
-    clock730: clock730,
-    clock830: clock830,
-    clock930: clock930,
-    clock1030: clock1030,
-    clock1130: clock1130,
-    clock1230: clock1230,
-    candle: candle,
-    mantelpiece_clock: mantelpiece_clock,
-    hole: hole,
-    man_in_business_suit_levitating: man_in_business_suit_levitating,
-    sleuth_or_spy: sleuth_or_spy,
-    dark_sunglasses: dark_sunglasses,
-    spider: spider,
-    spider_web: spider_web,
-    joystick: joystick,
-    linked_paperclips: linked_paperclips,
-    lower_left_ballpoint_pen: lower_left_ballpoint_pen,
-    lower_left_fountain_pen: lower_left_fountain_pen,
-    lower_left_paintbrush: lower_left_paintbrush,
-    lower_left_crayon: lower_left_crayon,
-    raised_hand_with_fingers_splayed: raised_hand_with_fingers_splayed,
-    middle_finger: middle_finger,
-    reversed_hand_with_middle_finger_extended: reversed_hand_with_middle_finger_extended,
-    desktop_computer: desktop_computer,
-    printer: printer,
-    three_button_mouse: three_button_mouse,
-    trackball: trackball,
-    frame_with_picture: frame_with_picture,
-    card_index_dividers: card_index_dividers,
-    card_file_box: card_file_box,
-    file_cabinet: file_cabinet,
-    wastebasket: wastebasket,
-    spiral_note_pad: spiral_note_pad,
-    spiral_calendar_pad: spiral_calendar_pad,
-    compression: compression,
-    old_key: old_key,
-    rolled_up_newspaper: rolled_up_newspaper,
-    dagger_knife: dagger_knife,
-    speaking_head_in_silhouette: speaking_head_in_silhouette,
-    left_speech_bubble: left_speech_bubble,
-    right_anger_bubble: right_anger_bubble,
-    ballot_box_with_ballot: ballot_box_with_ballot,
-    world_map: world_map,
-    mount_fuji: mount_fuji,
-    tokyo_tower: tokyo_tower,
-    statue_of_liberty: statue_of_liberty,
-    japan: japan,
-    moyai: moyai,
-    grinning: grinning,
-    grin: grin,
-    joy: joy,
-    smiley: smiley,
-    smile: smile$1,
-    sweat_smile: sweat_smile,
-    laughing: laughing,
-    satisfied: satisfied,
-    innocent: innocent,
-    smiling_imp: smiling_imp,
-    wink: wink,
-    blush: blush,
-    yum: yum,
-    relieved: relieved,
-    heart_eyes: heart_eyes,
-    sunglasses: sunglasses,
-    smirk: smirk,
-    neutral_face: neutral_face,
-    expressionless: expressionless,
-    unamused: unamused,
-    sweat: sweat,
-    pensive: pensive,
-    confused: confused,
-    confounded: confounded,
-    kissing: kissing,
-    kissing_heart: kissing_heart,
-    kissing_smiling_eyes: kissing_smiling_eyes,
-    kissing_closed_eyes: kissing_closed_eyes,
-    stuck_out_tongue: stuck_out_tongue,
-    stuck_out_tongue_winking_eye: stuck_out_tongue_winking_eye,
-    stuck_out_tongue_closed_eyes: stuck_out_tongue_closed_eyes,
-    disappointed: disappointed,
-    worried: worried,
-    angry: angry,
-    rage: rage,
-    cry: cry,
-    persevere: persevere,
-    triumph: triumph,
-    disappointed_relieved: disappointed_relieved,
-    frowning: frowning,
-    anguished: anguished,
-    fearful: fearful,
-    weary: weary,
-    sleepy: sleepy,
-    tired_face: tired_face,
-    grimacing: grimacing,
-    sob: sob,
-    open_mouth: open_mouth,
-    hushed: hushed,
-    cold_sweat: cold_sweat,
-    scream: scream,
-    astonished: astonished,
-    flushed: flushed,
-    sleeping: sleeping,
-    dizzy_face: dizzy_face,
-    no_mouth: no_mouth,
-    mask: mask,
-    smile_cat: smile_cat,
-    joy_cat: joy_cat,
-    smiley_cat: smiley_cat,
-    heart_eyes_cat: heart_eyes_cat,
-    smirk_cat: smirk_cat,
-    kissing_cat: kissing_cat,
-    pouting_cat: pouting_cat,
-    crying_cat_face: crying_cat_face,
-    scream_cat: scream_cat,
-    slightly_frowning_face: slightly_frowning_face,
-    slightly_smiling_face: slightly_smiling_face,
-    upside_down_face: upside_down_face,
-    face_with_rolling_eyes: face_with_rolling_eyes,
-    no_good: no_good,
-    ok_woman: ok_woman,
-    bow: bow,
-    see_no_evil: see_no_evil,
-    hear_no_evil: hear_no_evil,
-    speak_no_evil: speak_no_evil,
-    raising_hand: raising_hand,
-    raised_hands: raised_hands,
-    person_frowning: person_frowning,
-    person_with_pouting_face: person_with_pouting_face,
-    pray: pray,
-    rocket: rocket,
-    helicopter: helicopter,
-    steam_locomotive: steam_locomotive,
-    railway_car: railway_car,
-    bullettrain_side: bullettrain_side,
-    bullettrain_front: bullettrain_front,
-    train2: train2,
-    metro: metro,
-    light_rail: light_rail,
-    station: station,
-    tram: tram,
-    train: train,
-    bus: bus,
-    oncoming_bus: oncoming_bus,
-    trolleybus: trolleybus,
-    busstop: busstop,
-    minibus: minibus,
-    ambulance: ambulance,
-    fire_engine: fire_engine,
-    police_car: police_car,
-    oncoming_police_car: oncoming_police_car,
-    taxi: taxi,
-    oncoming_taxi: oncoming_taxi,
-    car: car,
-    red_car: red_car,
-    oncoming_automobile: oncoming_automobile,
-    blue_car: blue_car,
-    truck: truck,
-    articulated_lorry: articulated_lorry,
-    tractor: tractor,
-    monorail: monorail,
-    mountain_railway: mountain_railway,
-    suspension_railway: suspension_railway,
-    mountain_cableway: mountain_cableway,
-    aerial_tramway: aerial_tramway,
-    ship: ship,
-    rowboat: rowboat,
-    speedboat: speedboat,
-    traffic_light: traffic_light,
-    vertical_traffic_light: vertical_traffic_light,
-    construction: construction,
-    rotating_light: rotating_light,
-    triangular_flag_on_post: triangular_flag_on_post,
-    door: door,
-    no_entry_sign: no_entry_sign,
-    smoking: smoking,
-    no_smoking: no_smoking,
-    put_litter_in_its_place: put_litter_in_its_place,
-    do_not_litter: do_not_litter,
-    potable_water: potable_water,
-    bike: bike,
-    no_bicycles: no_bicycles,
-    bicyclist: bicyclist,
-    mountain_bicyclist: mountain_bicyclist,
-    walking: walking,
-    no_pedestrians: no_pedestrians,
-    children_crossing: children_crossing,
-    mens: mens,
-    womens: womens,
-    restroom: restroom,
-    baby_symbol: baby_symbol,
-    toilet: toilet,
-    wc: wc,
-    shower: shower,
-    bath: bath,
-    bathtub: bathtub,
-    passport_control: passport_control,
-    customs: customs,
-    baggage_claim: baggage_claim,
-    left_luggage: left_luggage,
-    couch_and_lamp: couch_and_lamp,
-    sleeping_accommodation: sleeping_accommodation,
-    shopping_bags: shopping_bags,
-    bellhop_bell: bellhop_bell,
-    bed: bed,
-    place_of_worship: place_of_worship,
-    hammer_and_wrench: hammer_and_wrench,
-    shield: shield,
-    oil_drum: oil_drum,
-    motorway: motorway,
-    railway_track: railway_track,
-    motor_boat: motor_boat,
-    small_airplane: small_airplane,
-    airplane_departure: airplane_departure,
-    airplane_arriving: airplane_arriving,
-    passenger_ship: passenger_ship,
-    zipper_mouth_face: zipper_mouth_face,
-    money_mouth_face: money_mouth_face,
-    face_with_thermometer: face_with_thermometer,
-    nerd_face: nerd_face,
-    thinking_face: thinking_face,
-    face_with_head_bandage: face_with_head_bandage,
-    robot_face: robot_face,
-    hugging_face: hugging_face,
-    the_horns: the_horns,
-    sign_of_the_horns: sign_of_the_horns,
-    crab: crab,
-    lion_face: lion_face,
-    scorpion: scorpion,
-    turkey: turkey,
-    unicorn_face: unicorn_face,
-    cheese_wedge: cheese_wedge,
-    hash: hash,
-    keycap_star: keycap_star,
-    zero: zero,
-    one: one,
-    two: two,
-    three: three,
-    four: four,
-    five: five,
-    six: six,
-    seven: seven,
-    eight: eight,
-    nine: nine,
-    cn: cn$2,
-    de: de,
-    es: es,
-    fr: fr,
-    gb: gb,
-    uk: uk,
-    it: it,
-    jp: jp,
-    kr: kr,
-    ru: ru,
-    us: us,
-    default: emoji
-  });
-
-  var emojiByName = ( emoji$1 && emoji ) || emoji$1;
-
-  /**
-   * regex to parse emoji in a string - finds emoji, e.g. :coffee:
-   */
-  var emojiNameRegex = /:([a-zA-Z0-9_\-\+]+):/g;
-
-  /**
-   * regex to trim whitespace
-   * use instead of String.prototype.trim() for IE8 supprt
-   */
-  var trimSpaceRegex = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
-
-  /**
-   * Removes colons on either side
-   * of the string if present
-   * @param  {string} str
-   * @return {string}
-   */
-  function stripColons(str) {
-    var colonIndex = str.indexOf(':');
-    if (colonIndex > -1) {
-      // :emoji: (http://www.emoji-cheat-sheet.com/)
-      if (colonIndex === str.length - 1) {
-        str = str.substring(0, colonIndex);
-        return stripColons(str);
-      } else {
-        str = str.substr(colonIndex + 1);
-        return stripColons(str);
-      }
-    }
-
-    return str;
-  }
-
-  /**
-   * Adds colons to either side
-   * of the string
-   * @param {string} str
-   * @return {string}
-   */
-  function wrapColons(str) {
-    return typeof str === 'string' && str.length > 0 ? ':' + str + ':' : str;
-  }
-
-  /**
-   * Ensure that the word is wrapped in colons
-   * by only adding them, if they are not there.
-   * @param {string} str
-   * @return {string}
-   */
-  function ensureColons(str) {
-    return typeof str === 'string' && str[0] !== ':' ? wrapColons(str) : str;
-  }
-
-  // Non spacing mark, some emoticons have them. It's the 'Variant Form',
-  // which provides more information so that emoticons can be rendered as
-  // more colorful graphics. FE0E is a unicode text version, where as FE0F
-  // should be rendered as a graphical version. The code gracefully degrades.
-  var NON_SPACING_MARK = String.fromCharCode(65039); // 65039 - '️' - 0xFE0F;
-  var nonSpacingRegex = new RegExp(NON_SPACING_MARK, 'g');
-
-  // Remove the non-spacing-mark from the code, never send a stripped version
-  // to the client, as it kills graphical emoticons.
-  function stripNSB(code) {
-    return code.replace(nonSpacingRegex, '');
-  }
-  // Reversed hash table, where as emojiByName contains a { heart: '❤' }
-  // dictionary emojiByCode contains { ❤: 'heart' }. The codes are normalized
-  // to the text version.
-  var emojiByCode = Object.keys(emojiByName).reduce(function (h, k) {
-    h[stripNSB(emojiByName[k])] = k;
-    return h;
-  }, {});
-
-  /**
-   * Emoji namespace
-   */
-  var Emoji = {
-    emoji: emojiByName
-  };
-
-  /**
-   * get emoji code from name
-   * @param  {string} emoji
-   * @return {string}
-   */
-  Emoji._get = function _get(emoji) {
-    if (emojiByName.hasOwnProperty(emoji)) {
-      return emojiByName[emoji];
-    }
-
-    return ensureColons(emoji);
-  };
-
-  /**
-   * get emoji code from :emoji: string or name
-   * @param  {string} emoji
-   * @return {string}
-   */
-  Emoji.get = function get(emoji) {
-    emoji = stripColons(emoji);
-
-    return Emoji._get(emoji);
-  };
-
-  /**
-   * find the emoji by either code or name
-   * @param {string} nameOrCode The emoji to find, either `coffee`, `:coffee:` or `☕`;
-   * @return {object}
-   */
-  Emoji.find = function find(nameOrCode) {
-    return Emoji.findByName(nameOrCode) || Emoji.findByCode(nameOrCode);
-  };
-
-  /**
-   * find the emoji by name
-   * @param {string} name The emoji to find either `coffee` or `:coffee:`;
-   * @return {object}
-   */
-  Emoji.findByName = function findByName(name) {
-    var stripped = stripColons(name);
-    var emoji = emojiByName[stripped];
-
-    return emoji ? { emoji: emoji, key: stripped } : undefined;
-  };
-
-  /**
-   * find the emoji by code (emoji)
-   * @param {string} code The emoji to find; for example `☕` or `☔`
-   * @return {object}
-   */
-  Emoji.findByCode = function findByCode(code) {
-    var stripped = stripNSB(code);
-    var name = emojiByCode[stripped];
-
-    // lookup emoji to ensure the Variant Form is returned
-    return name ? { emoji: emojiByName[name], key: name } : undefined;
-  };
-
-  /**
-   * Check if an emoji is known by this library
-   * @param {string} nameOrCode The emoji to validate, either `coffee`, `:coffee:` or `☕`;
-   * @return {object}
-   */
-  Emoji.hasEmoji = function hasEmoji(nameOrCode) {
-    return Emoji.hasEmojiByName(nameOrCode) || Emoji.hasEmojiByCode(nameOrCode);
-  };
-
-  /**
-   * Check if an emoji with given name is known by this library
-   * @param {string} name The emoji to validate either `coffee` or `:coffee:`;
-   * @return {object}
-   */
-  Emoji.hasEmojiByName = function hasEmojiByName(name) {
-    var result = Emoji.findByName(name);
-    return !!result && result.key === stripColons(name);
-  };
-
-  /**
-   * Check if a given emoji is known by this library
-   * @param {string} code The emoji to validate; for example `☕` or `☔`
-   * @return {object}
-   */
-  Emoji.hasEmojiByCode = function hasEmojiByCode(code) {
-    var result = Emoji.findByCode(code);
-    return !!result && stripNSB(result.emoji) === stripNSB(code);
-  };
-
-  /**
-   * get emoji name from code
-   * @param  {string} emoji
-   * @param  {boolean} includeColons should the result include the ::
-   * @return {string}
-   */
-  Emoji.which = function which(emoji_code, includeColons) {
-    var code = stripNSB(emoji_code);
-    var word = emojiByCode[code];
-
-    return includeColons ? wrapColons(word) : word;
-  };
-
-  /**
-   * emojify a string (replace :emoji: with an emoji)
-   * @param  {string} str
-   * @param  {function} on_missing (gets emoji name without :: and returns a proper emoji if no emoji was found)
-   * @param  {function} format (wrap the returned emoji in a custom element)
-   * @return {string}
-   */
-  Emoji.emojify = function emojify(str, on_missing, format) {
-    if (!str) return '';
-
-    return str.split(emojiNameRegex) // parse emoji via regex
-    .map(function parseEmoji(s, i) {
-      // every second element is an emoji, e.g. "test :fast_forward:" -> [ "test ", "fast_forward" ]
-      if (i % 2 === 0) return s;
-      var emoji = Emoji._get(s);
-      var isMissing = emoji.indexOf(':') > -1;
-
-      if (isMissing && typeof on_missing === 'function') {
-        return on_missing(s);
-      }
-
-      if (!isMissing && typeof format === 'function') {
-        return format(emoji, s);
-      }
-
-      return emoji;
-    }).join('') // convert back to string
-    ;
-  };
-
-  /**
-   * return a random emoji
-   * @return {string}
-   */
-  Emoji.random = function random() {
-    var emojiKeys = Object.keys(emojiByName);
-    var randomIndex = Math.floor(Math.random() * emojiKeys.length);
-    var key = emojiKeys[randomIndex];
-    var emoji = Emoji._get(key);
-    return { key: key, emoji: emoji };
-  };
-
-  /**
-   *  return an collection of potential emoji matches
-   *  @param {string} str
-   *  @return {Array.<Object>}
-   */
-  Emoji.search = function search(str) {
-    var emojiKeys = Object.keys(emojiByName);
-    var matcher = stripColons(str);
-    var matchingKeys = emojiKeys.filter(function (key) {
-      return key.toString().indexOf(matcher) === 0;
-    });
-    return matchingKeys.map(function (key) {
-      return {
-        key: key,
-        emoji: Emoji._get(key)
-      };
-    });
-  };
-
-  /**
-   * unemojify a string (replace emoji with :emoji:)
-   * @param  {string} str
-   * @return {string}
-   */
-  Emoji.unemojify = function unemojify(str) {
-    if (!str) return '';
-    var words = lodash_toarray(str);
-
-    return words.map(function (word) {
-      return Emoji.which(word, true) || word;
-    }).join('');
-  };
-
-  /**
-   * replace emojis with replacement value
-   * @param {string} str
-   * @param {function|string} the string or callback function to replace the emoji with
-   * @param {boolean} should trailing whitespaces be cleaned? Defaults false
-   * @return {string}
-   */
-  Emoji.replace = function replace(str, replacement, cleanSpaces) {
-    if (!str) return '';
-
-    var replace = typeof replacement === 'function' ? replacement : function () {
-      return replacement;
-    };
-    var words = lodash_toarray(str);
-
-    var replaced = words.map(function (word, idx) {
-      var emoji = Emoji.findByCode(word);
-
-      if (emoji && cleanSpaces && words[idx + 1] === ' ') {
-        words[idx + 1] = '';
-      }
-
-      return emoji ? replace(emoji) : word;
-    }).join('');
-
-    return cleanSpaces ? replaced.replace(trimSpaceRegex, '') : replaced;
-  };
-
-  /**
-   * remove all emojis from a string
-   * @param {string} str
-   * @return {string}
-   */
-  Emoji.strip = function strip(str) {
-    return Emoji.replace(str, '', true);
-  };
-
-  var emoji$2 = Emoji;
-
-  var css$7 = ".icons {\n  display: flex;\n  flex-direction: row;\n}\n\n.icons.vertical {\n  flex-direction: column;\n}\n\n.icon {\n  cursor: pointer;\n  line-height: normal;\n  line-height: var(--reaction-icon-line-height, normal);\n  margin-right: 5px;\n  position: relative;\n}\n\n.count {\n  left: -5px;\n  left: var(--reaction-count-left, -5px);\n  position: inherit;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n";
-  styleInject(css$7);
-
-  var _templateObject$e = taggedTemplateLiteral(['<img src="', '" />'], ['<img src="', '" />']),
-      _templateObject2$8 = taggedTemplateLiteral(['\n        <div class="icon" name=', ' on-click=', '>\n          <span>', '</span>\n          ', '\n        </div>\n      '], ['\n        <div class="icon" name=', ' on-click=', '>\n          <span>', '</span>\n          ', '\n        </div>\n      ']),
-      _templateObject3$3 = taggedTemplateLiteral(['<span class="count">', '</span>'], ['<span class="count">', '</span>']),
-      _templateObject4$1 = taggedTemplateLiteral(['\n      <div class$=', '>\n        ', '\n      </div>\n    '], ['\n      <div class$=', '>\n        ', '\n      </div>\n    ']);
-
-  var Reactions = function (_LitElement) {
-    inherits(Reactions, _LitElement);
-    createClass(Reactions, null, [{
-      key: 'properties',
-      get: function get$$1() {
-        return {
-          config: Object,
-          direction: String,
-          displayname: String,
-          showcount: Boolean,
-          showall: Boolean
-        };
-      }
-    }]);
-
-    function Reactions(props) {
-      classCallCheck(this, Reactions);
-
-      var _this = possibleConstructorReturn(this, (Reactions.__proto__ || Object.getPrototypeOf(Reactions)).call(this, props));
-
-      _this.emoji = emoji$2;
-
-      _this._boundedClick = _this._handleClick.bind(_this);
-      _this.config = new Map();
-      _this.displayname = 'reactions';
-      _this.showall = false;
-      _this.showcount = false;
-      return _this;
-    }
-
-    createClass(Reactions, [{
-      key: '_renderIcon',
-      value: function _renderIcon(data) {
-        return data.icon ? html$1(_templateObject$e, data.icon) : this.emoji.get(data.name);
-      }
-    }, {
-      key: '_handleClick',
-      value: function _handleClick(e) {
-        this.dispatchEvent(new CustomEvent(this.displayname + '-toggle', { detail: { reaction: e.currentTarget.name } }));
-      }
-    }, {
-      key: '_renderActions',
-      value: function _renderActions() {
-        var _this2 = this;
-
-        return this.config.toJSON().map(function () {
-          return _this2._renderReaction.apply(_this2, arguments);
-        });
-      }
-    }, {
-      key: '_renderReaction',
-      value: function _renderReaction(_ref) {
-        var _ref2 = slicedToArray(_ref, 2),
-            k = _ref2[0],
-            v = _ref2[1];
-
-        var count = Number(v.count || 0);
-        var shouldRender = count || this.showall;
-        var shouldCount = count > 0 && this.showcount;
-
-        return !shouldRender ? null : html$1(_templateObject2$8, k, this._boundedClick, this._renderIcon(v), shouldCount ? html$1(_templateObject3$3, count) : null);
-      }
-    }, {
-      key: '_configure',
-      value: function _configure(config) {
-        if (!(config instanceof Map)) throw new TypeError('Wrong configuration');
-        var data = new Map(config);
-
-        if (config !== data) this.config = data;
-      }
-    }, {
-      key: '_render',
-      value: function _render(props) {
-        var _props$direction = props.direction,
-            direction = _props$direction === undefined ? 'row' : _props$direction;
-
-
-        return html$1(_templateObject4$1, classString({ icons: true, vertical: direction === 'column' }), this._renderActions());
-      }
-    }]);
-    return Reactions;
-  }(LitElement);
-  var ReactionList = withStyle$1(Reactions, css$7);
-
-  var css$8 = "/* :root, */\n:host {\n  display: block;\n}\n.icons {\n  display: flex;\n  flex-direction: row;\n  margin-top: 10px;\n}\n.icons.vertical {\n  flex-direction: column;\n}\n.icon {\n  cursor: default;\n  margin-right: 5px;\n  position: relative;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.icon span {\n  height: 21px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  vertical-align: top;\n  width: 14px;\n}\n";
+  var css$8 = ":host {\n  background-color: #f8f8f8;\n  background-color: var(--chat-background-color, #f8f8f8);\n  display: block;\n  font-size: inherit;\n  font-size: var(--chat-font-size, inherit);\n  height: 100%;\n  height: var(--chat-height, 100%);\n  min-height: 400px;\n  min-height: var(--chat-min-height, 400px);\n  min-width: 330px;\n  min-width: var(--chat-min-width, 330px);\n}\n";
   styleInject(css$8);
 
-  var Reactions$1 = withStyle(html$1)(Reactions, css$8);
-
-  var css$9 = ":host {\n  background-color: #f8f8f8;\n  background-color: var(--chat-background-color, #f8f8f8);\n  display: block;\n  font-size: inherit;\n  font-size: var(--chat-font-size, inherit);\n  height: 100%;\n  height: var(--chat-height, 100%);\n  min-height: 400px;\n  min-height: var(--chat-min-height, 400px);\n  min-width: 330px;\n  min-width: var(--chat-min-width, 330px);\n}\n";
-  styleInject(css$9);
-
-  var _templateObject$f = taggedTemplateLiteral(['\n        <wc-chat-input\n          delay=\'', '\'\n          maxrows=\'', '\'\n          disabled=\'', '\'\n          on-message-submit=\'', '\'\n          placeholder=\'', '\'\n          placeholderdisabled=\'', '\'\n          value=\'', '\'\n        />\n      '], ['\n        <wc-chat-input\n          delay=\'', '\'\n          maxrows=\'', '\'\n          disabled=\'', '\'\n          on-message-submit=\'', '\'\n          placeholder=\'', '\'\n          placeholderdisabled=\'', '\'\n          value=\'', '\'\n        />\n      ']),
-      _templateObject2$9 = taggedTemplateLiteral(['\n      <wc-chat-scrollable\n        reverse=\'', '\'\n        listen=\'', '\'\n      >\n        <div>\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            invoke=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </div>\n      </wc-chat-scrollable>\n      ', '\n    '], ['\n      <wc-chat-scrollable\n        reverse=\'', '\'\n        listen=\'', '\'\n      >\n        <div>\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            invoke=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </div>\n      </wc-chat-scrollable>\n      ', '\n    ']);
+  var _templateObject$g = taggedTemplateLiteral(['\n        <wc-chat-input\n          delay=\'', '\'\n          maxrows=\'', '\'\n          disabled=\'', '\'\n          on-message-submit=\'', '\'\n          placeholder=\'', '\'\n          placeholderdisabled=\'', '\'\n          value=\'', '\'\n        />\n      '], ['\n        <wc-chat-input\n          delay=\'', '\'\n          maxrows=\'', '\'\n          disabled=\'', '\'\n          on-message-submit=\'', '\'\n          placeholder=\'', '\'\n          placeholderdisabled=\'', '\'\n          value=\'', '\'\n        />\n      ']),
+      _templateObject2$a = taggedTemplateLiteral(['\n      <wc-chat-scrollable\n        reverse=\'', '\'\n        listen=\'', '\'\n      >\n        <wc-chat-messages\n          actions=\'', '\'\n          actionsallowed=\'', '\'\n          invoke=\'', '\'\n          list=\'', '\'\n          on-message-delete=\'', '\'\n          on-message-reaction=\'', '\'\n          on-user-disable=\'', '\'\n          user=\'', '\'\n          users=\'', '\'\n        />\n      </wc-chat-scrollable>\n      ', '\n    '], ['\n      <wc-chat-scrollable\n        reverse=\'', '\'\n        listen=\'', '\'\n      >\n        <wc-chat-messages\n          actions=\'', '\'\n          actionsallowed=\'', '\'\n          invoke=\'', '\'\n          list=\'', '\'\n          on-message-delete=\'', '\'\n          on-message-reaction=\'', '\'\n          on-user-disable=\'', '\'\n          user=\'', '\'\n          users=\'', '\'\n        />\n      </wc-chat-scrollable>\n      ', '\n    ']);
 
   var EVENT = 'did-update';
 
@@ -25445,7 +25487,7 @@
       registerCustomElement('wc-chat-scrollable', Scroll);
       registerCustomElement('wc-chat-input', Input);
       registerCustomElement('wc-chat-messages', Messages);
-      registerCustomElement('wc-chat-reactions', Reactions$1);
+      registerCustomElement('wc-chat-reactions', ReactionList);
 
       _this._scrollable = null;
       return _this;
@@ -25492,15 +25534,15 @@
     }, {
       key: '_render',
       value: function _render(props) {
-        var input = props.noinput ? null : html$1(_templateObject$f, props.delay || 0, props.maxrows || 10, props.disabled, this.boundedMessageSubmit, props.placeholder, props.placeholderdisabled, props.message);
+        var input = props.noinput ? null : html$1(_templateObject$g, props.delay || 0, props.maxrows || 10, props.disabled, this.boundedMessageSubmit, props.placeholder, props.placeholderdisabled, props.message);
 
-        return html$1(_templateObject2$9, props.reverse, EVENT, props.actions, props.actionsallowed, EVENT, props.list, this.boundedMessageDelete, this.boundedMessageReaction, this.boundedUserDisable, props.user, props.users, input);
+        return html$1(_templateObject2$a, props.reverse, EVENT, props.actions, props.actionsallowed, EVENT, props.list, this.boundedMessageDelete, this.boundedMessageReaction, this.boundedUserDisable, props.user, props.users, input);
       }
     }]);
     return Chat;
   }(LitElement);
 
-  var chat = withStyle(html$1)(Chat, css$9);
+  var chat = withStyle(html$1)(Chat, css$8);
 
   var chat$1 = /*#__PURE__*/Object.freeze({
     Chat: Chat,
