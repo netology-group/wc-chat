@@ -7,22 +7,24 @@ const cn = (...argv) => argv.join(' ').trim()
 export const messageExtended = (props) => {
   const { message } = props
 
-  const config = new Map([['thumbsup', { name: ':thumbsup', count: message.rating }]])
+  const isWatchdog = message.user_role === 'moderator'
 
   return (html`
-    <div class$='${cs({ 'message-block': true, deleted: props.deleted })}'>
-      <div
-        class$='${cn(message.user_role, 'avatar')}'
-        style$='${!message.avatar ? '' : `background-image: url(${message.avatar});`}'
-      ></div>
-      <section class$='${cn(message.user_role, 'message')}'>
+    <div class$='${cs({
+      message: true, deleted: props.deleted, aggregated: message.aggregated,
+    })}'>
+      <div class$='${cn(message.user_role, 'avatar')}'>
+        <div style$='${!message.avatar ? '' : `background-image: url(${message.avatar});`}'></div>
+        ${!isWatchdog ? (html`<div class='message-identity'>${message.identity}</div>`) : null}
+      </div>
+      <section class$='${cn(message.user_role, 'content', cs({ me: message.user_id === message.current_user_id }))}'>
+        ${props.actions}
         <div class='message-meta'>
-          <span class='message-author'>${message.user_name}</span>
+          <span class='message-author' title='${isWatchdog ? message.identity : ''}'>${message.user_name}</span>
           <span class='message-stamp'>${formatDate(stampToDate(message.timestamp))}</span>
-          <div class='message-status'>${message.status}</div>
+          ${!isWatchdog ? (html`<div class='message-status'>${message.status}</div>`) : null}
         </div>
-        <div>${text(message.body)}</div>
-        <wc-chat-reactions config=${config} showcount></wc-chat-reactions>
+        <div class='message-body'>${text(message.body)}</div>
         ${props.children}
       </section>
     </div>

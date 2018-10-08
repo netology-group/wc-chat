@@ -4,8 +4,7 @@ import { withStyle } from '@netology-group/wc-utils/lib/mixins/mixins'
 import { style as actionStyle } from '../atoms/actions'
 import { messageExtended as Message } from '../molecules/message-extended'
 import { style as messageStyle } from '../molecules/message'
-
-import style from './messages.css'
+import style from '../organisms/messages.css'
 
 export class MessagesElement extends LitElement {
   static get properties () {
@@ -21,16 +20,23 @@ export class MessagesElement extends LitElement {
     return Message({ message })
   }
 
-  _render ({ list = [] }) {
-    if (!list.length) return (html`<div class='messages'></div>`)
+  __renderMessages (list) {
+    return list.map((it, i, arr) => {
+      const aggregated = !i ? false : arr[i].user_id === arr[i - 1].user_id
+      const message = { ...it, current_user_id: this.user }
 
-    return (html`
-      <div class='messages'>
-        <div class='messages-inner'>
-          ${list.map(it => this.__renderMessage(it))}
-        </div>
-      </div>
-    `)
+      return this.__renderMessage(aggregated ? { ...message, aggregated } : message)
+    })
+  }
+
+  _render ({ list = [] }) {
+    const content = !list.length
+      ? null
+      : (html`<div class='messages-inner'>
+        ${this.__renderMessages(list)}
+      </div>`)
+
+    return (html`<div class='messages'>${content}</div>`)
   }
 
   _didRender () {

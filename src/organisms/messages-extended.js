@@ -9,6 +9,8 @@ import * as actions from '../atoms/action'
 
 import style from './messages.css'
 
+const config = message => new Map([['thumbsup', { name: ':thumbsup', count: message.rating }]])
+
 export class XMessagesElement extends MessagesElement {
   static get properties () {
     return {
@@ -23,42 +25,41 @@ export class XMessagesElement extends MessagesElement {
   }
 
   __renderMessage (message) {
-    return Message({ message, children: this.__renderActions({ ...message }) })
+    return Message({
+      message,
+      actions: this.__renderActions({ ...message }),
+      children: (html`<wc-chat-reactions config='${config(message)}' showcount></wc-chat-reactions>`),
+    })
   }
 
   __renderActions (data) {
-    let children = []
-    let reactions = []
+    const children = new Map()
+    const reactions = new Map()
+    const actionsOpts = new Map()
 
     const isAllowed = (action, d) => d.current_user_id !== d.user_id
       || (d.current_user_id === d.user_id && action.self)
 
-    const hasOnlyReactions = this.actionsallowed
-      .filter(key => key !== 'message-reaction')
-      .filter(key => isAllowed(this._actions.get(key) || {}, data))
-
     this.actionsallowed.forEach((key) => {
       const _action = this._actions.get(key) || {}
+      const actionOpts = {
+        message: data,
+        allowed: isAllowed(_action, data) || undefined,
+        children: actions.actionImages.get(key),
+        handler: (e, detail) => { this.dispatchEvent(new CustomEvent(key, { detail })) },
+      }
+
+      actionsOpts.set(key, actionOpts)
 
       if (key === 'message-reaction') {
-        reactions = reactions.concat(actions.reaction({
-          message: data,
-          allowed: isAllowed(_action, data) || undefined,
-          children: actions.actionImages.get(key),
-          standalone: hasOnlyReactions.length === 0,
-          handler: (e, detail) => { this.dispatchEvent(new CustomEvent(key, { detail })) },
-        }))
+        reactions.set(key, actions.reaction(actionOpts))
       } else {
-        children = children.concat(actions.action({
-          message: data,
-          allowed: isAllowed(_action, data) || undefined,
-          children: actions.actionImages.get(key),
-          handler: (e, detail) => { this.dispatchEvent(new CustomEvent(key, { detail })) },
-        }))
+        children.set(key, actions.action(actionOpts))
       }
     })
 
-    return Actions({ children, reactions })
+    // eslint-disable-next-line object-curly-newline
+    return Actions({ children, reactions, actions: actionsOpts })
   }
 }
 

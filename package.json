@@ -1,6 +1,6 @@
 {
   "name": "@netology-group/wc-chat",
-  "version": "0.2.15",
+  "version": "0.3.3",
   "description": "Messenger's webcomponents",
   "bugs": {
     "url": "https://github.com/netology-group/wc-chat/issues"
@@ -56,7 +56,7 @@
     }
   },
   "dependencies": {
-    "@netology-group/wc-reaction": "^0.1.1",
+    "@netology-group/wc-reaction": "^0.2.0",
     "@netology-group/wc-utils": "^0.2.1",
     "@polymer/iron-autogrow-textarea": "^3.0.0-pre.21",
     "@polymer/lit-element": "^0.5.2",

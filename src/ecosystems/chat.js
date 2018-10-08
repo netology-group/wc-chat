@@ -1,13 +1,12 @@
 import { html, LitElement } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils/lib/mixins/mixins'
+import { ReactionList as Reactions } from '@netology-group/wc-reaction/es/organisms/reaction-list'
 
 import Input from '../organisms/input'
 import Messages from '../organisms/messages-extended'
 import Scroll from '../molecules/scrollable'
-import Reactions from '../molecules/reactions'
 import { registerCustomElement } from '../utils/index'
-
-import style from './chat.css'
+import style from '../ecosystems/chat.css'
 
 const EVENT = 'did-update'
 
@@ -97,19 +96,17 @@ export class Chat extends LitElement {
         reverse='${props.reverse}'
         listen='${EVENT}'
       >
-        <div>
-          <wc-chat-messages
-            actions='${props.actions}'
-            actionsallowed='${props.actionsallowed}'
-            invoke='${EVENT}'
-            list='${props.list}'
-            on-message-delete='${this.boundedMessageDelete}'
-            on-message-reaction='${this.boundedMessageReaction}'
-            on-user-disable='${this.boundedUserDisable}'
-            user='${props.user}'
-            users='${props.users}'
-          />
-        </div>
+        <wc-chat-messages
+          actions='${props.actions}'
+          actionsallowed='${props.actionsallowed}'
+          invoke='${EVENT}'
+          list='${props.list}'
+          on-message-delete='${this.boundedMessageDelete}'
+          on-message-reaction='${this.boundedMessageReaction}'
+          on-user-disable='${this.boundedUserDisable}'
+          user='${props.user}'
+          users='${props.users}'
+        />
       </wc-chat-scrollable>
       ${input}
     `)

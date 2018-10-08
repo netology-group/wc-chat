@@ -2,48 +2,124 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   --reaction-count-left: 0;
 }
 
+:root {
+  --message-aggregated-content-border-radius: var(--chat-aggregated-content-border-radius, var(--message-border-radius));
+  --message-aggregated-margin: var(--chat-message-aggregated-margin, var(--message-border-radius));
+  --message-avatar-margin: 8px;
+  --message-avatar-size: 32px;
+  --message-border-radius: 5px;
+  --message-color-deleted-hover: var(--chat-message-color-deleted-hover, #eeeeeeb3);
+  --message-color-deleted: var(--chat-message-color-watchdog, var(--gallery, #eee));
+  --message-color-hover: var(--chat-message-color-hover, #ffffff80);
+  --message-color-me-hover: var(--chat-message-color-me-hover, #ebf2f7b3);
+  --message-color-me: var(--chat-message-color-me, var(--cornflowerBlue, #ebf2f7));
+  --message-color-watchdog-hover: var(--chat-message-color-watchdog-hover, #faefebb3);
+  --message-color-watchdog: var(--chat-message-color-watchdog, var(--whiteLinen, #faefeb));
+  --message-margin-between: 16px;
+  --message-status-color: var(--chat-message-status-color, var(--silver, #b8b8b8));
+}
+
 .avatar {
+  float: left;
+  margin-right: var(--message-avatar-margin);
+  overflow: hidden;
+  user-select: none;
+  vertical-align: top;
+  width: var(--message-avatar-size);
+}
+
+.avatar > div:first-child {
   background: no-repeat center center;
   background-color: var(--message-avatar-color-moderator, transparent);
   background-size: contain;
   border-radius: 100%;
-  display: inline-block;
-  height: 32px;
-  margin-right: 8px;
-  overflow: hidden;
-  user-select: none;
-  vertical-align: top;
-  width: 32px;
+  height: var(--message-avatar-size);
+  width: var(--message-avatar-size);
 }
 
 .avatar.moderator {
   background-color: var(--message-avatar-color, transparent);
 }
 
-.message {
+.content {
   background-color: #fff;
-  border-radius: 5px;
+  border-radius: var(--message-border-radius);
+  box-sizing: border-box;
   display: inline-block;
-  margin-bottom: 16px;
-  max-width: 80%;
-  max-width: 55% !important;
-  padding: 8px 22px 8px 14px;
-  position: relative;
+  padding: 8px 16px 8px 14px;
   text-align: left;
+  width: calc(100% - var(--message-avatar-size) - var(--message-avatar-margin));
 }
 
-.message-block.deleted .message {
-  background: rgba(0, 0, 0, 0.04);
+.content > [class^="actions"] {
+  opacity: 0;
 }
 
-.message-block.deleted .avatar,
-.message-block.deleted .message {
+.content:hover > [class^="actions"] {
+  opacity: 1;
+}
+
+.content.moderator {
+  background-color: var(--message-color-watchdog);
+}
+
+.content.me {
+  background-color: var(--message-color-me);
+}
+
+.message {
+  position: relative;
+}
+
+.message:hover .content {
+  background-color: var(--message-color-hover);
+}
+
+.message:hover .content.moderator {
+  background-color: var(--message-color-watchdog-hover);
+}
+
+.message:hover .content.me {
+  background-color: var(--message-color-me-hover);
+}
+
+.message + .message:not(.aggregated) {
+  margin-top: var(--message-margin-between);
+}
+
+.message.aggregated {
+  margin-top: var(--message-aggregated-margin);
+}
+
+.message.aggregated .avatar {
+  height: 1px;
+  visibility: hidden;
+}
+
+.message.aggregated .content {
+  border-radius: var(--message-border-radius);
+}
+
+.message.deleted .avatar,
+.message.deleted .content {
   filter: grayscale(75%);
+}
+
+.message.deleted .content {
+  background: var(--message-color-deleted);
+}
+
+.message.deleted:hover .content {
+  background: var(--message-color-deleted-hover);
 }
 
 .message-meta {
   margin-bottom: 5px;
   user-select: none;
+}
+
+.message.aggregated .message-meta {
+  display: none;
 }
 
 .message-line {
@@ -61,8 +137,9 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 }
 
 .message-stamp,
-.message-status {
-  color: var(--message-status-color, var(--silver, #b8b8b8));
+.message-status,
+.message-identity {
+  color: var(--message-status-color);
   font-size: 0.75em;
 }
 
@@ -71,10 +148,19 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   margin-right: 8px;
 }
 
-.message.moderator {
-  background-color: rgba(255, 114, 86, 0.08);
+.moderator .message-status {
+  display: inline-block;
 }
 
-.message.me {
-  background-color: rgba(72, 161, 230, 0.08);
+.user.avatar .message-identity {
+  text-align: center;
+}
+
+.moderator .message-author {
+  background: url('../images/human.svg') no-repeat right center transparent;
+  padding-right: 12px;
+}
+
+.message-body {
+  padding-right: 24px;
 }
