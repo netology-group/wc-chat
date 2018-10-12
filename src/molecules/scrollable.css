@@ -1,11 +1,16 @@
 :host {
   box-sizing: var(--chat-scrollable-box-sizing, content-box);
-  display: var(--chat-scrollable-display, block);
-  height: var(--chat-scrollable-height, 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   padding: var(--chat-scrollable-padding, 0);
 }
 
-.scrollable {
-  height: 100%;
+:host .scrollable {
+  flex: 1 1 auto;
   overflow-y: scroll;
+}
+
+:host .scrollable .inner {
+  min-height: 100%;
 }

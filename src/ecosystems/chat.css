@@ -6,3 +6,13 @@
   min-height: var(--chat-min-height, 400px);
   min-width: var(--chat-min-width, 330px);
 }
+
+:host .wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:host .wrapper wc-chat-scrollable {
+  flex: 1 1 auto;
+}

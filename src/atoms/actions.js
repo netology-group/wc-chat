@@ -31,12 +31,17 @@ export const actions = props => (html`
       children: cross,
     })}`)
     : null}
-  <div class='actions'>
-    ${menu}
-    <div class='actions-inner'>
-      ${_actions(props)}
-    </div>
-  </div>
+  ${props.children.size || props.reactions.size
+    ? (html`
+      <div class='actions'>
+        ${menu}
+        <div class='actions-inner'>
+          ${_actions(props)}
+        </div>
+      </div>
+    `)
+    : null
+  }
 `)
 
 export { style }
