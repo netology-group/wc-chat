@@ -9,8 +9,11 @@ import style from '../organisms/messages.css'
 export class MessagesElement extends LitElement {
   static get properties () {
     return {
+      i18n: Object,
       invoke: String,
+      lastseen: Number,
       list: Array,
+      reverse: Boolean,
       user: Number,
       users: Array,
     }
@@ -23,9 +26,15 @@ export class MessagesElement extends LitElement {
   __renderMessages (list) {
     return list.map((it, i, arr) => {
       const aggregated = !i ? false : arr[i].user_id === arr[i - 1].user_id
+      const idx = this.reverse ? i + 1 : i - 1
+      const unseen = this.lastseen !== undefined
+        ? arr[idx]
+          ? arr[idx].id === this.lastseen
+          : null
+        : null
       const message = { ...it, current_user_id: this.user }
 
-      return this.__renderMessage(aggregated ? { ...message, aggregated } : message)
+      return this.__renderMessage({ ...message, aggregated, i18n: this.i18n, unseen, reversed: this.reverse })
     })
   }
 

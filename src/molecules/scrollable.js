@@ -1,5 +1,5 @@
 import { fromEvent } from 'most/src/source/fromEvent'
-import { html, LitElement } from '@polymer/lit-element'
+import { html, LitElement, classString as cs } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils/lib/mixins/mixins'
 import compose from 'ramda/es/compose'
 
@@ -17,9 +17,11 @@ export class Scrollable extends LitElement {
   static get properties () {
     return {
       delay: Number,
+      i18n: Object,
       listen: String,
       reverse: Boolean,
       scrolltarget: String,
+      showbannernew: Boolean,
     }
   }
 
@@ -32,6 +34,7 @@ export class Scrollable extends LitElement {
     this._top = 0
     this._x = 0
     this._y = 0
+    this._detached = false
 
     this.__boundScrollHandler = this._onScrollHandler.bind(this)
   }
@@ -66,6 +69,46 @@ export class Scrollable extends LitElement {
       observe(e => this._onChildrenUpdate(e)),
       throttle(this.delay === 0 ? 0 : this.delay || DELAY),
     )(fromEvent(this.listen, this._scrollable, true))
+
+    compose(
+      observe(e => this._onResizeHandler(e)),
+      throttle(100),
+    )(fromEvent('resize', window))
+  }
+
+  _updateDetachedValue (element) {
+    const {
+      offsetHeight,
+      scrollTop,
+      scrollHeight,
+    } = element
+
+    const newDetachedValue = this.reverse ? scrollTop > 0 : (scrollHeight - scrollTop) > offsetHeight
+
+    if (!newDetachedValue) {
+      this.dispatchEvent(new CustomEvent('last-seen-change'))
+    }
+
+    if (newDetachedValue !== this._detached) {
+      this._detached = newDetachedValue
+
+      this.requestRender()
+    }
+  }
+
+  _scrollToUnseen () {
+    const slot = this._scrollable.querySelector('slot')
+    const el = slot.assignedNodes() && slot.assignedNodes()[1] && slot.assignedNodes()[1].shadowRoot
+      ? slot.assignedNodes()[1].shadowRoot.querySelector('.message.unseen')
+      : null
+
+    if (el) {
+      this._scrollTo(0, el.offsetTop - this._scrollable.offsetHeight / 2)
+    }
+  }
+
+  _onResizeHandler (e) {
+    this._onScrollHandler({currentTarget: this._scrollable})
   }
 
   _onScrollHandler (e) {
@@ -82,9 +125,17 @@ export class Scrollable extends LitElement {
     this._height = scrollHeight
     this._y = scrollTop
     this._x = scrollLeft
+
+    this._updateDetachedValue(e.currentTarget)
   }
 
-  _onChildrenUpdate (e) { this._shouldScrollTo(e) }
+  _onChildrenUpdate (e) {
+    this._shouldScrollTo(e)
+
+    if (e.currentTarget) {
+      this._updateDetachedValue(e.currentTarget)
+    }
+  }
 
   _yScroll (el) {
     const { scrollTop: top, scrollHeight: height } = el
@@ -138,12 +189,39 @@ export class Scrollable extends LitElement {
     }
   }
 
-  _render () {
+  _render (props) {
     return (html`
-      <div class='scrollable' id="scrollable" on-scroll='${this.__boundScrollHandler}'>
-        <div class='inner'>
-          <slot></slot>
+      <div class='wrapper'>
+        <div class='scrollable' id="scrollable" on-scroll='${this.__boundScrollHandler}'>
+          <div class='inner'>
+            <slot></slot>
+          </div>
         </div>
+        ${
+          this._detached && props.showbannernew
+            ? html`<div class$='${cs({
+              banner: true,
+              new: true,
+              [props.reverse ? 'bottom' : 'top']: true,
+              reverse: props.reverse
+            })}' on-click='${() => this._scrollToUnseen()}'>
+              <div class='row'>
+                <div>${this.i18n.NEW_MESSAGES_COUNT}</div>
+                <div>${this.i18n.SEE}</div>
+              </div>
+            </div>`
+            : null
+        }
+        ${
+          this._detached && !props.showbannernew
+            ? html`<div class$='${cs({
+              banner: true,
+              recent: true,
+              [props.reverse ? 'top' : 'bottom']: true,
+              reverse: props.reverse
+            })}' on-click='${() => this.scrollTo()}'>${this.i18n.GO_TO_RECENT_MESSAGE}</div>`
+            : null
+        }
       </div>
     `)
   }

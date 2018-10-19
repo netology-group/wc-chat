@@ -1,12 +1,14 @@
 import { html, LitElement } from '@polymer/lit-element'
+import IntlMessageFormat from 'intl-messageformat'
 import { withStyle } from '@netology-group/wc-utils/lib/mixins/mixins'
 import { ReactionList as Reactions } from '@netology-group/wc-reaction/es/organisms/reaction-list'
 
 import Input from '../organisms/input'
 import Messages from '../organisms/messages-extended'
 import Scroll from '../molecules/scrollable'
-import { registerCustomElement } from '../utils/index'
+import { getIndexById, registerCustomElement } from '../utils/index'
 import style from '../ecosystems/chat.css'
+import i18n from '../i18n'
 
 const EVENT = 'did-update'
 
@@ -18,6 +20,8 @@ export class Chat extends LitElement {
       delaysubmit: Number,
       delayupdate: Number,
       disabled: Boolean,
+      lang: String,
+      lastseen: Number,
       list: Array,
       maxrows: Number,
       message: String,
@@ -33,10 +37,19 @@ export class Chat extends LitElement {
   constructor (props) {
     super(props)
 
+    this._lang = this.lang || IntlMessageFormat.prototype._resolveLocale(navigator.language)
+
+    if (!this.i18n[this._lang]) {
+      this._lang = 'en-US'
+    }
+
+    this._strNewMessages = new IntlMessageFormat(this.i18n[this._lang].NEW_MESSAGES_COUNT, this._lang)
+
     this.boundedMessageSubmit = this._handleSubmit.bind(this)
     this.boundedMessageDelete = this._handleDelete.bind(this)
     this.boundedUserDisable = this._handleUserDisable.bind(this)
     this.boundedMessageReaction = this._handleMessageReaction.bind(this)
+    this.boundedLastSeenChange = this._handleLastSeenChange.bind(this)
 
     registerCustomElement('wc-chat-scrollable', Scroll)
     registerCustomElement('wc-chat-input', Input)
@@ -51,6 +64,10 @@ export class Chat extends LitElement {
     this.boundedMessageDelete = null
     this.boundedUserDisable = null
     this.boundedMessageReaction = null
+  }
+
+  get i18n () {
+    return i18n
   }
 
   scrollTo () {
@@ -77,6 +94,12 @@ export class Chat extends LitElement {
     this.dispatchEvent(new CustomEvent('chat-message-reaction', { detail: e.detail }))
   }
 
+  _handleLastSeenChange (e) {
+    if (this.list && this.list.length > 0 && this.lastseen !== undefined && this.lastseen !== this.list[this.list.length - 1].id) {
+      this.dispatchEvent(new CustomEvent('chat-last-seen-change', { detail: this.list[this.list.length - 1].id }))
+    }
+  }
+
   _render (props) {
     const input = props.noinput
       ? null
@@ -93,22 +116,42 @@ export class Chat extends LitElement {
           />
         </div>
       `)
+    const list = props.list
+      ? props.reverse
+        ? props.list.slice().reverse()
+        : props.list
+      : undefined
+    const newMessageCount = props.list && props.lastseen !== undefined
+      ? props.list.length - 1 - getIndexById(props.lastseen, props.list)
+      : 0
 
     return (html`
       <div class='wrapper'>
         <wc-chat-scrollable
           delay='${props.delayupdate}'
+          i18n='${{
+            GO_TO_RECENT_MESSAGE: this.i18n[this._lang].GO_TO_RECENT_MESSAGE,
+            NEW_MESSAGES_COUNT: this._strNewMessages.format({count: newMessageCount}),
+            SEE: this.i18n[this._lang].SEE
+          }}'
           listen='${EVENT}'
+          on-last-seen-change='${this.boundedLastSeenChange}'
           reverse='${props.reverse}'
+          showbannernew='${newMessageCount > 0}'
         >
           <wc-chat-messages
             actions='${props.actions}'
             actionsallowed='${props.actionsallowed}'
+            i18n='${{
+              NEW_MESSAGES: this.i18n[this._lang].NEW_MESSAGES
+            }}'
             invoke='${EVENT}'
-            list='${props.list}'
+            lastseen='${props.lastseen}'
+            list='${list}'
             on-message-delete='${this.boundedMessageDelete}'
             on-message-reaction='${this.boundedMessageReaction}'
             on-user-disable='${this.boundedUserDisable}'
+            reverse='${props.reverse}'
             user='${props.user}'
             users='${props.users}'
           />

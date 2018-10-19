@@ -21,6 +21,19 @@
     <script src="./dist/chat.min.js"></script>
 
     <script>
+      const uuidv4 = (function () {
+        /*
+        https://gist.github.com/jed/982883
+         */
+        function b(a){return a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,b)}
+        return function () {
+            return b()
+        }
+      }())
+
+      var messenger
+      var messengerReversed
+      var avatarUrl = 'https://about.gitlab.com/images/devops-tools/gitlab-logo.svg'
       var _messages = [
         {
           name: 'Admin',
@@ -30,8 +43,8 @@
           identity: 'Administrator',
           user_id: 99,
           visible: true,
-          avatar: 'https://about.gitlab.com/images/devops-tools/gitlab-logo.svg',
-          id: Date.now(),
+          avatar: avatarUrl,
+          id: uuidv4(),
           body: 'Hello World!',
           timestamp: Date.now() / 1e3,
           rating: 100500,
@@ -45,7 +58,16 @@
           user_role: 'user',
           user_id: 1,
           visible: true,
-          avatar: 'https://about.gitlab.com/images/devops-tools/gitlab-logo.svg'
+          avatar: avatarUrl
+        },
+        {
+          name: 'Mario',
+          identity: 'me2',
+          user_name: "Mario",
+          user_role: 'user',
+          user_id: 2,
+          visible: true,
+          avatar: avatarUrl
         },
       ]
 
@@ -53,12 +75,12 @@
 
       var _actionsallowed = ['message-delete', 'user-disable', 'message-reaction']
 
-      function enhanceMessage (message) {
+      function enhanceMessage (message, userId) {
         const _message = {
-          id: Date.now(),
+          id: uuidv4(),
           body: message,
           timestamp: Date.now() / 1e3,
-          user_id: 1,
+          user_id: userId,
         }
 
         return Object.assign(_message, _users.filter(function(_){
@@ -66,44 +88,48 @@
         })[0] || {})
       }
 
-      function initialize () {
-        var messenger = document.getElementById('messenger')
-        var reverse = ~location.search.indexOf('reverse=true') ? true : false
+      function initialize (element, user) {
+        element.actions = _actions
+        element.actionsallowed = _actionsallowed
+        element.list = _messages
+        element.users = _users
+        element.user = user
 
-        messenger.actions = _actions
-        messenger.actionsallowed = _actionsallowed
-        messenger.list = _messages
-        messenger.users = _users
-        messenger.user = 1
-
-        messenger.addEventListener('chat-message-submit', function(e) {
+        element.addEventListener('chat-message-submit', function(e) {
           setTimeout(function() {
-            if(reverse){
-              _messages = [enhanceMessage(e.detail.message)].concat(_messages)
-            }else{
-              _messages = _messages.concat(enhanceMessage(e.detail.message))
-            }
+            _messages = _messages.concat(enhanceMessage(e.detail.message, user))
 
-            messenger.list = _messages
+            update()
           }, 1e2)
         })
 
-        messenger.addEventListener('chat-message-reaction', function(e) {
+        element.addEventListener('chat-message-reaction', function(e) {
           _messages = _messages.map(function(it) {
             if(it.id === e.detail.message.id) it.rating = !it.rating ? 1 : it.rating + 1
             return it
           })
 
-          messenger.list = _messages
+          update()
         })
 
-        messenger.addEventListener('chat-message-delete', function(e) {
+        element.addEventListener('chat-message-delete', function(e) {
           alert('Delete message: ' + JSON.stringify(e.detail))
         })
 
-        messenger.addEventListener('chat-user-disable', function(e) {
+        element.addEventListener('chat-user-disable', function(e) {
           alert('Disable user: '+ JSON.stringify(e.detail))
         })
+
+        element.addEventListener('chat-last-seen-change', function(e) {
+          element.lastseen = e.detail
+        })
+
+        element.lastseen = _messages && _messages.length ? _messages[_messages.length - 1].id : undefined
+      }
+
+      function update () {
+        messenger.list = _messages
+        messengerReversed.list = _messages
       }
 
       window.addEventListener('DOMContentLoaded', function() {
@@ -111,7 +137,11 @@
 
         window.customElements.define('wc-chat', _Chat)
 
-        initialize()
+        messenger = document.getElementById('messenger')
+        messengerReversed = document.getElementById('messenger-reverse')
+
+        initialize(messenger, 1)
+        initialize(messengerReversed, 2)
       })
     </script>
     <style>
@@ -120,16 +150,31 @@
         height: 100%;
         width: 100%;
       }
+      .row {
+        display: flex;
+      }
     </style>
   </head>
   <body>
     <h1>Chat</h1>
-    <div style="height:500px; width: 30%;">
-      <wc-chat
-        id="messenger"
-        placeholder="Write something…"
-        placeholderdisabled="Chat is blocked now"
-      />
+    <div class="row">
+      <div style="height: 450px; width: 30%;">
+        <wc-chat
+          id="messenger"
+          lang="ru"
+          placeholder="Write something…"
+          placeholderdisabled="Chat is blocked now"
+        />
+      </div>
+      <div style="height: 450px; width: 30%; margin-left: 20px;">
+        <wc-chat
+          id="messenger-reverse"
+          lang="en-US"
+          reverse
+          placeholder="Write something…"
+          placeholderdisabled="Chat is blocked now"
+        />
+      </div>
     </div>
   </body>
 </html>

@@ -12,3 +12,17 @@ export const Debug = (namespace) => {
 
   return (...argv) => debug(process.env.NODE_ENV === 'production', ...argv)
 }
+
+export const getIndexById = (id, array) => {
+  let index
+
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].id === id) {
+      index = i
+
+      break
+    }
+  }
+
+  return index
+}

@@ -6,11 +6,69 @@
   padding: var(--chat-scrollable-padding, 0);
 }
 
-:host .scrollable {
+:host .wrapper {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+}
+
+:host .wrapper .scrollable {
   flex: 1 1 auto;
   overflow-y: scroll;
 }
 
-:host .scrollable .inner {
+:host .wrapper .scrollable .inner {
   min-height: 100%;
+}
+
+:host .wrapper .banner {
+  border-radius: 5px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  left: 20px;
+  padding: 8px 40px 8px 16px;
+  position: absolute;
+  right: 20px;
+  user-select: none;
+}
+
+:host .wrapper .banner.top {
+  top: 5px;
+}
+
+:host .wrapper .banner.bottom {
+  bottom: 5px;
+}
+
+:host .wrapper .banner.new {
+  background: #48a1e6;
+}
+
+:host .wrapper .banner.recent {
+  background: #b8b8b8;
+}
+
+:host .wrapper .banner::before {
+  background: transparent url('../images/arrow-down.svg') center center no-repeat;
+  content: '';
+  display: block;
+  height: 100%;
+  position: absolute;
+  right: 16px;
+  top: 0;
+  width: 16px;
+}
+
+:host .wrapper .banner.reverse::before {
+  transform: rotate(180deg);
+}
+
+:host .row {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
 }

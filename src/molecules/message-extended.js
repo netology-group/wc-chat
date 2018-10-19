@@ -5,14 +5,14 @@ import { stampToDate, formatDate, text } from './message'
 const cn = (...argv) => argv.join(' ').trim()
 
 export const messageExtended = (props) => {
-  const { message } = props
+  const { message, deleted } = props
+  const { aggregated, i18n, unseen, reversed } = message
 
   const isWatchdog = message.user_role === 'moderator'
 
   return (html`
-    <div class$='${cs({
-      message: true, deleted: props.deleted, aggregated: message.aggregated,
-    })}'>
+    <div class$='${cs({message: true, deleted, aggregated, unseen, reversed, normal: !reversed})}'>
+      ${unseen ? html`<div class='separator'><hr><span>${i18n.NEW_MESSAGES}</span></div>` : null}
       <div class$='${cn(message.user_role, 'avatar')}'>
         <div style$='${!message.avatar ? '' : `background-image: url(${message.avatar});`}'></div>
         ${!isWatchdog ? (html`<div class='message-identity'>${message.identity}</div>`) : null}
