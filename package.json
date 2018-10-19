@@ -1,6 +1,6 @@
 {
   "name": "@netology-group/wc-chat",
-  "version": "0.3.6",
+  "version": "0.4.0",
   "description": "Messenger's webcomponents",
   "bugs": {
     "url": "https://github.com/netology-group/wc-chat/issues"
@@ -63,6 +63,7 @@
     "@webcomponents/custom-elements": "^1.2.0",
     "@webcomponents/webcomponentsjs": "^2.1.2",
     "core-js": "^2.5.7",
+    "intl-messageformat": "~2.2.0",
     "invariant": "^2.2.4",
     "most": "^1.7.3",
     "ramda": "^0.25.0"

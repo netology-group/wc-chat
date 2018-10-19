@@ -38,6 +38,21 @@
     };
   }();
 
+  var defineProperty = function (obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+
+    return obj;
+  };
+
   var _extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
@@ -2819,6 +2834,3278 @@
       return LitElement;
   }(PropertiesMixin(HTMLElement));
 
+  var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+  function createCommonjsModule(fn, module) {
+  	return module = { exports: {} }, fn(module, module.exports), module.exports;
+  }
+
+  /*
+  Copyright (c) 2014, Yahoo! Inc. All rights reserved.
+  Copyrights licensed under the New BSD License.
+  See the accompanying LICENSE file for terms.
+  */
+
+  var extend_1 = extend;
+  var hop = Object.prototype.hasOwnProperty;
+
+  function extend(obj) {
+      var sources = Array.prototype.slice.call(arguments, 1),
+          i,
+          len,
+          source,
+          key;
+
+      for (i = 0, len = sources.length; i < len; i += 1) {
+          source = sources[i];
+          if (!source) {
+              continue;
+          }
+
+          for (key in source) {
+              if (hop.call(source, key)) {
+                  obj[key] = source[key];
+              }
+          }
+      }
+
+      return obj;
+  }
+  var hop_1 = hop;
+
+
+
+  var utils = {
+      extend: extend_1,
+      hop: hop_1
+  };
+
+  var es5 = createCommonjsModule(function (module, exports) {
+
+      // Purposely using the same implementation as the Intl.js `Intl` polyfill.
+      // Copyright 2013 Andy Earnshaw, MIT License
+
+      var realDefineProp = function () {
+          try {
+              return !!Object.defineProperty({}, 'a', {});
+          } catch (e) {
+              return false;
+          }
+      }();
+
+      var defineProperty = realDefineProp ? Object.defineProperty : function (obj, name, desc) {
+
+          if ('get' in desc && obj.__defineGetter__) {
+              obj.__defineGetter__(name, desc.get);
+          } else if (!utils.hop.call(obj, name) || 'value' in desc) {
+              obj[name] = desc.value;
+          }
+      };
+
+      var objCreate = Object.create || function (proto, props) {
+          var obj, k;
+
+          function F() {}
+          F.prototype = proto;
+          obj = new F();
+
+          for (k in props) {
+              if (utils.hop.call(props, k)) {
+                  defineProperty(obj, k, props[k]);
+              }
+          }
+
+          return obj;
+      };
+
+      exports.defineProperty = defineProperty, exports.objCreate = objCreate;
+
+      
+  });
+  var es5_1 = es5.defineProperty;
+  var es5_2 = es5.objCreate;
+
+  var compiler = createCommonjsModule(function (module, exports) {
+
+      exports["default"] = Compiler;
+
+      function Compiler(locales, formats, pluralFn) {
+          this.locales = locales;
+          this.formats = formats;
+          this.pluralFn = pluralFn;
+      }
+
+      Compiler.prototype.compile = function (ast) {
+          this.pluralStack = [];
+          this.currentPlural = null;
+          this.pluralNumberFormat = null;
+
+          return this.compileMessage(ast);
+      };
+
+      Compiler.prototype.compileMessage = function (ast) {
+          if (!(ast && ast.type === 'messageFormatPattern')) {
+              throw new Error('Message AST is not of type: "messageFormatPattern"');
+          }
+
+          var elements = ast.elements,
+              pattern = [];
+
+          var i, len, element;
+
+          for (i = 0, len = elements.length; i < len; i += 1) {
+              element = elements[i];
+
+              switch (element.type) {
+                  case 'messageTextElement':
+                      pattern.push(this.compileMessageText(element));
+                      break;
+
+                  case 'argumentElement':
+                      pattern.push(this.compileArgument(element));
+                      break;
+
+                  default:
+                      throw new Error('Message element does not have a valid type');
+              }
+          }
+
+          return pattern;
+      };
+
+      Compiler.prototype.compileMessageText = function (element) {
+          // When this `element` is part of plural sub-pattern and its value contains
+          // an unescaped '#', use a `PluralOffsetString` helper to properly output
+          // the number with the correct offset in the string.
+          if (this.currentPlural && /(^|[^\\])#/g.test(element.value)) {
+              // Create a cache a NumberFormat instance that can be reused for any
+              // PluralOffsetString instance in this message.
+              if (!this.pluralNumberFormat) {
+                  this.pluralNumberFormat = new Intl.NumberFormat(this.locales);
+              }
+
+              return new PluralOffsetString(this.currentPlural.id, this.currentPlural.format.offset, this.pluralNumberFormat, element.value);
+          }
+
+          // Unescape the escaped '#'s in the message text.
+          return element.value.replace(/\\#/g, '#');
+      };
+
+      Compiler.prototype.compileArgument = function (element) {
+          var format = element.format;
+
+          if (!format) {
+              return new StringFormat(element.id);
+          }
+
+          var formats = this.formats,
+              locales = this.locales,
+              pluralFn = this.pluralFn,
+              options;
+
+          switch (format.type) {
+              case 'numberFormat':
+                  options = formats.number[format.style];
+                  return {
+                      id: element.id,
+                      format: new Intl.NumberFormat(locales, options).format
+                  };
+
+              case 'dateFormat':
+                  options = formats.date[format.style];
+                  return {
+                      id: element.id,
+                      format: new Intl.DateTimeFormat(locales, options).format
+                  };
+
+              case 'timeFormat':
+                  options = formats.time[format.style];
+                  return {
+                      id: element.id,
+                      format: new Intl.DateTimeFormat(locales, options).format
+                  };
+
+              case 'pluralFormat':
+                  options = this.compileOptions(element);
+                  return new PluralFormat(element.id, format.ordinal, format.offset, options, pluralFn);
+
+              case 'selectFormat':
+                  options = this.compileOptions(element);
+                  return new SelectFormat(element.id, options);
+
+              default:
+                  throw new Error('Message element does not have a valid format type');
+          }
+      };
+
+      Compiler.prototype.compileOptions = function (element) {
+          var format = element.format,
+              options = format.options,
+              optionsHash = {};
+
+          // Save the current plural element, if any, then set it to a new value when
+          // compiling the options sub-patterns. This conforms the spec's algorithm
+          // for handling `"#"` syntax in message text.
+          this.pluralStack.push(this.currentPlural);
+          this.currentPlural = format.type === 'pluralFormat' ? element : null;
+
+          var i, len, option;
+
+          for (i = 0, len = options.length; i < len; i += 1) {
+              option = options[i];
+
+              // Compile the sub-pattern and save it under the options's selector.
+              optionsHash[option.selector] = this.compileMessage(option.value);
+          }
+
+          // Pop the plural stack to put back the original current plural value.
+          this.currentPlural = this.pluralStack.pop();
+
+          return optionsHash;
+      };
+
+      // -- Compiler Helper Classes --------------------------------------------------
+
+      function StringFormat(id) {
+          this.id = id;
+      }
+
+      StringFormat.prototype.format = function (value) {
+          if (!value && typeof value !== 'number') {
+              return '';
+          }
+
+          return typeof value === 'string' ? value : String(value);
+      };
+
+      function PluralFormat(id, useOrdinal, offset, options, pluralFn) {
+          this.id = id;
+          this.useOrdinal = useOrdinal;
+          this.offset = offset;
+          this.options = options;
+          this.pluralFn = pluralFn;
+      }
+
+      PluralFormat.prototype.getOption = function (value) {
+          var options = this.options;
+
+          var option = options['=' + value] || options[this.pluralFn(value - this.offset, this.useOrdinal)];
+
+          return option || options.other;
+      };
+
+      function PluralOffsetString(id, offset, numberFormat, string) {
+          this.id = id;
+          this.offset = offset;
+          this.numberFormat = numberFormat;
+          this.string = string;
+      }
+
+      PluralOffsetString.prototype.format = function (value) {
+          var number = this.numberFormat.format(value - this.offset);
+
+          return this.string.replace(/(^|[^\\])#/g, '$1' + number).replace(/\\#/g, '#');
+      };
+
+      function SelectFormat(id, options) {
+          this.id = id;
+          this.options = options;
+      }
+
+      SelectFormat.prototype.getOption = function (value) {
+          var options = this.options;
+          return options[value] || options.other;
+      };
+
+      
+  });
+
+  var parser = createCommonjsModule(function (module, exports) {
+
+    exports["default"] = function () {
+
+      /*
+       * Generated by PEG.js 0.9.0.
+       *
+       * http://pegjs.org/
+       */
+
+      function peg$subclass(child, parent) {
+        function ctor() {
+          this.constructor = child;
+        }
+        ctor.prototype = parent.prototype;
+        child.prototype = new ctor();
+      }
+
+      function peg$SyntaxError(message, expected, found, location) {
+        this.message = message;
+        this.expected = expected;
+        this.found = found;
+        this.location = location;
+        this.name = "SyntaxError";
+
+        if (typeof Error.captureStackTrace === "function") {
+          Error.captureStackTrace(this, peg$SyntaxError);
+        }
+      }
+
+      peg$subclass(peg$SyntaxError, Error);
+
+      function peg$parse(input) {
+        var options = arguments.length > 1 ? arguments[1] : {},
+            peg$FAILED = {},
+            peg$startRuleFunctions = { start: peg$parsestart },
+            peg$startRuleFunction = peg$parsestart,
+            peg$c0 = function peg$c0(elements) {
+          return {
+            type: 'messageFormatPattern',
+            elements: elements,
+            location: location()
+          };
+        },
+            peg$c1 = function peg$c1(text) {
+          var string = '',
+              i,
+              j,
+              outerLen,
+              inner,
+              innerLen;
+
+          for (i = 0, outerLen = text.length; i < outerLen; i += 1) {
+            inner = text[i];
+
+            for (j = 0, innerLen = inner.length; j < innerLen; j += 1) {
+              string += inner[j];
+            }
+          }
+
+          return string;
+        },
+            peg$c2 = function peg$c2(messageText) {
+          return {
+            type: 'messageTextElement',
+            value: messageText,
+            location: location()
+          };
+        },
+            peg$c3 = /^[^ \t\n\r,.+={}#]/,
+            peg$c4 = { type: "class", value: "[^ \\t\\n\\r,.+={}#]", description: "[^ \\t\\n\\r,.+={}#]" },
+            peg$c5 = "{",
+            peg$c6 = { type: "literal", value: "{", description: "\"{\"" },
+            peg$c7 = ",",
+            peg$c8 = { type: "literal", value: ",", description: "\",\"" },
+            peg$c9 = "}",
+            peg$c10 = { type: "literal", value: "}", description: "\"}\"" },
+            peg$c11 = function peg$c11(id, format) {
+          return {
+            type: 'argumentElement',
+            id: id,
+            format: format && format[2],
+            location: location()
+          };
+        },
+            peg$c12 = "number",
+            peg$c13 = { type: "literal", value: "number", description: "\"number\"" },
+            peg$c14 = "date",
+            peg$c15 = { type: "literal", value: "date", description: "\"date\"" },
+            peg$c16 = "time",
+            peg$c17 = { type: "literal", value: "time", description: "\"time\"" },
+            peg$c18 = function peg$c18(type, style) {
+          return {
+            type: type + 'Format',
+            style: style && style[2],
+            location: location()
+          };
+        },
+            peg$c19 = "plural",
+            peg$c20 = { type: "literal", value: "plural", description: "\"plural\"" },
+            peg$c21 = function peg$c21(pluralStyle) {
+          return {
+            type: pluralStyle.type,
+            ordinal: false,
+            offset: pluralStyle.offset || 0,
+            options: pluralStyle.options,
+            location: location()
+          };
+        },
+            peg$c22 = "selectordinal",
+            peg$c23 = { type: "literal", value: "selectordinal", description: "\"selectordinal\"" },
+            peg$c24 = function peg$c24(pluralStyle) {
+          return {
+            type: pluralStyle.type,
+            ordinal: true,
+            offset: pluralStyle.offset || 0,
+            options: pluralStyle.options,
+            location: location()
+          };
+        },
+            peg$c25 = "select",
+            peg$c26 = { type: "literal", value: "select", description: "\"select\"" },
+            peg$c27 = function peg$c27(options) {
+          return {
+            type: 'selectFormat',
+            options: options,
+            location: location()
+          };
+        },
+            peg$c28 = "=",
+            peg$c29 = { type: "literal", value: "=", description: "\"=\"" },
+            peg$c30 = function peg$c30(selector, pattern) {
+          return {
+            type: 'optionalFormatPattern',
+            selector: selector,
+            value: pattern,
+            location: location()
+          };
+        },
+            peg$c31 = "offset:",
+            peg$c32 = { type: "literal", value: "offset:", description: "\"offset:\"" },
+            peg$c33 = function peg$c33(number) {
+          return number;
+        },
+            peg$c34 = function peg$c34(offset, options) {
+          return {
+            type: 'pluralFormat',
+            offset: offset,
+            options: options,
+            location: location()
+          };
+        },
+            peg$c35 = { type: "other", description: "whitespace" },
+            peg$c36 = /^[ \t\n\r]/,
+            peg$c37 = { type: "class", value: "[ \\t\\n\\r]", description: "[ \\t\\n\\r]" },
+            peg$c38 = { type: "other", description: "optionalWhitespace" },
+            peg$c39 = /^[0-9]/,
+            peg$c40 = { type: "class", value: "[0-9]", description: "[0-9]" },
+            peg$c41 = /^[0-9a-f]/i,
+            peg$c42 = { type: "class", value: "[0-9a-f]i", description: "[0-9a-f]i" },
+            peg$c43 = "0",
+            peg$c44 = { type: "literal", value: "0", description: "\"0\"" },
+            peg$c45 = /^[1-9]/,
+            peg$c46 = { type: "class", value: "[1-9]", description: "[1-9]" },
+            peg$c47 = function peg$c47(digits) {
+          return parseInt(digits, 10);
+        },
+            peg$c48 = /^[^{}\\\0-\x1F \t\n\r]/,
+            peg$c49 = { type: "class", value: "[^{}\\\\\\0-\\x1F\\x7f \\t\\n\\r]", description: "[^{}\\\\\\0-\\x1F\\x7f \\t\\n\\r]" },
+            peg$c50 = "\\\\",
+            peg$c51 = { type: "literal", value: "\\\\", description: "\"\\\\\\\\\"" },
+            peg$c52 = function peg$c52() {
+          return '\\';
+        },
+            peg$c53 = "\\#",
+            peg$c54 = { type: "literal", value: "\\#", description: "\"\\\\#\"" },
+            peg$c55 = function peg$c55() {
+          return '\\#';
+        },
+            peg$c56 = "\\{",
+            peg$c57 = { type: "literal", value: "\\{", description: "\"\\\\{\"" },
+            peg$c58 = function peg$c58() {
+          return "{";
+        },
+            peg$c59 = "\\}",
+            peg$c60 = { type: "literal", value: "\\}", description: "\"\\\\}\"" },
+            peg$c61 = function peg$c61() {
+          return "}";
+        },
+            peg$c62 = "\\u",
+            peg$c63 = { type: "literal", value: "\\u", description: "\"\\\\u\"" },
+            peg$c64 = function peg$c64(digits) {
+          return String.fromCharCode(parseInt(digits, 16));
+        },
+            peg$c65 = function peg$c65(chars) {
+          return chars.join('');
+        },
+            peg$currPos = 0,
+            peg$savedPos = 0,
+            peg$posDetailsCache = [{ line: 1, column: 1, seenCR: false }],
+            peg$maxFailPos = 0,
+            peg$maxFailExpected = [],
+            peg$silentFails = 0,
+            peg$result;
+
+        if ("startRule" in options) {
+          if (!(options.startRule in peg$startRuleFunctions)) {
+            throw new Error("Can't start parsing from rule \"" + options.startRule + "\".");
+          }
+
+          peg$startRuleFunction = peg$startRuleFunctions[options.startRule];
+        }
+
+        function location() {
+          return peg$computeLocation(peg$savedPos, peg$currPos);
+        }
+
+        function peg$computePosDetails(pos) {
+          var details = peg$posDetailsCache[pos],
+              p,
+              ch;
+
+          if (details) {
+            return details;
+          } else {
+            p = pos - 1;
+            while (!peg$posDetailsCache[p]) {
+              p--;
+            }
+
+            details = peg$posDetailsCache[p];
+            details = {
+              line: details.line,
+              column: details.column,
+              seenCR: details.seenCR
+            };
+
+            while (p < pos) {
+              ch = input.charAt(p);
+              if (ch === "\n") {
+                if (!details.seenCR) {
+                  details.line++;
+                }
+                details.column = 1;
+                details.seenCR = false;
+              } else if (ch === "\r" || ch === "\u2028" || ch === "\u2029") {
+                details.line++;
+                details.column = 1;
+                details.seenCR = true;
+              } else {
+                details.column++;
+                details.seenCR = false;
+              }
+
+              p++;
+            }
+
+            peg$posDetailsCache[pos] = details;
+            return details;
+          }
+        }
+
+        function peg$computeLocation(startPos, endPos) {
+          var startPosDetails = peg$computePosDetails(startPos),
+              endPosDetails = peg$computePosDetails(endPos);
+
+          return {
+            start: {
+              offset: startPos,
+              line: startPosDetails.line,
+              column: startPosDetails.column
+            },
+            end: {
+              offset: endPos,
+              line: endPosDetails.line,
+              column: endPosDetails.column
+            }
+          };
+        }
+
+        function peg$fail(expected) {
+          if (peg$currPos < peg$maxFailPos) {
+            return;
+          }
+
+          if (peg$currPos > peg$maxFailPos) {
+            peg$maxFailPos = peg$currPos;
+            peg$maxFailExpected = [];
+          }
+
+          peg$maxFailExpected.push(expected);
+        }
+
+        function peg$buildException(message, expected, found, location) {
+          function cleanupExpected(expected) {
+            var i = 1;
+
+            expected.sort(function (a, b) {
+              if (a.description < b.description) {
+                return -1;
+              } else if (a.description > b.description) {
+                return 1;
+              } else {
+                return 0;
+              }
+            });
+
+            while (i < expected.length) {
+              if (expected[i - 1] === expected[i]) {
+                expected.splice(i, 1);
+              } else {
+                i++;
+              }
+            }
+          }
+
+          function buildMessage(expected, found) {
+            function stringEscape(s) {
+              function hex(ch) {
+                return ch.charCodeAt(0).toString(16).toUpperCase();
+              }
+
+              return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\x08/g, '\\b').replace(/\t/g, '\\t').replace(/\n/g, '\\n').replace(/\f/g, '\\f').replace(/\r/g, '\\r').replace(/[\x00-\x07\x0B\x0E\x0F]/g, function (ch) {
+                return '\\x0' + hex(ch);
+              }).replace(/[\x10-\x1F\x80-\xFF]/g, function (ch) {
+                return '\\x' + hex(ch);
+              }).replace(/[\u0100-\u0FFF]/g, function (ch) {
+                return "\\u0" + hex(ch);
+              }).replace(/[\u1000-\uFFFF]/g, function (ch) {
+                return "\\u" + hex(ch);
+              });
+            }
+
+            var expectedDescs = new Array(expected.length),
+                expectedDesc,
+                foundDesc,
+                i;
+
+            for (i = 0; i < expected.length; i++) {
+              expectedDescs[i] = expected[i].description;
+            }
+
+            expectedDesc = expected.length > 1 ? expectedDescs.slice(0, -1).join(", ") + " or " + expectedDescs[expected.length - 1] : expectedDescs[0];
+
+            foundDesc = found ? "\"" + stringEscape(found) + "\"" : "end of input";
+
+            return "Expected " + expectedDesc + " but " + foundDesc + " found.";
+          }
+
+          if (expected !== null) {
+            cleanupExpected(expected);
+          }
+
+          return new peg$SyntaxError(message !== null ? message : buildMessage(expected, found), expected, found, location);
+        }
+
+        function peg$parsestart() {
+          var s0;
+
+          s0 = peg$parsemessageFormatPattern();
+
+          return s0;
+        }
+
+        function peg$parsemessageFormatPattern() {
+          var s0, s1, s2;
+
+          s0 = peg$currPos;
+          s1 = [];
+          s2 = peg$parsemessageFormatElement();
+          while (s2 !== peg$FAILED) {
+            s1.push(s2);
+            s2 = peg$parsemessageFormatElement();
+          }
+          if (s1 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c0(s1);
+          }
+          s0 = s1;
+
+          return s0;
+        }
+
+        function peg$parsemessageFormatElement() {
+          var s0;
+
+          s0 = peg$parsemessageTextElement();
+          if (s0 === peg$FAILED) {
+            s0 = peg$parseargumentElement();
+          }
+
+          return s0;
+        }
+
+        function peg$parsemessageText() {
+          var s0, s1, s2, s3, s4, s5;
+
+          s0 = peg$currPos;
+          s1 = [];
+          s2 = peg$currPos;
+          s3 = peg$parse_();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsechars();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parse_();
+              if (s5 !== peg$FAILED) {
+                s3 = [s3, s4, s5];
+                s2 = s3;
+              } else {
+                peg$currPos = s2;
+                s2 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+          if (s2 !== peg$FAILED) {
+            while (s2 !== peg$FAILED) {
+              s1.push(s2);
+              s2 = peg$currPos;
+              s3 = peg$parse_();
+              if (s3 !== peg$FAILED) {
+                s4 = peg$parsechars();
+                if (s4 !== peg$FAILED) {
+                  s5 = peg$parse_();
+                  if (s5 !== peg$FAILED) {
+                    s3 = [s3, s4, s5];
+                    s2 = s3;
+                  } else {
+                    peg$currPos = s2;
+                    s2 = peg$FAILED;
+                  }
+                } else {
+                  peg$currPos = s2;
+                  s2 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s2;
+                s2 = peg$FAILED;
+              }
+            }
+          } else {
+            s1 = peg$FAILED;
+          }
+          if (s1 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c1(s1);
+          }
+          s0 = s1;
+          if (s0 === peg$FAILED) {
+            s0 = peg$currPos;
+            s1 = peg$parsews();
+            if (s1 !== peg$FAILED) {
+              s0 = input.substring(s0, peg$currPos);
+            } else {
+              s0 = s1;
+            }
+          }
+
+          return s0;
+        }
+
+        function peg$parsemessageTextElement() {
+          var s0, s1;
+
+          s0 = peg$currPos;
+          s1 = peg$parsemessageText();
+          if (s1 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c2(s1);
+          }
+          s0 = s1;
+
+          return s0;
+        }
+
+        function peg$parseargument() {
+          var s0, s1, s2;
+
+          s0 = peg$parsenumber();
+          if (s0 === peg$FAILED) {
+            s0 = peg$currPos;
+            s1 = [];
+            if (peg$c3.test(input.charAt(peg$currPos))) {
+              s2 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s2 = peg$FAILED;
+              if (peg$silentFails === 0) {
+                peg$fail(peg$c4);
+              }
+            }
+            if (s2 !== peg$FAILED) {
+              while (s2 !== peg$FAILED) {
+                s1.push(s2);
+                if (peg$c3.test(input.charAt(peg$currPos))) {
+                  s2 = input.charAt(peg$currPos);
+                  peg$currPos++;
+                } else {
+                  s2 = peg$FAILED;
+                  if (peg$silentFails === 0) {
+                    peg$fail(peg$c4);
+                  }
+                }
+              }
+            } else {
+              s1 = peg$FAILED;
+            }
+            if (s1 !== peg$FAILED) {
+              s0 = input.substring(s0, peg$currPos);
+            } else {
+              s0 = s1;
+            }
+          }
+
+          return s0;
+        }
+
+        function peg$parseargumentElement() {
+          var s0, s1, s2, s3, s4, s5, s6, s7, s8;
+
+          s0 = peg$currPos;
+          if (input.charCodeAt(peg$currPos) === 123) {
+            s1 = peg$c5;
+            peg$currPos++;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c6);
+            }
+          }
+          if (s1 !== peg$FAILED) {
+            s2 = peg$parse_();
+            if (s2 !== peg$FAILED) {
+              s3 = peg$parseargument();
+              if (s3 !== peg$FAILED) {
+                s4 = peg$parse_();
+                if (s4 !== peg$FAILED) {
+                  s5 = peg$currPos;
+                  if (input.charCodeAt(peg$currPos) === 44) {
+                    s6 = peg$c7;
+                    peg$currPos++;
+                  } else {
+                    s6 = peg$FAILED;
+                    if (peg$silentFails === 0) {
+                      peg$fail(peg$c8);
+                    }
+                  }
+                  if (s6 !== peg$FAILED) {
+                    s7 = peg$parse_();
+                    if (s7 !== peg$FAILED) {
+                      s8 = peg$parseelementFormat();
+                      if (s8 !== peg$FAILED) {
+                        s6 = [s6, s7, s8];
+                        s5 = s6;
+                      } else {
+                        peg$currPos = s5;
+                        s5 = peg$FAILED;
+                      }
+                    } else {
+                      peg$currPos = s5;
+                      s5 = peg$FAILED;
+                    }
+                  } else {
+                    peg$currPos = s5;
+                    s5 = peg$FAILED;
+                  }
+                  if (s5 === peg$FAILED) {
+                    s5 = null;
+                  }
+                  if (s5 !== peg$FAILED) {
+                    s6 = peg$parse_();
+                    if (s6 !== peg$FAILED) {
+                      if (input.charCodeAt(peg$currPos) === 125) {
+                        s7 = peg$c9;
+                        peg$currPos++;
+                      } else {
+                        s7 = peg$FAILED;
+                        if (peg$silentFails === 0) {
+                          peg$fail(peg$c10);
+                        }
+                      }
+                      if (s7 !== peg$FAILED) {
+                        peg$savedPos = s0;
+                        s1 = peg$c11(s3, s5);
+                        s0 = s1;
+                      } else {
+                        peg$currPos = s0;
+                        s0 = peg$FAILED;
+                      }
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$FAILED;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$FAILED;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+
+          return s0;
+        }
+
+        function peg$parseelementFormat() {
+          var s0;
+
+          s0 = peg$parsesimpleFormat();
+          if (s0 === peg$FAILED) {
+            s0 = peg$parsepluralFormat();
+            if (s0 === peg$FAILED) {
+              s0 = peg$parseselectOrdinalFormat();
+              if (s0 === peg$FAILED) {
+                s0 = peg$parseselectFormat();
+              }
+            }
+          }
+
+          return s0;
+        }
+
+        function peg$parsesimpleFormat() {
+          var s0, s1, s2, s3, s4, s5, s6;
+
+          s0 = peg$currPos;
+          if (input.substr(peg$currPos, 6) === peg$c12) {
+            s1 = peg$c12;
+            peg$currPos += 6;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c13);
+            }
+          }
+          if (s1 === peg$FAILED) {
+            if (input.substr(peg$currPos, 4) === peg$c14) {
+              s1 = peg$c14;
+              peg$currPos += 4;
+            } else {
+              s1 = peg$FAILED;
+              if (peg$silentFails === 0) {
+                peg$fail(peg$c15);
+              }
+            }
+            if (s1 === peg$FAILED) {
+              if (input.substr(peg$currPos, 4) === peg$c16) {
+                s1 = peg$c16;
+                peg$currPos += 4;
+              } else {
+                s1 = peg$FAILED;
+                if (peg$silentFails === 0) {
+                  peg$fail(peg$c17);
+                }
+              }
+            }
+          }
+          if (s1 !== peg$FAILED) {
+            s2 = peg$parse_();
+            if (s2 !== peg$FAILED) {
+              s3 = peg$currPos;
+              if (input.charCodeAt(peg$currPos) === 44) {
+                s4 = peg$c7;
+                peg$currPos++;
+              } else {
+                s4 = peg$FAILED;
+                if (peg$silentFails === 0) {
+                  peg$fail(peg$c8);
+                }
+              }
+              if (s4 !== peg$FAILED) {
+                s5 = peg$parse_();
+                if (s5 !== peg$FAILED) {
+                  s6 = peg$parsechars();
+                  if (s6 !== peg$FAILED) {
+                    s4 = [s4, s5, s6];
+                    s3 = s4;
+                  } else {
+                    peg$currPos = s3;
+                    s3 = peg$FAILED;
+                  }
+                } else {
+                  peg$currPos = s3;
+                  s3 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s3;
+                s3 = peg$FAILED;
+              }
+              if (s3 === peg$FAILED) {
+                s3 = null;
+              }
+              if (s3 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c18(s1, s3);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+
+          return s0;
+        }
+
+        function peg$parsepluralFormat() {
+          var s0, s1, s2, s3, s4, s5;
+
+          s0 = peg$currPos;
+          if (input.substr(peg$currPos, 6) === peg$c19) {
+            s1 = peg$c19;
+            peg$currPos += 6;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c20);
+            }
+          }
+          if (s1 !== peg$FAILED) {
+            s2 = peg$parse_();
+            if (s2 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 44) {
+                s3 = peg$c7;
+                peg$currPos++;
+              } else {
+                s3 = peg$FAILED;
+                if (peg$silentFails === 0) {
+                  peg$fail(peg$c8);
+                }
+              }
+              if (s3 !== peg$FAILED) {
+                s4 = peg$parse_();
+                if (s4 !== peg$FAILED) {
+                  s5 = peg$parsepluralStyle();
+                  if (s5 !== peg$FAILED) {
+                    peg$savedPos = s0;
+                    s1 = peg$c21(s5);
+                    s0 = s1;
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$FAILED;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+
+          return s0;
+        }
+
+        function peg$parseselectOrdinalFormat() {
+          var s0, s1, s2, s3, s4, s5;
+
+          s0 = peg$currPos;
+          if (input.substr(peg$currPos, 13) === peg$c22) {
+            s1 = peg$c22;
+            peg$currPos += 13;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c23);
+            }
+          }
+          if (s1 !== peg$FAILED) {
+            s2 = peg$parse_();
+            if (s2 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 44) {
+                s3 = peg$c7;
+                peg$currPos++;
+              } else {
+                s3 = peg$FAILED;
+                if (peg$silentFails === 0) {
+                  peg$fail(peg$c8);
+                }
+              }
+              if (s3 !== peg$FAILED) {
+                s4 = peg$parse_();
+                if (s4 !== peg$FAILED) {
+                  s5 = peg$parsepluralStyle();
+                  if (s5 !== peg$FAILED) {
+                    peg$savedPos = s0;
+                    s1 = peg$c24(s5);
+                    s0 = s1;
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$FAILED;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+
+          return s0;
+        }
+
+        function peg$parseselectFormat() {
+          var s0, s1, s2, s3, s4, s5, s6;
+
+          s0 = peg$currPos;
+          if (input.substr(peg$currPos, 6) === peg$c25) {
+            s1 = peg$c25;
+            peg$currPos += 6;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c26);
+            }
+          }
+          if (s1 !== peg$FAILED) {
+            s2 = peg$parse_();
+            if (s2 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 44) {
+                s3 = peg$c7;
+                peg$currPos++;
+              } else {
+                s3 = peg$FAILED;
+                if (peg$silentFails === 0) {
+                  peg$fail(peg$c8);
+                }
+              }
+              if (s3 !== peg$FAILED) {
+                s4 = peg$parse_();
+                if (s4 !== peg$FAILED) {
+                  s5 = [];
+                  s6 = peg$parseoptionalFormatPattern();
+                  if (s6 !== peg$FAILED) {
+                    while (s6 !== peg$FAILED) {
+                      s5.push(s6);
+                      s6 = peg$parseoptionalFormatPattern();
+                    }
+                  } else {
+                    s5 = peg$FAILED;
+                  }
+                  if (s5 !== peg$FAILED) {
+                    peg$savedPos = s0;
+                    s1 = peg$c27(s5);
+                    s0 = s1;
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$FAILED;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+
+          return s0;
+        }
+
+        function peg$parseselector() {
+          var s0, s1, s2, s3;
+
+          s0 = peg$currPos;
+          s1 = peg$currPos;
+          if (input.charCodeAt(peg$currPos) === 61) {
+            s2 = peg$c28;
+            peg$currPos++;
+          } else {
+            s2 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c29);
+            }
+          }
+          if (s2 !== peg$FAILED) {
+            s3 = peg$parsenumber();
+            if (s3 !== peg$FAILED) {
+              s2 = [s2, s3];
+              s1 = s2;
+            } else {
+              peg$currPos = s1;
+              s1 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s1;
+            s1 = peg$FAILED;
+          }
+          if (s1 !== peg$FAILED) {
+            s0 = input.substring(s0, peg$currPos);
+          } else {
+            s0 = s1;
+          }
+          if (s0 === peg$FAILED) {
+            s0 = peg$parsechars();
+          }
+
+          return s0;
+        }
+
+        function peg$parseoptionalFormatPattern() {
+          var s0, s1, s2, s3, s4, s5, s6, s7, s8;
+
+          s0 = peg$currPos;
+          s1 = peg$parse_();
+          if (s1 !== peg$FAILED) {
+            s2 = peg$parseselector();
+            if (s2 !== peg$FAILED) {
+              s3 = peg$parse_();
+              if (s3 !== peg$FAILED) {
+                if (input.charCodeAt(peg$currPos) === 123) {
+                  s4 = peg$c5;
+                  peg$currPos++;
+                } else {
+                  s4 = peg$FAILED;
+                  if (peg$silentFails === 0) {
+                    peg$fail(peg$c6);
+                  }
+                }
+                if (s4 !== peg$FAILED) {
+                  s5 = peg$parse_();
+                  if (s5 !== peg$FAILED) {
+                    s6 = peg$parsemessageFormatPattern();
+                    if (s6 !== peg$FAILED) {
+                      s7 = peg$parse_();
+                      if (s7 !== peg$FAILED) {
+                        if (input.charCodeAt(peg$currPos) === 125) {
+                          s8 = peg$c9;
+                          peg$currPos++;
+                        } else {
+                          s8 = peg$FAILED;
+                          if (peg$silentFails === 0) {
+                            peg$fail(peg$c10);
+                          }
+                        }
+                        if (s8 !== peg$FAILED) {
+                          peg$savedPos = s0;
+                          s1 = peg$c30(s2, s6);
+                          s0 = s1;
+                        } else {
+                          peg$currPos = s0;
+                          s0 = peg$FAILED;
+                        }
+                      } else {
+                        peg$currPos = s0;
+                        s0 = peg$FAILED;
+                      }
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$FAILED;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$FAILED;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$FAILED;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+
+          return s0;
+        }
+
+        function peg$parseoffset() {
+          var s0, s1, s2, s3;
+
+          s0 = peg$currPos;
+          if (input.substr(peg$currPos, 7) === peg$c31) {
+            s1 = peg$c31;
+            peg$currPos += 7;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c32);
+            }
+          }
+          if (s1 !== peg$FAILED) {
+            s2 = peg$parse_();
+            if (s2 !== peg$FAILED) {
+              s3 = peg$parsenumber();
+              if (s3 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c33(s3);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+
+          return s0;
+        }
+
+        function peg$parsepluralStyle() {
+          var s0, s1, s2, s3, s4;
+
+          s0 = peg$currPos;
+          s1 = peg$parseoffset();
+          if (s1 === peg$FAILED) {
+            s1 = null;
+          }
+          if (s1 !== peg$FAILED) {
+            s2 = peg$parse_();
+            if (s2 !== peg$FAILED) {
+              s3 = [];
+              s4 = peg$parseoptionalFormatPattern();
+              if (s4 !== peg$FAILED) {
+                while (s4 !== peg$FAILED) {
+                  s3.push(s4);
+                  s4 = peg$parseoptionalFormatPattern();
+                }
+              } else {
+                s3 = peg$FAILED;
+              }
+              if (s3 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c34(s1, s3);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+
+          return s0;
+        }
+
+        function peg$parsews() {
+          var s0, s1;
+
+          peg$silentFails++;
+          s0 = [];
+          if (peg$c36.test(input.charAt(peg$currPos))) {
+            s1 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c37);
+            }
+          }
+          if (s1 !== peg$FAILED) {
+            while (s1 !== peg$FAILED) {
+              s0.push(s1);
+              if (peg$c36.test(input.charAt(peg$currPos))) {
+                s1 = input.charAt(peg$currPos);
+                peg$currPos++;
+              } else {
+                s1 = peg$FAILED;
+                if (peg$silentFails === 0) {
+                  peg$fail(peg$c37);
+                }
+              }
+            }
+          } else {
+            s0 = peg$FAILED;
+          }
+          peg$silentFails--;
+          if (s0 === peg$FAILED) {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c35);
+            }
+          }
+
+          return s0;
+        }
+
+        function peg$parse_() {
+          var s0, s1, s2;
+
+          peg$silentFails++;
+          s0 = peg$currPos;
+          s1 = [];
+          s2 = peg$parsews();
+          while (s2 !== peg$FAILED) {
+            s1.push(s2);
+            s2 = peg$parsews();
+          }
+          if (s1 !== peg$FAILED) {
+            s0 = input.substring(s0, peg$currPos);
+          } else {
+            s0 = s1;
+          }
+          peg$silentFails--;
+          if (s0 === peg$FAILED) {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c38);
+            }
+          }
+
+          return s0;
+        }
+
+        function peg$parsedigit() {
+          var s0;
+
+          if (peg$c39.test(input.charAt(peg$currPos))) {
+            s0 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s0 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c40);
+            }
+          }
+
+          return s0;
+        }
+
+        function peg$parsehexDigit() {
+          var s0;
+
+          if (peg$c41.test(input.charAt(peg$currPos))) {
+            s0 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s0 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c42);
+            }
+          }
+
+          return s0;
+        }
+
+        function peg$parsenumber() {
+          var s0, s1, s2, s3, s4, s5;
+
+          s0 = peg$currPos;
+          if (input.charCodeAt(peg$currPos) === 48) {
+            s1 = peg$c43;
+            peg$currPos++;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c44);
+            }
+          }
+          if (s1 === peg$FAILED) {
+            s1 = peg$currPos;
+            s2 = peg$currPos;
+            if (peg$c45.test(input.charAt(peg$currPos))) {
+              s3 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s3 = peg$FAILED;
+              if (peg$silentFails === 0) {
+                peg$fail(peg$c46);
+              }
+            }
+            if (s3 !== peg$FAILED) {
+              s4 = [];
+              s5 = peg$parsedigit();
+              while (s5 !== peg$FAILED) {
+                s4.push(s5);
+                s5 = peg$parsedigit();
+              }
+              if (s4 !== peg$FAILED) {
+                s3 = [s3, s4];
+                s2 = s3;
+              } else {
+                peg$currPos = s2;
+                s2 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s2;
+              s2 = peg$FAILED;
+            }
+            if (s2 !== peg$FAILED) {
+              s1 = input.substring(s1, peg$currPos);
+            } else {
+              s1 = s2;
+            }
+          }
+          if (s1 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c47(s1);
+          }
+          s0 = s1;
+
+          return s0;
+        }
+
+        function peg$parsechar() {
+          var s0, s1, s2, s3, s4, s5, s6, s7;
+
+          if (peg$c48.test(input.charAt(peg$currPos))) {
+            s0 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s0 = peg$FAILED;
+            if (peg$silentFails === 0) {
+              peg$fail(peg$c49);
+            }
+          }
+          if (s0 === peg$FAILED) {
+            s0 = peg$currPos;
+            if (input.substr(peg$currPos, 2) === peg$c50) {
+              s1 = peg$c50;
+              peg$currPos += 2;
+            } else {
+              s1 = peg$FAILED;
+              if (peg$silentFails === 0) {
+                peg$fail(peg$c51);
+              }
+            }
+            if (s1 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c52();
+            }
+            s0 = s1;
+            if (s0 === peg$FAILED) {
+              s0 = peg$currPos;
+              if (input.substr(peg$currPos, 2) === peg$c53) {
+                s1 = peg$c53;
+                peg$currPos += 2;
+              } else {
+                s1 = peg$FAILED;
+                if (peg$silentFails === 0) {
+                  peg$fail(peg$c54);
+                }
+              }
+              if (s1 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c55();
+              }
+              s0 = s1;
+              if (s0 === peg$FAILED) {
+                s0 = peg$currPos;
+                if (input.substr(peg$currPos, 2) === peg$c56) {
+                  s1 = peg$c56;
+                  peg$currPos += 2;
+                } else {
+                  s1 = peg$FAILED;
+                  if (peg$silentFails === 0) {
+                    peg$fail(peg$c57);
+                  }
+                }
+                if (s1 !== peg$FAILED) {
+                  peg$savedPos = s0;
+                  s1 = peg$c58();
+                }
+                s0 = s1;
+                if (s0 === peg$FAILED) {
+                  s0 = peg$currPos;
+                  if (input.substr(peg$currPos, 2) === peg$c59) {
+                    s1 = peg$c59;
+                    peg$currPos += 2;
+                  } else {
+                    s1 = peg$FAILED;
+                    if (peg$silentFails === 0) {
+                      peg$fail(peg$c60);
+                    }
+                  }
+                  if (s1 !== peg$FAILED) {
+                    peg$savedPos = s0;
+                    s1 = peg$c61();
+                  }
+                  s0 = s1;
+                  if (s0 === peg$FAILED) {
+                    s0 = peg$currPos;
+                    if (input.substr(peg$currPos, 2) === peg$c62) {
+                      s1 = peg$c62;
+                      peg$currPos += 2;
+                    } else {
+                      s1 = peg$FAILED;
+                      if (peg$silentFails === 0) {
+                        peg$fail(peg$c63);
+                      }
+                    }
+                    if (s1 !== peg$FAILED) {
+                      s2 = peg$currPos;
+                      s3 = peg$currPos;
+                      s4 = peg$parsehexDigit();
+                      if (s4 !== peg$FAILED) {
+                        s5 = peg$parsehexDigit();
+                        if (s5 !== peg$FAILED) {
+                          s6 = peg$parsehexDigit();
+                          if (s6 !== peg$FAILED) {
+                            s7 = peg$parsehexDigit();
+                            if (s7 !== peg$FAILED) {
+                              s4 = [s4, s5, s6, s7];
+                              s3 = s4;
+                            } else {
+                              peg$currPos = s3;
+                              s3 = peg$FAILED;
+                            }
+                          } else {
+                            peg$currPos = s3;
+                            s3 = peg$FAILED;
+                          }
+                        } else {
+                          peg$currPos = s3;
+                          s3 = peg$FAILED;
+                        }
+                      } else {
+                        peg$currPos = s3;
+                        s3 = peg$FAILED;
+                      }
+                      if (s3 !== peg$FAILED) {
+                        s2 = input.substring(s2, peg$currPos);
+                      } else {
+                        s2 = s3;
+                      }
+                      if (s2 !== peg$FAILED) {
+                        peg$savedPos = s0;
+                        s1 = peg$c64(s2);
+                        s0 = s1;
+                      } else {
+                        peg$currPos = s0;
+                        s0 = peg$FAILED;
+                      }
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$FAILED;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          return s0;
+        }
+
+        function peg$parsechars() {
+          var s0, s1, s2;
+
+          s0 = peg$currPos;
+          s1 = [];
+          s2 = peg$parsechar();
+          if (s2 !== peg$FAILED) {
+            while (s2 !== peg$FAILED) {
+              s1.push(s2);
+              s2 = peg$parsechar();
+            }
+          } else {
+            s1 = peg$FAILED;
+          }
+          if (s1 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c65(s1);
+          }
+          s0 = s1;
+
+          return s0;
+        }
+
+        peg$result = peg$startRuleFunction();
+
+        if (peg$result !== peg$FAILED && peg$currPos === input.length) {
+          return peg$result;
+        } else {
+          if (peg$result !== peg$FAILED && peg$currPos < input.length) {
+            peg$fail({ type: "end", description: "end of input" });
+          }
+
+          throw peg$buildException(null, peg$maxFailExpected, peg$maxFailPos < input.length ? input.charAt(peg$maxFailPos) : null, peg$maxFailPos < input.length ? peg$computeLocation(peg$maxFailPos, peg$maxFailPos + 1) : peg$computeLocation(peg$maxFailPos, peg$maxFailPos));
+        }
+      }
+
+      return {
+        SyntaxError: peg$SyntaxError,
+        parse: peg$parse
+      };
+    }();
+
+    
+  });
+
+  var intlMessageformatParser = createCommonjsModule(function (module, exports) {
+
+    exports = module.exports = parser['default'];
+    exports['default'] = exports;
+  });
+
+  var core = createCommonjsModule(function (module, exports) {
+
+      exports["default"] = MessageFormat;
+
+      // -- MessageFormat --------------------------------------------------------
+
+      function MessageFormat(message, locales, formats) {
+          // Parse string messages into an AST.
+          var ast = typeof message === 'string' ? MessageFormat.__parse(message) : message;
+
+          if (!(ast && ast.type === 'messageFormatPattern')) {
+              throw new TypeError('A message must be provided as a String or AST.');
+          }
+
+          // Creates a new object with the specified `formats` merged with the default
+          // formats.
+          formats = this._mergeFormats(MessageFormat.formats, formats);
+
+          // Defined first because it's used to build the format pattern.
+          es5.defineProperty(this, '_locale', { value: this._resolveLocale(locales) });
+
+          // Compile the `ast` to a pattern that is highly optimized for repeated
+          // `format()` invocations. **Note:** This passes the `locales` set provided
+          // to the constructor instead of just the resolved locale.
+          var pluralFn = this._findPluralRuleFunction(this._locale);
+          var pattern = this._compilePattern(ast, locales, formats, pluralFn);
+
+          // "Bind" `format()` method to `this` so it can be passed by reference like
+          // the other `Intl` APIs.
+          var messageFormat = this;
+          this.format = function (values) {
+              try {
+                  return messageFormat._format(pattern, values);
+              } catch (e) {
+                  if (e.variableId) {
+                      throw new Error('The intl string context variable \'' + e.variableId + '\'' + ' was not provided to the string \'' + message + '\'');
+                  } else {
+                      throw e;
+                  }
+              }
+          };
+      }
+
+      // Default format options used as the prototype of the `formats` provided to the
+      // constructor. These are used when constructing the internal Intl.NumberFormat
+      // and Intl.DateTimeFormat instances.
+      es5.defineProperty(MessageFormat, 'formats', {
+          enumerable: true,
+
+          value: {
+              number: {
+                  'currency': {
+                      style: 'currency'
+                  },
+
+                  'percent': {
+                      style: 'percent'
+                  }
+              },
+
+              date: {
+                  'short': {
+                      month: 'numeric',
+                      day: 'numeric',
+                      year: '2-digit'
+                  },
+
+                  'medium': {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric'
+                  },
+
+                  'long': {
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                  },
+
+                  'full': {
+                      weekday: 'long',
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                  }
+              },
+
+              time: {
+                  'short': {
+                      hour: 'numeric',
+                      minute: 'numeric'
+                  },
+
+                  'medium': {
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      second: 'numeric'
+                  },
+
+                  'long': {
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      second: 'numeric',
+                      timeZoneName: 'short'
+                  },
+
+                  'full': {
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      second: 'numeric',
+                      timeZoneName: 'short'
+                  }
+              }
+          }
+      });
+
+      // Define internal private properties for dealing with locale data.
+      es5.defineProperty(MessageFormat, '__localeData__', { value: es5.objCreate(null) });
+      es5.defineProperty(MessageFormat, '__addLocaleData', { value: function value(data) {
+              if (!(data && data.locale)) {
+                  throw new Error('Locale data provided to IntlMessageFormat is missing a ' + '`locale` property');
+              }
+
+              MessageFormat.__localeData__[data.locale.toLowerCase()] = data;
+          } });
+
+      // Defines `__parse()` static method as an exposed private.
+      es5.defineProperty(MessageFormat, '__parse', { value: intlMessageformatParser["default"].parse });
+
+      // Define public `defaultLocale` property which defaults to English, but can be
+      // set by the developer.
+      es5.defineProperty(MessageFormat, 'defaultLocale', {
+          enumerable: true,
+          writable: true,
+          value: undefined
+      });
+
+      MessageFormat.prototype.resolvedOptions = function () {
+          // TODO: Provide anything else?
+          return {
+              locale: this._locale
+          };
+      };
+
+      MessageFormat.prototype._compilePattern = function (ast, locales, formats, pluralFn) {
+          var compiler$$1 = new compiler["default"](locales, formats, pluralFn);
+          return compiler$$1.compile(ast);
+      };
+
+      MessageFormat.prototype._findPluralRuleFunction = function (locale) {
+          var localeData = MessageFormat.__localeData__;
+          var data = localeData[locale.toLowerCase()];
+
+          // The locale data is de-duplicated, so we have to traverse the locale's
+          // hierarchy until we find a `pluralRuleFunction` to return.
+          while (data) {
+              if (data.pluralRuleFunction) {
+                  return data.pluralRuleFunction;
+              }
+
+              data = data.parentLocale && localeData[data.parentLocale.toLowerCase()];
+          }
+
+          throw new Error('Locale data added to IntlMessageFormat is missing a ' + '`pluralRuleFunction` for :' + locale);
+      };
+
+      MessageFormat.prototype._format = function (pattern, values) {
+          var result = '',
+              i,
+              len,
+              part,
+              id,
+              value,
+              err;
+
+          for (i = 0, len = pattern.length; i < len; i += 1) {
+              part = pattern[i];
+
+              // Exist early for string parts.
+              if (typeof part === 'string') {
+                  result += part;
+                  continue;
+              }
+
+              id = part.id;
+
+              // Enforce that all required values are provided by the caller.
+              if (!(values && utils.hop.call(values, id))) {
+                  err = new Error('A value must be provided for: ' + id);
+                  err.variableId = id;
+                  throw err;
+              }
+
+              value = values[id];
+
+              // Recursively format plural and select parts' option — which can be a
+              // nested pattern structure. The choosing of the option to use is
+              // abstracted-by and delegated-to the part helper object.
+              if (part.options) {
+                  result += this._format(part.getOption(value), values);
+              } else {
+                  result += part.format(value);
+              }
+          }
+
+          return result;
+      };
+
+      MessageFormat.prototype._mergeFormats = function (defaults, formats) {
+          var mergedFormats = {},
+              type,
+              mergedType;
+
+          for (type in defaults) {
+              if (!utils.hop.call(defaults, type)) {
+                  continue;
+              }
+
+              mergedFormats[type] = mergedType = es5.objCreate(defaults[type]);
+
+              if (formats && utils.hop.call(formats, type)) {
+                  utils.extend(mergedType, formats[type]);
+              }
+          }
+
+          return mergedFormats;
+      };
+
+      MessageFormat.prototype._resolveLocale = function (locales) {
+          if (typeof locales === 'string') {
+              locales = [locales];
+          }
+
+          // Create a copy of the array so we can push on the default locale.
+          locales = (locales || []).concat(MessageFormat.defaultLocale);
+
+          var localeData = MessageFormat.__localeData__;
+          var i, len, localeParts, data;
+
+          // Using the set of locales + the default locale, we look for the first one
+          // which that has been registered. When data does not exist for a locale, we
+          // traverse its ancestors to find something that's been registered within
+          // its hierarchy of locales. Since we lack the proper `parentLocale` data
+          // here, we must take a naive approach to traversal.
+          for (i = 0, len = locales.length; i < len; i += 1) {
+              localeParts = locales[i].toLowerCase().split('-');
+
+              while (localeParts.length) {
+                  data = localeData[localeParts.join('-')];
+                  if (data) {
+                      // Return the normalized locale string; e.g., we return "en-US",
+                      // instead of "en-us".
+                      return data.locale;
+                  }
+
+                  localeParts.pop();
+              }
+          }
+
+          var defaultLocale = locales.pop();
+          throw new Error('No locale data has been added to IntlMessageFormat for: ' + locales.join(', ') + ', or the default locale: ' + defaultLocale);
+      };
+
+      
+  });
+
+  var en = createCommonjsModule(function (module, exports) {
+
+    exports["default"] = { "locale": "en", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+        var s = String(n).split("."),
+            v0 = !s[1],
+            t0 = Number(s[0]) == n,
+            n10 = t0 && s[0].slice(-1),
+            n100 = t0 && s[0].slice(-2);if (ord) return n10 == 1 && n100 != 11 ? "one" : n10 == 2 && n100 != 12 ? "two" : n10 == 3 && n100 != 13 ? "few" : "other";return n == 1 && v0 ? "one" : "other";
+      } };
+
+    
+  });
+
+  var main = createCommonjsModule(function (module, exports) {
+
+    core["default"].__addLocaleData(en["default"]);
+    core["default"].defaultLocale = 'en';
+
+    exports["default"] = core["default"];
+
+    
+  });
+
+  // GENERATED FILE
+  var IntlMessageFormat = core["default"];
+
+  IntlMessageFormat.__addLocaleData({ "locale": "af", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "af-NA", "parentLocale": "af" });
+  IntlMessageFormat.__addLocaleData({ "locale": "agq", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ak", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "am", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n,
+          n100 = t0 && s[0].slice(-2);if (ord) return "other";return n == 0 ? "zero" : n == 1 ? "one" : n == 2 ? "two" : n100 >= 3 && n100 <= 10 ? "few" : n100 >= 11 && n100 <= 99 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-AE", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-BH", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-DJ", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-DZ", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-EG", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-EH", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-ER", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-IL", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-IQ", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-JO", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-KM", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-KW", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-LB", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-LY", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-MA", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-MR", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-OM", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-PS", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-QA", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-SA", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-SD", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-SO", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-SS", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-SY", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-TD", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-TN", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-YE", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "as", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 || n == 5 || n == 7 || n == 8 || n == 9 || n == 10 ? "one" : n == 2 || n == 3 ? "two" : n == 4 ? "few" : n == 6 ? "many" : "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "asa", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ast", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "az", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2),
+          i1000 = i.slice(-3);if (ord) return i10 == 1 || i10 == 2 || i10 == 5 || i10 == 7 || i10 == 8 || i100 == 20 || i100 == 50 || i100 == 70 || i100 == 80 ? "one" : i10 == 3 || i10 == 4 || i1000 == 100 || i1000 == 200 || i1000 == 300 || i1000 == 400 || i1000 == 500 || i1000 == 600 || i1000 == 700 || i1000 == 800 || i1000 == 900 ? "few" : i == 0 || i10 == 6 || i100 == 40 || i100 == 60 || i100 == 90 ? "many" : "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "az-Arab", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "az-Cyrl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "az-Latn", "parentLocale": "az" });
+  IntlMessageFormat.__addLocaleData({ "locale": "bas", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "be", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2);if (ord) return (n10 == 2 || n10 == 3) && n100 != 12 && n100 != 13 ? "few" : "other";return n10 == 1 && n100 != 11 ? "one" : n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14) ? "few" : t0 && n10 == 0 || n10 >= 5 && n10 <= 9 || n100 >= 11 && n100 <= 14 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bem", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bez", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bm", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bm-Nkoo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 || n == 5 || n == 7 || n == 8 || n == 9 || n == 10 ? "one" : n == 2 || n == 3 ? "two" : n == 4 ? "few" : n == 6 ? "many" : "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bn-IN", "parentLocale": "bn" });
+  IntlMessageFormat.__addLocaleData({ "locale": "bo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bo-IN", "parentLocale": "bo" });
+  IntlMessageFormat.__addLocaleData({ "locale": "br", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2),
+          n1000000 = t0 && s[0].slice(-6);if (ord) return "other";return n10 == 1 && n100 != 11 && n100 != 71 && n100 != 91 ? "one" : n10 == 2 && n100 != 12 && n100 != 72 && n100 != 92 ? "two" : (n10 == 3 || n10 == 4 || n10 == 9) && (n100 < 10 || n100 > 19) && (n100 < 70 || n100 > 79) && (n100 < 90 || n100 > 99) ? "few" : n != 0 && t0 && n1000000 == 0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "brx", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bs", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2),
+          f10 = f.slice(-1),
+          f100 = f.slice(-2);if (ord) return "other";return v0 && i10 == 1 && i100 != 11 || f10 == 1 && f100 != 11 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) || f10 >= 2 && f10 <= 4 && (f100 < 12 || f100 > 14) ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bs-Cyrl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bs-Latn", "parentLocale": "bs" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ca", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return n == 1 || n == 3 ? "one" : n == 2 ? "two" : n == 4 ? "few" : "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ca-AD", "parentLocale": "ca" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ca-ES-VALENCIA", "parentLocale": "ca-ES" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ca-ES", "parentLocale": "ca" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ca-FR", "parentLocale": "ca" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ca-IT", "parentLocale": "ca" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ce", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "cgg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "chr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ckb", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ckb-IR", "parentLocale": "ckb" });
+  IntlMessageFormat.__addLocaleData({ "locale": "cs", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : i >= 2 && i <= 4 && v0 ? "few" : !v0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "cu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "cy", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 0 || n == 7 || n == 8 || n == 9 ? "zero" : n == 1 ? "one" : n == 2 ? "two" : n == 3 || n == 4 ? "few" : n == 5 || n == 6 ? "many" : "other";return n == 0 ? "zero" : n == 1 ? "one" : n == 2 ? "two" : n == 3 ? "few" : n == 6 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "da", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          t0 = Number(s[0]) == n;if (ord) return "other";return n == 1 || !t0 && (i == 0 || i == 1) ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "da-GL", "parentLocale": "da" });
+  IntlMessageFormat.__addLocaleData({ "locale": "dav", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "de", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "de-AT", "parentLocale": "de" });
+  IntlMessageFormat.__addLocaleData({ "locale": "de-BE", "parentLocale": "de" });
+  IntlMessageFormat.__addLocaleData({ "locale": "de-CH", "parentLocale": "de" });
+  IntlMessageFormat.__addLocaleData({ "locale": "de-LI", "parentLocale": "de" });
+  IntlMessageFormat.__addLocaleData({ "locale": "de-LU", "parentLocale": "de" });
+  IntlMessageFormat.__addLocaleData({ "locale": "dje", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "dsb", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i100 = i.slice(-2),
+          f100 = f.slice(-2);if (ord) return "other";return v0 && i100 == 1 || f100 == 1 ? "one" : v0 && i100 == 2 || f100 == 2 ? "two" : v0 && (i100 == 3 || i100 == 4) || f100 == 3 || f100 == 4 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "dua", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "dv", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "dyo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "dz", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ebu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ee", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ee-TG", "parentLocale": "ee" });
+  IntlMessageFormat.__addLocaleData({ "locale": "el", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "el-CY", "parentLocale": "el" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2);if (ord) return n10 == 1 && n100 != 11 ? "one" : n10 == 2 && n100 != 12 ? "two" : n10 == 3 && n100 != 13 ? "few" : "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-001", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-150", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-AG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-AI", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-AS", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-AT", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-AU", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BB", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BE", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BI", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BS", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BW", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BZ", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CA", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CC", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CH", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CK", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CX", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CY", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-DE", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-DG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-DK", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-DM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-Dsrt", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-ER", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-FI", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-FJ", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-FK", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-FM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GB", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GD", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GH", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GI", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GU", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GY", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-HK", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-IE", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-IL", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-IM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-IN", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-IO", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-JE", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-JM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-KE", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-KI", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-KN", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-KY", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-LC", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-LR", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-LS", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MH", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MO", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MP", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MS", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MT", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MU", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MW", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MY", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NA", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NF", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NL", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NR", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NU", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NZ", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-PG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-PH", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-PK", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-PN", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-PR", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-PW", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-RW", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SB", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SC", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SD", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SE", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SH", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SI", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SL", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SS", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SX", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SZ", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-Shaw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-TC", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-TK", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-TO", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-TT", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-TV", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-TZ", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-UG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-UM", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-US", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-VC", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-VG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-VI", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-VU", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-WS", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-ZA", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-ZM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-ZW", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "eo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "es", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-419", "parentLocale": "es" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-AR", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-BO", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-CL", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-CO", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-CR", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-CU", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-DO", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-EA", "parentLocale": "es" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-EC", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-GQ", "parentLocale": "es" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-GT", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-HN", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-IC", "parentLocale": "es" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-MX", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-NI", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-PA", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-PE", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-PH", "parentLocale": "es" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-PR", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-PY", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-SV", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-US", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-UY", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-VE", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "et", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "eu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ewo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fa", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fa-AF", "parentLocale": "fa" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ff", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n >= 0 && n < 2 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ff-CM", "parentLocale": "ff" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ff-GN", "parentLocale": "ff" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ff-MR", "parentLocale": "ff" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fi", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fil", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          f10 = f.slice(-1);if (ord) return n == 1 ? "one" : "other";return v0 && (i == 1 || i == 2 || i == 3) || v0 && i10 != 4 && i10 != 6 && i10 != 9 || !v0 && f10 != 4 && f10 != 6 && f10 != 9 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fo-DK", "parentLocale": "fo" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : "other";return n >= 0 && n < 2 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-BE", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-BF", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-BI", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-BJ", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-BL", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CA", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CD", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CF", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CG", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CH", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CI", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CM", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-DJ", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-DZ", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-GA", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-GF", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-GN", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-GP", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-GQ", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-HT", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-KM", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-LU", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MA", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MC", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MF", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MG", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-ML", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MQ", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MR", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MU", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-NC", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-NE", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-PF", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-PM", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-RE", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-RW", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-SC", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-SN", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-SY", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-TD", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-TG", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-TN", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-VU", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-WF", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-YT", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fur", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fy", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ga", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n;if (ord) return n == 1 ? "one" : "other";return n == 1 ? "one" : n == 2 ? "two" : t0 && n >= 3 && n <= 6 ? "few" : t0 && n >= 7 && n <= 10 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "gd", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n;if (ord) return "other";return n == 1 || n == 11 ? "one" : n == 2 || n == 12 ? "two" : t0 && n >= 3 && n <= 10 || t0 && n >= 13 && n <= 19 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "gl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "gsw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "gsw-FR", "parentLocale": "gsw" });
+  IntlMessageFormat.__addLocaleData({ "locale": "gsw-LI", "parentLocale": "gsw" });
+  IntlMessageFormat.__addLocaleData({ "locale": "gu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : n == 2 || n == 3 ? "two" : n == 4 ? "few" : n == 6 ? "many" : "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "guw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "guz", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "gv", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2);if (ord) return "other";return v0 && i10 == 1 ? "one" : v0 && i10 == 2 ? "two" : v0 && (i100 == 0 || i100 == 20 || i100 == 40 || i100 == 60 || i100 == 80) ? "few" : !v0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ha", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ha-Arab", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ha-GH", "parentLocale": "ha" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ha-NE", "parentLocale": "ha" });
+  IntlMessageFormat.__addLocaleData({ "locale": "haw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "he", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1);if (ord) return "other";return n == 1 && v0 ? "one" : i == 2 && v0 ? "two" : v0 && (n < 0 || n > 10) && t0 && n10 == 0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "hi", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : n == 2 || n == 3 ? "two" : n == 4 ? "few" : n == 6 ? "many" : "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "hr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2),
+          f10 = f.slice(-1),
+          f100 = f.slice(-2);if (ord) return "other";return v0 && i10 == 1 && i100 != 11 || f10 == 1 && f100 != 11 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) || f10 >= 2 && f10 <= 4 && (f100 < 12 || f100 > 14) ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "hr-BA", "parentLocale": "hr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "hsb", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i100 = i.slice(-2),
+          f100 = f.slice(-2);if (ord) return "other";return v0 && i100 == 1 || f100 == 1 ? "one" : v0 && i100 == 2 || f100 == 2 ? "two" : v0 && (i100 == 3 || i100 == 4) || f100 == 3 || f100 == 4 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "hu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 || n == 5 ? "one" : "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "hy", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : "other";return n >= 0 && n < 2 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "id", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ig", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ii", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "in", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "is", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          t0 = Number(s[0]) == n,
+          i10 = i.slice(-1),
+          i100 = i.slice(-2);if (ord) return "other";return t0 && i10 == 1 && i100 != 11 || !t0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "it", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return n == 11 || n == 8 || n == 80 || n == 800 ? "many" : "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "it-CH", "parentLocale": "it" });
+  IntlMessageFormat.__addLocaleData({ "locale": "it-SM", "parentLocale": "it" });
+  IntlMessageFormat.__addLocaleData({ "locale": "iu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "iu-Latn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "iw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1);if (ord) return "other";return n == 1 && v0 ? "one" : i == 2 && v0 ? "two" : v0 && (n < 0 || n > 10) && t0 && n10 == 0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ja", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "jbo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "jgo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ji", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "jmc", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "jv", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "jw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ka", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          i100 = i.slice(-2);if (ord) return i == 1 ? "one" : i == 0 || i100 >= 2 && i100 <= 20 || i100 == 40 || i100 == 60 || i100 == 80 ? "many" : "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kab", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n >= 0 && n < 2 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kaj", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kam", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kcg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kde", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kea", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "khq", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ki", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kk", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1);if (ord) return n10 == 6 || n10 == 9 || t0 && n10 == 0 && n != 0 ? "many" : "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kkj", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kln", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "km", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ko", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ko-KP", "parentLocale": "ko" });
+  IntlMessageFormat.__addLocaleData({ "locale": "kok", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ks", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ksb", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ksf", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ksh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 ? "zero" : n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ku", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ky", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lag", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0];if (ord) return "other";return n == 0 ? "zero" : (i == 0 || i == 1) && n != 0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lb", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lkt", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ln", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ln-AO", "parentLocale": "ln" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ln-CF", "parentLocale": "ln" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ln-CG", "parentLocale": "ln" });
+  IntlMessageFormat.__addLocaleData({ "locale": "lo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lrc", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lrc-IQ", "parentLocale": "lrc" });
+  IntlMessageFormat.__addLocaleData({ "locale": "lt", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          f = s[1] || "",
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2);if (ord) return "other";return n10 == 1 && (n100 < 11 || n100 > 19) ? "one" : n10 >= 2 && n10 <= 9 && (n100 < 11 || n100 > 19) ? "few" : f != 0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "luo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "luy", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lv", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          f = s[1] || "",
+          v = f.length,
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2),
+          f100 = f.slice(-2),
+          f10 = f.slice(-1);if (ord) return "other";return t0 && n10 == 0 || n100 >= 11 && n100 <= 19 || v == 2 && f100 >= 11 && f100 <= 19 ? "zero" : n10 == 1 && n100 != 11 || v == 2 && f10 == 1 && f100 != 11 || v != 2 && f10 == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mas", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mas-TZ", "parentLocale": "mas" });
+  IntlMessageFormat.__addLocaleData({ "locale": "mer", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mfe", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mgh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mgo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mk", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2),
+          f10 = f.slice(-1);if (ord) return i10 == 1 && i100 != 11 ? "one" : i10 == 2 && i100 != 12 ? "two" : (i10 == 7 || i10 == 8) && i100 != 17 && i100 != 18 ? "many" : "other";return v0 && i10 == 1 || f10 == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ml", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mn-Mong", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n100 = t0 && s[0].slice(-2);if (ord) return n == 1 ? "one" : "other";return n == 1 && v0 ? "one" : !v0 || n == 0 || n != 1 && n100 >= 1 && n100 <= 19 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : n == 2 || n == 3 ? "two" : n == 4 ? "few" : "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ms", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ms-Arab", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ms-BN", "parentLocale": "ms" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ms-SG", "parentLocale": "ms" });
+  IntlMessageFormat.__addLocaleData({ "locale": "mt", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n,
+          n100 = t0 && s[0].slice(-2);if (ord) return "other";return n == 1 ? "one" : n == 0 || n100 >= 2 && n100 <= 10 ? "few" : n100 >= 11 && n100 <= 19 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mua", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "my", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mzn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nah", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "naq", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nb", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nb-SJ", "parentLocale": "nb" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nd", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ne", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n;if (ord) return t0 && n >= 1 && n <= 4 ? "one" : "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ne-IN", "parentLocale": "ne" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl-AW", "parentLocale": "nl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl-BE", "parentLocale": "nl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl-BQ", "parentLocale": "nl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl-CW", "parentLocale": "nl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl-SR", "parentLocale": "nl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl-SX", "parentLocale": "nl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nmg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nnh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "no", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nqo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nso", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nus", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ny", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nyn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "om", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "om-KE", "parentLocale": "om" });
+  IntlMessageFormat.__addLocaleData({ "locale": "or", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "os", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "os-RU", "parentLocale": "os" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pa", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "pa-Arab", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "pa-Guru", "parentLocale": "pa" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pap", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "pl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2);if (ord) return "other";return n == 1 && v0 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) ? "few" : v0 && i != 1 && (i10 == 0 || i10 == 1) || v0 && i10 >= 5 && i10 <= 9 || v0 && i100 >= 12 && i100 <= 14 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "prg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          f = s[1] || "",
+          v = f.length,
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2),
+          f100 = f.slice(-2),
+          f10 = f.slice(-1);if (ord) return "other";return t0 && n10 == 0 || n100 >= 11 && n100 <= 19 || v == 2 && f100 >= 11 && f100 <= 19 ? "zero" : n10 == 1 && n100 != 11 || v == 2 && f10 == 1 && f100 != 11 || v != 2 && f10 == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ps", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n;if (ord) return "other";return t0 && n >= 0 && n <= 2 && n != 2 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-AO", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-PT", "parentLocale": "pt", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-CV", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-GW", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-MO", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-MZ", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-ST", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-TL", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "qu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "qu-BO", "parentLocale": "qu" });
+  IntlMessageFormat.__addLocaleData({ "locale": "qu-EC", "parentLocale": "qu" });
+  IntlMessageFormat.__addLocaleData({ "locale": "rm", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "rn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ro", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n100 = t0 && s[0].slice(-2);if (ord) return n == 1 ? "one" : "other";return n == 1 && v0 ? "one" : !v0 || n == 0 || n != 1 && n100 >= 1 && n100 <= 19 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ro-MD", "parentLocale": "ro" });
+  IntlMessageFormat.__addLocaleData({ "locale": "rof", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ru", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2);if (ord) return "other";return v0 && i10 == 1 && i100 != 11 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) ? "few" : v0 && i10 == 0 || v0 && i10 >= 5 && i10 <= 9 || v0 && i100 >= 11 && i100 <= 14 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ru-BY", "parentLocale": "ru" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ru-KG", "parentLocale": "ru" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ru-KZ", "parentLocale": "ru" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ru-MD", "parentLocale": "ru" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ru-UA", "parentLocale": "ru" });
+  IntlMessageFormat.__addLocaleData({ "locale": "rw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "rwk", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sah", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "saq", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sbp", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sdh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "se", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "se-FI", "parentLocale": "se" });
+  IntlMessageFormat.__addLocaleData({ "locale": "se-SE", "parentLocale": "se" });
+  IntlMessageFormat.__addLocaleData({ "locale": "seh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ses", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2),
+          f10 = f.slice(-1),
+          f100 = f.slice(-2);if (ord) return "other";return v0 && i10 == 1 && i100 != 11 || f10 == 1 && f100 != 11 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) || f10 >= 2 && f10 <= 4 && (f100 < 12 || f100 > 14) ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "shi", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n;if (ord) return "other";return n >= 0 && n <= 1 ? "one" : t0 && n >= 2 && n <= 10 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "shi-Latn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "shi-Tfng", "parentLocale": "shi" });
+  IntlMessageFormat.__addLocaleData({ "locale": "si", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "";if (ord) return "other";return n == 0 || n == 1 || i == 0 && f == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sk", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : i >= 2 && i <= 4 && v0 ? "few" : !v0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          i100 = i.slice(-2);if (ord) return "other";return v0 && i100 == 1 ? "one" : v0 && i100 == 2 ? "two" : v0 && (i100 == 3 || i100 == 4) || !v0 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sma", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "smi", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "smj", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "smn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sms", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "so", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "so-DJ", "parentLocale": "so" });
+  IntlMessageFormat.__addLocaleData({ "locale": "so-ET", "parentLocale": "so" });
+  IntlMessageFormat.__addLocaleData({ "locale": "so-KE", "parentLocale": "so" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sq", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2);if (ord) return n == 1 ? "one" : n10 == 4 && n100 != 14 ? "many" : "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sq-MK", "parentLocale": "sq" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sq-XK", "parentLocale": "sq" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2),
+          f10 = f.slice(-1),
+          f100 = f.slice(-2);if (ord) return "other";return v0 && i10 == 1 && i100 != 11 || f10 == 1 && f100 != 11 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) || f10 >= 2 && f10 <= 4 && (f100 < 12 || f100 > 14) ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Cyrl", "parentLocale": "sr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Cyrl-BA", "parentLocale": "sr-Cyrl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Cyrl-ME", "parentLocale": "sr-Cyrl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Cyrl-XK", "parentLocale": "sr-Cyrl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Latn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Latn-BA", "parentLocale": "sr-Latn" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Latn-ME", "parentLocale": "sr-Latn" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Latn-XK", "parentLocale": "sr-Latn" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ss", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ssy", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "st", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sv", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2);if (ord) return (n10 == 1 || n10 == 2) && n100 != 11 && n100 != 12 ? "one" : "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sv-AX", "parentLocale": "sv" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sv-FI", "parentLocale": "sv" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sw-CD", "parentLocale": "sw" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sw-KE", "parentLocale": "sw" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sw-UG", "parentLocale": "sw" });
+  IntlMessageFormat.__addLocaleData({ "locale": "syr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ta", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ta-LK", "parentLocale": "ta" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ta-MY", "parentLocale": "ta" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ta-SG", "parentLocale": "ta" });
+  IntlMessageFormat.__addLocaleData({ "locale": "te", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "teo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "teo-KE", "parentLocale": "teo" });
+  IntlMessageFormat.__addLocaleData({ "locale": "th", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ti", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ti-ER", "parentLocale": "ti" });
+  IntlMessageFormat.__addLocaleData({ "locale": "tig", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "tk", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "tl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          f10 = f.slice(-1);if (ord) return n == 1 ? "one" : "other";return v0 && (i == 1 || i == 2 || i == 3) || v0 && i10 != 4 && i10 != 6 && i10 != 9 || !v0 && f10 != 4 && f10 != 6 && f10 != 9 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "tn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "to", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "tr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "tr-CY", "parentLocale": "tr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ts", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "twq", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "tzm", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n;if (ord) return "other";return n == 0 || n == 1 || t0 && n >= 11 && n <= 99 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ug", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "uk", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2),
+          i10 = i.slice(-1),
+          i100 = i.slice(-2);if (ord) return n10 == 3 && n100 != 13 ? "few" : "other";return v0 && i10 == 1 && i100 != 11 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) ? "few" : v0 && i10 == 0 || v0 && i10 >= 5 && i10 <= 9 || v0 && i100 >= 11 && i100 <= 14 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ur", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ur-IN", "parentLocale": "ur" });
+  IntlMessageFormat.__addLocaleData({ "locale": "uz", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "uz-Arab", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "uz-Cyrl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "uz-Latn", "parentLocale": "uz" });
+  IntlMessageFormat.__addLocaleData({ "locale": "vai", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "vai-Latn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "vai-Vaii", "parentLocale": "vai" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ve", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "vi", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "vo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "vun", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "wa", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "wae", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "wo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "xh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "xog", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "yav", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "yi", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "yo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "yo-BJ", "parentLocale": "yo" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zgh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hans", "parentLocale": "zh" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hans-HK", "parentLocale": "zh-Hans" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hans-MO", "parentLocale": "zh-Hans" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hans-SG", "parentLocale": "zh-Hans" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hant", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hant-HK", "parentLocale": "zh-Hant" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hant-MO", "parentLocale": "zh-Hant-HK" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+
+  var intlMessageformat = createCommonjsModule(function (module, exports) {
+
+    var IntlMessageFormat = main['default'];
+
+    // Add all locale data to `IntlMessageFormat`. This module will be ignored when
+    // bundling for the browser with Browserify/Webpack.
+
+
+    // Re-export `IntlMessageFormat` as the CommonJS default exports with all the
+    // locale data registered, and with English set as the default locale. Define
+    // the `default` prop for use with other compiled ES6 Modules.
+    exports = module.exports = IntlMessageFormat;
+    exports['default'] = exports;
+  });
+
   var _templateObject$1 = taggedTemplateLiteral(['<style>', '</style>'], ['<style>', '</style>']),
       _templateObject2$1 = taggedTemplateLiteral(['\n      ', '\n      ', '\n    '], ['\n      ', '\n      ', '\n    ']);
 
@@ -2854,8 +6141,6 @@
       return _class;
     }(base);
   };
-
-  var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
   /**
    * lodash (Custom Build) <https://lodash.com/>
@@ -25020,7 +28305,7 @@
     }))) : null, props.children.size || props.reactions.size ? html$1(_templateObject5$1, menu, _actions(props)) : null);
   };
 
-  var css$5 = "wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */\n  --reaction-count-left: 0;\n}\n\n:root {\n  --message-aggregated-content-border-radius: 5px;\n  --message-aggregated-content-border-radius: var(--chat-aggregated-content-border-radius, var(--message-border-radius));\n  --message-aggregated-margin: 5px;\n  --message-aggregated-margin: var(--chat-message-aggregated-margin, var(--message-border-radius));\n  --message-avatar-margin: 8px;\n  --message-avatar-size: 32px;\n  --message-border-radius: 5px;\n  --message-color-deleted-hover: rgba(238, 238, 238, 0.70196);\n  --message-color-deleted-hover: var(--chat-message-color-deleted-hover, rgba(238, 238, 238, 0.70196));\n  --message-color-deleted: #eee;\n  --message-color-deleted: var(--chat-message-color-watchdog, var(--gallery, #eee));\n  --message-color-hover: rgba(255, 255, 255, 0.50196);\n  --message-color-hover: var(--chat-message-color-hover, rgba(255, 255, 255, 0.50196));\n  --message-color-me-hover: rgba(235, 242, 247, 0.70196);\n  --message-color-me-hover: var(--chat-message-color-me-hover, rgba(235, 242, 247, 0.70196));\n  --message-color-me: #ebf2f7;\n  --message-color-me: var(--chat-message-color-me, var(--cornflowerBlue, #ebf2f7));\n  --message-color-watchdog-hover: rgba(250, 239, 235, 0.70196);\n  --message-color-watchdog-hover: var(--chat-message-color-watchdog-hover, rgba(250, 239, 235, 0.70196));\n  --message-color-watchdog: #faefeb;\n  --message-color-watchdog: var(--chat-message-color-watchdog, var(--whiteLinen, #faefeb));\n  --message-margin-between: 16px;\n  --message-status-color: #b8b8b8;\n  --message-status-color: var(--chat-message-status-color, var(--silver, #b8b8b8));\n}\n\n.avatar {\n  float: left;\n  margin-right: 8px;\n  margin-right: var(--message-avatar-margin);\n  overflow: hidden;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  vertical-align: top;\n  width: 32px;\n  width: var(--message-avatar-size);\n}\n\n.avatar > div:first-child {\n  background: no-repeat center center;\n  background-color: transparent;\n  background-color: var(--message-avatar-color-moderator, transparent);\n  background-size: contain;\n  border-radius: 100%;\n  height: 32px;\n  height: var(--message-avatar-size);\n  width: 32px;\n  width: var(--message-avatar-size);\n}\n\n.avatar.moderator {\n  background-color: transparent;\n  background-color: var(--message-avatar-color, transparent);\n}\n\n.content {\n  background-color: #fff;\n  border-radius: 5px;\n  border-radius: var(--message-border-radius);\n  box-sizing: border-box;\n  display: inline-block;\n  padding: 8px 16px 8px 14px;\n  text-align: left;\n  width: calc(100% - 32px - 8px);\n  width: calc(100% - var(--message-avatar-size) - var(--message-avatar-margin));\n}\n\n.content > [class^=\"actions\"] {\n  opacity: 0;\n}\n\n.content:hover > [class^=\"actions\"] {\n  opacity: 1;\n}\n\n.content.moderator {\n  background-color: #faefeb;\n  background-color: var(--message-color-watchdog);\n}\n\n.content.me {\n  background-color: #ebf2f7;\n  background-color: var(--message-color-me);\n}\n\n.message {\n  position: relative;\n}\n\n.message:hover .content {\n  background-color: rgba(255, 255, 255, 0.50196);\n  background-color: var(--message-color-hover);\n}\n\n.message:hover .content.moderator {\n  background-color: rgba(250, 239, 235, 0.70196);\n  background-color: var(--message-color-watchdog-hover);\n}\n\n.message:hover .content.me {\n  background-color: rgba(235, 242, 247, 0.70196);\n  background-color: var(--message-color-me-hover);\n}\n\n.message + .message:not(.aggregated) {\n  margin-top: 16px;\n  margin-top: var(--message-margin-between);\n}\n\n.message.aggregated {\n  margin-top: 5px;\n  margin-top: var(--message-aggregated-margin);\n}\n\n.message.aggregated .avatar {\n  height: 1px;\n  visibility: hidden;\n}\n\n.message.aggregated .content {\n  border-radius: 5px;\n  border-radius: var(--message-border-radius);\n}\n\n.message.deleted .avatar,\n.message.deleted .content {\n  -webkit-filter: grayscale(75%);\n          filter: grayscale(75%);\n}\n\n.message.deleted .content {\n  background: #eee;\n  background: var(--message-color-deleted);\n}\n\n.message.deleted:hover .content {\n  background: rgba(238, 238, 238, 0.70196);\n  background: var(--message-color-deleted-hover);\n}\n\n.message-meta {\n  margin-bottom: 5px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.message.aggregated .message-meta {\n  height: 0;\n  opacity: 0;\n}\n\n.message-body {\n  padding-right: 24px;\n}\n\n.message-line {\n  line-height: 1.25em;\n  margin: 0;\n  margin-bottom: 12px;\n  word-wrap: break-word;\n  word-break: break-all;\n}\n\n.message-line:last-child {\n  margin-bottom: 0;\n}\n\n.message-status {\n  margin-bottom: 3px;\n}\n\n.message-stamp,\n.message-status,\n.message-identity {\n  color: #b8b8b8;\n  color: var(--message-status-color);\n  font-size: 0.75em;\n}\n\n.message-author {\n  font-weight: bold;\n  margin-right: 8px;\n}\n\n.moderator .message-status {\n  display: inline-block;\n}\n\n.user.avatar .message-identity {\n  text-align: center;\n}\n\n.moderator .message-author {\n  background: url(\"data:image/svg+xml,%3Csvg width%3D%228%22 height%3D%229%22 viewBox%3D%220 0 8 9%22 fill%3D%22none%22 xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath d%3D%22M6 2C6 3.10457 5.10457 4 4 4C2.89543 4 2 3.10457 2 2C2 0.895431 2.89543 0 4 0C5.10457 0 6 0.895431 6 2Z%22 fill%3D%22%23B8B8B8%22%2F%3E%3Cpath d%3D%22M0 7C0 5.89543 0.895431 5 2 5H6C7.10457 5 8 5.89543 8 7V9H0V7Z%22 fill%3D%22%23B8B8B8%22%2F%3E%3C%2Fsvg%3E\") no-repeat right center transparent;\n  padding-right: 12px;\n}\n";
+  var css$5 = "wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */\n  --reaction-count-left: 0;\n}\n\n:root {\n  --message-aggregated-content-border-radius: 5px;\n  --message-aggregated-content-border-radius: var(--chat-aggregated-content-border-radius, var(--message-border-radius));\n  --message-aggregated-margin: 5px;\n  --message-aggregated-margin: var(--chat-message-aggregated-margin, var(--message-border-radius));\n  --message-avatar-margin: 8px;\n  --message-avatar-size: 32px;\n  --message-border-radius: 5px;\n  --message-color-deleted-hover: rgba(238, 238, 238, 0.70196);\n  --message-color-deleted-hover: var(--chat-message-color-deleted-hover, rgba(238, 238, 238, 0.70196));\n  --message-color-deleted: #eee;\n  --message-color-deleted: var(--chat-message-color-watchdog, var(--gallery, #eee));\n  --message-color-hover: rgba(255, 255, 255, 0.50196);\n  --message-color-hover: var(--chat-message-color-hover, rgba(255, 255, 255, 0.50196));\n  --message-color-me-hover: rgba(235, 242, 247, 0.70196);\n  --message-color-me-hover: var(--chat-message-color-me-hover, rgba(235, 242, 247, 0.70196));\n  --message-color-me: #ebf2f7;\n  --message-color-me: var(--chat-message-color-me, var(--cornflowerBlue, #ebf2f7));\n  --message-color-watchdog-hover: rgba(250, 239, 235, 0.70196);\n  --message-color-watchdog-hover: var(--chat-message-color-watchdog-hover, rgba(250, 239, 235, 0.70196));\n  --message-color-watchdog: #faefeb;\n  --message-color-watchdog: var(--chat-message-color-watchdog, var(--whiteLinen, #faefeb));\n  --message-margin-between: 16px;\n  --message-status-color: #b8b8b8;\n  --message-status-color: var(--chat-message-status-color, var(--silver, #b8b8b8));\n}\n\n.avatar {\n  float: left;\n  margin-right: 8px;\n  margin-right: var(--message-avatar-margin);\n  overflow: hidden;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  vertical-align: top;\n  width: 32px;\n  width: var(--message-avatar-size);\n}\n\n.avatar > div:first-child {\n  background: no-repeat center center;\n  background-color: transparent;\n  background-color: var(--message-avatar-color-moderator, transparent);\n  background-size: contain;\n  border-radius: 100%;\n  height: 32px;\n  height: var(--message-avatar-size);\n  width: 32px;\n  width: var(--message-avatar-size);\n}\n\n.avatar.moderator {\n  background-color: transparent;\n  background-color: var(--message-avatar-color, transparent);\n}\n\n.content {\n  background-color: #fff;\n  border-radius: 5px;\n  border-radius: var(--message-border-radius);\n  box-sizing: border-box;\n  display: inline-block;\n  padding: 8px 16px 8px 14px;\n  text-align: left;\n  width: calc(100% - 32px - 8px);\n  width: calc(100% - var(--message-avatar-size) - var(--message-avatar-margin));\n}\n\n.content > [class^=\"actions\"] {\n  opacity: 0;\n}\n\n.content:hover > [class^=\"actions\"] {\n  opacity: 1;\n}\n\n.content.moderator {\n  background-color: #faefeb;\n  background-color: var(--message-color-watchdog);\n}\n\n.content.me {\n  background-color: #ebf2f7;\n  background-color: var(--message-color-me);\n}\n\n.message {\n  position: relative;\n}\n\n.message:hover .content {\n  background-color: rgba(255, 255, 255, 0.50196);\n  background-color: var(--message-color-hover);\n}\n\n.message:hover .content.moderator {\n  background-color: rgba(250, 239, 235, 0.70196);\n  background-color: var(--message-color-watchdog-hover);\n}\n\n.message:hover .content.me {\n  background-color: rgba(235, 242, 247, 0.70196);\n  background-color: var(--message-color-me-hover);\n}\n\n.message + .message:not(.aggregated) {\n  margin-top: 16px;\n  margin-top: var(--message-margin-between);\n}\n\n.message.aggregated {\n  margin-top: 5px;\n  margin-top: var(--message-aggregated-margin);\n}\n\n.message.aggregated .avatar {\n  height: 1px;\n  visibility: hidden;\n}\n\n.message.aggregated .content {\n  border-radius: 5px;\n  border-radius: var(--message-border-radius);\n}\n\n.message.deleted .avatar,\n.message.deleted .content {\n  -webkit-filter: grayscale(75%);\n          filter: grayscale(75%);\n}\n\n.message.deleted .content {\n  background: #eee;\n  background: var(--message-color-deleted);\n}\n\n.message.deleted:hover .content {\n  background: rgba(238, 238, 238, 0.70196);\n  background: var(--message-color-deleted-hover);\n}\n\n.message-meta {\n  margin-bottom: 5px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.message.aggregated .message-meta {\n  height: 0;\n  opacity: 0;\n}\n\n.message-body {\n  padding-right: 24px;\n}\n\n.message-line {\n  line-height: 1.25em;\n  margin: 0;\n  margin-bottom: 12px;\n  word-wrap: break-word;\n  word-break: break-all;\n}\n\n.message-line:last-child {\n  margin-bottom: 0;\n}\n\n.message-status {\n  margin-bottom: 3px;\n}\n\n.message-stamp,\n.message-status,\n.message-identity {\n  color: #b8b8b8;\n  color: var(--message-status-color);\n  font-size: 0.75em;\n}\n\n.message-author {\n  font-weight: bold;\n  margin-right: 8px;\n}\n\n.moderator .message-status {\n  display: inline-block;\n}\n\n.user.avatar .message-identity {\n  text-align: center;\n}\n\n.moderator .message-author {\n  background: url(\"data:image/svg+xml,%3Csvg width%3D%228%22 height%3D%229%22 viewBox%3D%220 0 8 9%22 fill%3D%22none%22 xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath d%3D%22M6 2C6 3.10457 5.10457 4 4 4C2.89543 4 2 3.10457 2 2C2 0.895431 2.89543 0 4 0C5.10457 0 6 0.895431 6 2Z%22 fill%3D%22%23B8B8B8%22%2F%3E%3Cpath d%3D%22M0 7C0 5.89543 0.895431 5 2 5H6C7.10457 5 8 5.89543 8 7V9H0V7Z%22 fill%3D%22%23B8B8B8%22%2F%3E%3C%2Fsvg%3E\") no-repeat right center transparent;\n  padding-right: 12px;\n}\n\n.message.unseen.normal {\n  margin-top: 45px;\n}\n\n.message.unseen.reversed {\n  margin-bottom: 45px;\n}\n\n.message.unseen .separator {\n  position: absolute;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  width: 100%;\n}\n\n.message.unseen.normal .separator {\n  top: -30px;\n}\n\n.message.unseen.reversed .separator {\n  bottom: -30px;\n}\n\n.message.unseen .separator span {\n  background: #f8f8f8;\n  border-radius: 5px;\n  color: #b8b8b8;\n  font-size: 16px;\n  margin-left: 50px;\n  padding: 2px 5px;\n  position: relative;\n}\n\n.message.unseen .separator hr {\n  border: none;\n  border-top: 1px solid #d4d4d4;\n  height: 0;\n  margin: 0;\n  position: absolute;\n  top: 11px;\n  width: 100%;\n}\n";
   styleInject(css$5);
 
   var _templateObject$b = taggedTemplateLiteral(['<div class=\'message-line\'>', '</div>'], ['<div class=\'message-line\'>', '</div>']),
@@ -25042,9 +28327,10 @@
     });
   };
 
-  var _templateObject$c = taggedTemplateLiteral(['\n    <div class$=\'', '\'>\n      <div class$=\'', '\'>\n        <div style$=\'', '\'></div>\n        ', '\n      </div>\n      <section class$=\'', '\'>\n        ', '\n        <div class=\'message-meta\'>\n          <span class=\'message-author\' title=\'', '\'>', '</span>\n          <span class=\'message-stamp\'>', '</span>\n          ', '\n        </div>\n        <div class=\'message-body\'>', '</div>\n        ', '\n      </section>\n    </div>\n  '], ['\n    <div class$=\'', '\'>\n      <div class$=\'', '\'>\n        <div style$=\'', '\'></div>\n        ', '\n      </div>\n      <section class$=\'', '\'>\n        ', '\n        <div class=\'message-meta\'>\n          <span class=\'message-author\' title=\'', '\'>', '</span>\n          <span class=\'message-stamp\'>', '</span>\n          ', '\n        </div>\n        <div class=\'message-body\'>', '</div>\n        ', '\n      </section>\n    </div>\n  ']),
-      _templateObject2$8 = taggedTemplateLiteral(['<div class=\'message-identity\'>', '</div>'], ['<div class=\'message-identity\'>', '</div>']),
-      _templateObject3$4 = taggedTemplateLiteral(['<div class=\'message-status\'>', '</div>'], ['<div class=\'message-status\'>', '</div>']);
+  var _templateObject$c = taggedTemplateLiteral(['\n    <div class$=\'', '\'>\n      ', '\n      <div class$=\'', '\'>\n        <div style$=\'', '\'></div>\n        ', '\n      </div>\n      <section class$=\'', '\'>\n        ', '\n        <div class=\'message-meta\'>\n          <span class=\'message-author\' title=\'', '\'>', '</span>\n          <span class=\'message-stamp\'>', '</span>\n          ', '\n        </div>\n        <div class=\'message-body\'>', '</div>\n        ', '\n      </section>\n    </div>\n  '], ['\n    <div class$=\'', '\'>\n      ', '\n      <div class$=\'', '\'>\n        <div style$=\'', '\'></div>\n        ', '\n      </div>\n      <section class$=\'', '\'>\n        ', '\n        <div class=\'message-meta\'>\n          <span class=\'message-author\' title=\'', '\'>', '</span>\n          <span class=\'message-stamp\'>', '</span>\n          ', '\n        </div>\n        <div class=\'message-body\'>', '</div>\n        ', '\n      </section>\n    </div>\n  ']),
+      _templateObject2$8 = taggedTemplateLiteral(['<div class=\'separator\'><hr><span>', '</span></div>'], ['<div class=\'separator\'><hr><span>', '</span></div>']),
+      _templateObject3$4 = taggedTemplateLiteral(['<div class=\'message-identity\'>', '</div>'], ['<div class=\'message-identity\'>', '</div>']),
+      _templateObject4$3 = taggedTemplateLiteral(['<div class=\'message-status\'>', '</div>'], ['<div class=\'message-status\'>', '</div>']);
 
   var cn$3 = function cn() {
     for (var _len = arguments.length, argv = Array(_len), _key = 0; _key < _len; _key++) {
@@ -25055,14 +28341,17 @@
   };
 
   var messageExtended = function messageExtended(props) {
-    var message = props.message;
+    var message = props.message,
+        deleted = props.deleted;
+    var aggregated = message.aggregated,
+        i18n = message.i18n,
+        unseen = message.unseen,
+        reversed = message.reversed;
 
 
     var isWatchdog = message.user_role === 'moderator';
 
-    return html$1(_templateObject$c, classString({
-      message: true, deleted: props.deleted, aggregated: message.aggregated
-    }), cn$3(message.user_role, 'avatar'), !message.avatar ? '' : 'background-image: url(' + message.avatar + ');', !isWatchdog ? html$1(_templateObject2$8, message.identity) : null, cn$3(message.user_role, 'content', classString({ me: message.user_id === message.current_user_id })), props.actions, isWatchdog ? message.identity : '', message.user_name, formatDate(stampToDate(message.timestamp)), !isWatchdog ? html$1(_templateObject3$4, message.status) : null, text(message.body), props.children);
+    return html$1(_templateObject$c, classString({ message: true, deleted: deleted, aggregated: aggregated, unseen: unseen, reversed: reversed, normal: !reversed }), unseen ? html$1(_templateObject2$8, i18n.NEW_MESSAGES) : null, cn$3(message.user_role, 'avatar'), !message.avatar ? '' : 'background-image: url(' + message.avatar + ');', !isWatchdog ? html$1(_templateObject3$4, message.identity) : null, cn$3(message.user_role, 'content', classString({ me: message.user_id === message.current_user_id })), props.actions, isWatchdog ? message.identity : '', message.user_name, formatDate(stampToDate(message.timestamp)), !isWatchdog ? html$1(_templateObject4$3, message.status) : null, text(message.body), props.children);
   };
 
   var css$6 = ":root {\n  --messages-width: 100%;\n  --messages-width: var(--chat-messages-list-width, 100%);\n  --messages-height: 100%;\n  --messages-height: var(--chat-messages-list-height, 100%);\n}\n\n:host {\n  height: inherit;\n  height: var(--chat-messages-height, inherit);\n}\n\n.messages {\n  box-sizing: border-box;\n  font-size: inherit;\n  font-size: var(--messages-font-size, inherit);\n  height: 100%;\n  height: var(--messages-height);\n  padding: 20px;\n  width: 100%;\n  width: var(--messages-width);\n}\n";
@@ -25092,9 +28381,11 @@
 
         return list.map(function (it, i, arr) {
           var aggregated = !i ? false : arr[i].user_id === arr[i - 1].user_id;
+          var idx = _this2.reverse ? i + 1 : i - 1;
+          var unseen = _this2.lastseen !== undefined ? arr[idx] ? arr[idx].id === _this2.lastseen : null : null;
           var message = _extends({}, it, { current_user_id: _this2.user });
 
-          return _this2.__renderMessage(aggregated ? _extends({}, message, { aggregated: aggregated }) : message);
+          return _this2.__renderMessage(_extends({}, message, { aggregated: aggregated, i18n: _this2.i18n, unseen: unseen, reversed: _this2.reverse }));
         });
       }
     }, {
@@ -25116,8 +28407,11 @@
       key: 'properties',
       get: function get$$1() {
         return {
+          i18n: Object,
           invoke: String,
+          lastseen: Number,
           list: Array,
+          reverse: Boolean,
           user: Number,
           users: Array
         };
@@ -25267,10 +28561,26 @@
     };
   };
 
-  var css$7 = ":host {\n  box-sizing: content-box;\n  box-sizing: var(--chat-scrollable-box-sizing, content-box);\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n  padding: 0;\n  padding: var(--chat-scrollable-padding, 0);\n}\n\n:host .scrollable {\n  flex: 1 1 auto;\n  overflow-y: scroll;\n}\n\n:host .scrollable .inner {\n  min-height: 100%;\n}\n";
+  var getIndexById = function getIndexById(id, array) {
+    var index = void 0;
+
+    for (var i = 0; i < array.length; i++) {
+      if (array[i].id === id) {
+        index = i;
+
+        break;
+      }
+    }
+
+    return index;
+  };
+
+  var css$7 = ":host {\n  box-sizing: content-box;\n  box-sizing: var(--chat-scrollable-box-sizing, content-box);\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n  padding: 0;\n  padding: var(--chat-scrollable-padding, 0);\n}\n\n:host .wrapper {\n  display: flex;\n  flex: 1 1 auto;\n  flex-direction: column;\n  min-height: 0;\n  position: relative;\n}\n\n:host .wrapper .scrollable {\n  flex: 1 1 auto;\n  overflow-y: scroll;\n}\n\n:host .wrapper .scrollable .inner {\n  min-height: 100%;\n}\n\n:host .wrapper .banner {\n  border-radius: 5px;\n  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);\n  color: #fff;\n  cursor: pointer;\n  font-size: 16px;\n  left: 20px;\n  padding: 8px 40px 8px 16px;\n  position: absolute;\n  right: 20px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n:host .wrapper .banner.top {\n  top: 5px;\n}\n\n:host .wrapper .banner.bottom {\n  bottom: 5px;\n}\n\n:host .wrapper .banner.new {\n  background: #48a1e6;\n}\n\n:host .wrapper .banner.recent {\n  background: #b8b8b8;\n}\n\n:host .wrapper .banner::before {\n  background: transparent url(\"data:image/svg+xml,%3Csvg width%3D%2216%22 height%3D%2216%22 viewBox%3D%220 0 16 16%22 fill%3D%22none%22 xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath d%3D%22M13.1295 4L14.5 5.39309L8 12L1.5 5.39309L2.87054 4L8 9.21383L13.1295 4Z%22 fill%3D%22white%22%2F%3E%3C%2Fsvg%3E\") center center no-repeat;\n  content: '';\n  display: block;\n  height: 100%;\n  position: absolute;\n  right: 16px;\n  top: 0;\n  width: 16px;\n}\n\n:host .wrapper .banner.reverse::before {\n  -webkit-transform: rotate(180deg);\n          transform: rotate(180deg);\n}\n\n:host .row {\n  align-items: center;\n  display: flex;\n  justify-content: space-between;\n}\n";
   styleInject(css$7);
 
-  var _templateObject$f = taggedTemplateLiteral(['\n      <div class=\'scrollable\' id="scrollable" on-scroll=\'', '\'>\n        <div class=\'inner\'>\n          <slot></slot>\n        </div>\n      </div>\n    '], ['\n      <div class=\'scrollable\' id="scrollable" on-scroll=\'', '\'>\n        <div class=\'inner\'>\n          <slot></slot>\n        </div>\n      </div>\n    ']);
+  var _templateObject$f = taggedTemplateLiteral(['\n      <div class=\'wrapper\'>\n        <div class=\'scrollable\' id="scrollable" on-scroll=\'', '\'>\n          <div class=\'inner\'>\n            <slot></slot>\n          </div>\n        </div>\n        ', '\n        ', '\n      </div>\n    '], ['\n      <div class=\'wrapper\'>\n        <div class=\'scrollable\' id="scrollable" on-scroll=\'', '\'>\n          <div class=\'inner\'>\n            <slot></slot>\n          </div>\n        </div>\n        ', '\n        ', '\n      </div>\n    ']),
+      _templateObject2$a = taggedTemplateLiteral(['<div class$=\'', '\' on-click=\'', '\'>\n              <div class=\'row\'>\n                <div>', '</div>\n                <div>', '</div>\n              </div>\n            </div>'], ['<div class$=\'', '\' on-click=\'', '\'>\n              <div class=\'row\'>\n                <div>', '</div>\n                <div>', '</div>\n              </div>\n            </div>']),
+      _templateObject3$5 = taggedTemplateLiteral(['<div class$=\'', '\' on-click=\'', '\'>', '</div>'], ['<div class$=\'', '\' on-click=\'', '\'>', '</div>']);
 
   var debug = Debug('wc:scrollable');
 
@@ -25287,9 +28597,11 @@
       get: function get$$1() {
         return {
           delay: Number,
+          i18n: Object,
           listen: String,
           reverse: Boolean,
-          scrolltarget: String
+          scrolltarget: String,
+          showbannernew: Boolean
         };
       }
     }]);
@@ -25305,6 +28617,7 @@
       _this._top = 0;
       _this._x = 0;
       _this._y = 0;
+      _this._detached = false;
 
       _this.__boundScrollHandler = _this._onScrollHandler.bind(_this);
       return _this;
@@ -25334,6 +28647,45 @@
         this.listen && compose$1(observeC(function (e) {
           return _this2._onChildrenUpdate(e);
         }), throttleC(this.delay === 0 ? 0 : this.delay || DELAY))(fromEvent(this.listen, this._scrollable, true));
+
+        compose$1(observeC(function (e) {
+          return _this2._onResizeHandler(e);
+        }), throttleC(100))(fromEvent('resize', window));
+      }
+    }, {
+      key: '_updateDetachedValue',
+      value: function _updateDetachedValue(element) {
+        var offsetHeight = element.offsetHeight,
+            scrollTop = element.scrollTop,
+            scrollHeight = element.scrollHeight;
+
+
+        var newDetachedValue = this.reverse ? scrollTop > 0 : scrollHeight - scrollTop > offsetHeight;
+
+        if (!newDetachedValue) {
+          this.dispatchEvent(new CustomEvent('last-seen-change'));
+        }
+
+        if (newDetachedValue !== this._detached) {
+          this._detached = newDetachedValue;
+
+          this.requestRender();
+        }
+      }
+    }, {
+      key: '_scrollToUnseen',
+      value: function _scrollToUnseen() {
+        var slot = this._scrollable.querySelector('slot');
+        var el = slot.assignedNodes() && slot.assignedNodes()[1] && slot.assignedNodes()[1].shadowRoot ? slot.assignedNodes()[1].shadowRoot.querySelector('.message.unseen') : null;
+
+        if (el) {
+          this._scrollTo(0, el.offsetTop - this._scrollable.offsetHeight / 2);
+        }
+      }
+    }, {
+      key: '_onResizeHandler',
+      value: function _onResizeHandler(e) {
+        this._onScrollHandler({ currentTarget: this._scrollable });
       }
     }, {
       key: '_onScrollHandler',
@@ -25351,11 +28703,17 @@
         this._height = scrollHeight;
         this._y = scrollTop;
         this._x = scrollLeft;
+
+        this._updateDetachedValue(e.currentTarget);
       }
     }, {
       key: '_onChildrenUpdate',
       value: function _onChildrenUpdate(e) {
         this._shouldScrollTo(e);
+
+        if (e.currentTarget) {
+          this._updateDetachedValue(e.currentTarget);
+        }
       }
     }, {
       key: '_yScroll',
@@ -25421,8 +28779,22 @@
       }
     }, {
       key: '_render',
-      value: function _render() {
-        return html$1(_templateObject$f, this.__boundScrollHandler);
+      value: function _render(props) {
+        var _cs,
+            _this3 = this,
+            _cs2;
+
+        return html$1(_templateObject$f, this.__boundScrollHandler, this._detached && props.showbannernew ? html$1(_templateObject2$a, classString((_cs = {
+          banner: true,
+          new: true
+        }, defineProperty(_cs, props.reverse ? 'bottom' : 'top', true), defineProperty(_cs, 'reverse', props.reverse), _cs)), function () {
+          return _this3._scrollToUnseen();
+        }, this.i18n.NEW_MESSAGES_COUNT, this.i18n.SEE) : null, this._detached && !props.showbannernew ? html$1(_templateObject3$5, classString((_cs2 = {
+          banner: true,
+          recent: true
+        }, defineProperty(_cs2, props.reverse ? 'top' : 'bottom', true), defineProperty(_cs2, 'reverse', props.reverse), _cs2)), function () {
+          return _this3.scrollTo();
+        }, this.i18n.GO_TO_RECENT_MESSAGE) : null);
       }
     }, {
       key: '_rootElement',
@@ -25448,8 +28820,23 @@
   var css$8 = ":host {\n  background-color: #f8f8f8;\n  background-color: var(--chat-background-color, #f8f8f8);\n  display: block;\n  font-size: inherit;\n  font-size: var(--chat-font-size, inherit);\n  height: 100%;\n  height: var(--chat-height, 100%);\n  min-height: 400px;\n  min-height: var(--chat-min-height, 400px);\n  min-width: 330px;\n  min-width: var(--chat-min-width, 330px);\n}\n\n:host .wrapper {\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n}\n\n/* stylelint-disable selector-type-no-unknown */\n\n:host .wrapper wc-chat-scrollable {\n  flex: 1 1 auto;\n}\n";
   styleInject(css$8);
 
+  var i18n = {
+    'en-US': {
+      GO_TO_RECENT_MESSAGE: 'Jump to recent messages',
+      NEW_MESSAGES: 'New messages',
+      NEW_MESSAGES_COUNT: '{count, plural, =1 {# new message} other {# new messages}}',
+      SEE: 'See'
+    },
+    'ru': {
+      GO_TO_RECENT_MESSAGE: 'Перейти к последним сообщениям',
+      NEW_MESSAGES: 'Новые сообщения',
+      NEW_MESSAGES_COUNT: '{count, plural, one {# новое сообщение} few {# новых сообщения} many {# новых сообщений}}',
+      SEE: 'Посмотреть'
+    }
+  };
+
   var _templateObject$g = taggedTemplateLiteral(['\n        <div class=\'input\'>\n          <wc-chat-input\n            delay=\'', '\'\n            maxrows=\'', '\'\n            disabled=\'', '\'\n            on-message-submit=\'', '\'\n            placeholder=\'', '\'\n            placeholderdisabled=\'', '\'\n            value=\'', '\'\n          />\n        </div>\n      '], ['\n        <div class=\'input\'>\n          <wc-chat-input\n            delay=\'', '\'\n            maxrows=\'', '\'\n            disabled=\'', '\'\n            on-message-submit=\'', '\'\n            placeholder=\'', '\'\n            placeholderdisabled=\'', '\'\n            value=\'', '\'\n          />\n        </div>\n      ']),
-      _templateObject2$a = taggedTemplateLiteral(['\n      <div class=\'wrapper\'>\n        <wc-chat-scrollable\n          delay=\'', '\'\n          listen=\'', '\'\n          reverse=\'', '\'\n        >\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            invoke=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </wc-chat-scrollable>\n        ', '\n      </div>\n    '], ['\n      <div class=\'wrapper\'>\n        <wc-chat-scrollable\n          delay=\'', '\'\n          listen=\'', '\'\n          reverse=\'', '\'\n        >\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            invoke=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </wc-chat-scrollable>\n        ', '\n      </div>\n    ']);
+      _templateObject2$b = taggedTemplateLiteral(['\n      <div class=\'wrapper\'>\n        <wc-chat-scrollable\n          delay=\'', '\'\n          i18n=\'', '\'\n          listen=\'', '\'\n          on-last-seen-change=\'', '\'\n          reverse=\'', '\'\n          showbannernew=\'', '\'\n        >\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            i18n=\'', '\'\n            invoke=\'', '\'\n            lastseen=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            reverse=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </wc-chat-scrollable>\n        ', '\n      </div>\n    '], ['\n      <div class=\'wrapper\'>\n        <wc-chat-scrollable\n          delay=\'', '\'\n          i18n=\'', '\'\n          listen=\'', '\'\n          on-last-seen-change=\'', '\'\n          reverse=\'', '\'\n          showbannernew=\'', '\'\n        >\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            i18n=\'', '\'\n            invoke=\'', '\'\n            lastseen=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            reverse=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </wc-chat-scrollable>\n        ', '\n      </div>\n    ']);
 
   var EVENT = 'did-update';
 
@@ -25464,6 +28851,8 @@
           delaysubmit: Number,
           delayupdate: Number,
           disabled: Boolean,
+          lang: String,
+          lastseen: Number,
           list: Array,
           maxrows: Number,
           message: String,
@@ -25482,10 +28871,19 @@
 
       var _this = possibleConstructorReturn(this, (Chat.__proto__ || Object.getPrototypeOf(Chat)).call(this, props));
 
+      _this._lang = _this.lang || intlMessageformat.prototype._resolveLocale(navigator.language);
+
+      if (!_this.i18n[_this._lang]) {
+        _this._lang = 'en-US';
+      }
+
+      _this._strNewMessages = new intlMessageformat(_this.i18n[_this._lang].NEW_MESSAGES_COUNT, _this._lang);
+
       _this.boundedMessageSubmit = _this._handleSubmit.bind(_this);
       _this.boundedMessageDelete = _this._handleDelete.bind(_this);
       _this.boundedUserDisable = _this._handleUserDisable.bind(_this);
       _this.boundedMessageReaction = _this._handleMessageReaction.bind(_this);
+      _this.boundedLastSeenChange = _this._handleLastSeenChange.bind(_this);
 
       registerCustomElement('wc-chat-scrollable', Scroll);
       registerCustomElement('wc-chat-input', Input);
@@ -25535,11 +28933,31 @@
         this.dispatchEvent(new CustomEvent('chat-message-reaction', { detail: e.detail }));
       }
     }, {
+      key: '_handleLastSeenChange',
+      value: function _handleLastSeenChange(e) {
+        if (this.list && this.list.length > 0 && this.lastseen !== undefined && this.lastseen !== this.list[this.list.length - 1].id) {
+          this.dispatchEvent(new CustomEvent('chat-last-seen-change', { detail: this.list[this.list.length - 1].id }));
+        }
+      }
+    }, {
       key: '_render',
       value: function _render(props) {
         var input = props.noinput ? null : html$1(_templateObject$g, props.delaysubmit || 0, props.maxrows || 10, props.disabled, this.boundedMessageSubmit, props.placeholder, props.placeholderdisabled, props.message);
+        var list = props.list ? props.reverse ? props.list.slice().reverse() : props.list : undefined;
+        var newMessageCount = props.list && props.lastseen !== undefined ? props.list.length - 1 - getIndexById(props.lastseen, props.list) : 0;
 
-        return html$1(_templateObject2$a, props.delayupdate, EVENT, props.reverse, props.actions, props.actionsallowed, EVENT, props.list, this.boundedMessageDelete, this.boundedMessageReaction, this.boundedUserDisable, props.user, props.users, input);
+        return html$1(_templateObject2$b, props.delayupdate, {
+          GO_TO_RECENT_MESSAGE: this.i18n[this._lang].GO_TO_RECENT_MESSAGE,
+          NEW_MESSAGES_COUNT: this._strNewMessages.format({ count: newMessageCount }),
+          SEE: this.i18n[this._lang].SEE
+        }, EVENT, this.boundedLastSeenChange, props.reverse, newMessageCount > 0, props.actions, props.actionsallowed, {
+          NEW_MESSAGES: this.i18n[this._lang].NEW_MESSAGES
+        }, EVENT, props.lastseen, list, this.boundedMessageDelete, this.boundedMessageReaction, this.boundedUserDisable, props.reverse, props.user, props.users, input);
+      }
+    }, {
+      key: 'i18n',
+      get: function get$$1() {
+        return i18n;
       }
     }]);
     return Chat;

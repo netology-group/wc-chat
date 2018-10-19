@@ -167,3 +167,45 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   background: url('../images/human.svg') no-repeat right center transparent;
   padding-right: 12px;
 }
+
+.message.unseen.normal {
+  margin-top: 45px;
+}
+
+.message.unseen.reversed {
+  margin-bottom: 45px;
+}
+
+.message.unseen .separator {
+  position: absolute;
+  user-select: none;
+  width: 100%;
+}
+
+.message.unseen.normal .separator {
+  top: -30px;
+}
+
+.message.unseen.reversed .separator {
+  bottom: -30px;
+}
+
+.message.unseen .separator span {
+  background: #f8f8f8;
+  border-radius: 5px;
+  color: #b8b8b8;
+  font-size: 16px;
+  margin-left: 50px;
+  padding: 2px 5px;
+  position: relative;
+}
+
+.message.unseen .separator hr {
+  border: none;
+  border-top: 1px solid #d4d4d4;
+  height: 0;
+  margin: 0;
+  position: absolute;
+  top: 11px;
+  width: 100%;
+}
