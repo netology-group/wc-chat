@@ -9,6 +9,7 @@ iron-autogrow-textarea {
   font-size: var(--font-size, var(--theme-font-size, 16px));
   height: inherit;
   line-height: 1.2em;
+  max-height: 200px;
   min-height: 52px;
   outline: none;
   -ms-overflow-style: none;

@@ -80,35 +80,39 @@ export class Chat extends LitElement {
     const input = props.noinput
       ? null
       : (html`
-        <wc-chat-input
-          delay='${props.delay || 0}'
-          maxrows='${props.maxrows || 10}'
-          disabled='${props.disabled}'
-          on-message-submit='${this.boundedMessageSubmit}'
-          placeholder='${props.placeholder}'
-          placeholderdisabled='${props.placeholderdisabled}'
-          value='${props.message}'
-        />
+        <div class='input'>
+          <wc-chat-input
+            delay='${props.delay || 0}'
+            maxrows='${props.maxrows || 10}'
+            disabled='${props.disabled}'
+            on-message-submit='${this.boundedMessageSubmit}'
+            placeholder='${props.placeholder}'
+            placeholderdisabled='${props.placeholderdisabled}'
+            value='${props.message}'
+          />
+        </div>
       `)
 
     return (html`
-      <wc-chat-scrollable
-        reverse='${props.reverse}'
-        listen='${EVENT}'
-      >
-        <wc-chat-messages
-          actions='${props.actions}'
-          actionsallowed='${props.actionsallowed}'
-          invoke='${EVENT}'
-          list='${props.list}'
-          on-message-delete='${this.boundedMessageDelete}'
-          on-message-reaction='${this.boundedMessageReaction}'
-          on-user-disable='${this.boundedUserDisable}'
-          user='${props.user}'
-          users='${props.users}'
-        />
-      </wc-chat-scrollable>
-      ${input}
+      <div class='wrapper'>
+        <wc-chat-scrollable
+          reverse='${props.reverse}'
+          listen='${EVENT}'
+        >
+          <wc-chat-messages
+            actions='${props.actions}'
+            actionsallowed='${props.actionsallowed}'
+            invoke='${EVENT}'
+            list='${props.list}'
+            on-message-delete='${this.boundedMessageDelete}'
+            on-message-reaction='${this.boundedMessageReaction}'
+            on-user-disable='${this.boundedUserDisable}'
+            user='${props.user}'
+            users='${props.users}'
+          />
+        </wc-chat-scrollable>
+        ${input}
+      </div>
     `)
   }
 }

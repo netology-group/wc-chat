@@ -1,13 +1,11 @@
 /* :root, */
 :host {
-  bottom: var(--chat-input-bottom, initial);
   display: block;
-  position: var(--chat-input-position, relative);
   width: 100%;
   z-index: var(--chat-input-z-index, initial);
 }
 
-.input {
+:host .input {
   background: var(--alabaster, #f8f8f8);
   bottom: 0;
   box-sizing: border-box;
@@ -16,16 +14,16 @@
   width: 100%;
 }
 
-.input.disabled {
+:host .input.disabled {
   color: var(--silver, #b8b8b8);
 }
 
-.input > * {
+:host .input > * {
   line-height: 0;
   position: relative;
 }
 
-.enter {
+:host .input .enter {
   background: no-repeat center center;
   border: none;
   bottom: 14px;
@@ -37,6 +35,6 @@
   right: 18px;
 }
 
-.enter:active:not(:disabled) {
+:host .input .enter:active:not(:disabled) {
   transform: translateY(1px);
 }

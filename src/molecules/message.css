@@ -126,6 +126,8 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   line-height: 1.25em;
   margin: 0;
   margin-bottom: 12px;
+  overflow-wrap: break-word;
+  word-break: break-all;
 }
 
 .message-line:last-child {

@@ -140,7 +140,9 @@ export class Scrollable extends LitElement {
   _render () {
     return (html`
       <div class='scrollable' on-scroll='${this.__boundScrollHandler}'>
-        ${this.children}
+        <div class='inner'>
+          <slot></slot>
+        </div>
       </div>
     `)
   }
