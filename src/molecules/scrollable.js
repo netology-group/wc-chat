@@ -40,7 +40,7 @@ export class Scrollable extends LitElement {
   }
 
   get _scrollable () {
-    return this._rootElement ? this._rootElement.querySelector(`${this.scrolltarget || '.scrollable'}`) : this._rootElement
+    return this._rootElement ? this._rootElement.querySelector(`${this.scrolltarget || '#scrollable'}`) : this._rootElement
   }
 
   get _isTarget () {
@@ -139,7 +139,7 @@ export class Scrollable extends LitElement {
 
   _render () {
     return (html`
-      <div class='scrollable' on-scroll='${this.__boundScrollHandler}'>
+      <div class='scrollable' id="scrollable" on-scroll='${this.__boundScrollHandler}'>
         <div class='inner'>
           <slot></slot>
         </div>
