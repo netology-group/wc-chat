@@ -8,7 +8,7 @@ export const stampToDate = stamp => new Date(stamp * 1e3)
 
 export const formatDate = (date, pattern = /\d{2}:\d{2}/) => date.toTimeString().match(pattern)
 
-export const text = (message = '') => message.split('\n').map(it => (html`<p class='message-line'>${it}</p>`))
+export const text = (message = '') => message.split('\n').map(it => (html`<div class='message-line'>${it}</div>`))
 
 export const messageDefault = (props) => {
   const { message } = props
