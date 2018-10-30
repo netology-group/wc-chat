@@ -15,7 +15,8 @@ export class Chat extends LitElement {
     return {
       actions: Array,
       actionsallowed: Array,
-      delay: Number,
+      delaysubmit: Number,
+      delayupdate: Number,
       disabled: Boolean,
       list: Array,
       maxrows: Number,
@@ -82,7 +83,7 @@ export class Chat extends LitElement {
       : (html`
         <div class='input'>
           <wc-chat-input
-            delay='${props.delay || 0}'
+            delay='${props.delaysubmit || 0}'
             maxrows='${props.maxrows || 10}'
             disabled='${props.disabled}'
             on-message-submit='${this.boundedMessageSubmit}'
@@ -96,8 +97,9 @@ export class Chat extends LitElement {
     return (html`
       <div class='wrapper'>
         <wc-chat-scrollable
-          reverse='${props.reverse}'
+          delay='${props.delayupdate}'
           listen='${EVENT}'
+          reverse='${props.reverse}'
         >
           <wc-chat-messages
             actions='${props.actions}'

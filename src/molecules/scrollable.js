@@ -9,16 +9,17 @@ import { observeC as observe, throttleC as throttle } from '../utils/most'
 
 const debug = Debug('wc:scrollable')
 
+const DELAY = 50
+
 const isNumber = it => typeof it === 'number'
 
 export class Scrollable extends LitElement {
   static get properties () {
     return {
-      scrolltarget: String,
-      scrollgap: Number,
+      delay: Number,
       listen: String,
       reverse: Boolean,
-      debounce: Number,
+      scrolltarget: String,
     }
   }
 
@@ -63,7 +64,7 @@ export class Scrollable extends LitElement {
 
     this.listen && compose(
       observe(e => this._onChildrenUpdate(e)),
-      throttle(this.debounce || 50),
+      throttle(this.delay === 0 ? 0 : this.delay || DELAY),
     )(fromEvent(this.listen, this._scrollable, true))
   }
 
