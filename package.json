@@ -64,6 +64,7 @@
     "@webcomponents/webcomponentsjs": "^2.1.2",
     "core-js": "^2.5.7",
     "intl-messageformat": "~2.2.0",
+    "debug": "^4.1.0",
     "invariant": "^2.2.4",
     "most": "^1.7.3",
     "ramda": "^0.25.0"

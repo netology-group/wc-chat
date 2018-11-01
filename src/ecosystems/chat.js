@@ -29,6 +29,7 @@ export class Chat extends LitElement {
       placeholder: String,
       placeholderdisabled: String,
       reverse: Boolean,
+      scrollabledisabled: Boolean,
       user: Number,
       users: Array,
     }
@@ -137,6 +138,7 @@ export class Chat extends LitElement {
             NEW_MESSAGES_COUNT: this._strNewMessages.format({count: newMessageCount}),
             SEE: this.i18n[this._lang].SEE
           }}'
+          freeze='${props.scrollabledisabled}'
           listen='${EVENT}'
           on-last-seen-change='${this.boundedLastSeenChange}'
           reverse='${props.reverse}'
