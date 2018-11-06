@@ -34,7 +34,9 @@ export class MessagesElement extends LitElement {
         : null
       const message = { ...it, current_user_id: this.user }
 
-      return this.__renderMessage({ ...message, aggregated, i18n: this.i18n, unseen, reversed: this.reverse })
+      return this.__renderMessage({
+        ...message, aggregated, i18n: this.i18n, unseen, reversed: this.reverse,
+      })
     })
   }
 

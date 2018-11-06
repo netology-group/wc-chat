@@ -116,7 +116,9 @@ export class Scrollable extends LitElement {
       scrollHeight,
     } = element
 
-    const newDetachedValue = this.reverse ? scrollTop > 0 : (scrollHeight - scrollTop) > offsetHeight
+    const newDetachedValue = this.reverse
+      ? scrollTop > 0
+      : (scrollHeight - scrollTop) > offsetHeight
 
     if (!newDetachedValue) {
       this.dispatchEvent(new CustomEvent('last-seen-change'))
@@ -140,8 +142,8 @@ export class Scrollable extends LitElement {
     }
   }
 
-  _onResizeHandler (e) {
-    this._onScrollHandler({currentTarget: this._scrollable})
+  _onResizeHandler () {
+    this._onScrollHandler({ currentTarget: this._scrollable })
   }
 
   _onScrollHandler (e) {
@@ -280,6 +282,33 @@ export class Scrollable extends LitElement {
   }
 
   _render (props) {
+    const detachedNewBanner = this._detached && props.showbannernew
+      ? (html`<div
+        class$='${cs({
+          banner: true,
+          'new': true,
+          [props.reverse ? 'bottom' : 'top']: true,
+          reverse: props.reverse,
+        })}'
+        on-click='${() => this._scrollToUnseen()}'>
+          <div class='row'>
+            <div>${this.i18n.NEW_MESSAGES_COUNT}</div>
+            <div>${this.i18n.SEE}</div>
+          </div>
+        </div>`)
+      : null
+
+    const detachedBanner = this._detached && !props.showbannernew
+      ? (html`<div
+        class$='${cs({
+          banner: true,
+          recent: true,
+          [props.reverse ? 'top' : 'bottom']: true,
+          reverse: props.reverse,
+        })}'
+        on-click='${() => this.scrollTo()}'>${this.i18n.GO_TO_RECENT_MESSAGE}</div>`)
+      : null
+
     return (html`
       <div class='wrapper'>
         <div class='scrollable' id="scrollable" on-scroll='${this.__boundScrollHandler}'>
@@ -287,31 +316,8 @@ export class Scrollable extends LitElement {
             <slot></slot>
           </div>
         </div>
-        ${
-          this._detached && props.showbannernew
-            ? html`<div class$='${cs({
-              banner: true,
-              new: true,
-              [props.reverse ? 'bottom' : 'top']: true,
-              reverse: props.reverse
-            })}' on-click='${() => this._scrollToUnseen()}'>
-              <div class='row'>
-                <div>${this.i18n.NEW_MESSAGES_COUNT}</div>
-                <div>${this.i18n.SEE}</div>
-              </div>
-            </div>`
-            : null
-        }
-        ${
-          this._detached && !props.showbannernew
-            ? html`<div class$='${cs({
-              banner: true,
-              recent: true,
-              [props.reverse ? 'top' : 'bottom']: true,
-              reverse: props.reverse
-            })}' on-click='${() => this.scrollTo()}'>${this.i18n.GO_TO_RECENT_MESSAGE}</div>`
-            : null
-        }
+        ${detachedNewBanner}
+        ${detachedBanner}
       </div>
     `)
   }

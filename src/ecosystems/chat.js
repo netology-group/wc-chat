@@ -44,6 +44,7 @@ export class Chat extends LitElement {
       this._lang = 'en-US'
     }
 
+    // eslint-disable-next-line max-len
     this._strNewMessages = new IntlMessageFormat(this.i18n[this._lang].NEW_MESSAGES_COUNT, this._lang)
 
     this.boundedMessageSubmit = this._handleSubmit.bind(this)
@@ -67,7 +68,7 @@ export class Chat extends LitElement {
     this.boundedMessageReaction = null
   }
 
-  get i18n () {
+  get i18n () { // eslint-disable-line class-methods-use-this
     return i18n
   }
 
@@ -95,8 +96,12 @@ export class Chat extends LitElement {
     this.dispatchEvent(new CustomEvent('chat-message-reaction', { detail: e.detail }))
   }
 
-  _handleLastSeenChange (e) {
-    if (this.list && this.list.length > 0 && this.lastseen !== undefined && this.lastseen !== this.list[this.list.length - 1].id) {
+  _handleLastSeenChange () {
+    if (this.list
+      && this.list.length > 0
+      && this.lastseen !== undefined
+      && this.lastseen !== this.list[this.list.length - 1].id
+    ) {
       this.dispatchEvent(new CustomEvent('chat-last-seen-change', { detail: this.list[this.list.length - 1].id }))
     }
   }
@@ -129,15 +134,21 @@ export class Chat extends LitElement {
       ? props.list.length - 1 - lastSeenIndex
       : 0
 
+    const scrollableI18n = {
+      GO_TO_RECENT_MESSAGE: this.i18n[this._lang].GO_TO_RECENT_MESSAGE,
+      NEW_MESSAGES_COUNT: this._strNewMessages.format({ count: newMessageCount }),
+      SEE: this.i18n[this._lang].SEE,
+    }
+
+    const messagesI18n = {
+      NEW_MESSAGES: this.i18n[this._lang].NEW_MESSAGES,
+    }
+
     return (html`
       <div class='wrapper'>
         <wc-chat-scrollable
           delay='${props.delayupdate}'
-          i18n='${{
-            GO_TO_RECENT_MESSAGE: this.i18n[this._lang].GO_TO_RECENT_MESSAGE,
-            NEW_MESSAGES_COUNT: this._strNewMessages.format({count: newMessageCount}),
-            SEE: this.i18n[this._lang].SEE
-          }}'
+          i18n='${scrollableI18n}'
           freeze='${props.scrollabledisabled}'
           listen='${EVENT}'
           on-last-seen-change='${this.boundedLastSeenChange}'
@@ -147,9 +158,7 @@ export class Chat extends LitElement {
           <wc-chat-messages
             actions='${props.actions}'
             actionsallowed='${props.actionsallowed}'
-            i18n='${{
-              NEW_MESSAGES: this.i18n[this._lang].NEW_MESSAGES
-            }}'
+            i18n='${messagesI18n}'
             invoke='${EVENT}'
             lastseen='${props.lastseen}'
             list='${list}'

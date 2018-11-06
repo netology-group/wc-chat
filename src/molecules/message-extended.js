@@ -14,12 +14,16 @@ const meta = ({ message, isWatchdog }) => (html`
 
 export const messageExtended = (props) => {
   const { message, deleted } = props
-  const { aggregated, i18n, unseen, reversed } = message
+  const {
+    aggregated, i18n, unseen, reversed,
+  } = message
 
   const isWatchdog = message.user_role === 'moderator'
 
   return (html`
-    <div class$='${cs({message: true, deleted, aggregated, unseen, reversed, normal: !reversed})}'>
+    <div class$='${cs({
+      message: true, deleted, aggregated, unseen, reversed, normal: !reversed,
+    })}'>
       ${unseen ? html`<div class='separator'><hr><span>${i18n.NEW_MESSAGES}</span></div>` : null}
       <div class$='${cn(message.user_role, 'avatar')}'>
         <div style$='${!message.avatar ? '' : `background-image: url(${message.avatar});`}'></div>
