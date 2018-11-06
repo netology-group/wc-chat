@@ -121,8 +121,11 @@ export class Chat extends LitElement {
         ? props.list.slice().reverse()
         : props.list
       : undefined
-    const newMessageCount = props.list && props.lastseen !== undefined
-      ? props.list.length - 1 - getIndexById(props.lastseen, props.list)
+    const lastSeenIndex = props.list && props.lastseen !== undefined
+      ? getIndexById(props.lastseen, props.list)
+      : null
+    const newMessageCount = props.list && props.lastseen !== undefined && lastSeenIndex !== null
+      ? props.list.length - 1 - lastSeenIndex
       : 0
 
     return (html`
