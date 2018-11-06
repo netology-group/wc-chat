@@ -168,7 +168,8 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   padding-right: 12px;
 }
 
-.message.unseen.normal {
+.message.unseen.normal,
+.message + .message.unseen:not(.aggregated) {
   margin-top: 45px;
 }
 
