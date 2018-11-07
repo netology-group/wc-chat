@@ -43,7 +43,10 @@ const dist = (name = ns) => ({
     name,
   },
   plugins: [
-    nodeResolve(),
+    nodeResolve({
+      browser: true,
+      node: true,
+    }),
     css(),
     svg(),
     json(),
