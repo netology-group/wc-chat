@@ -8,15 +8,11 @@
 
     <script src="./dist/polyfill.min.js"></script>
 
-    <!--<script>if (window.ShadowRoot) { document.write('&lt;!&ndash;'); }</script>-->
-    <script type="text/javascript" src="./public/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script>if (!window.customElements) { document.write('<!--'); }</script>
+    <script src="./public/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js" type="text/javascript" ></script>
     <!--! do not remove -->
 
-    <!--<script>if (!window.customElements) { document.write('&lt;!&ndash;'); }</script>-->
-    <script type="text/javascript" src="./public/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
-    <!--! do not remove -->
-
-    <link href="./public/fonts.css" rel="stylesheet" />
+    <script src="./public/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js" type="text/javascript" ></script>
 
     <script src="./dist/chat.min.js"></script>
 
@@ -132,10 +128,25 @@
         messengerReversed.list = _messages
       }
 
-      window.addEventListener('DOMContentLoaded', function() {
-        var _Chat = window.WCChat.chat.default
+      window.document.addEventListener('WebComponentsReady', function() {
+        var Chat = window.WCChat.chat.default
+        var mixins = window.WCChat.mixins
+        var utils = window.WCChat.utils
 
-        window.customElements.define('wc-chat', _Chat)
+        Chat = mixins.withCustomElements(Chat, function(children){
+          const el = children.get('wc-chat-messages')
+          if(!el) return new Map()
+
+          const applyLinkTo = utils.combineMixins([
+            [mixins.withStyleLink, './public/style.css']
+          ])
+
+          return new Map([
+            ['wc-chat-messages', applyLinkTo(el)]
+          ])
+        })
+
+        window.customElements.define('wc-chat', Chat)
 
         messenger = document.getElementById('messenger')
         messengerReversed = document.getElementById('messenger-reverse')
@@ -150,10 +161,12 @@
         height: 100%;
         width: 100%;
       }
+
       .row {
         display: flex;
       }
     </style>
+    <link href="./public/fonts.css" rel="stylesheet" />
   </head>
   <body>
     <h1>Chat</h1>
