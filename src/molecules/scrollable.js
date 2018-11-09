@@ -1,14 +1,15 @@
 import { fromEvent } from 'most/src/source/fromEvent'
 import { html, LitElement, classString as cs } from '@polymer/lit-element'
-import { withStyle } from '@netology-group/wc-utils/lib/mixins/mixins'
+import { withStyle } from '@netology-group/wc-utils'
 import compose from 'ramda/es/compose'
 
+import { name } from '../../package.json'
 import { Invariant, debug as Debug } from '../utils/index'
 import style from '../molecules/scrollable.css'
 import { observeC as observe, throttleC as throttle } from '../utils/most'
 
 const invariant = Invariant()
-const debug = Debug('wc:scrollable')
+const debug = Debug(`${name}:Scrollable`)
 
 const DELAY = 50
 const DELTA = 20
@@ -324,4 +325,3 @@ export class Scrollable extends LitElement {
 }
 
 export default withStyle(html)(Scrollable, style)
-

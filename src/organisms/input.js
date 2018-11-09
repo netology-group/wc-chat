@@ -1,6 +1,6 @@
 import { fromEvent } from 'most/src/source/fromEvent'
 import { html, LitElement, classString } from '@polymer/lit-element'
-import { withStyle } from '@netology-group/wc-utils/lib/mixins/mixins'
+import { withStyle } from '@netology-group/wc-utils'
 import compose from 'ramda/es/compose'
 
 import { button as Button, style as buttonStyle } from '../atoms/button'
