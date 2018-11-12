@@ -5,11 +5,11 @@ import { stampToDate, formatDate, text } from './message'
 const cn = (...argv) => argv.join(' ').trim()
 
 const meta = ({ message, isWatchdog }) => (html`
-<div class='message-meta'>
-  <span class='message-author' title='${isWatchdog ? message.identity : ''}'>${message.user_name}</span>
-  <span class='message-stamp'>${formatDate(stampToDate(message.timestamp))}</span>
-  ${!isWatchdog ? (html`<div class='message-status'>${message.status}</div>`) : null}
-</div>
+  <div class='message-meta'>
+    <span class='message-author' title='${isWatchdog ? message.identity : ''}'>${message.user_name}</span>
+    <span class='message-stamp'>${formatDate(stampToDate(message.timestamp))}</span>
+    ${!isWatchdog ? (html`<div class='message-status'>${message.status}</div>`) : null}
+  </div>
 `)
 
 export const messageExtended = (props) => {
@@ -20,20 +20,32 @@ export const messageExtended = (props) => {
 
   const isWatchdog = message.user_role === 'moderator'
 
+  const voidEl = undefined
+
+  const _separator = unseen ? (html`<div class='separator'><hr><span>${i18n.NEW_MESSAGES}</span></div>`) : voidEl
+
+  const _identity = !isWatchdog ? (html`<div class='message-identity'>${message.identity}</div>`) : voidEl
+
+  const _messagemeta = !message.aggregated ? (html`${meta({ message, isWatchdog })}`) : voidEl
+
+  const _messagebody = message.body ? (html`${text(message.body)}`) : voidEl
+
+  const _children = props.chidlren ? (html`${props.chidlren}`) : voidEl
+
   return (html`
     <div class$='${cs({
       message: true, deleted, aggregated, unseen, reversed, normal: !reversed,
     })}'>
-      ${unseen ? html`<div class='separator'><hr><span>${i18n.NEW_MESSAGES}</span></div>` : null}
+      ${_separator}
       <div class$='${cn(message.user_role, 'avatar')}'>
         <div style$='${!message.avatar ? '' : `background-image: url(${message.avatar});`}'></div>
-        ${!isWatchdog ? (html`<div class='message-identity'>${message.identity}</div>`) : null}
+        ${_identity}
       </div>
       <section class$='${cn(message.user_role, 'content', cs({ me: message.user_id === message.current_user_id }))}'>
-        ${props.actions}
-        ${!message.aggregated ? meta({ message, isWatchdog }) : undefined}
-        <div class='message-body'>${text(message.body)}</div>
-        ${props.children}
+        ${props.actions ? props.actions : undefined}
+        ${_messagemeta}
+        <div class='message-body'>${_messagebody}</div>
+        ${_children}
       </section>
     </div>
   `)
