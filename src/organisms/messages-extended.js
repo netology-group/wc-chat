@@ -1,5 +1,5 @@
 import { html } from '@polymer/lit-element'
-import { withStyle } from '@netology-group/wc-utils/lib/mixins/mixins'
+import { withStyle } from '@netology-group/wc-utils'
 
 import { actions as Actions, style as actionStyle } from '../atoms/actions'
 import { messageExtended as Message } from '../molecules/message-extended'

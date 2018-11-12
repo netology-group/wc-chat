@@ -8,7 +8,7 @@ import cssurl from 'postcss-url'
 import env from 'postcss-preset-env'
 import json from 'rollup-plugin-json'
 import postcss from 'rollup-plugin-postcss'
-import nodeResolve from 'rollup-plugin-node-resolve'
+import npm from 'rollup-plugin-node-resolve'
 import svg from 'rollup-plugin-svg'
 
 import { shouldUglify } from './rollup.utils'
@@ -38,19 +38,19 @@ const css = () => postcss(noCssTransform
 const dist = (name = ns) => ({
   input: `${directories.lib}/${entry}.js`,
   output: {
-    format: 'umd',
     exports: 'named',
+    format: 'umd',
     name,
   },
   plugins: [
-    nodeResolve({
+    npm({
       browser: true,
       node: true,
     }),
+    cjs(),
     css(),
     svg(),
     json(),
-    cjs(),
     babel(),
     shouldUglify(),
     copy({ './fonts': 'public/fonts' }),

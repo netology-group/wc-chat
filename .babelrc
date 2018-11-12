@@ -1,18 +1,4 @@
 {
-  "presets": [
-    ["babel-preset-env",{
-      "modules": false,
-      "targets":{
-        "chrome": 49,
-        "firefox": 43,
-        "safari": 10,
-        "ios": 10,
-        "opera": 40,
-        "edge": 13,
-        "ie": 9
-      }
-    }]
-   ],
   "plugins": [
     "babel-plugin-transform-object-rest-spread",
     ["babel-plugin-transform-inline-environment-variables", {
@@ -20,21 +6,47 @@
     }]
   ],
   "env":{
-    "cjs": {
-      "plugins": [
-        "babel-plugin-annotate-pure-calls",
-        "babel-plugin-transform-es2015-modules-commonjs"
-      ]
-    },
     "es": {
       "plugins": [
         "babel-plugin-annotate-pure-calls"
       ]
     },
-    "rollup": {
+    "cjs": {
+      "presets": [
+        ["babel-preset-env",{
+          "modules": false,
+          "targets":{
+            "chrome": 43,
+            "firefox": 43,
+            "safari": 10,
+            "ios": 10,
+            "opera": 40,
+            "edge": 13,
+            "ie": 9
+          }
+        }]
+      ],
       "plugins": [
-        "babel-plugin-external-helpers"
+        "babel-plugin-annotate-pure-calls",
+        "babel-plugin-transform-es2015-modules-commonjs"
       ]
+    },
+    "rollup": {
+      "presets": [
+        ["babel-preset-env",{
+          "modules": false,
+          "targets":{
+            "chrome": 43,
+            "firefox": 43,
+            "safari": 10,
+            "ios": 10,
+            "opera": 40,
+            "edge": 13,
+            "ie": 9
+          }
+        }]
+      ],
+      "plugins": ["babel-plugin-external-helpers"]
     }
   }
 }
