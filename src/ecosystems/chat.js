@@ -1,8 +1,11 @@
 import { html, LitElement } from '@polymer/lit-element'
 import IntlMessageFormat from 'intl-messageformat'
 import { withStyle } from '@netology-group/wc-utils'
+import { registerCustomElement } from '@netology-group/wc-utils/lib/utils'
 import { ReactionList as Reactions } from '@netology-group/wc-reaction/es/organisms/reaction-list'
+import Debug from 'debug'
 
+import { name } from '../../package.json'
 import Input from '../organisms/input'
 import Messages from '../organisms/messages-extended'
 import Scroll from '../molecules/scrollable'
@@ -11,6 +14,7 @@ import style from '../ecosystems/chat.css'
 import i18n from '../i18n'
 
 const EVENT = 'did-update'
+const debug = Debug(`${name}:chat`)
 
 export class Chat extends LitElement {
   static get properties () {
@@ -56,7 +60,18 @@ export class Chat extends LitElement {
     this._scrollable = null
   }
 
+  connectedCallback () {
+    if (!this.__setup) {
+      debug('`__setup` is not present. Registering customElements...')
+      this._childrenElements.forEach((el, k) => { registerCustomElement(k, el) })
+    }
+
+    super.connectedCallback()
+  }
+
   disconnectedCallback () {
+    super.disconnectedCallback()
+
     this.boundedMessageSubmit = null
     this.boundedMessageDelete = null
     this.boundedUserDisable = null
