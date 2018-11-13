@@ -4,298 +4,6 @@
   (factory((global.WCChat = {})));
 }(this, (function (exports) { 'use strict';
 
-  var toBinary = function toBinary(policy) {
-    return parseInt(policy, 2);
-  };
-
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-    return typeof obj;
-  } : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-  };
-
-  var classCallCheck = function (instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  };
-
-  var createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
-
-  var defineProperty = function (obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
-    }
-
-    return obj;
-  };
-
-  var _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  var get = function get(object, property, receiver) {
-    if (object === null) object = Function.prototype;
-    var desc = Object.getOwnPropertyDescriptor(object, property);
-
-    if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);
-
-      if (parent === null) {
-        return undefined;
-      } else {
-        return get(parent, property, receiver);
-      }
-    } else if ("value" in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;
-
-      if (getter === undefined) {
-        return undefined;
-      }
-
-      return getter.call(receiver);
-    }
-  };
-
-  var inherits = function (subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  };
-
-  var possibleConstructorReturn = function (self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  };
-
-  var taggedTemplateLiteral = function (strings, raw) {
-    return Object.freeze(Object.defineProperties(strings, {
-      raw: {
-        value: Object.freeze(raw)
-      }
-    }));
-  };
-
-  var toConsumableArray = function (arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-      return arr2;
-    } else {
-      return Array.from(arr);
-    }
-  };
-
-  var _templateObject = taggedTemplateLiteral(['<style>', '</style>'], ['<style>', '</style>']),
-      _templateObject2 = taggedTemplateLiteral(['\n      ', '\n      ', '\n    '], ['\n      ', '\n      ', '\n    ']),
-      _templateObject3 = taggedTemplateLiteral(['<link href$="', '" rel="stylesheet" type="text/css" />'], ['<link href$="', '" rel="stylesheet" type="text/css" />']);
-
-  var _extends$1 = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }return target;
-  };
-
-  var withStyle = function withStyle(html) {
-    return function (base) {
-      for (var _len = arguments.length, styles = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        styles[_key - 1] = arguments[_key];
-      }
-
-      return function (_base) {
-        inherits(_class, _base);
-
-        function _class() {
-          classCallCheck(this, _class);
-          return possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
-        }
-
-        createClass(_class, [{
-          key: '__renderStyles',
-          value: function __renderStyles() {
-            for (var _len2 = arguments.length, argv = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-              argv[_key2] = arguments[_key2];
-            }
-
-            // eslint-disable-line class-methods-use-this
-            return html(_templateObject, argv.join(' '));
-          }
-        }, {
-          key: '_render',
-          value: function _render(props) {
-            return html(_templateObject2, this.__renderStyles.apply(this, styles), get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), '_render', this).call(this, props));
-          }
-        }]);
-        return _class;
-      }(base);
-    };
-  };
-
-  var withStyleAfter = function withStyleAfter(html) {
-    return function (base) {
-      for (var _len3 = arguments.length, styles = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-        styles[_key3 - 1] = arguments[_key3];
-      }
-
-      return function (_base2) {
-        inherits(_class2, _base2);
-
-        function _class2() {
-          classCallCheck(this, _class2);
-          return possibleConstructorReturn(this, (_class2.__proto__ || Object.getPrototypeOf(_class2)).apply(this, arguments));
-        }
-
-        createClass(_class2, [{
-          key: '__renderStyles',
-          value: function __renderStyles() {
-            for (var _len4 = arguments.length, argv = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-              argv[_key4] = arguments[_key4];
-            }
-
-            // eslint-disable-line class-methods-use-this
-            return html(_templateObject, argv.join(' '));
-          }
-        }, {
-          key: '_render',
-          value: function _render(props) {
-            return html(_templateObject2, get(_class2.prototype.__proto__ || Object.getPrototypeOf(_class2.prototype), '_render', this).call(this, props), this.__renderStyles.apply(this, styles));
-          }
-        }]);
-        return _class2;
-      }(base);
-    };
-  };
-
-  var withStyleLink = function withStyleLink(html) {
-    return function (base) {
-      for (var _len5 = arguments.length, links = Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
-        links[_key5 - 1] = arguments[_key5];
-      }
-
-      return function (_base3) {
-        inherits(_class3, _base3);
-
-        function _class3() {
-          classCallCheck(this, _class3);
-          return possibleConstructorReturn(this, (_class3.__proto__ || Object.getPrototypeOf(_class3)).apply(this, arguments));
-        }
-
-        createClass(_class3, [{
-          key: '__renderStyleLink',
-          value: function __renderStyleLink() {
-            for (var _len6 = arguments.length, argv = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
-              argv[_key6] = arguments[_key6];
-            }
-
-            // eslint-disable-line class-methods-use-this
-            return argv.map(function (link) {
-              return html(_templateObject3, link);
-            });
-          }
-        }, {
-          key: '_render',
-          value: function _render(props) {
-            return html(_templateObject2, this.__renderStyleLink.apply(this, links), get(_class3.prototype.__proto__ || Object.getPrototypeOf(_class3.prototype), '_render', this).call(this, props));
-          }
-        }]);
-        return _class3;
-      }(base);
-    };
-  };
-
-  var withPermissions = function withPermissions() {
-    return function (base) {
-      var permissions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '00000';
-      return function (_base4) {
-        inherits(_class4, _base4);
-
-        function _class4() {
-          classCallCheck(this, _class4);
-          return possibleConstructorReturn(this, (_class4.__proto__ || Object.getPrototypeOf(_class4)).apply(this, arguments));
-        }
-
-        createClass(_class4, [{
-          key: '_getPermissions',
-          value: function _getPermissions() {
-            return this.permissions || permissions;
-          }
-        }, {
-          key: '_isAllowed',
-          value: function _isAllowed(policy) {
-            return toBinary(policy) & toBinary(this._getPermissions()); // eslint-disable-line no-bitwise
-          }
-        }], [{
-          key: 'properties',
-          get: function get$$1() {
-            return _extends$1({}, get(_class4.__proto__ || Object.getPrototypeOf(_class4), 'properties', this), {
-              permissions: String
-            });
-          }
-        }]);
-        return _class4;
-      }(base);
-    };
-  };
-
-  var mixins = /*#__PURE__*/Object.freeze({
-    withStyle: withStyle,
-    withStyleAfter: withStyleAfter,
-    withStyleLink: withStyleLink,
-    withPermissions: withPermissions
-  });
-
   /**
   @license
   Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -496,6 +204,132 @@
         }
         microtaskCallbacks[idx] = null;
       }
+    }
+  };
+
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+  };
+
+  var classCallCheck = function (instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  var createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+  var defineProperty = function (obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+
+    return obj;
+  };
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  var get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
+  var inherits = function (subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  };
+
+  var possibleConstructorReturn = function (self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && (typeof call === "object" || typeof call === "function") ? call : self;
+  };
+
+  var taggedTemplateLiteral = function (strings, raw) {
+    return Object.freeze(Object.defineProperties(strings, {
+      raw: {
+        value: Object.freeze(raw)
+      }
+    }));
+  };
+
+  var toConsumableArray = function (arr) {
+    if (Array.isArray(arr)) {
+      for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+      return arr2;
+    } else {
+      return Array.from(arr);
     }
   };
 
@@ -2836,9 +2670,1778 @@
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
+  function unwrapExports (x) {
+  	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+  }
+
   function createCommonjsModule(fn, module) {
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
   }
+
+  function _arity(n, fn) {
+    /* eslint-disable no-unused-vars */
+    switch (n) {
+      case 0:
+        return function () {
+          return fn.apply(this, arguments);
+        };
+      case 1:
+        return function (a0) {
+          return fn.apply(this, arguments);
+        };
+      case 2:
+        return function (a0, a1) {
+          return fn.apply(this, arguments);
+        };
+      case 3:
+        return function (a0, a1, a2) {
+          return fn.apply(this, arguments);
+        };
+      case 4:
+        return function (a0, a1, a2, a3) {
+          return fn.apply(this, arguments);
+        };
+      case 5:
+        return function (a0, a1, a2, a3, a4) {
+          return fn.apply(this, arguments);
+        };
+      case 6:
+        return function (a0, a1, a2, a3, a4, a5) {
+          return fn.apply(this, arguments);
+        };
+      case 7:
+        return function (a0, a1, a2, a3, a4, a5, a6) {
+          return fn.apply(this, arguments);
+        };
+      case 8:
+        return function (a0, a1, a2, a3, a4, a5, a6, a7) {
+          return fn.apply(this, arguments);
+        };
+      case 9:
+        return function (a0, a1, a2, a3, a4, a5, a6, a7, a8) {
+          return fn.apply(this, arguments);
+        };
+      case 10:
+        return function (a0, a1, a2, a3, a4, a5, a6, a7, a8, a9) {
+          return fn.apply(this, arguments);
+        };
+      default:
+        throw new Error('First argument to _arity must be a non-negative integer no greater than ten');
+    }
+  }
+
+  function _pipe(f, g) {
+    return function () {
+      return g.call(this, f.apply(this, arguments));
+    };
+  }
+
+  function _isPlaceholder(a) {
+         return a != null && (typeof a === 'undefined' ? 'undefined' : _typeof(a)) === 'object' && a['@@functional/placeholder'] === true;
+  }
+
+  /**
+   * Optimized internal one-arity curry function.
+   *
+   * @private
+   * @category Function
+   * @param {Function} fn The function to curry.
+   * @return {Function} The curried function.
+   */
+  function _curry1(fn) {
+    return function f1(a) {
+      if (arguments.length === 0 || _isPlaceholder(a)) {
+        return f1;
+      } else {
+        return fn.apply(this, arguments);
+      }
+    };
+  }
+
+  /**
+   * Optimized internal two-arity curry function.
+   *
+   * @private
+   * @category Function
+   * @param {Function} fn The function to curry.
+   * @return {Function} The curried function.
+   */
+  function _curry2(fn) {
+    return function f2(a, b) {
+      switch (arguments.length) {
+        case 0:
+          return f2;
+        case 1:
+          return _isPlaceholder(a) ? f2 : _curry1(function (_b) {
+            return fn(a, _b);
+          });
+        default:
+          return _isPlaceholder(a) && _isPlaceholder(b) ? f2 : _isPlaceholder(a) ? _curry1(function (_a) {
+            return fn(_a, b);
+          }) : _isPlaceholder(b) ? _curry1(function (_b) {
+            return fn(a, _b);
+          }) : fn(a, b);
+      }
+    };
+  }
+
+  /**
+   * Optimized internal three-arity curry function.
+   *
+   * @private
+   * @category Function
+   * @param {Function} fn The function to curry.
+   * @return {Function} The curried function.
+   */
+  function _curry3(fn) {
+    return function f3(a, b, c) {
+      switch (arguments.length) {
+        case 0:
+          return f3;
+        case 1:
+          return _isPlaceholder(a) ? f3 : _curry2(function (_b, _c) {
+            return fn(a, _b, _c);
+          });
+        case 2:
+          return _isPlaceholder(a) && _isPlaceholder(b) ? f3 : _isPlaceholder(a) ? _curry2(function (_a, _c) {
+            return fn(_a, b, _c);
+          }) : _isPlaceholder(b) ? _curry2(function (_b, _c) {
+            return fn(a, _b, _c);
+          }) : _curry1(function (_c) {
+            return fn(a, b, _c);
+          });
+        default:
+          return _isPlaceholder(a) && _isPlaceholder(b) && _isPlaceholder(c) ? f3 : _isPlaceholder(a) && _isPlaceholder(b) ? _curry2(function (_a, _b) {
+            return fn(_a, _b, c);
+          }) : _isPlaceholder(a) && _isPlaceholder(c) ? _curry2(function (_a, _c) {
+            return fn(_a, b, _c);
+          }) : _isPlaceholder(b) && _isPlaceholder(c) ? _curry2(function (_b, _c) {
+            return fn(a, _b, _c);
+          }) : _isPlaceholder(a) ? _curry1(function (_a) {
+            return fn(_a, b, c);
+          }) : _isPlaceholder(b) ? _curry1(function (_b) {
+            return fn(a, _b, c);
+          }) : _isPlaceholder(c) ? _curry1(function (_c) {
+            return fn(a, b, _c);
+          }) : fn(a, b, c);
+      }
+    };
+  }
+
+  /**
+   * Tests whether or not an object is an array.
+   *
+   * @private
+   * @param {*} val The object to test.
+   * @return {Boolean} `true` if `val` is an array, `false` otherwise.
+   * @example
+   *
+   *      _isArray([]); //=> true
+   *      _isArray(null); //=> false
+   *      _isArray({}); //=> false
+   */
+  var _isArray = Array.isArray || function _isArray(val) {
+    return val != null && val.length >= 0 && Object.prototype.toString.call(val) === '[object Array]';
+  };
+
+  function _isString(x) {
+    return Object.prototype.toString.call(x) === '[object String]';
+  }
+
+  /**
+   * Tests whether or not an object is similar to an array.
+   *
+   * @private
+   * @category Type
+   * @category List
+   * @sig * -> Boolean
+   * @param {*} x The object to test.
+   * @return {Boolean} `true` if `x` has a numeric length property and extreme indices defined; `false` otherwise.
+   * @example
+   *
+   *      _isArrayLike([]); //=> true
+   *      _isArrayLike(true); //=> false
+   *      _isArrayLike({}); //=> false
+   *      _isArrayLike({length: 10}); //=> false
+   *      _isArrayLike({0: 'zero', 9: 'nine', length: 10}); //=> true
+   */
+  var _isArrayLike = /*#__PURE__*/_curry1(function isArrayLike(x) {
+    if (_isArray(x)) {
+      return true;
+    }
+    if (!x) {
+      return false;
+    }
+    if ((typeof x === 'undefined' ? 'undefined' : _typeof(x)) !== 'object') {
+      return false;
+    }
+    if (_isString(x)) {
+      return false;
+    }
+    if (x.nodeType === 1) {
+      return !!x.length;
+    }
+    if (x.length === 0) {
+      return true;
+    }
+    if (x.length > 0) {
+      return x.hasOwnProperty(0) && x.hasOwnProperty(x.length - 1);
+    }
+    return false;
+  });
+
+  var XWrap = /*#__PURE__*/function () {
+    function XWrap(fn) {
+      this.f = fn;
+    }
+    XWrap.prototype['@@transducer/init'] = function () {
+      throw new Error('init not implemented on XWrap');
+    };
+    XWrap.prototype['@@transducer/result'] = function (acc) {
+      return acc;
+    };
+    XWrap.prototype['@@transducer/step'] = function (acc, x) {
+      return this.f(acc, x);
+    };
+
+    return XWrap;
+  }();
+
+  function _xwrap(fn) {
+    return new XWrap(fn);
+  }
+
+  /**
+   * Creates a function that is bound to a context.
+   * Note: `R.bind` does not provide the additional argument-binding capabilities of
+   * [Function.prototype.bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
+   *
+   * @func
+   * @memberOf R
+   * @since v0.6.0
+   * @category Function
+   * @category Object
+   * @sig (* -> *) -> {*} -> (* -> *)
+   * @param {Function} fn The function to bind to context
+   * @param {Object} thisObj The context to bind `fn` to
+   * @return {Function} A function that will execute in the context of `thisObj`.
+   * @see R.partial
+   * @example
+   *
+   *      var log = R.bind(console.log, console);
+   *      R.pipe(R.assoc('a', 2), R.tap(log), R.assoc('a', 3))({a: 1}); //=> {a: 3}
+   *      // logs {a: 2}
+   * @symb R.bind(f, o)(a, b) = f.call(o, a, b)
+   */
+  var bind = /*#__PURE__*/_curry2(function bind(fn, thisObj) {
+    return _arity(fn.length, function () {
+      return fn.apply(thisObj, arguments);
+    });
+  });
+
+  function _arrayReduce(xf, acc, list) {
+    var idx = 0;
+    var len = list.length;
+    while (idx < len) {
+      acc = xf['@@transducer/step'](acc, list[idx]);
+      if (acc && acc['@@transducer/reduced']) {
+        acc = acc['@@transducer/value'];
+        break;
+      }
+      idx += 1;
+    }
+    return xf['@@transducer/result'](acc);
+  }
+
+  function _iterableReduce(xf, acc, iter) {
+    var step = iter.next();
+    while (!step.done) {
+      acc = xf['@@transducer/step'](acc, step.value);
+      if (acc && acc['@@transducer/reduced']) {
+        acc = acc['@@transducer/value'];
+        break;
+      }
+      step = iter.next();
+    }
+    return xf['@@transducer/result'](acc);
+  }
+
+  function _methodReduce(xf, acc, obj, methodName) {
+    return xf['@@transducer/result'](obj[methodName](bind(xf['@@transducer/step'], xf), acc));
+  }
+
+  var symIterator = typeof Symbol !== 'undefined' ? Symbol.iterator : '@@iterator';
+
+  function _reduce(fn, acc, list) {
+    if (typeof fn === 'function') {
+      fn = _xwrap(fn);
+    }
+    if (_isArrayLike(list)) {
+      return _arrayReduce(fn, acc, list);
+    }
+    if (typeof list['fantasy-land/reduce'] === 'function') {
+      return _methodReduce(fn, acc, list, 'fantasy-land/reduce');
+    }
+    if (list[symIterator] != null) {
+      return _iterableReduce(fn, acc, list[symIterator]());
+    }
+    if (typeof list.next === 'function') {
+      return _iterableReduce(fn, acc, list);
+    }
+    if (typeof list.reduce === 'function') {
+      return _methodReduce(fn, acc, list, 'reduce');
+    }
+
+    throw new TypeError('reduce: list must be array or iterable');
+  }
+
+  /**
+   * Returns a single item by iterating through the list, successively calling
+   * the iterator function and passing it an accumulator value and the current
+   * value from the array, and then passing the result to the next call.
+   *
+   * The iterator function receives two values: *(acc, value)*. It may use
+   * [`R.reduced`](#reduced) to shortcut the iteration.
+   *
+   * The arguments' order of [`reduceRight`](#reduceRight)'s iterator function
+   * is *(value, acc)*.
+   *
+   * Note: `R.reduce` does not skip deleted or unassigned indices (sparse
+   * arrays), unlike the native `Array.prototype.reduce` method. For more details
+   * on this behavior, see:
+   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce#Description
+   *
+   * Dispatches to the `reduce` method of the third argument, if present. When
+   * doing so, it is up to the user to handle the [`R.reduced`](#reduced)
+   * shortcuting, as this is not implemented by `reduce`.
+   *
+   * @func
+   * @memberOf R
+   * @since v0.1.0
+   * @category List
+   * @sig ((a, b) -> a) -> a -> [b] -> a
+   * @param {Function} fn The iterator function. Receives two values, the accumulator and the
+   *        current element from the array.
+   * @param {*} acc The accumulator value.
+   * @param {Array} list The list to iterate over.
+   * @return {*} The final, accumulated value.
+   * @see R.reduced, R.addIndex, R.reduceRight
+   * @example
+   *
+   *      R.reduce(R.subtract, 0, [1, 2, 3, 4]) // => ((((0 - 1) - 2) - 3) - 4) = -10
+   *      //          -               -10
+   *      //         / \              / \
+   *      //        -   4           -6   4
+   *      //       / \              / \
+   *      //      -   3   ==>     -3   3
+   *      //     / \              / \
+   *      //    -   2           -1   2
+   *      //   / \              / \
+   *      //  0   1            0   1
+   *
+   * @symb R.reduce(f, a, [b, c, d]) = f(f(f(a, b), c), d)
+   */
+  var reduce = /*#__PURE__*/_curry3(_reduce);
+
+  /**
+   * This checks whether a function has a [methodname] function. If it isn't an
+   * array it will execute that function otherwise it will default to the ramda
+   * implementation.
+   *
+   * @private
+   * @param {Function} fn ramda implemtation
+   * @param {String} methodname property to check for a custom implementation
+   * @return {Object} Whatever the return value of the method is.
+   */
+  function _checkForMethod(methodname, fn) {
+    return function () {
+      var length = arguments.length;
+      if (length === 0) {
+        return fn();
+      }
+      var obj = arguments[length - 1];
+      return _isArray(obj) || typeof obj[methodname] !== 'function' ? fn.apply(this, arguments) : obj[methodname].apply(obj, Array.prototype.slice.call(arguments, 0, length - 1));
+    };
+  }
+
+  /**
+   * Returns the elements of the given list or string (or object with a `slice`
+   * method) from `fromIndex` (inclusive) to `toIndex` (exclusive).
+   *
+   * Dispatches to the `slice` method of the third argument, if present.
+   *
+   * @func
+   * @memberOf R
+   * @since v0.1.4
+   * @category List
+   * @sig Number -> Number -> [a] -> [a]
+   * @sig Number -> Number -> String -> String
+   * @param {Number} fromIndex The start index (inclusive).
+   * @param {Number} toIndex The end index (exclusive).
+   * @param {*} list
+   * @return {*}
+   * @example
+   *
+   *      R.slice(1, 3, ['a', 'b', 'c', 'd']);        //=> ['b', 'c']
+   *      R.slice(1, Infinity, ['a', 'b', 'c', 'd']); //=> ['b', 'c', 'd']
+   *      R.slice(0, -1, ['a', 'b', 'c', 'd']);       //=> ['a', 'b', 'c']
+   *      R.slice(-3, -1, ['a', 'b', 'c', 'd']);      //=> ['b', 'c']
+   *      R.slice(0, 3, 'ramda');                     //=> 'ram'
+   */
+  var slice = /*#__PURE__*/_curry3( /*#__PURE__*/_checkForMethod('slice', function slice(fromIndex, toIndex, list) {
+    return Array.prototype.slice.call(list, fromIndex, toIndex);
+  }));
+
+  /**
+   * Returns all but the first element of the given list or string (or object
+   * with a `tail` method).
+   *
+   * Dispatches to the `slice` method of the first argument, if present.
+   *
+   * @func
+   * @memberOf R
+   * @since v0.1.0
+   * @category List
+   * @sig [a] -> [a]
+   * @sig String -> String
+   * @param {*} list
+   * @return {*}
+   * @see R.head, R.init, R.last
+   * @example
+   *
+   *      R.tail([1, 2, 3]);  //=> [2, 3]
+   *      R.tail([1, 2]);     //=> [2]
+   *      R.tail([1]);        //=> []
+   *      R.tail([]);         //=> []
+   *
+   *      R.tail('abc');  //=> 'bc'
+   *      R.tail('ab');   //=> 'b'
+   *      R.tail('a');    //=> ''
+   *      R.tail('');     //=> ''
+   */
+  var tail = /*#__PURE__*/_curry1( /*#__PURE__*/_checkForMethod('tail', /*#__PURE__*/slice(1, Infinity)));
+
+  /**
+   * Performs left-to-right function composition. The leftmost function may have
+   * any arity; the remaining functions must be unary.
+   *
+   * In some libraries this function is named `sequence`.
+   *
+   * **Note:** The result of pipe is not automatically curried.
+   *
+   * @func
+   * @memberOf R
+   * @since v0.1.0
+   * @category Function
+   * @sig (((a, b, ..., n) -> o), (o -> p), ..., (x -> y), (y -> z)) -> ((a, b, ..., n) -> z)
+   * @param {...Function} functions
+   * @return {Function}
+   * @see R.compose
+   * @example
+   *
+   *      var f = R.pipe(Math.pow, R.negate, R.inc);
+   *
+   *      f(3, 4); // -(3^4) + 1
+   * @symb R.pipe(f, g, h)(a, b) = h(g(f(a, b)))
+   */
+  function pipe() {
+    if (arguments.length === 0) {
+      throw new Error('pipe requires at least one argument');
+    }
+    return _arity(arguments[0].length, reduce(_pipe, arguments[0], tail(arguments)));
+  }
+
+  /**
+   * Returns a new list or string with the elements or characters in reverse
+   * order.
+   *
+   * @func
+   * @memberOf R
+   * @since v0.1.0
+   * @category List
+   * @sig [a] -> [a]
+   * @sig String -> String
+   * @param {Array|String} list
+   * @return {Array|String}
+   * @example
+   *
+   *      R.reverse([1, 2, 3]);  //=> [3, 2, 1]
+   *      R.reverse([1, 2]);     //=> [2, 1]
+   *      R.reverse([1]);        //=> [1]
+   *      R.reverse([]);         //=> []
+   *
+   *      R.reverse('abc');      //=> 'cba'
+   *      R.reverse('ab');       //=> 'ba'
+   *      R.reverse('a');        //=> 'a'
+   *      R.reverse('');         //=> ''
+   */
+  var reverse = /*#__PURE__*/_curry1(function reverse(list) {
+    return _isString(list) ? list.split('').reverse().join('') : Array.prototype.slice.call(list, 0).reverse();
+  });
+
+  /**
+   * Performs right-to-left function composition. The rightmost function may have
+   * any arity; the remaining functions must be unary.
+   *
+   * **Note:** The result of compose is not automatically curried.
+   *
+   * @func
+   * @memberOf R
+   * @since v0.1.0
+   * @category Function
+   * @sig ((y -> z), (x -> y), ..., (o -> p), ((a, b, ..., n) -> o)) -> ((a, b, ..., n) -> z)
+   * @param {...Function} ...functions The functions to compose
+   * @return {Function}
+   * @see R.pipe
+   * @example
+   *
+   *      var classyGreeting = (firstName, lastName) => "The name's " + lastName + ", " + firstName + " " + lastName
+   *      var yellGreeting = R.compose(R.toUpper, classyGreeting);
+   *      yellGreeting('James', 'Bond'); //=> "THE NAME'S BOND, JAMES BOND"
+   *
+   *      R.compose(Math.abs, R.add(1), R.multiply(2))(-4) //=> 7
+   *
+   * @symb R.compose(f, g, h)(a, b) = f(g(h(a, b)))
+   */
+  function compose() {
+    if (arguments.length === 0) {
+      throw new Error('compose requires at least one argument');
+    }
+    return pipe.apply(this, reverse(arguments));
+  }
+
+  var compose$1 = /*#__PURE__*/Object.freeze({
+    default: compose
+  });
+
+  /**
+   * Private `concat` function to merge two array-like objects.
+   *
+   * @private
+   * @param {Array|Arguments} [set1=[]] An array-like object.
+   * @param {Array|Arguments} [set2=[]] An array-like object.
+   * @return {Array} A new, merged array.
+   * @example
+   *
+   *      _concat([4, 5, 6], [1, 2, 3]); //=> [4, 5, 6, 1, 2, 3]
+   */
+  function _concat(set1, set2) {
+    set1 = set1 || [];
+    set2 = set2 || [];
+    var idx;
+    var len1 = set1.length;
+    var len2 = set2.length;
+    var result = [];
+
+    idx = 0;
+    while (idx < len1) {
+      result[result.length] = set1[idx];
+      idx += 1;
+    }
+    idx = 0;
+    while (idx < len2) {
+      result[result.length] = set2[idx];
+      idx += 1;
+    }
+    return result;
+  }
+
+  function _createPartialApplicator(concat) {
+    return _curry2(function (fn, args) {
+      return _arity(Math.max(0, fn.length - args.length), function () {
+        return fn.apply(this, concat(args, arguments));
+      });
+    });
+  }
+
+  /**
+   * Internal curryN function.
+   *
+   * @private
+   * @category Function
+   * @param {Number} length The arity of the curried function.
+   * @param {Array} received An array of arguments received thus far.
+   * @param {Function} fn The function to curry.
+   * @return {Function} The curried function.
+   */
+  function _curryN(length, received, fn) {
+    return function () {
+      var combined = [];
+      var argsIdx = 0;
+      var left = length;
+      var combinedIdx = 0;
+      while (combinedIdx < received.length || argsIdx < arguments.length) {
+        var result;
+        if (combinedIdx < received.length && (!_isPlaceholder(received[combinedIdx]) || argsIdx >= arguments.length)) {
+          result = received[combinedIdx];
+        } else {
+          result = arguments[argsIdx];
+          argsIdx += 1;
+        }
+        combined[combinedIdx] = result;
+        if (!_isPlaceholder(result)) {
+          left -= 1;
+        }
+        combinedIdx += 1;
+      }
+      return left <= 0 ? fn.apply(this, combined) : _arity(left, _curryN(length, combined, fn));
+    };
+  }
+
+  /**
+   * Returns a curried equivalent of the provided function, with the specified
+   * arity. The curried function has two unusual capabilities. First, its
+   * arguments needn't be provided one at a time. If `g` is `R.curryN(3, f)`, the
+   * following are equivalent:
+   *
+   *   - `g(1)(2)(3)`
+   *   - `g(1)(2, 3)`
+   *   - `g(1, 2)(3)`
+   *   - `g(1, 2, 3)`
+   *
+   * Secondly, the special placeholder value [`R.__`](#__) may be used to specify
+   * "gaps", allowing partial application of any combination of arguments,
+   * regardless of their positions. If `g` is as above and `_` is [`R.__`](#__),
+   * the following are equivalent:
+   *
+   *   - `g(1, 2, 3)`
+   *   - `g(_, 2, 3)(1)`
+   *   - `g(_, _, 3)(1)(2)`
+   *   - `g(_, _, 3)(1, 2)`
+   *   - `g(_, 2)(1)(3)`
+   *   - `g(_, 2)(1, 3)`
+   *   - `g(_, 2)(_, 3)(1)`
+   *
+   * @func
+   * @memberOf R
+   * @since v0.5.0
+   * @category Function
+   * @sig Number -> (* -> a) -> (* -> a)
+   * @param {Number} length The arity for the returned function.
+   * @param {Function} fn The function to curry.
+   * @return {Function} A new, curried function.
+   * @see R.curry
+   * @example
+   *
+   *      var sumArgs = (...args) => R.sum(args);
+   *
+   *      var curriedAddFourNumbers = R.curryN(4, sumArgs);
+   *      var f = curriedAddFourNumbers(1, 2);
+   *      var g = f(3);
+   *      g(4); //=> 10
+   */
+  var curryN = /*#__PURE__*/_curry2(function curryN(length, fn) {
+    if (length === 1) {
+      return _curry1(fn);
+    }
+    return _arity(length, _curryN(length, [], fn));
+  });
+
+  /**
+   * Returns a new function much like the supplied one, except that the first two
+   * arguments' order is reversed.
+   *
+   * @func
+   * @memberOf R
+   * @since v0.1.0
+   * @category Function
+   * @sig ((a, b, c, ...) -> z) -> (b -> a -> c -> ... -> z)
+   * @param {Function} fn The function to invoke with its first two parameters reversed.
+   * @return {*} The result of invoking `fn` with its first two parameters' order reversed.
+   * @example
+   *
+   *      var mergeThree = (a, b, c) => [].concat(a, b, c);
+   *
+   *      mergeThree(1, 2, 3); //=> [1, 2, 3]
+   *
+   *      R.flip(mergeThree)(1, 2, 3); //=> [2, 1, 3]
+   * @symb R.flip(f)(a, b, c) = f(b, a, c)
+   */
+  var flip = /*#__PURE__*/_curry1(function flip(fn) {
+    return curryN(fn.length, function (a, b) {
+      var args = Array.prototype.slice.call(arguments, 0);
+      args[0] = b;
+      args[1] = a;
+      return fn.apply(this, args);
+    });
+  });
+
+  /**
+   * Takes a function `f` and a list of arguments, and returns a function `g`.
+   * When applied, `g` returns the result of applying `f` to the arguments
+   * provided to `g` followed by the arguments provided initially.
+   *
+   * @func
+   * @memberOf R
+   * @since v0.10.0
+   * @category Function
+   * @sig ((a, b, c, ..., n) -> x) -> [d, e, f, ..., n] -> ((a, b, c, ...) -> x)
+   * @param {Function} f
+   * @param {Array} args
+   * @return {Function}
+   * @see R.partial
+   * @example
+   *
+   *      var greet = (salutation, title, firstName, lastName) =>
+   *        salutation + ', ' + title + ' ' + firstName + ' ' + lastName + '!';
+   *
+   *      var greetMsJaneJones = R.partialRight(greet, ['Ms.', 'Jane', 'Jones']);
+   *
+   *      greetMsJaneJones('Hello'); //=> 'Hello, Ms. Jane Jones!'
+   * @symb R.partialRight(f, [a, b])(c, d) = f(c, d, a, b)
+   */
+  var partialRight = /*#__PURE__*/_createPartialApplicator( /*#__PURE__*/flip(_concat));
+
+  var partialRight$1 = /*#__PURE__*/Object.freeze({
+    default: partialRight
+  });
+
+  var _compose = ( compose$1 && compose ) || compose$1;
+
+  var _partialRight = ( partialRight$1 && partialRight ) || partialRight$1;
+
+  var utils = createCommonjsModule(function (module, exports) {
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.registerCustomElement = exports.toBinary = exports.bindMixins = exports.combineMixins = undefined;
+
+    var _compose2 = /*#__PURE__*/_interopRequireDefault(_compose);
+
+    var _partialRight2 = /*#__PURE__*/_interopRequireDefault(_partialRight);
+
+    function _interopRequireDefault(obj) {
+      return obj && obj.__esModule ? obj : { default: obj };
+    }
+
+    function _toConsumableArray(arr) {
+      if (Array.isArray(arr)) {
+        for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+          arr2[i] = arr[i];
+        }return arr2;
+      } else {
+        return Array.from(arr);
+      }
+    }
+
+    function _toArray(arr) {
+      return Array.isArray(arr) ? arr : Array.from(arr);
+    }
+
+    // it: Array<mixed>
+    var apply = function apply(it) {
+      return it.map(function (_ref) {
+        var _ref2 = _toArray(_ref),
+            mixin = _ref2[0],
+            v = _ref2.slice(1);
+
+        return (0, _partialRight2.default)(mixin, v);
+      });
+    };
+
+    /**
+     * Apply multiple mixins to the CustomElement
+     *
+     * var applyTo = combineMixins([
+     *   [mixin: Mixin<mixed>, data]
+     * ])
+     * customElements.define('custom-element', applyTo(customElement))
+     *
+     * @param {Array<Array<[Mixin<mixed>, mixed]>>} it
+     */
+    var combineMixins = exports.combineMixins = function combineMixins(it) {
+      return _compose2.default.apply(undefined, _toConsumableArray(apply(it)));
+    };
+
+    var bindMixins = exports.bindMixins = function bindMixins(context) {
+      return function (map) {
+        return Object.keys(map).reduce(function (acc, key) {
+          acc[key] = acc[key].length >= 1 ? map[key](context) : map[key]();
+
+          return acc;
+        }, Object.assign({}, map));
+      };
+    };
+
+    var toBinary = exports.toBinary = function toBinary(policy) {
+      return parseInt(policy, 2);
+    };
+
+    var registerCustomElement = exports.registerCustomElement = function registerCustomElement(key, value) {
+      if (!key || !value) throw new Error('CustomElement is not specified');
+      !window.customElements.get(key) && window.customElements.define(key, value);
+    };
+  });
+
+  var utils$1 = unwrapExports(utils);
+  var utils_1 = utils.registerCustomElement;
+  var utils_2 = utils.toBinary;
+  var utils_3 = utils.bindMixins;
+  var utils_4 = utils.combineMixins;
+
+  var utils$2 = /*#__PURE__*/Object.freeze({
+    default: utils$1,
+    __moduleExports: utils,
+    registerCustomElement: utils_1,
+    toBinary: utils_2,
+    bindMixins: utils_3,
+    combineMixins: utils_4
+  });
+
+  var _templateObject = taggedTemplateLiteral(['<style>', '</style>'], ['<style>', '</style>']),
+      _templateObject2 = taggedTemplateLiteral(['\n        ', '\n        ', '\n      '], ['\n        ', '\n        ', '\n      ']);
+
+  var withStyle = function withStyle(html$$1) {
+    html$$1 = html$$1 || html$1; // eslint-disable-line no-param-reassign
+
+    return function (base) {
+      for (var _len = arguments.length, styles = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        styles[_key - 1] = arguments[_key];
+      }
+
+      return function (_base) {
+        inherits(_class, _base);
+
+        function _class() {
+          classCallCheck(this, _class);
+          return possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
+        }
+
+        createClass(_class, [{
+          key: '__renderStyles',
+          value: function __renderStyles() {
+            for (var _len2 = arguments.length, argv = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+              argv[_key2] = arguments[_key2];
+            }
+
+            // eslint-disable-line class-methods-use-this
+            return html$$1(_templateObject, argv.join(' '));
+          }
+        }, {
+          key: '_render',
+          value: function _render(props) {
+            return html$$1(_templateObject2, this.__renderStyles.apply(this, styles), get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), '_render', this).call(this, props));
+          }
+        }]);
+        return _class;
+      }(base);
+    };
+  };
+
+  var _templateObject$1 = taggedTemplateLiteral(['<style>', '</style>'], ['<style>', '</style>']),
+      _templateObject2$1 = taggedTemplateLiteral(['\n        ', '\n        ', '\n      '], ['\n        ', '\n        ', '\n      ']);
+
+  var withStyleAfter = function withStyleAfter(html$$1) {
+    html$$1 = html$$1 || html$1; // eslint-disable-line no-param-reassign
+
+    return function (base) {
+      for (var _len = arguments.length, styles = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        styles[_key - 1] = arguments[_key];
+      }
+
+      return function (_base) {
+        inherits(_class, _base);
+
+        function _class() {
+          classCallCheck(this, _class);
+          return possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
+        }
+
+        createClass(_class, [{
+          key: '__renderStyles',
+          value: function __renderStyles() {
+            for (var _len2 = arguments.length, argv = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+              argv[_key2] = arguments[_key2];
+            }
+
+            // eslint-disable-line class-methods-use-this
+            return html$$1(_templateObject$1, argv.join(' '));
+          }
+        }, {
+          key: '_render',
+          value: function _render(props) {
+            return html$$1(_templateObject2$1, get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), '_render', this).call(this, props), this.__renderStyles.apply(this, styles));
+          }
+        }]);
+        return _class;
+      }(base);
+    };
+  };
+
+  var _templateObject$2 = taggedTemplateLiteral(['<link href$=\'', '\' rel=\'stylesheet\' type=\'text/css\' />'], ['<link href$=\'', '\' rel=\'stylesheet\' type=\'text/css\' />']),
+      _templateObject2$2 = taggedTemplateLiteral(['\n        ', '\n        ', '\n      '], ['\n        ', '\n        ', '\n      ']);
+
+  var withStyleLink = function withStyleLink(html$$1) {
+    html$$1 = html$$1 || html$1; // eslint-disable-line no-param-reassign
+
+    return function (base) {
+      for (var _len = arguments.length, links = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        links[_key - 1] = arguments[_key];
+      }
+
+      return function (_base) {
+        inherits(_class, _base);
+
+        function _class() {
+          classCallCheck(this, _class);
+          return possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
+        }
+
+        createClass(_class, [{
+          key: '__renderStyleLink',
+          value: function __renderStyleLink() {
+            for (var _len2 = arguments.length, argv = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+              argv[_key2] = arguments[_key2];
+            }
+
+            // eslint-disable-line class-methods-use-this
+            return argv.map(function (link) {
+              return html$$1(_templateObject$2, link);
+            });
+          }
+        }, {
+          key: '_render',
+          value: function _render(props) {
+            return html$$1(_templateObject2$2, this.__renderStyleLink.apply(this, links), get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), '_render', this).call(this, props));
+          }
+        }]);
+        return _class;
+      }(base);
+    };
+  };
+
+  var toBinary = function toBinary(policy) {
+    return parseInt(policy, 2);
+  };
+
+  var registerCustomElement = function registerCustomElement(key, value) {
+    if (!key || !value) throw new Error('CustomElement is not specified');
+    !window.customElements.get(key) && window.customElements.define(key, value);
+  };
+
+  var _extends$1 = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }return target;
+  };
+
+  var withPermissions = function withPermissions() {
+    return function (base) {
+      var permissions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '00000';
+      return function (_base) {
+        inherits(_class, _base);
+
+        function _class() {
+          classCallCheck(this, _class);
+          return possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
+        }
+
+        createClass(_class, [{
+          key: '_getPermissions',
+          value: function _getPermissions() {
+            return this.permissions || permissions;
+          }
+        }, {
+          key: '_isAllowed',
+          value: function _isAllowed(policy) {
+            return toBinary(policy) & toBinary(this._getPermissions()); // eslint-disable-line no-bitwise
+          }
+        }], [{
+          key: 'properties',
+          get: function get$$1() {
+            return _extends$1({}, get(_class.__proto__ || Object.getPrototypeOf(_class), 'properties', this), {
+              permissions: String
+            });
+          }
+        }]);
+        return _class;
+      }(base);
+    };
+  };
+
+  /**
+   * Helpers.
+   */
+
+  var s = 1000;
+  var m = s * 60;
+  var h = m * 60;
+  var d = h * 24;
+  var w = d * 7;
+  var y = d * 365.25;
+
+  /**
+   * Parse or format the given `val`.
+   *
+   * Options:
+   *
+   *  - `long` verbose formatting [false]
+   *
+   * @param {String|Number} val
+   * @param {Object} [options]
+   * @throws {Error} throw an error if val is not a non-empty string or a number
+   * @return {String|Number}
+   * @api public
+   */
+
+  var ms = function ms(val, options) {
+    options = options || {};
+    var type = typeof val === 'undefined' ? 'undefined' : _typeof(val);
+    if (type === 'string' && val.length > 0) {
+      return parse(val);
+    } else if (type === 'number' && isNaN(val) === false) {
+      return options.long ? fmtLong(val) : fmtShort(val);
+    }
+    throw new Error('val is not a non-empty string or a valid number. val=' + JSON.stringify(val));
+  };
+
+  /**
+   * Parse the given `str` and return milliseconds.
+   *
+   * @param {String} str
+   * @return {Number}
+   * @api private
+   */
+
+  function parse(str) {
+    str = String(str);
+    if (str.length > 100) {
+      return;
+    }
+    var match = /^((?:\d+)?\-?\d?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(str);
+    if (!match) {
+      return;
+    }
+    var n = parseFloat(match[1]);
+    var type = (match[2] || 'ms').toLowerCase();
+    switch (type) {
+      case 'years':
+      case 'year':
+      case 'yrs':
+      case 'yr':
+      case 'y':
+        return n * y;
+      case 'weeks':
+      case 'week':
+      case 'w':
+        return n * w;
+      case 'days':
+      case 'day':
+      case 'd':
+        return n * d;
+      case 'hours':
+      case 'hour':
+      case 'hrs':
+      case 'hr':
+      case 'h':
+        return n * h;
+      case 'minutes':
+      case 'minute':
+      case 'mins':
+      case 'min':
+      case 'm':
+        return n * m;
+      case 'seconds':
+      case 'second':
+      case 'secs':
+      case 'sec':
+      case 's':
+        return n * s;
+      case 'milliseconds':
+      case 'millisecond':
+      case 'msecs':
+      case 'msec':
+      case 'ms':
+        return n;
+      default:
+        return undefined;
+    }
+  }
+
+  /**
+   * Short format for `ms`.
+   *
+   * @param {Number} ms
+   * @return {String}
+   * @api private
+   */
+
+  function fmtShort(ms) {
+    var msAbs = Math.abs(ms);
+    if (msAbs >= d) {
+      return Math.round(ms / d) + 'd';
+    }
+    if (msAbs >= h) {
+      return Math.round(ms / h) + 'h';
+    }
+    if (msAbs >= m) {
+      return Math.round(ms / m) + 'm';
+    }
+    if (msAbs >= s) {
+      return Math.round(ms / s) + 's';
+    }
+    return ms + 'ms';
+  }
+
+  /**
+   * Long format for `ms`.
+   *
+   * @param {Number} ms
+   * @return {String}
+   * @api private
+   */
+
+  function fmtLong(ms) {
+    var msAbs = Math.abs(ms);
+    if (msAbs >= d) {
+      return plural(ms, msAbs, d, 'day');
+    }
+    if (msAbs >= h) {
+      return plural(ms, msAbs, h, 'hour');
+    }
+    if (msAbs >= m) {
+      return plural(ms, msAbs, m, 'minute');
+    }
+    if (msAbs >= s) {
+      return plural(ms, msAbs, s, 'second');
+    }
+    return ms + ' ms';
+  }
+
+  /**
+   * Pluralization helper.
+   */
+
+  function plural(ms, msAbs, n, name) {
+    var isPlural = msAbs >= n * 1.5;
+    return Math.round(ms / n) + ' ' + name + (isPlural ? 's' : '');
+  }
+
+  /**
+   * This is the common logic for both the Node.js and web browser
+   * implementations of `debug()`.
+   */
+
+  function setup(env) {
+  	createDebug.debug = createDebug;
+  	createDebug.default = createDebug;
+  	createDebug.coerce = coerce;
+  	createDebug.disable = disable;
+  	createDebug.enable = enable;
+  	createDebug.enabled = enabled;
+  	createDebug.humanize = ms;
+
+  	Object.keys(env).forEach(function (key) {
+  		createDebug[key] = env[key];
+  	});
+
+  	/**
+   * Active `debug` instances.
+   */
+  	createDebug.instances = [];
+
+  	/**
+   * The currently active debug mode names, and names to skip.
+   */
+
+  	createDebug.names = [];
+  	createDebug.skips = [];
+
+  	/**
+   * Map of special "%n" handling functions, for the debug "format" argument.
+   *
+   * Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
+   */
+  	createDebug.formatters = {};
+
+  	/**
+   * Selects a color for a debug namespace
+   * @param {String} namespace The namespace string for the for the debug instance to be colored
+   * @return {Number|String} An ANSI color code for the given namespace
+   * @api private
+   */
+  	function selectColor(namespace) {
+  		var hash = 0;
+
+  		for (var i = 0; i < namespace.length; i++) {
+  			hash = (hash << 5) - hash + namespace.charCodeAt(i);
+  			hash |= 0; // Convert to 32bit integer
+  		}
+
+  		return createDebug.colors[Math.abs(hash) % createDebug.colors.length];
+  	}
+  	createDebug.selectColor = selectColor;
+
+  	/**
+   * Create a debugger with the given `namespace`.
+   *
+   * @param {String} namespace
+   * @return {Function}
+   * @api public
+   */
+  	function createDebug(namespace) {
+  		var prevTime = void 0;
+
+  		function debug() {
+  			for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+  				args[_key] = arguments[_key];
+  			}
+
+  			// Disabled?
+  			if (!debug.enabled) {
+  				return;
+  			}
+
+  			var self = debug;
+
+  			// Set `diff` timestamp
+  			var curr = Number(new Date());
+  			var ms$$1 = curr - (prevTime || curr);
+  			self.diff = ms$$1;
+  			self.prev = prevTime;
+  			self.curr = curr;
+  			prevTime = curr;
+
+  			args[0] = createDebug.coerce(args[0]);
+
+  			if (typeof args[0] !== 'string') {
+  				// Anything else let's inspect with %O
+  				args.unshift('%O');
+  			}
+
+  			// Apply any `formatters` transformations
+  			var index = 0;
+  			args[0] = args[0].replace(/%([a-zA-Z%])/g, function (match, format) {
+  				// If we encounter an escaped % then don't increase the array index
+  				if (match === '%%') {
+  					return match;
+  				}
+  				index++;
+  				var formatter = createDebug.formatters[format];
+  				if (typeof formatter === 'function') {
+  					var val = args[index];
+  					match = formatter.call(self, val);
+
+  					// Now we need to remove `args[index]` since it's inlined in the `format`
+  					args.splice(index, 1);
+  					index--;
+  				}
+  				return match;
+  			});
+
+  			// Apply env-specific formatting (colors, etc.)
+  			createDebug.formatArgs.call(self, args);
+
+  			var logFn = self.log || createDebug.log;
+  			logFn.apply(self, args);
+  		}
+
+  		debug.namespace = namespace;
+  		debug.enabled = createDebug.enabled(namespace);
+  		debug.useColors = createDebug.useColors();
+  		debug.color = selectColor(namespace);
+  		debug.destroy = destroy;
+  		debug.extend = extend;
+  		// Debug.formatArgs = formatArgs;
+  		// debug.rawLog = rawLog;
+
+  		// env-specific initialization logic for debug instances
+  		if (typeof createDebug.init === 'function') {
+  			createDebug.init(debug);
+  		}
+
+  		createDebug.instances.push(debug);
+
+  		return debug;
+  	}
+
+  	function destroy() {
+  		var index = createDebug.instances.indexOf(this);
+  		if (index !== -1) {
+  			createDebug.instances.splice(index, 1);
+  			return true;
+  		}
+  		return false;
+  	}
+
+  	function extend(namespace, delimiter) {
+  		return createDebug(this.namespace + (typeof delimiter === 'undefined' ? ':' : delimiter) + namespace);
+  	}
+
+  	/**
+   * Enables a debug mode by namespaces. This can include modes
+   * separated by a colon and wildcards.
+   *
+   * @param {String} namespaces
+   * @api public
+   */
+  	function enable(namespaces) {
+  		createDebug.save(namespaces);
+
+  		createDebug.names = [];
+  		createDebug.skips = [];
+
+  		var i = void 0;
+  		var split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
+  		var len = split.length;
+
+  		for (i = 0; i < len; i++) {
+  			if (!split[i]) {
+  				// ignore empty strings
+  				continue;
+  			}
+
+  			namespaces = split[i].replace(/\*/g, '.*?');
+
+  			if (namespaces[0] === '-') {
+  				createDebug.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+  			} else {
+  				createDebug.names.push(new RegExp('^' + namespaces + '$'));
+  			}
+  		}
+
+  		for (i = 0; i < createDebug.instances.length; i++) {
+  			var instance = createDebug.instances[i];
+  			instance.enabled = createDebug.enabled(instance.namespace);
+  		}
+  	}
+
+  	/**
+   * Disable debug output.
+   *
+   * @return {String} namespaces
+   * @api public
+   */
+  	function disable() {
+  		var namespaces = [].concat(toConsumableArray(createDebug.names.map(toNamespace)), toConsumableArray(createDebug.skips.map(toNamespace).map(function (namespace) {
+  			return '-' + namespace;
+  		}))).join(',');
+  		createDebug.enable('');
+  		return namespaces;
+  	}
+
+  	/**
+   * Returns true if the given mode name is enabled, false otherwise.
+   *
+   * @param {String} name
+   * @return {Boolean}
+   * @api public
+   */
+  	function enabled(name) {
+  		if (name[name.length - 1] === '*') {
+  			return true;
+  		}
+
+  		var i = void 0;
+  		var len = void 0;
+
+  		for (i = 0, len = createDebug.skips.length; i < len; i++) {
+  			if (createDebug.skips[i].test(name)) {
+  				return false;
+  			}
+  		}
+
+  		for (i = 0, len = createDebug.names.length; i < len; i++) {
+  			if (createDebug.names[i].test(name)) {
+  				return true;
+  			}
+  		}
+
+  		return false;
+  	}
+
+  	/**
+   * Convert regexp to namespace
+   *
+   * @param {RegExp} regxep
+   * @return {String} namespace
+   * @api private
+   */
+  	function toNamespace(regexp) {
+  		return regexp.toString().substring(2, regexp.toString().length - 2).replace(/\.\*\?$/, '*');
+  	}
+
+  	/**
+   * Coerce `val`.
+   *
+   * @param {Mixed} val
+   * @return {Mixed}
+   * @api private
+   */
+  	function coerce(val) {
+  		if (val instanceof Error) {
+  			return val.stack || val.message;
+  		}
+  		return val;
+  	}
+
+  	createDebug.enable(createDebug.load());
+
+  	return createDebug;
+  }
+
+  var common = setup;
+
+  var browser = createCommonjsModule(function (module, exports) {
+  	/* eslint-env browser */
+
+  	/**
+    * This is the web browser implementation of `debug()`.
+    */
+
+  	exports.log = log;
+  	exports.formatArgs = formatArgs;
+  	exports.save = save;
+  	exports.load = load;
+  	exports.useColors = useColors;
+  	exports.storage = localstorage();
+
+  	/**
+    * Colors.
+    */
+
+  	exports.colors = ['#0000CC', '#0000FF', '#0033CC', '#0033FF', '#0066CC', '#0066FF', '#0099CC', '#0099FF', '#00CC00', '#00CC33', '#00CC66', '#00CC99', '#00CCCC', '#00CCFF', '#3300CC', '#3300FF', '#3333CC', '#3333FF', '#3366CC', '#3366FF', '#3399CC', '#3399FF', '#33CC00', '#33CC33', '#33CC66', '#33CC99', '#33CCCC', '#33CCFF', '#6600CC', '#6600FF', '#6633CC', '#6633FF', '#66CC00', '#66CC33', '#9900CC', '#9900FF', '#9933CC', '#9933FF', '#99CC00', '#99CC33', '#CC0000', '#CC0033', '#CC0066', '#CC0099', '#CC00CC', '#CC00FF', '#CC3300', '#CC3333', '#CC3366', '#CC3399', '#CC33CC', '#CC33FF', '#CC6600', '#CC6633', '#CC9900', '#CC9933', '#CCCC00', '#CCCC33', '#FF0000', '#FF0033', '#FF0066', '#FF0099', '#FF00CC', '#FF00FF', '#FF3300', '#FF3333', '#FF3366', '#FF3399', '#FF33CC', '#FF33FF', '#FF6600', '#FF6633', '#FF9900', '#FF9933', '#FFCC00', '#FFCC33'];
+
+  	/**
+    * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+    * and the Firebug extension (any Firefox version) are known
+    * to support "%c" CSS customizations.
+    *
+    * TODO: add a `localStorage` variable to explicitly enable/disable colors
+    */
+
+  	// eslint-disable-next-line complexity
+  	function useColors() {
+  		// NB: In an Electron preload script, document will be defined but not fully
+  		// initialized. Since we know we're in Chrome, we'll just detect this case
+  		// explicitly
+  		if (typeof window !== 'undefined' && window.process && (window.process.type === 'renderer' || window.process.__nwjs)) {
+  			return true;
+  		}
+
+  		// Internet Explorer and Edge do not support colors.
+  		if (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)) {
+  			return false;
+  		}
+
+  		// Is webkit? http://stackoverflow.com/a/16459606/376773
+  		// document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
+  		return typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance ||
+  		// Is firebug? http://stackoverflow.com/a/398120/376773
+  		typeof window !== 'undefined' && window.console && (window.console.firebug || window.console.exception && window.console.table) ||
+  		// Is firefox >= v31?
+  		// https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+  		typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31 ||
+  		// Double check webkit in userAgent just in case we are in a worker
+  		typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
+  	}
+
+  	/**
+    * Colorize log arguments if enabled.
+    *
+    * @api public
+    */
+
+  	function formatArgs(args) {
+  		args[0] = (this.useColors ? '%c' : '') + this.namespace + (this.useColors ? ' %c' : ' ') + args[0] + (this.useColors ? '%c ' : ' ') + '+' + module.exports.humanize(this.diff);
+
+  		if (!this.useColors) {
+  			return;
+  		}
+
+  		var c = 'color: ' + this.color;
+  		args.splice(1, 0, c, 'color: inherit');
+
+  		// The final "%c" is somewhat tricky, because there could be other
+  		// arguments passed either before or after the %c, so we need to
+  		// figure out the correct index to insert the CSS into
+  		var index = 0;
+  		var lastC = 0;
+  		args[0].replace(/%[a-zA-Z%]/g, function (match) {
+  			if (match === '%%') {
+  				return;
+  			}
+  			index++;
+  			if (match === '%c') {
+  				// We only are interested in the *last* %c
+  				// (the user may have provided their own)
+  				lastC = index;
+  			}
+  		});
+
+  		args.splice(lastC, 0, c);
+  	}
+
+  	/**
+    * Invokes `console.log()` when available.
+    * No-op when `console.log` is not a "function".
+    *
+    * @api public
+    */
+  	function log() {
+  		var _console;
+
+  		// This hackery is required for IE8/9, where
+  		// the `console.log` function doesn't have 'apply'
+  		return (typeof console === 'undefined' ? 'undefined' : _typeof(console)) === 'object' && console.log && (_console = console).log.apply(_console, arguments);
+  	}
+
+  	/**
+    * Save `namespaces`.
+    *
+    * @param {String} namespaces
+    * @api private
+    */
+  	function save(namespaces) {
+  		try {
+  			if (namespaces) {
+  				exports.storage.setItem('debug', namespaces);
+  			} else {
+  				exports.storage.removeItem('debug');
+  			}
+  		} catch (error) {
+  			// Swallow
+  			// XXX (@Qix-) should we be logging these?
+  		}
+  	}
+
+  	/**
+    * Load `namespaces`.
+    *
+    * @return {String} returns the previously persisted debug modes
+    * @api private
+    */
+  	function load() {
+  		var r = void 0;
+  		try {
+  			r = exports.storage.getItem('debug');
+  		} catch (error) {}
+  		// Swallow
+  		// XXX (@Qix-) should we be logging these?
+
+
+  		// If debug isn't set in LS, and we're in Electron, try to load $DEBUG
+  		if (!r && typeof process !== 'undefined' && 'env' in process) {
+  			r = process.env.DEBUG;
+  		}
+
+  		return r;
+  	}
+
+  	/**
+    * Localstorage attempts to return the localstorage.
+    *
+    * This is necessary because safari throws
+    * when a user disables cookies/localstorage
+    * and you attempt to access it.
+    *
+    * @return {LocalStorage}
+    * @api private
+    */
+
+  	function localstorage() {
+  		try {
+  			// TVMLKit (Apple TV JS Runtime) does not have a window object, just localStorage in the global context
+  			// The Browser also has localStorage in the global context.
+  			return localStorage;
+  		} catch (error) {
+  			// Swallow
+  			// XXX (@Qix-) should we be logging these?
+  		}
+  	}
+
+  	module.exports = common(exports);
+
+  	var formatters = module.exports.formatters;
+
+  	/**
+    * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+    */
+
+  	formatters.j = function (v) {
+  		try {
+  			return JSON.stringify(v);
+  		} catch (error) {
+  			return '[UnexpectedJSONParseError]: ' + error.message;
+  		}
+  	};
+  });
+  var browser_1 = browser.log;
+  var browser_2 = browser.formatArgs;
+  var browser_3 = browser.save;
+  var browser_4 = browser.load;
+  var browser_5 = browser.useColors;
+  var browser_6 = browser.storage;
+  var browser_7 = browser.colors;
+
+  var _args = [["@netology-group/wc-utils@0.3.2", "/Users/s.prokhorov/projects/@netology-group/wc-chat"]];
+  var _from = "@netology-group/wc-utils@0.3.2";
+  var _id = "@netology-group/wc-utils@0.3.2";
+  var _inBundle = false;
+  var _integrity = "sha512-L71pgFjDqFaJugFdUzCnA2TXm3+bvQ++LydPLH/np7KT33/j2xA9/82UpG9kKMD4D+EQVXMxv/euJIR9CVEd/A==";
+  var _location = "/@netology-group/wc-utils";
+  var _phantomChildren = {};
+  var _requested = {
+  	type: "version",
+  	registry: true,
+  	raw: "@netology-group/wc-utils@0.3.2",
+  	name: "@netology-group/wc-utils",
+  	escapedName: "@netology-group%2fwc-utils",
+  	scope: "@netology-group",
+  	rawSpec: "0.3.2",
+  	saveSpec: null,
+  	fetchSpec: "0.3.2"
+  };
+  var _requiredBy = ["/"];
+  var _resolved = "https://registry.npmjs.org/@netology-group/wc-utils/-/wc-utils-0.3.2.tgz";
+  var _spec = "0.3.2";
+  var _where = "/Users/s.prokhorov/projects/@netology-group/wc-chat";
+  var author = "";
+  var bugs = {
+  	url: "https://github.com/netology-group/wc-utils/issues"
+  };
+  var dependencies = {
+  	debug: "^4.1.0",
+  	ramda: "^0.25.0"
+  };
+  var description = "Webcomponent's utilities";
+  var devDependencies = {
+  	"babel-cli": "^6.26.0",
+  	"babel-plugin-annotate-pure-calls": "^0.3.0",
+  	"babel-plugin-external-helpers": "^6.22.0",
+  	"babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+  	"babel-plugin-transform-object-rest-spread": "^6.26.0",
+  	"babel-preset-env": "^1.7.0",
+  	eslint: "^5.0.1",
+  	"eslint-config-adequate": "^1.1.0",
+  	rollup: "^0.65.2",
+  	"rollup-plugin-babel": "^3.0.7",
+  	"rollup-plugin-commonjs": "^9.2.0",
+  	"rollup-plugin-json": "^3.1.0",
+  	"rollup-plugin-node-resolve": "^3.4.0",
+  	"rollup-plugin-terser": "^1.0.1",
+  	"rollup-plugin-uglify": "^6.0.0"
+  };
+  var directories = {
+  	lib: "src"
+  };
+  var files = ["dist", "es", "lib"];
+  var homepage = "https://github.com/netology-group/wc-utils#readme";
+  var license = "MIT";
+  var main = "lib/index.js";
+  var module$1 = "es/index.js";
+  var name = "@netology-group/wc-utils";
+  var peerDependencies = {
+  	"@polymer/lit-element": "~0.5.2"
+  };
+  var repository = {
+  	url: "git+https://github.com/netology-group/wc-utils.git"
+  };
+  var scripts = {
+  	build: "npm run build:cjs && npm run build:es && npm run build:umd && npm run build:umd:min",
+  	"build:cjs": "BABEL_ENV=cjs babel src --out-dir lib",
+  	"build:es": "BABEL_ENV=es babel src --out-dir es",
+  	"build:umd": "BABEL_ENV=rollup rollup -c -o dist/index.js",
+  	"build:umd:min": "NODE_ENV=production BABEL_ENV=rollup rollup -c -o dist/index.min.js",
+  	prebuild: "rm -rf dist es lib",
+  	prepublishOnly: "npm run test && npm run build",
+  	test: "eslint ."
+  };
+  var version = "0.3.2";
+  var pkg = {
+  	_args: _args,
+  	_from: _from,
+  	_id: _id,
+  	_inBundle: _inBundle,
+  	_integrity: _integrity,
+  	_location: _location,
+  	_phantomChildren: _phantomChildren,
+  	_requested: _requested,
+  	_requiredBy: _requiredBy,
+  	_resolved: _resolved,
+  	_spec: _spec,
+  	_where: _where,
+  	author: author,
+  	bugs: bugs,
+  	dependencies: dependencies,
+  	description: description,
+  	devDependencies: devDependencies,
+  	directories: directories,
+  	files: files,
+  	homepage: homepage,
+  	license: license,
+  	main: main,
+  	module: module$1,
+  	name: name,
+  	peerDependencies: peerDependencies,
+  	repository: repository,
+  	scripts: scripts,
+  	version: version
+  };
+
+  var debug = /*#__PURE__*/browser(pkg.name + ':with-custom-elements');
+
+  var isMap = function isMap(it) {
+    return it instanceof Map;
+  };
+
+  var withCustomElements = function withCustomElements() {
+    return function (base, fn) {
+      return function (_base) {
+        inherits(_class, _base);
+
+        function _class(props) {
+          classCallCheck(this, _class);
+
+          var _this = possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
+
+          _this.__childrenElements = new Map();
+          _this.__setup();
+          return _this;
+        }
+
+        createClass(_class, [{
+          key: '__registerCustomElements',
+          value: function __registerCustomElements(children) {
+            if (!isMap(children)) throw new TypeError('Wrong children type');
+
+            debug('Default customElements:', this._childrenElements);
+            debug('External customElements:', children);
+
+            this._childrenElements.forEach(function (element, key) {
+              registerCustomElement(key, children.has(key) ? children.get(key) : element);
+            });
+          }
+        }, {
+          key: '__setup',
+          value: function __setup() {
+            this.__registerCustomElements(fn(this._childrenElements));
+          }
+        }, {
+          key: '_childrenElements',
+          get: function get$$1() {
+            return get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), '_childrenElements', this) || this.__childrenElements;
+          }
+        }]);
+        return _class;
+      }(base);
+    };
+  };
+
+
+
+  var _ = /*#__PURE__*/Object.freeze({
+    withStyle: withStyle,
+    withStyleAfter: withStyleAfter,
+    withStyleLink: withStyleLink,
+    withPermissions: withPermissions,
+    withCustomElements: withCustomElements
+  });
 
   /*
   Copyright (c) 2014, Yahoo! Inc. All rights reserved.
@@ -2875,7 +4478,7 @@
 
 
 
-  var utils = {
+  var utils$3 = {
       extend: extend_1,
       hop: hop_1
   };
@@ -2897,7 +4500,7 @@
 
           if ('get' in desc && obj.__defineGetter__) {
               obj.__defineGetter__(name, desc.get);
-          } else if (!utils.hop.call(obj, name) || 'value' in desc) {
+          } else if (!utils$3.hop.call(obj, name) || 'value' in desc) {
               obj[name] = desc.value;
           }
       };
@@ -2910,7 +4513,7 @@
           obj = new F();
 
           for (k in props) {
-              if (utils.hop.call(props, k)) {
+              if (utils$3.hop.call(props, k)) {
                   defineProperty(obj, k, props[k]);
               }
           }
@@ -4759,7 +6362,7 @@
               id = part.id;
 
               // Enforce that all required values are provided by the caller.
-              if (!(values && utils.hop.call(values, id))) {
+              if (!(values && utils$3.hop.call(values, id))) {
                   err = new Error('A value must be provided for: ' + id);
                   err.variableId = id;
                   throw err;
@@ -4786,14 +6389,14 @@
               mergedType;
 
           for (type in defaults) {
-              if (!utils.hop.call(defaults, type)) {
+              if (!utils$3.hop.call(defaults, type)) {
                   continue;
               }
 
               mergedFormats[type] = mergedType = es5.objCreate(defaults[type]);
 
-              if (formats && utils.hop.call(formats, type)) {
-                  utils.extend(mergedType, formats[type]);
+              if (formats && utils$3.hop.call(formats, type)) {
+                  utils$3.extend(mergedType, formats[type]);
               }
           }
 
@@ -4851,7 +6454,7 @@
     
   });
 
-  var main = createCommonjsModule(function (module, exports) {
+  var main$1 = createCommonjsModule(function (module, exports) {
 
     core["default"].__addLocaleData(en["default"]);
     core["default"].defaultLocale = 'en';
@@ -4863,7 +6466,7 @@
 
   var intlMessageformat = createCommonjsModule(function (module, exports) {
 
-    var IntlMessageFormat = main['default'];
+    var IntlMessageFormat = main$1['default'];
 
     // Add all locale data to `IntlMessageFormat`. This module will be ignored when
     // bundling for the browser with Browserify/Webpack.
@@ -4876,8 +6479,1238 @@
     exports['default'] = exports;
   });
 
-  var _templateObject$1 = taggedTemplateLiteral(['<style>', '</style>'], ['<style>', '</style>']),
-      _templateObject2$1 = taggedTemplateLiteral(['\n      ', '\n      ', '\n    '], ['\n      ', '\n      ', '\n    ']);
+  // GENERATED FILE
+  var IntlMessageFormat = core["default"];
+
+  IntlMessageFormat.__addLocaleData({ "locale": "af", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "af-NA", "parentLocale": "af" });
+  IntlMessageFormat.__addLocaleData({ "locale": "agq", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ak", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "am", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n,
+          n100 = t0 && s[0].slice(-2);if (ord) return "other";return n == 0 ? "zero" : n == 1 ? "one" : n == 2 ? "two" : n100 >= 3 && n100 <= 10 ? "few" : n100 >= 11 && n100 <= 99 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-AE", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-BH", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-DJ", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-DZ", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-EG", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-EH", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-ER", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-IL", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-IQ", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-JO", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-KM", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-KW", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-LB", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-LY", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-MA", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-MR", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-OM", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-PS", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-QA", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-SA", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-SD", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-SO", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-SS", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-SY", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-TD", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-TN", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ar-YE", "parentLocale": "ar" });
+  IntlMessageFormat.__addLocaleData({ "locale": "as", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 || n == 5 || n == 7 || n == 8 || n == 9 || n == 10 ? "one" : n == 2 || n == 3 ? "two" : n == 4 ? "few" : n == 6 ? "many" : "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "asa", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ast", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "az", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2),
+          i1000 = i.slice(-3);if (ord) return i10 == 1 || i10 == 2 || i10 == 5 || i10 == 7 || i10 == 8 || i100 == 20 || i100 == 50 || i100 == 70 || i100 == 80 ? "one" : i10 == 3 || i10 == 4 || i1000 == 100 || i1000 == 200 || i1000 == 300 || i1000 == 400 || i1000 == 500 || i1000 == 600 || i1000 == 700 || i1000 == 800 || i1000 == 900 ? "few" : i == 0 || i10 == 6 || i100 == 40 || i100 == 60 || i100 == 90 ? "many" : "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "az-Arab", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "az-Cyrl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "az-Latn", "parentLocale": "az" });
+  IntlMessageFormat.__addLocaleData({ "locale": "bas", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "be", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2);if (ord) return (n10 == 2 || n10 == 3) && n100 != 12 && n100 != 13 ? "few" : "other";return n10 == 1 && n100 != 11 ? "one" : n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14) ? "few" : t0 && n10 == 0 || n10 >= 5 && n10 <= 9 || n100 >= 11 && n100 <= 14 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bem", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bez", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bm", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bm-Nkoo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 || n == 5 || n == 7 || n == 8 || n == 9 || n == 10 ? "one" : n == 2 || n == 3 ? "two" : n == 4 ? "few" : n == 6 ? "many" : "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bn-IN", "parentLocale": "bn" });
+  IntlMessageFormat.__addLocaleData({ "locale": "bo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bo-IN", "parentLocale": "bo" });
+  IntlMessageFormat.__addLocaleData({ "locale": "br", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2),
+          n1000000 = t0 && s[0].slice(-6);if (ord) return "other";return n10 == 1 && n100 != 11 && n100 != 71 && n100 != 91 ? "one" : n10 == 2 && n100 != 12 && n100 != 72 && n100 != 92 ? "two" : (n10 == 3 || n10 == 4 || n10 == 9) && (n100 < 10 || n100 > 19) && (n100 < 70 || n100 > 79) && (n100 < 90 || n100 > 99) ? "few" : n != 0 && t0 && n1000000 == 0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "brx", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bs", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2),
+          f10 = f.slice(-1),
+          f100 = f.slice(-2);if (ord) return "other";return v0 && i10 == 1 && i100 != 11 || f10 == 1 && f100 != 11 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) || f10 >= 2 && f10 <= 4 && (f100 < 12 || f100 > 14) ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bs-Cyrl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "bs-Latn", "parentLocale": "bs" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ca", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return n == 1 || n == 3 ? "one" : n == 2 ? "two" : n == 4 ? "few" : "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ca-AD", "parentLocale": "ca" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ca-ES-VALENCIA", "parentLocale": "ca-ES" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ca-ES", "parentLocale": "ca" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ca-FR", "parentLocale": "ca" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ca-IT", "parentLocale": "ca" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ce", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "cgg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "chr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ckb", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ckb-IR", "parentLocale": "ckb" });
+  IntlMessageFormat.__addLocaleData({ "locale": "cs", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : i >= 2 && i <= 4 && v0 ? "few" : !v0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "cu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "cy", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 0 || n == 7 || n == 8 || n == 9 ? "zero" : n == 1 ? "one" : n == 2 ? "two" : n == 3 || n == 4 ? "few" : n == 5 || n == 6 ? "many" : "other";return n == 0 ? "zero" : n == 1 ? "one" : n == 2 ? "two" : n == 3 ? "few" : n == 6 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "da", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          t0 = Number(s[0]) == n;if (ord) return "other";return n == 1 || !t0 && (i == 0 || i == 1) ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "da-GL", "parentLocale": "da" });
+  IntlMessageFormat.__addLocaleData({ "locale": "dav", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "de", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "de-AT", "parentLocale": "de" });
+  IntlMessageFormat.__addLocaleData({ "locale": "de-BE", "parentLocale": "de" });
+  IntlMessageFormat.__addLocaleData({ "locale": "de-CH", "parentLocale": "de" });
+  IntlMessageFormat.__addLocaleData({ "locale": "de-LI", "parentLocale": "de" });
+  IntlMessageFormat.__addLocaleData({ "locale": "de-LU", "parentLocale": "de" });
+  IntlMessageFormat.__addLocaleData({ "locale": "dje", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "dsb", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i100 = i.slice(-2),
+          f100 = f.slice(-2);if (ord) return "other";return v0 && i100 == 1 || f100 == 1 ? "one" : v0 && i100 == 2 || f100 == 2 ? "two" : v0 && (i100 == 3 || i100 == 4) || f100 == 3 || f100 == 4 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "dua", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "dv", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "dyo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "dz", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ebu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ee", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ee-TG", "parentLocale": "ee" });
+  IntlMessageFormat.__addLocaleData({ "locale": "el", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "el-CY", "parentLocale": "el" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2);if (ord) return n10 == 1 && n100 != 11 ? "one" : n10 == 2 && n100 != 12 ? "two" : n10 == 3 && n100 != 13 ? "few" : "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-001", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-150", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-AG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-AI", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-AS", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-AT", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-AU", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BB", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BE", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BI", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BS", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BW", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-BZ", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CA", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CC", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CH", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CK", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CX", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-CY", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-DE", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-DG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-DK", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-DM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-Dsrt", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-ER", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-FI", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-FJ", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-FK", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-FM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GB", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GD", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GH", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GI", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GU", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-GY", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-HK", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-IE", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-IL", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-IM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-IN", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-IO", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-JE", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-JM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-KE", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-KI", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-KN", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-KY", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-LC", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-LR", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-LS", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MH", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MO", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MP", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MS", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MT", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MU", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MW", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-MY", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NA", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NF", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NL", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NR", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NU", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-NZ", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-PG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-PH", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-PK", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-PN", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-PR", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-PW", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-RW", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SB", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SC", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SD", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SE", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SH", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SI", "parentLocale": "en-150" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SL", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SS", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SX", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-SZ", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-Shaw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-TC", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-TK", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-TO", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-TT", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-TV", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-TZ", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-UG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-UM", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-US", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-VC", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-VG", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-VI", "parentLocale": "en" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-VU", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-WS", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-ZA", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-ZM", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "en-ZW", "parentLocale": "en-001" });
+  IntlMessageFormat.__addLocaleData({ "locale": "eo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "es", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-419", "parentLocale": "es" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-AR", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-BO", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-CL", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-CO", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-CR", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-CU", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-DO", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-EA", "parentLocale": "es" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-EC", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-GQ", "parentLocale": "es" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-GT", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-HN", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-IC", "parentLocale": "es" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-MX", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-NI", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-PA", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-PE", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-PH", "parentLocale": "es" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-PR", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-PY", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-SV", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-US", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-UY", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "es-VE", "parentLocale": "es-419" });
+  IntlMessageFormat.__addLocaleData({ "locale": "et", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "eu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ewo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fa", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fa-AF", "parentLocale": "fa" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ff", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n >= 0 && n < 2 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ff-CM", "parentLocale": "ff" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ff-GN", "parentLocale": "ff" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ff-MR", "parentLocale": "ff" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fi", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fil", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          f10 = f.slice(-1);if (ord) return n == 1 ? "one" : "other";return v0 && (i == 1 || i == 2 || i == 3) || v0 && i10 != 4 && i10 != 6 && i10 != 9 || !v0 && f10 != 4 && f10 != 6 && f10 != 9 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fo-DK", "parentLocale": "fo" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : "other";return n >= 0 && n < 2 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-BE", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-BF", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-BI", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-BJ", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-BL", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CA", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CD", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CF", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CG", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CH", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CI", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-CM", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-DJ", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-DZ", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-GA", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-GF", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-GN", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-GP", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-GQ", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-HT", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-KM", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-LU", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MA", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MC", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MF", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MG", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-ML", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MQ", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MR", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-MU", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-NC", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-NE", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-PF", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-PM", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-RE", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-RW", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-SC", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-SN", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-SY", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-TD", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-TG", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-TN", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-VU", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-WF", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fr-YT", "parentLocale": "fr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "fur", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "fy", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ga", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n;if (ord) return n == 1 ? "one" : "other";return n == 1 ? "one" : n == 2 ? "two" : t0 && n >= 3 && n <= 6 ? "few" : t0 && n >= 7 && n <= 10 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "gd", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n;if (ord) return "other";return n == 1 || n == 11 ? "one" : n == 2 || n == 12 ? "two" : t0 && n >= 3 && n <= 10 || t0 && n >= 13 && n <= 19 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "gl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "gsw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "gsw-FR", "parentLocale": "gsw" });
+  IntlMessageFormat.__addLocaleData({ "locale": "gsw-LI", "parentLocale": "gsw" });
+  IntlMessageFormat.__addLocaleData({ "locale": "gu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : n == 2 || n == 3 ? "two" : n == 4 ? "few" : n == 6 ? "many" : "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "guw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "guz", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "gv", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2);if (ord) return "other";return v0 && i10 == 1 ? "one" : v0 && i10 == 2 ? "two" : v0 && (i100 == 0 || i100 == 20 || i100 == 40 || i100 == 60 || i100 == 80) ? "few" : !v0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ha", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ha-Arab", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ha-GH", "parentLocale": "ha" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ha-NE", "parentLocale": "ha" });
+  IntlMessageFormat.__addLocaleData({ "locale": "haw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "he", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1);if (ord) return "other";return n == 1 && v0 ? "one" : i == 2 && v0 ? "two" : v0 && (n < 0 || n > 10) && t0 && n10 == 0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "hi", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : n == 2 || n == 3 ? "two" : n == 4 ? "few" : n == 6 ? "many" : "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "hr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2),
+          f10 = f.slice(-1),
+          f100 = f.slice(-2);if (ord) return "other";return v0 && i10 == 1 && i100 != 11 || f10 == 1 && f100 != 11 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) || f10 >= 2 && f10 <= 4 && (f100 < 12 || f100 > 14) ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "hr-BA", "parentLocale": "hr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "hsb", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i100 = i.slice(-2),
+          f100 = f.slice(-2);if (ord) return "other";return v0 && i100 == 1 || f100 == 1 ? "one" : v0 && i100 == 2 || f100 == 2 ? "two" : v0 && (i100 == 3 || i100 == 4) || f100 == 3 || f100 == 4 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "hu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 || n == 5 ? "one" : "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "hy", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : "other";return n >= 0 && n < 2 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "id", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ig", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ii", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "in", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "is", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          t0 = Number(s[0]) == n,
+          i10 = i.slice(-1),
+          i100 = i.slice(-2);if (ord) return "other";return t0 && i10 == 1 && i100 != 11 || !t0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "it", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return n == 11 || n == 8 || n == 80 || n == 800 ? "many" : "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "it-CH", "parentLocale": "it" });
+  IntlMessageFormat.__addLocaleData({ "locale": "it-SM", "parentLocale": "it" });
+  IntlMessageFormat.__addLocaleData({ "locale": "iu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "iu-Latn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "iw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1);if (ord) return "other";return n == 1 && v0 ? "one" : i == 2 && v0 ? "two" : v0 && (n < 0 || n > 10) && t0 && n10 == 0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ja", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "jbo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "jgo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ji", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "jmc", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "jv", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "jw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ka", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          i100 = i.slice(-2);if (ord) return i == 1 ? "one" : i == 0 || i100 >= 2 && i100 <= 20 || i100 == 40 || i100 == 60 || i100 == 80 ? "many" : "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kab", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n >= 0 && n < 2 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kaj", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kam", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kcg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kde", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kea", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "khq", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ki", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kk", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1);if (ord) return n10 == 6 || n10 == 9 || t0 && n10 == 0 && n != 0 ? "many" : "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kkj", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kln", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "km", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ko", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ko-KP", "parentLocale": "ko" });
+  IntlMessageFormat.__addLocaleData({ "locale": "kok", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ks", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ksb", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ksf", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ksh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 ? "zero" : n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ku", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "kw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ky", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lag", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0];if (ord) return "other";return n == 0 ? "zero" : (i == 0 || i == 1) && n != 0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lb", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lkt", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ln", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ln-AO", "parentLocale": "ln" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ln-CF", "parentLocale": "ln" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ln-CG", "parentLocale": "ln" });
+  IntlMessageFormat.__addLocaleData({ "locale": "lo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lrc", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lrc-IQ", "parentLocale": "lrc" });
+  IntlMessageFormat.__addLocaleData({ "locale": "lt", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          f = s[1] || "",
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2);if (ord) return "other";return n10 == 1 && (n100 < 11 || n100 > 19) ? "one" : n10 >= 2 && n10 <= 9 && (n100 < 11 || n100 > 19) ? "few" : f != 0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "luo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "luy", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "lv", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          f = s[1] || "",
+          v = f.length,
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2),
+          f100 = f.slice(-2),
+          f10 = f.slice(-1);if (ord) return "other";return t0 && n10 == 0 || n100 >= 11 && n100 <= 19 || v == 2 && f100 >= 11 && f100 <= 19 ? "zero" : n10 == 1 && n100 != 11 || v == 2 && f10 == 1 && f100 != 11 || v != 2 && f10 == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mas", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mas-TZ", "parentLocale": "mas" });
+  IntlMessageFormat.__addLocaleData({ "locale": "mer", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mfe", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mgh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mgo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mk", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2),
+          f10 = f.slice(-1);if (ord) return i10 == 1 && i100 != 11 ? "one" : i10 == 2 && i100 != 12 ? "two" : (i10 == 7 || i10 == 8) && i100 != 17 && i100 != 18 ? "many" : "other";return v0 && i10 == 1 || f10 == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ml", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mn-Mong", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n100 = t0 && s[0].slice(-2);if (ord) return n == 1 ? "one" : "other";return n == 1 && v0 ? "one" : !v0 || n == 0 || n != 1 && n100 >= 1 && n100 <= 19 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : n == 2 || n == 3 ? "two" : n == 4 ? "few" : "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ms", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ms-Arab", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ms-BN", "parentLocale": "ms" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ms-SG", "parentLocale": "ms" });
+  IntlMessageFormat.__addLocaleData({ "locale": "mt", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n,
+          n100 = t0 && s[0].slice(-2);if (ord) return "other";return n == 1 ? "one" : n == 0 || n100 >= 2 && n100 <= 10 ? "few" : n100 >= 11 && n100 <= 19 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mua", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "my", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "mzn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nah", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "naq", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nb", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nb-SJ", "parentLocale": "nb" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nd", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ne", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n;if (ord) return t0 && n >= 1 && n <= 4 ? "one" : "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ne-IN", "parentLocale": "ne" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl-AW", "parentLocale": "nl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl-BE", "parentLocale": "nl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl-BQ", "parentLocale": "nl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl-CW", "parentLocale": "nl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl-SR", "parentLocale": "nl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nl-SX", "parentLocale": "nl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "nmg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nnh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "no", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nqo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nso", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nus", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ny", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "nyn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "om", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "om-KE", "parentLocale": "om" });
+  IntlMessageFormat.__addLocaleData({ "locale": "or", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "os", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "os-RU", "parentLocale": "os" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pa", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "pa-Arab", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "pa-Guru", "parentLocale": "pa" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pap", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "pl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2);if (ord) return "other";return n == 1 && v0 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) ? "few" : v0 && i != 1 && (i10 == 0 || i10 == 1) || v0 && i10 >= 5 && i10 <= 9 || v0 && i100 >= 12 && i100 <= 14 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "prg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          f = s[1] || "",
+          v = f.length,
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2),
+          f100 = f.slice(-2),
+          f10 = f.slice(-1);if (ord) return "other";return t0 && n10 == 0 || n100 >= 11 && n100 <= 19 || v == 2 && f100 >= 11 && f100 <= 19 ? "zero" : n10 == 1 && n100 != 11 || v == 2 && f10 == 1 && f100 != 11 || v != 2 && f10 == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ps", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n;if (ord) return "other";return t0 && n >= 0 && n <= 2 && n != 2 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-AO", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-PT", "parentLocale": "pt", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-CV", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-GW", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-MO", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-MZ", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-ST", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "pt-TL", "parentLocale": "pt-PT" });
+  IntlMessageFormat.__addLocaleData({ "locale": "qu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "qu-BO", "parentLocale": "qu" });
+  IntlMessageFormat.__addLocaleData({ "locale": "qu-EC", "parentLocale": "qu" });
+  IntlMessageFormat.__addLocaleData({ "locale": "rm", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "rn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ro", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n100 = t0 && s[0].slice(-2);if (ord) return n == 1 ? "one" : "other";return n == 1 && v0 ? "one" : !v0 || n == 0 || n != 1 && n100 >= 1 && n100 <= 19 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ro-MD", "parentLocale": "ro" });
+  IntlMessageFormat.__addLocaleData({ "locale": "rof", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ru", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2);if (ord) return "other";return v0 && i10 == 1 && i100 != 11 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) ? "few" : v0 && i10 == 0 || v0 && i10 >= 5 && i10 <= 9 || v0 && i100 >= 11 && i100 <= 14 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ru-BY", "parentLocale": "ru" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ru-KG", "parentLocale": "ru" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ru-KZ", "parentLocale": "ru" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ru-MD", "parentLocale": "ru" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ru-UA", "parentLocale": "ru" });
+  IntlMessageFormat.__addLocaleData({ "locale": "rw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "rwk", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sah", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "saq", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sbp", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sdh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "se", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "se-FI", "parentLocale": "se" });
+  IntlMessageFormat.__addLocaleData({ "locale": "se-SE", "parentLocale": "se" });
+  IntlMessageFormat.__addLocaleData({ "locale": "seh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ses", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sg", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2),
+          f10 = f.slice(-1),
+          f100 = f.slice(-2);if (ord) return "other";return v0 && i10 == 1 && i100 != 11 || f10 == 1 && f100 != 11 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) || f10 >= 2 && f10 <= 4 && (f100 < 12 || f100 > 14) ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "shi", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n;if (ord) return "other";return n >= 0 && n <= 1 ? "one" : t0 && n >= 2 && n <= 10 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "shi-Latn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "shi-Tfng", "parentLocale": "shi" });
+  IntlMessageFormat.__addLocaleData({ "locale": "si", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "";if (ord) return "other";return n == 0 || n == 1 || i == 0 && f == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sk", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : i >= 2 && i <= 4 && v0 ? "few" : !v0 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          i100 = i.slice(-2);if (ord) return "other";return v0 && i100 == 1 ? "one" : v0 && i100 == 2 ? "two" : v0 && (i100 == 3 || i100 == 4) || !v0 ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sma", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "smi", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "smj", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "smn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sms", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : n == 2 ? "two" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "so", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "so-DJ", "parentLocale": "so" });
+  IntlMessageFormat.__addLocaleData({ "locale": "so-ET", "parentLocale": "so" });
+  IntlMessageFormat.__addLocaleData({ "locale": "so-KE", "parentLocale": "so" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sq", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2);if (ord) return n == 1 ? "one" : n10 == 4 && n100 != 14 ? "many" : "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sq-MK", "parentLocale": "sq" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sq-XK", "parentLocale": "sq" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          i100 = i.slice(-2),
+          f10 = f.slice(-1),
+          f100 = f.slice(-2);if (ord) return "other";return v0 && i10 == 1 && i100 != 11 || f10 == 1 && f100 != 11 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) || f10 >= 2 && f10 <= 4 && (f100 < 12 || f100 > 14) ? "few" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Cyrl", "parentLocale": "sr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Cyrl-BA", "parentLocale": "sr-Cyrl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Cyrl-ME", "parentLocale": "sr-Cyrl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Cyrl-XK", "parentLocale": "sr-Cyrl" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Latn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Latn-BA", "parentLocale": "sr-Latn" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Latn-ME", "parentLocale": "sr-Latn" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sr-Latn-XK", "parentLocale": "sr-Latn" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ss", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ssy", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "st", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sv", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2);if (ord) return (n10 == 1 || n10 == 2) && n100 != 11 && n100 != 12 ? "one" : "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sv-AX", "parentLocale": "sv" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sv-FI", "parentLocale": "sv" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sw", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "sw-CD", "parentLocale": "sw" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sw-KE", "parentLocale": "sw" });
+  IntlMessageFormat.__addLocaleData({ "locale": "sw-UG", "parentLocale": "sw" });
+  IntlMessageFormat.__addLocaleData({ "locale": "syr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ta", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ta-LK", "parentLocale": "ta" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ta-MY", "parentLocale": "ta" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ta-SG", "parentLocale": "ta" });
+  IntlMessageFormat.__addLocaleData({ "locale": "te", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "teo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "teo-KE", "parentLocale": "teo" });
+  IntlMessageFormat.__addLocaleData({ "locale": "th", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ti", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ti-ER", "parentLocale": "ti" });
+  IntlMessageFormat.__addLocaleData({ "locale": "tig", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "tk", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "tl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          f = s[1] || "",
+          v0 = !s[1],
+          i10 = i.slice(-1),
+          f10 = f.slice(-1);if (ord) return n == 1 ? "one" : "other";return v0 && (i == 1 || i == 2 || i == 3) || v0 && i10 != 4 && i10 != 6 && i10 != 9 || !v0 && f10 != 4 && f10 != 6 && f10 != 9 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "tn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "to", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "tr", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "tr-CY", "parentLocale": "tr" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ts", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "twq", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "tzm", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          t0 = Number(s[0]) == n;if (ord) return "other";return n == 0 || n == 1 || t0 && n >= 11 && n <= 99 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ug", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "uk", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          i = s[0],
+          v0 = !s[1],
+          t0 = Number(s[0]) == n,
+          n10 = t0 && s[0].slice(-1),
+          n100 = t0 && s[0].slice(-2),
+          i10 = i.slice(-1),
+          i100 = i.slice(-2);if (ord) return n10 == 3 && n100 != 13 ? "few" : "other";return v0 && i10 == 1 && i100 != 11 ? "one" : v0 && i10 >= 2 && i10 <= 4 && (i100 < 12 || i100 > 14) ? "few" : v0 && i10 == 0 || v0 && i10 >= 5 && i10 <= 9 || v0 && i100 >= 11 && i100 <= 14 ? "many" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ur", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "ur-IN", "parentLocale": "ur" });
+  IntlMessageFormat.__addLocaleData({ "locale": "uz", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "uz-Arab", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "uz-Cyrl", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "uz-Latn", "parentLocale": "uz" });
+  IntlMessageFormat.__addLocaleData({ "locale": "vai", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "vai-Latn", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "vai-Vaii", "parentLocale": "vai" });
+  IntlMessageFormat.__addLocaleData({ "locale": "ve", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "vi", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return n == 1 ? "one" : "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "vo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "vun", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "wa", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 0 || n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "wae", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "wo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "xh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "xog", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n == 1 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "yav", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "yi", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      var s = String(n).split("."),
+          v0 = !s[1];if (ord) return "other";return n == 1 && v0 ? "one" : "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "yo", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "yo-BJ", "parentLocale": "yo" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zgh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hans", "parentLocale": "zh" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hans-HK", "parentLocale": "zh-Hans" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hans-MO", "parentLocale": "zh-Hans" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hans-SG", "parentLocale": "zh-Hans" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hant", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return "other";
+    } });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hant-HK", "parentLocale": "zh-Hant" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zh-Hant-MO", "parentLocale": "zh-Hant-HK" });
+  IntlMessageFormat.__addLocaleData({ "locale": "zu", "pluralRuleFunction": function pluralRuleFunction(n, ord) {
+      if (ord) return "other";return n >= 0 && n <= 1 ? "one" : "other";
+    } });
+
+  var _templateObject$3 = taggedTemplateLiteral(['<style>', '</style>'], ['<style>', '</style>']),
+      _templateObject2$3 = taggedTemplateLiteral(['\n      ', '\n      ', '\n    '], ['\n      ', '\n      ', '\n    ']);
 
   var withStyle$1 = function withStyle(base) {
     for (var _len = arguments.length, styles = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -4900,12 +7733,12 @@
           }
 
           // eslint-disable-line class-methods-use-this
-          return html$1(_templateObject$1, argv.join(' '));
+          return html$1(_templateObject$3, argv.join(' '));
         }
       }, {
         key: '_render',
         value: function _render(props) {
-          return html$1(_templateObject2$1, this._renderStyles.apply(this, styles), get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), '_render', this).call(this, props));
+          return html$1(_templateObject2$3, this._renderStyles.apply(this, styles), get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), '_render', this).call(this, props));
         }
       }]);
       return _class;
@@ -5861,7 +8694,7 @@
   var double_vertical_bar = "⏸";
   var black_square_for_stop = "⏹";
   var black_circle_for_record = "⏺";
-  var m = "Ⓜ️";
+  var m$1 = "Ⓜ️";
   var black_small_square = "▪️";
   var white_small_square = "▫️";
   var arrow_forward = "▶️";
@@ -6914,7 +9747,7 @@
   	double_vertical_bar: double_vertical_bar,
   	black_square_for_stop: black_square_for_stop,
   	black_circle_for_record: black_circle_for_record,
-  	m: m,
+  	m: m$1,
   	black_small_square: black_small_square,
   	white_small_square: white_small_square,
   	arrow_forward: arrow_forward,
@@ -8256,7 +11089,7 @@
     double_vertical_bar: double_vertical_bar,
     black_square_for_stop: black_square_for_stop,
     black_circle_for_record: black_circle_for_record,
-    m: m,
+    m: m$1,
     black_small_square: black_small_square,
     white_small_square: white_small_square,
     arrow_forward: arrow_forward,
@@ -9582,9 +12415,9 @@
     };
   }();
 
-  var _templateObject$2 = /*#__PURE__*/_taggedTemplateLiteral(['<img src="', '" />'], ['<img src="', '" />']),
-      _templateObject2$2 = /*#__PURE__*/_taggedTemplateLiteral(['\n        <div class="icon" name=', ' on-click=', '>\n          <span>', '</span>\n          ', '\n        </div>\n      '], ['\n        <div class="icon" name=', ' on-click=', '>\n          <span>', '</span>\n          ', '\n        </div>\n      ']),
-      _templateObject3$1 = /*#__PURE__*/_taggedTemplateLiteral(['<span class="count">', '</span>'], ['<span class="count">', '</span>']),
+  var _templateObject$4 = /*#__PURE__*/_taggedTemplateLiteral(['<img src="', '" />'], ['<img src="', '" />']),
+      _templateObject2$4 = /*#__PURE__*/_taggedTemplateLiteral(['\n        <div class="icon" name=', ' on-click=', '>\n          <span>', '</span>\n          ', '\n        </div>\n      '], ['\n        <div class="icon" name=', ' on-click=', '>\n          <span>', '</span>\n          ', '\n        </div>\n      ']),
+      _templateObject3 = /*#__PURE__*/_taggedTemplateLiteral(['<span class="count">', '</span>'], ['<span class="count">', '</span>']),
       _templateObject4 = /*#__PURE__*/_taggedTemplateLiteral(['\n      <div class$=', '>\n        ', '\n      </div>\n    '], ['\n      <div class$=', '>\n        ', '\n      </div>\n    ']);
 
   function _taggedTemplateLiteral(strings, raw) {
@@ -9643,7 +12476,7 @@
     _createClass(Reactions, [{
       key: '_renderIcon',
       value: function _renderIcon(data) {
-        return data.icon ? html$1(_templateObject$2, data.icon) : this.emoji.get(data.name);
+        return data.icon ? html$1(_templateObject$4, data.icon) : this.emoji.get(data.name);
       }
     }, {
       key: '_handleClick',
@@ -9670,7 +12503,7 @@
         var shouldRender = count || this.showall;
         var shouldCount = count > 0 && this.showcount;
 
-        return !shouldRender ? null : html$1(_templateObject2$2, k, this._boundedClick, this._renderIcon(v), shouldCount ? html$1(_templateObject3$1, count) : null);
+        return !shouldRender ? null : html$1(_templateObject2$4, k, this._boundedClick, this._renderIcon(v), shouldCount ? html$1(_templateObject3, count) : null);
       }
     }, {
       key: '_configure',
@@ -9693,6 +12526,8 @@
     return Reactions;
   }(LitElement);
   var ReactionList = /*#__PURE__*/withStyle$1(Reactions, css);
+
+  var name$1 = "@netology-group/wc-chat";
 
   /** @license MIT License (c) copyright 2010-2016 original author or authors */
   /** @author Brian Cavalier */
@@ -9808,7 +12643,7 @@
 
   // tail :: [a] -> [a]
   // drop head element
-  function tail(a) {
+  function tail$1(a) {
     return drop(1, a);
   }
 
@@ -9854,7 +12689,7 @@
   }
 
   // compose :: (b -> c) -> (a -> b) -> (a -> c)
-  var compose = function compose(f, g) {
+  var compose$2 = function compose(f, g) {
     return function (x) {
       return f(g(x));
     };
@@ -10152,550 +12987,18 @@
     return new Stream(s);
   }
 
-  function _arity(n, fn) {
-    /* eslint-disable no-unused-vars */
-    switch (n) {
-      case 0:
-        return function () {
-          return fn.apply(this, arguments);
-        };
-      case 1:
-        return function (a0) {
-          return fn.apply(this, arguments);
-        };
-      case 2:
-        return function (a0, a1) {
-          return fn.apply(this, arguments);
-        };
-      case 3:
-        return function (a0, a1, a2) {
-          return fn.apply(this, arguments);
-        };
-      case 4:
-        return function (a0, a1, a2, a3) {
-          return fn.apply(this, arguments);
-        };
-      case 5:
-        return function (a0, a1, a2, a3, a4) {
-          return fn.apply(this, arguments);
-        };
-      case 6:
-        return function (a0, a1, a2, a3, a4, a5) {
-          return fn.apply(this, arguments);
-        };
-      case 7:
-        return function (a0, a1, a2, a3, a4, a5, a6) {
-          return fn.apply(this, arguments);
-        };
-      case 8:
-        return function (a0, a1, a2, a3, a4, a5, a6, a7) {
-          return fn.apply(this, arguments);
-        };
-      case 9:
-        return function (a0, a1, a2, a3, a4, a5, a6, a7, a8) {
-          return fn.apply(this, arguments);
-        };
-      case 10:
-        return function (a0, a1, a2, a3, a4, a5, a6, a7, a8, a9) {
-          return fn.apply(this, arguments);
-        };
-      default:
-        throw new Error('First argument to _arity must be a non-negative integer no greater than ten');
-    }
-  }
-
-  function _pipe(f, g) {
-    return function () {
-      return g.call(this, f.apply(this, arguments));
-    };
-  }
-
-  function _isPlaceholder(a) {
-         return a != null && (typeof a === 'undefined' ? 'undefined' : _typeof(a)) === 'object' && a['@@functional/placeholder'] === true;
-  }
-
-  /**
-   * Optimized internal one-arity curry function.
-   *
-   * @private
-   * @category Function
-   * @param {Function} fn The function to curry.
-   * @return {Function} The curried function.
-   */
-  function _curry1(fn) {
-    return function f1(a) {
-      if (arguments.length === 0 || _isPlaceholder(a)) {
-        return f1;
-      } else {
-        return fn.apply(this, arguments);
-      }
-    };
-  }
-
-  /**
-   * Optimized internal two-arity curry function.
-   *
-   * @private
-   * @category Function
-   * @param {Function} fn The function to curry.
-   * @return {Function} The curried function.
-   */
-  function _curry2(fn) {
-    return function f2(a, b) {
-      switch (arguments.length) {
-        case 0:
-          return f2;
-        case 1:
-          return _isPlaceholder(a) ? f2 : _curry1(function (_b) {
-            return fn(a, _b);
-          });
-        default:
-          return _isPlaceholder(a) && _isPlaceholder(b) ? f2 : _isPlaceholder(a) ? _curry1(function (_a) {
-            return fn(_a, b);
-          }) : _isPlaceholder(b) ? _curry1(function (_b) {
-            return fn(a, _b);
-          }) : fn(a, b);
-      }
-    };
-  }
-
-  /**
-   * Optimized internal three-arity curry function.
-   *
-   * @private
-   * @category Function
-   * @param {Function} fn The function to curry.
-   * @return {Function} The curried function.
-   */
-  function _curry3(fn) {
-    return function f3(a, b, c) {
-      switch (arguments.length) {
-        case 0:
-          return f3;
-        case 1:
-          return _isPlaceholder(a) ? f3 : _curry2(function (_b, _c) {
-            return fn(a, _b, _c);
-          });
-        case 2:
-          return _isPlaceholder(a) && _isPlaceholder(b) ? f3 : _isPlaceholder(a) ? _curry2(function (_a, _c) {
-            return fn(_a, b, _c);
-          }) : _isPlaceholder(b) ? _curry2(function (_b, _c) {
-            return fn(a, _b, _c);
-          }) : _curry1(function (_c) {
-            return fn(a, b, _c);
-          });
-        default:
-          return _isPlaceholder(a) && _isPlaceholder(b) && _isPlaceholder(c) ? f3 : _isPlaceholder(a) && _isPlaceholder(b) ? _curry2(function (_a, _b) {
-            return fn(_a, _b, c);
-          }) : _isPlaceholder(a) && _isPlaceholder(c) ? _curry2(function (_a, _c) {
-            return fn(_a, b, _c);
-          }) : _isPlaceholder(b) && _isPlaceholder(c) ? _curry2(function (_b, _c) {
-            return fn(a, _b, _c);
-          }) : _isPlaceholder(a) ? _curry1(function (_a) {
-            return fn(_a, b, c);
-          }) : _isPlaceholder(b) ? _curry1(function (_b) {
-            return fn(a, _b, c);
-          }) : _isPlaceholder(c) ? _curry1(function (_c) {
-            return fn(a, b, _c);
-          }) : fn(a, b, c);
-      }
-    };
-  }
-
-  /**
-   * Tests whether or not an object is an array.
-   *
-   * @private
-   * @param {*} val The object to test.
-   * @return {Boolean} `true` if `val` is an array, `false` otherwise.
-   * @example
-   *
-   *      _isArray([]); //=> true
-   *      _isArray(null); //=> false
-   *      _isArray({}); //=> false
-   */
-  var _isArray = Array.isArray || function _isArray(val) {
-    return val != null && val.length >= 0 && Object.prototype.toString.call(val) === '[object Array]';
-  };
-
-  function _isString(x) {
-    return Object.prototype.toString.call(x) === '[object String]';
-  }
-
-  /**
-   * Tests whether or not an object is similar to an array.
-   *
-   * @private
-   * @category Type
-   * @category List
-   * @sig * -> Boolean
-   * @param {*} x The object to test.
-   * @return {Boolean} `true` if `x` has a numeric length property and extreme indices defined; `false` otherwise.
-   * @example
-   *
-   *      _isArrayLike([]); //=> true
-   *      _isArrayLike(true); //=> false
-   *      _isArrayLike({}); //=> false
-   *      _isArrayLike({length: 10}); //=> false
-   *      _isArrayLike({0: 'zero', 9: 'nine', length: 10}); //=> true
-   */
-  var _isArrayLike = /*#__PURE__*/_curry1(function isArrayLike(x) {
-    if (_isArray(x)) {
-      return true;
-    }
-    if (!x) {
-      return false;
-    }
-    if ((typeof x === 'undefined' ? 'undefined' : _typeof(x)) !== 'object') {
-      return false;
-    }
-    if (_isString(x)) {
-      return false;
-    }
-    if (x.nodeType === 1) {
-      return !!x.length;
-    }
-    if (x.length === 0) {
-      return true;
-    }
-    if (x.length > 0) {
-      return x.hasOwnProperty(0) && x.hasOwnProperty(x.length - 1);
-    }
-    return false;
-  });
-
-  var XWrap = /*#__PURE__*/function () {
-    function XWrap(fn) {
-      this.f = fn;
-    }
-    XWrap.prototype['@@transducer/init'] = function () {
-      throw new Error('init not implemented on XWrap');
-    };
-    XWrap.prototype['@@transducer/result'] = function (acc) {
-      return acc;
-    };
-    XWrap.prototype['@@transducer/step'] = function (acc, x) {
-      return this.f(acc, x);
-    };
-
-    return XWrap;
-  }();
-
-  function _xwrap(fn) {
-    return new XWrap(fn);
-  }
-
-  /**
-   * Creates a function that is bound to a context.
-   * Note: `R.bind` does not provide the additional argument-binding capabilities of
-   * [Function.prototype.bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
-   *
-   * @func
-   * @memberOf R
-   * @since v0.6.0
-   * @category Function
-   * @category Object
-   * @sig (* -> *) -> {*} -> (* -> *)
-   * @param {Function} fn The function to bind to context
-   * @param {Object} thisObj The context to bind `fn` to
-   * @return {Function} A function that will execute in the context of `thisObj`.
-   * @see R.partial
-   * @example
-   *
-   *      var log = R.bind(console.log, console);
-   *      R.pipe(R.assoc('a', 2), R.tap(log), R.assoc('a', 3))({a: 1}); //=> {a: 3}
-   *      // logs {a: 2}
-   * @symb R.bind(f, o)(a, b) = f.call(o, a, b)
-   */
-  var bind = /*#__PURE__*/_curry2(function bind(fn, thisObj) {
-    return _arity(fn.length, function () {
-      return fn.apply(thisObj, arguments);
-    });
-  });
-
-  function _arrayReduce(xf, acc, list) {
-    var idx = 0;
-    var len = list.length;
-    while (idx < len) {
-      acc = xf['@@transducer/step'](acc, list[idx]);
-      if (acc && acc['@@transducer/reduced']) {
-        acc = acc['@@transducer/value'];
-        break;
-      }
-      idx += 1;
-    }
-    return xf['@@transducer/result'](acc);
-  }
-
-  function _iterableReduce(xf, acc, iter) {
-    var step = iter.next();
-    while (!step.done) {
-      acc = xf['@@transducer/step'](acc, step.value);
-      if (acc && acc['@@transducer/reduced']) {
-        acc = acc['@@transducer/value'];
-        break;
-      }
-      step = iter.next();
-    }
-    return xf['@@transducer/result'](acc);
-  }
-
-  function _methodReduce(xf, acc, obj, methodName) {
-    return xf['@@transducer/result'](obj[methodName](bind(xf['@@transducer/step'], xf), acc));
-  }
-
-  var symIterator = typeof Symbol !== 'undefined' ? Symbol.iterator : '@@iterator';
-
-  function _reduce(fn, acc, list) {
-    if (typeof fn === 'function') {
-      fn = _xwrap(fn);
-    }
-    if (_isArrayLike(list)) {
-      return _arrayReduce(fn, acc, list);
-    }
-    if (typeof list['fantasy-land/reduce'] === 'function') {
-      return _methodReduce(fn, acc, list, 'fantasy-land/reduce');
-    }
-    if (list[symIterator] != null) {
-      return _iterableReduce(fn, acc, list[symIterator]());
-    }
-    if (typeof list.next === 'function') {
-      return _iterableReduce(fn, acc, list);
-    }
-    if (typeof list.reduce === 'function') {
-      return _methodReduce(fn, acc, list, 'reduce');
-    }
-
-    throw new TypeError('reduce: list must be array or iterable');
-  }
-
-  /**
-   * Returns a single item by iterating through the list, successively calling
-   * the iterator function and passing it an accumulator value and the current
-   * value from the array, and then passing the result to the next call.
-   *
-   * The iterator function receives two values: *(acc, value)*. It may use
-   * [`R.reduced`](#reduced) to shortcut the iteration.
-   *
-   * The arguments' order of [`reduceRight`](#reduceRight)'s iterator function
-   * is *(value, acc)*.
-   *
-   * Note: `R.reduce` does not skip deleted or unassigned indices (sparse
-   * arrays), unlike the native `Array.prototype.reduce` method. For more details
-   * on this behavior, see:
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce#Description
-   *
-   * Dispatches to the `reduce` method of the third argument, if present. When
-   * doing so, it is up to the user to handle the [`R.reduced`](#reduced)
-   * shortcuting, as this is not implemented by `reduce`.
-   *
-   * @func
-   * @memberOf R
-   * @since v0.1.0
-   * @category List
-   * @sig ((a, b) -> a) -> a -> [b] -> a
-   * @param {Function} fn The iterator function. Receives two values, the accumulator and the
-   *        current element from the array.
-   * @param {*} acc The accumulator value.
-   * @param {Array} list The list to iterate over.
-   * @return {*} The final, accumulated value.
-   * @see R.reduced, R.addIndex, R.reduceRight
-   * @example
-   *
-   *      R.reduce(R.subtract, 0, [1, 2, 3, 4]) // => ((((0 - 1) - 2) - 3) - 4) = -10
-   *      //          -               -10
-   *      //         / \              / \
-   *      //        -   4           -6   4
-   *      //       / \              / \
-   *      //      -   3   ==>     -3   3
-   *      //     / \              / \
-   *      //    -   2           -1   2
-   *      //   / \              / \
-   *      //  0   1            0   1
-   *
-   * @symb R.reduce(f, a, [b, c, d]) = f(f(f(a, b), c), d)
-   */
-  var reduce$1 = /*#__PURE__*/_curry3(_reduce);
-
-  /**
-   * This checks whether a function has a [methodname] function. If it isn't an
-   * array it will execute that function otherwise it will default to the ramda
-   * implementation.
-   *
-   * @private
-   * @param {Function} fn ramda implemtation
-   * @param {String} methodname property to check for a custom implementation
-   * @return {Object} Whatever the return value of the method is.
-   */
-  function _checkForMethod(methodname, fn) {
-    return function () {
-      var length = arguments.length;
-      if (length === 0) {
-        return fn();
-      }
-      var obj = arguments[length - 1];
-      return _isArray(obj) || typeof obj[methodname] !== 'function' ? fn.apply(this, arguments) : obj[methodname].apply(obj, Array.prototype.slice.call(arguments, 0, length - 1));
-    };
-  }
-
-  /**
-   * Returns the elements of the given list or string (or object with a `slice`
-   * method) from `fromIndex` (inclusive) to `toIndex` (exclusive).
-   *
-   * Dispatches to the `slice` method of the third argument, if present.
-   *
-   * @func
-   * @memberOf R
-   * @since v0.1.4
-   * @category List
-   * @sig Number -> Number -> [a] -> [a]
-   * @sig Number -> Number -> String -> String
-   * @param {Number} fromIndex The start index (inclusive).
-   * @param {Number} toIndex The end index (exclusive).
-   * @param {*} list
-   * @return {*}
-   * @example
-   *
-   *      R.slice(1, 3, ['a', 'b', 'c', 'd']);        //=> ['b', 'c']
-   *      R.slice(1, Infinity, ['a', 'b', 'c', 'd']); //=> ['b', 'c', 'd']
-   *      R.slice(0, -1, ['a', 'b', 'c', 'd']);       //=> ['a', 'b', 'c']
-   *      R.slice(-3, -1, ['a', 'b', 'c', 'd']);      //=> ['b', 'c']
-   *      R.slice(0, 3, 'ramda');                     //=> 'ram'
-   */
-  var slice = /*#__PURE__*/_curry3( /*#__PURE__*/_checkForMethod('slice', function slice(fromIndex, toIndex, list) {
-    return Array.prototype.slice.call(list, fromIndex, toIndex);
-  }));
-
-  /**
-   * Returns all but the first element of the given list or string (or object
-   * with a `tail` method).
-   *
-   * Dispatches to the `slice` method of the first argument, if present.
-   *
-   * @func
-   * @memberOf R
-   * @since v0.1.0
-   * @category List
-   * @sig [a] -> [a]
-   * @sig String -> String
-   * @param {*} list
-   * @return {*}
-   * @see R.head, R.init, R.last
-   * @example
-   *
-   *      R.tail([1, 2, 3]);  //=> [2, 3]
-   *      R.tail([1, 2]);     //=> [2]
-   *      R.tail([1]);        //=> []
-   *      R.tail([]);         //=> []
-   *
-   *      R.tail('abc');  //=> 'bc'
-   *      R.tail('ab');   //=> 'b'
-   *      R.tail('a');    //=> ''
-   *      R.tail('');     //=> ''
-   */
-  var tail$1 = /*#__PURE__*/_curry1( /*#__PURE__*/_checkForMethod('tail', /*#__PURE__*/slice(1, Infinity)));
-
-  /**
-   * Performs left-to-right function composition. The leftmost function may have
-   * any arity; the remaining functions must be unary.
-   *
-   * In some libraries this function is named `sequence`.
-   *
-   * **Note:** The result of pipe is not automatically curried.
-   *
-   * @func
-   * @memberOf R
-   * @since v0.1.0
-   * @category Function
-   * @sig (((a, b, ..., n) -> o), (o -> p), ..., (x -> y), (y -> z)) -> ((a, b, ..., n) -> z)
-   * @param {...Function} functions
-   * @return {Function}
-   * @see R.compose
-   * @example
-   *
-   *      var f = R.pipe(Math.pow, R.negate, R.inc);
-   *
-   *      f(3, 4); // -(3^4) + 1
-   * @symb R.pipe(f, g, h)(a, b) = h(g(f(a, b)))
-   */
-  function pipe() {
-    if (arguments.length === 0) {
-      throw new Error('pipe requires at least one argument');
-    }
-    return _arity(arguments[0].length, reduce$1(_pipe, arguments[0], tail$1(arguments)));
-  }
-
-  /**
-   * Returns a new list or string with the elements or characters in reverse
-   * order.
-   *
-   * @func
-   * @memberOf R
-   * @since v0.1.0
-   * @category List
-   * @sig [a] -> [a]
-   * @sig String -> String
-   * @param {Array|String} list
-   * @return {Array|String}
-   * @example
-   *
-   *      R.reverse([1, 2, 3]);  //=> [3, 2, 1]
-   *      R.reverse([1, 2]);     //=> [2, 1]
-   *      R.reverse([1]);        //=> [1]
-   *      R.reverse([]);         //=> []
-   *
-   *      R.reverse('abc');      //=> 'cba'
-   *      R.reverse('ab');       //=> 'ba'
-   *      R.reverse('a');        //=> 'a'
-   *      R.reverse('');         //=> ''
-   */
-  var reverse = /*#__PURE__*/_curry1(function reverse(list) {
-    return _isString(list) ? list.split('').reverse().join('') : Array.prototype.slice.call(list, 0).reverse();
-  });
-
-  /**
-   * Performs right-to-left function composition. The rightmost function may have
-   * any arity; the remaining functions must be unary.
-   *
-   * **Note:** The result of compose is not automatically curried.
-   *
-   * @func
-   * @memberOf R
-   * @since v0.1.0
-   * @category Function
-   * @sig ((y -> z), (x -> y), ..., (o -> p), ((a, b, ..., n) -> o)) -> ((a, b, ..., n) -> z)
-   * @param {...Function} ...functions The functions to compose
-   * @return {Function}
-   * @see R.pipe
-   * @example
-   *
-   *      var classyGreeting = (firstName, lastName) => "The name's " + lastName + ", " + firstName + " " + lastName
-   *      var yellGreeting = R.compose(R.toUpper, classyGreeting);
-   *      yellGreeting('James', 'Bond'); //=> "THE NAME'S BOND, JAMES BOND"
-   *
-   *      R.compose(Math.abs, R.add(1), R.multiply(2))(-4) //=> 7
-   *
-   * @symb R.compose(f, g, h)(a, b) = f(g(h(a, b)))
-   */
-  function compose$1() {
-    if (arguments.length === 0) {
-      throw new Error('compose requires at least one argument');
-    }
-    return pipe.apply(this, reverse(arguments));
-  }
-
   var entry = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDEyIDEyKSI+CiAgICAgICAgPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiM0OEExRTYiLz4KICAgICAgICA8cGF0aCBmaWxsPSIjRkZGIiBmaWxsLXJ1bGU9Im5vbnplcm8iIGQ9Ik0xMC4yIDguNjQ5bC44NDktLjg0OSA0LjAyNCA0LjAyNC00LjAyNCA0LjAyNUwxMC4yIDE1bDMuMTc2LTMuMTc2eiIvPgogICAgPC9nPgo8L3N2Zz4=';
 
   var css$1 = ".enter:disabled {\n  cursor: not-allowed;\n  -webkit-filter: grayscale(100%) !important;\n          filter: grayscale(100%) !important;\n  -webkit-transform: none !important;\n          transform: none !important;\n}\n\n.enter:hover:not(:disabled) {\n  -webkit-filter: brightness(95%);\n          filter: brightness(95%);\n  -webkit-filter: brightness(var(--darken-hover, 95%));\n          filter: brightness(var(--darken-hover, 95%));\n}\n\n.enter:active:not(:disabled) {\n  -webkit-filter: brightness(85%);\n          filter: brightness(85%);\n  -webkit-filter: brightness(var(--darken-active, 85%));\n          filter: brightness(var(--darken-active, 85%));\n  -webkit-transform: translateY(1px);\n          transform: translateY(1px);\n}\n";
   styleInject(css$1);
 
-  var _templateObject$3 = taggedTemplateLiteral(['\n  <button\n    class=\'enter\'\n    disabled=', '\n  >', '</button>\n'], ['\n  <button\n    class=\'enter\'\n    disabled=', '\n  >', '</button>\n']),
-      _templateObject2$3 = taggedTemplateLiteral(['<img src=\'', '\' />'], ['<img src=\'', '\' />']);
+  var _templateObject$5 = taggedTemplateLiteral(['\n  <button\n    class=\'enter\'\n    disabled=', '\n  >', '</button>\n'], ['\n  <button\n    class=\'enter\'\n    disabled=', '\n  >', '</button>\n']),
+      _templateObject2$5 = taggedTemplateLiteral(['<img src=\'', '\' />'], ['<img src=\'', '\' />']);
 
   var button = function button(_ref) {
     var disabled = _ref.disabled,
         children = _ref.children;
-    return html$1(_templateObject$3, disabled, children || html$1(_templateObject2$3, entry));
+    return html$1(_templateObject$5, disabled, children || html$1(_templateObject2$5, entry));
   };
 
   /**
@@ -10789,7 +13092,7 @@
    * @param {string} text
    * @return {StyleNode}
    */
-  function parse(text) {
+  function parse$1(text) {
     text = clean(text);
     return parseCss(lex(text), text);
   }
@@ -11068,7 +13371,7 @@
       return '';
     }
     if (typeof rules === 'string') {
-      rules = parse(rules);
+      rules = parse$1(rules);
     }
     if (callback) {
       forEachRule(rules, callback);
@@ -11082,7 +13385,7 @@
    */
   function rulesForStyle(style) {
     if (!style['__cssRules'] && style.textContent) {
-      style['__cssRules'] = parse(style.textContent);
+      style['__cssRules'] = parse$1(style.textContent);
     }
     return style['__cssRules'] || null;
   }
@@ -12542,7 +14845,7 @@
    * `rootPath` to provide a stable application mount path when
    * using client side routing.
    */
-  var rootPath = pathFromUrl(document.baseURI || window.location.href);
+  var rootPath = undefined || pathFromUrl(document.baseURI || window.location.href);
 
   /**
    * A global callback used to sanitize any value before inserting it into the DOM. The callback signature is:
@@ -24844,7 +27147,7 @@
   // bc
   var Base = LegacyElementMixin(HTMLElement).prototype;
 
-  var _templateObject$4 = taggedTemplateLiteral(['\n<custom-style>\n  <style is="custom-style">\n    [hidden] {\n      display: none !important;\n    }\n  </style>\n</custom-style>\n<custom-style>\n  <style is="custom-style">\n    html {\n\n      --layout: {\n        display: -ms-flexbox;\n        display: -webkit-flex;\n        display: flex;\n      };\n\n      --layout-inline: {\n        display: -ms-inline-flexbox;\n        display: -webkit-inline-flex;\n        display: inline-flex;\n      };\n\n      --layout-horizontal: {\n        @apply --layout;\n\n        -ms-flex-direction: row;\n        -webkit-flex-direction: row;\n        flex-direction: row;\n      };\n\n      --layout-horizontal-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: row-reverse;\n        -webkit-flex-direction: row-reverse;\n        flex-direction: row-reverse;\n      };\n\n      --layout-vertical: {\n        @apply --layout;\n\n        -ms-flex-direction: column;\n        -webkit-flex-direction: column;\n        flex-direction: column;\n      };\n\n      --layout-vertical-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: column-reverse;\n        -webkit-flex-direction: column-reverse;\n        flex-direction: column-reverse;\n      };\n\n      --layout-wrap: {\n        -ms-flex-wrap: wrap;\n        -webkit-flex-wrap: wrap;\n        flex-wrap: wrap;\n      };\n\n      --layout-wrap-reverse: {\n        -ms-flex-wrap: wrap-reverse;\n        -webkit-flex-wrap: wrap-reverse;\n        flex-wrap: wrap-reverse;\n      };\n\n      --layout-flex-auto: {\n        -ms-flex: 1 1 auto;\n        -webkit-flex: 1 1 auto;\n        flex: 1 1 auto;\n      };\n\n      --layout-flex-none: {\n        -ms-flex: none;\n        -webkit-flex: none;\n        flex: none;\n      };\n\n      --layout-flex: {\n        -ms-flex: 1 1 0.000000001px;\n        -webkit-flex: 1;\n        flex: 1;\n        -webkit-flex-basis: 0.000000001px;\n        flex-basis: 0.000000001px;\n      };\n\n      --layout-flex-2: {\n        -ms-flex: 2;\n        -webkit-flex: 2;\n        flex: 2;\n      };\n\n      --layout-flex-3: {\n        -ms-flex: 3;\n        -webkit-flex: 3;\n        flex: 3;\n      };\n\n      --layout-flex-4: {\n        -ms-flex: 4;\n        -webkit-flex: 4;\n        flex: 4;\n      };\n\n      --layout-flex-5: {\n        -ms-flex: 5;\n        -webkit-flex: 5;\n        flex: 5;\n      };\n\n      --layout-flex-6: {\n        -ms-flex: 6;\n        -webkit-flex: 6;\n        flex: 6;\n      };\n\n      --layout-flex-7: {\n        -ms-flex: 7;\n        -webkit-flex: 7;\n        flex: 7;\n      };\n\n      --layout-flex-8: {\n        -ms-flex: 8;\n        -webkit-flex: 8;\n        flex: 8;\n      };\n\n      --layout-flex-9: {\n        -ms-flex: 9;\n        -webkit-flex: 9;\n        flex: 9;\n      };\n\n      --layout-flex-10: {\n        -ms-flex: 10;\n        -webkit-flex: 10;\n        flex: 10;\n      };\n\n      --layout-flex-11: {\n        -ms-flex: 11;\n        -webkit-flex: 11;\n        flex: 11;\n      };\n\n      --layout-flex-12: {\n        -ms-flex: 12;\n        -webkit-flex: 12;\n        flex: 12;\n      };\n\n      /* alignment in cross axis */\n\n      --layout-start: {\n        -ms-flex-align: start;\n        -webkit-align-items: flex-start;\n        align-items: flex-start;\n      };\n\n      --layout-center: {\n        -ms-flex-align: center;\n        -webkit-align-items: center;\n        align-items: center;\n      };\n\n      --layout-end: {\n        -ms-flex-align: end;\n        -webkit-align-items: flex-end;\n        align-items: flex-end;\n      };\n\n      --layout-baseline: {\n        -ms-flex-align: baseline;\n        -webkit-align-items: baseline;\n        align-items: baseline;\n      };\n\n      /* alignment in main axis */\n\n      --layout-start-justified: {\n        -ms-flex-pack: start;\n        -webkit-justify-content: flex-start;\n        justify-content: flex-start;\n      };\n\n      --layout-center-justified: {\n        -ms-flex-pack: center;\n        -webkit-justify-content: center;\n        justify-content: center;\n      };\n\n      --layout-end-justified: {\n        -ms-flex-pack: end;\n        -webkit-justify-content: flex-end;\n        justify-content: flex-end;\n      };\n\n      --layout-around-justified: {\n        -ms-flex-pack: distribute;\n        -webkit-justify-content: space-around;\n        justify-content: space-around;\n      };\n\n      --layout-justified: {\n        -ms-flex-pack: justify;\n        -webkit-justify-content: space-between;\n        justify-content: space-between;\n      };\n\n      --layout-center-center: {\n        @apply --layout-center;\n        @apply --layout-center-justified;\n      };\n\n      /* self alignment */\n\n      --layout-self-start: {\n        -ms-align-self: flex-start;\n        -webkit-align-self: flex-start;\n        align-self: flex-start;\n      };\n\n      --layout-self-center: {\n        -ms-align-self: center;\n        -webkit-align-self: center;\n        align-self: center;\n      };\n\n      --layout-self-end: {\n        -ms-align-self: flex-end;\n        -webkit-align-self: flex-end;\n        align-self: flex-end;\n      };\n\n      --layout-self-stretch: {\n        -ms-align-self: stretch;\n        -webkit-align-self: stretch;\n        align-self: stretch;\n      };\n\n      --layout-self-baseline: {\n        -ms-align-self: baseline;\n        -webkit-align-self: baseline;\n        align-self: baseline;\n      };\n\n      /* multi-line alignment in main axis */\n\n      --layout-start-aligned: {\n        -ms-flex-line-pack: start;  /* IE10 */\n        -ms-align-content: flex-start;\n        -webkit-align-content: flex-start;\n        align-content: flex-start;\n      };\n\n      --layout-end-aligned: {\n        -ms-flex-line-pack: end;  /* IE10 */\n        -ms-align-content: flex-end;\n        -webkit-align-content: flex-end;\n        align-content: flex-end;\n      };\n\n      --layout-center-aligned: {\n        -ms-flex-line-pack: center;  /* IE10 */\n        -ms-align-content: center;\n        -webkit-align-content: center;\n        align-content: center;\n      };\n\n      --layout-between-aligned: {\n        -ms-flex-line-pack: justify;  /* IE10 */\n        -ms-align-content: space-between;\n        -webkit-align-content: space-between;\n        align-content: space-between;\n      };\n\n      --layout-around-aligned: {\n        -ms-flex-line-pack: distribute;  /* IE10 */\n        -ms-align-content: space-around;\n        -webkit-align-content: space-around;\n        align-content: space-around;\n      };\n\n      /*******************************\n                Other Layout\n      *******************************/\n\n      --layout-block: {\n        display: block;\n      };\n\n      --layout-invisible: {\n        visibility: hidden !important;\n      };\n\n      --layout-relative: {\n        position: relative;\n      };\n\n      --layout-fit: {\n        position: absolute;\n        top: 0;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-scroll: {\n        -webkit-overflow-scrolling: touch;\n        overflow: auto;\n      };\n\n      --layout-fullbleed: {\n        margin: 0;\n        height: 100vh;\n      };\n\n      /* fixed position */\n\n      --layout-fixed-top: {\n        position: fixed;\n        top: 0;\n        left: 0;\n        right: 0;\n      };\n\n      --layout-fixed-right: {\n        position: fixed;\n        top: 0;\n        right: 0;\n        bottom: 0;\n      };\n\n      --layout-fixed-bottom: {\n        position: fixed;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-fixed-left: {\n        position: fixed;\n        top: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n    }\n  </style>\n</custom-style>'], ['\n<custom-style>\n  <style is="custom-style">\n    [hidden] {\n      display: none !important;\n    }\n  </style>\n</custom-style>\n<custom-style>\n  <style is="custom-style">\n    html {\n\n      --layout: {\n        display: -ms-flexbox;\n        display: -webkit-flex;\n        display: flex;\n      };\n\n      --layout-inline: {\n        display: -ms-inline-flexbox;\n        display: -webkit-inline-flex;\n        display: inline-flex;\n      };\n\n      --layout-horizontal: {\n        @apply --layout;\n\n        -ms-flex-direction: row;\n        -webkit-flex-direction: row;\n        flex-direction: row;\n      };\n\n      --layout-horizontal-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: row-reverse;\n        -webkit-flex-direction: row-reverse;\n        flex-direction: row-reverse;\n      };\n\n      --layout-vertical: {\n        @apply --layout;\n\n        -ms-flex-direction: column;\n        -webkit-flex-direction: column;\n        flex-direction: column;\n      };\n\n      --layout-vertical-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: column-reverse;\n        -webkit-flex-direction: column-reverse;\n        flex-direction: column-reverse;\n      };\n\n      --layout-wrap: {\n        -ms-flex-wrap: wrap;\n        -webkit-flex-wrap: wrap;\n        flex-wrap: wrap;\n      };\n\n      --layout-wrap-reverse: {\n        -ms-flex-wrap: wrap-reverse;\n        -webkit-flex-wrap: wrap-reverse;\n        flex-wrap: wrap-reverse;\n      };\n\n      --layout-flex-auto: {\n        -ms-flex: 1 1 auto;\n        -webkit-flex: 1 1 auto;\n        flex: 1 1 auto;\n      };\n\n      --layout-flex-none: {\n        -ms-flex: none;\n        -webkit-flex: none;\n        flex: none;\n      };\n\n      --layout-flex: {\n        -ms-flex: 1 1 0.000000001px;\n        -webkit-flex: 1;\n        flex: 1;\n        -webkit-flex-basis: 0.000000001px;\n        flex-basis: 0.000000001px;\n      };\n\n      --layout-flex-2: {\n        -ms-flex: 2;\n        -webkit-flex: 2;\n        flex: 2;\n      };\n\n      --layout-flex-3: {\n        -ms-flex: 3;\n        -webkit-flex: 3;\n        flex: 3;\n      };\n\n      --layout-flex-4: {\n        -ms-flex: 4;\n        -webkit-flex: 4;\n        flex: 4;\n      };\n\n      --layout-flex-5: {\n        -ms-flex: 5;\n        -webkit-flex: 5;\n        flex: 5;\n      };\n\n      --layout-flex-6: {\n        -ms-flex: 6;\n        -webkit-flex: 6;\n        flex: 6;\n      };\n\n      --layout-flex-7: {\n        -ms-flex: 7;\n        -webkit-flex: 7;\n        flex: 7;\n      };\n\n      --layout-flex-8: {\n        -ms-flex: 8;\n        -webkit-flex: 8;\n        flex: 8;\n      };\n\n      --layout-flex-9: {\n        -ms-flex: 9;\n        -webkit-flex: 9;\n        flex: 9;\n      };\n\n      --layout-flex-10: {\n        -ms-flex: 10;\n        -webkit-flex: 10;\n        flex: 10;\n      };\n\n      --layout-flex-11: {\n        -ms-flex: 11;\n        -webkit-flex: 11;\n        flex: 11;\n      };\n\n      --layout-flex-12: {\n        -ms-flex: 12;\n        -webkit-flex: 12;\n        flex: 12;\n      };\n\n      /* alignment in cross axis */\n\n      --layout-start: {\n        -ms-flex-align: start;\n        -webkit-align-items: flex-start;\n        align-items: flex-start;\n      };\n\n      --layout-center: {\n        -ms-flex-align: center;\n        -webkit-align-items: center;\n        align-items: center;\n      };\n\n      --layout-end: {\n        -ms-flex-align: end;\n        -webkit-align-items: flex-end;\n        align-items: flex-end;\n      };\n\n      --layout-baseline: {\n        -ms-flex-align: baseline;\n        -webkit-align-items: baseline;\n        align-items: baseline;\n      };\n\n      /* alignment in main axis */\n\n      --layout-start-justified: {\n        -ms-flex-pack: start;\n        -webkit-justify-content: flex-start;\n        justify-content: flex-start;\n      };\n\n      --layout-center-justified: {\n        -ms-flex-pack: center;\n        -webkit-justify-content: center;\n        justify-content: center;\n      };\n\n      --layout-end-justified: {\n        -ms-flex-pack: end;\n        -webkit-justify-content: flex-end;\n        justify-content: flex-end;\n      };\n\n      --layout-around-justified: {\n        -ms-flex-pack: distribute;\n        -webkit-justify-content: space-around;\n        justify-content: space-around;\n      };\n\n      --layout-justified: {\n        -ms-flex-pack: justify;\n        -webkit-justify-content: space-between;\n        justify-content: space-between;\n      };\n\n      --layout-center-center: {\n        @apply --layout-center;\n        @apply --layout-center-justified;\n      };\n\n      /* self alignment */\n\n      --layout-self-start: {\n        -ms-align-self: flex-start;\n        -webkit-align-self: flex-start;\n        align-self: flex-start;\n      };\n\n      --layout-self-center: {\n        -ms-align-self: center;\n        -webkit-align-self: center;\n        align-self: center;\n      };\n\n      --layout-self-end: {\n        -ms-align-self: flex-end;\n        -webkit-align-self: flex-end;\n        align-self: flex-end;\n      };\n\n      --layout-self-stretch: {\n        -ms-align-self: stretch;\n        -webkit-align-self: stretch;\n        align-self: stretch;\n      };\n\n      --layout-self-baseline: {\n        -ms-align-self: baseline;\n        -webkit-align-self: baseline;\n        align-self: baseline;\n      };\n\n      /* multi-line alignment in main axis */\n\n      --layout-start-aligned: {\n        -ms-flex-line-pack: start;  /* IE10 */\n        -ms-align-content: flex-start;\n        -webkit-align-content: flex-start;\n        align-content: flex-start;\n      };\n\n      --layout-end-aligned: {\n        -ms-flex-line-pack: end;  /* IE10 */\n        -ms-align-content: flex-end;\n        -webkit-align-content: flex-end;\n        align-content: flex-end;\n      };\n\n      --layout-center-aligned: {\n        -ms-flex-line-pack: center;  /* IE10 */\n        -ms-align-content: center;\n        -webkit-align-content: center;\n        align-content: center;\n      };\n\n      --layout-between-aligned: {\n        -ms-flex-line-pack: justify;  /* IE10 */\n        -ms-align-content: space-between;\n        -webkit-align-content: space-between;\n        align-content: space-between;\n      };\n\n      --layout-around-aligned: {\n        -ms-flex-line-pack: distribute;  /* IE10 */\n        -ms-align-content: space-around;\n        -webkit-align-content: space-around;\n        align-content: space-around;\n      };\n\n      /*******************************\n                Other Layout\n      *******************************/\n\n      --layout-block: {\n        display: block;\n      };\n\n      --layout-invisible: {\n        visibility: hidden !important;\n      };\n\n      --layout-relative: {\n        position: relative;\n      };\n\n      --layout-fit: {\n        position: absolute;\n        top: 0;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-scroll: {\n        -webkit-overflow-scrolling: touch;\n        overflow: auto;\n      };\n\n      --layout-fullbleed: {\n        margin: 0;\n        height: 100vh;\n      };\n\n      /* fixed position */\n\n      --layout-fixed-top: {\n        position: fixed;\n        top: 0;\n        left: 0;\n        right: 0;\n      };\n\n      --layout-fixed-right: {\n        position: fixed;\n        top: 0;\n        right: 0;\n        bottom: 0;\n      };\n\n      --layout-fixed-bottom: {\n        position: fixed;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-fixed-left: {\n        position: fixed;\n        top: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n    }\n  </style>\n</custom-style>']);
+  var _templateObject$6 = taggedTemplateLiteral(['\n<custom-style>\n  <style is="custom-style">\n    [hidden] {\n      display: none !important;\n    }\n  </style>\n</custom-style>\n<custom-style>\n  <style is="custom-style">\n    html {\n\n      --layout: {\n        display: -ms-flexbox;\n        display: -webkit-flex;\n        display: flex;\n      };\n\n      --layout-inline: {\n        display: -ms-inline-flexbox;\n        display: -webkit-inline-flex;\n        display: inline-flex;\n      };\n\n      --layout-horizontal: {\n        @apply --layout;\n\n        -ms-flex-direction: row;\n        -webkit-flex-direction: row;\n        flex-direction: row;\n      };\n\n      --layout-horizontal-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: row-reverse;\n        -webkit-flex-direction: row-reverse;\n        flex-direction: row-reverse;\n      };\n\n      --layout-vertical: {\n        @apply --layout;\n\n        -ms-flex-direction: column;\n        -webkit-flex-direction: column;\n        flex-direction: column;\n      };\n\n      --layout-vertical-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: column-reverse;\n        -webkit-flex-direction: column-reverse;\n        flex-direction: column-reverse;\n      };\n\n      --layout-wrap: {\n        -ms-flex-wrap: wrap;\n        -webkit-flex-wrap: wrap;\n        flex-wrap: wrap;\n      };\n\n      --layout-wrap-reverse: {\n        -ms-flex-wrap: wrap-reverse;\n        -webkit-flex-wrap: wrap-reverse;\n        flex-wrap: wrap-reverse;\n      };\n\n      --layout-flex-auto: {\n        -ms-flex: 1 1 auto;\n        -webkit-flex: 1 1 auto;\n        flex: 1 1 auto;\n      };\n\n      --layout-flex-none: {\n        -ms-flex: none;\n        -webkit-flex: none;\n        flex: none;\n      };\n\n      --layout-flex: {\n        -ms-flex: 1 1 0.000000001px;\n        -webkit-flex: 1;\n        flex: 1;\n        -webkit-flex-basis: 0.000000001px;\n        flex-basis: 0.000000001px;\n      };\n\n      --layout-flex-2: {\n        -ms-flex: 2;\n        -webkit-flex: 2;\n        flex: 2;\n      };\n\n      --layout-flex-3: {\n        -ms-flex: 3;\n        -webkit-flex: 3;\n        flex: 3;\n      };\n\n      --layout-flex-4: {\n        -ms-flex: 4;\n        -webkit-flex: 4;\n        flex: 4;\n      };\n\n      --layout-flex-5: {\n        -ms-flex: 5;\n        -webkit-flex: 5;\n        flex: 5;\n      };\n\n      --layout-flex-6: {\n        -ms-flex: 6;\n        -webkit-flex: 6;\n        flex: 6;\n      };\n\n      --layout-flex-7: {\n        -ms-flex: 7;\n        -webkit-flex: 7;\n        flex: 7;\n      };\n\n      --layout-flex-8: {\n        -ms-flex: 8;\n        -webkit-flex: 8;\n        flex: 8;\n      };\n\n      --layout-flex-9: {\n        -ms-flex: 9;\n        -webkit-flex: 9;\n        flex: 9;\n      };\n\n      --layout-flex-10: {\n        -ms-flex: 10;\n        -webkit-flex: 10;\n        flex: 10;\n      };\n\n      --layout-flex-11: {\n        -ms-flex: 11;\n        -webkit-flex: 11;\n        flex: 11;\n      };\n\n      --layout-flex-12: {\n        -ms-flex: 12;\n        -webkit-flex: 12;\n        flex: 12;\n      };\n\n      /* alignment in cross axis */\n\n      --layout-start: {\n        -ms-flex-align: start;\n        -webkit-align-items: flex-start;\n        align-items: flex-start;\n      };\n\n      --layout-center: {\n        -ms-flex-align: center;\n        -webkit-align-items: center;\n        align-items: center;\n      };\n\n      --layout-end: {\n        -ms-flex-align: end;\n        -webkit-align-items: flex-end;\n        align-items: flex-end;\n      };\n\n      --layout-baseline: {\n        -ms-flex-align: baseline;\n        -webkit-align-items: baseline;\n        align-items: baseline;\n      };\n\n      /* alignment in main axis */\n\n      --layout-start-justified: {\n        -ms-flex-pack: start;\n        -webkit-justify-content: flex-start;\n        justify-content: flex-start;\n      };\n\n      --layout-center-justified: {\n        -ms-flex-pack: center;\n        -webkit-justify-content: center;\n        justify-content: center;\n      };\n\n      --layout-end-justified: {\n        -ms-flex-pack: end;\n        -webkit-justify-content: flex-end;\n        justify-content: flex-end;\n      };\n\n      --layout-around-justified: {\n        -ms-flex-pack: distribute;\n        -webkit-justify-content: space-around;\n        justify-content: space-around;\n      };\n\n      --layout-justified: {\n        -ms-flex-pack: justify;\n        -webkit-justify-content: space-between;\n        justify-content: space-between;\n      };\n\n      --layout-center-center: {\n        @apply --layout-center;\n        @apply --layout-center-justified;\n      };\n\n      /* self alignment */\n\n      --layout-self-start: {\n        -ms-align-self: flex-start;\n        -webkit-align-self: flex-start;\n        align-self: flex-start;\n      };\n\n      --layout-self-center: {\n        -ms-align-self: center;\n        -webkit-align-self: center;\n        align-self: center;\n      };\n\n      --layout-self-end: {\n        -ms-align-self: flex-end;\n        -webkit-align-self: flex-end;\n        align-self: flex-end;\n      };\n\n      --layout-self-stretch: {\n        -ms-align-self: stretch;\n        -webkit-align-self: stretch;\n        align-self: stretch;\n      };\n\n      --layout-self-baseline: {\n        -ms-align-self: baseline;\n        -webkit-align-self: baseline;\n        align-self: baseline;\n      };\n\n      /* multi-line alignment in main axis */\n\n      --layout-start-aligned: {\n        -ms-flex-line-pack: start;  /* IE10 */\n        -ms-align-content: flex-start;\n        -webkit-align-content: flex-start;\n        align-content: flex-start;\n      };\n\n      --layout-end-aligned: {\n        -ms-flex-line-pack: end;  /* IE10 */\n        -ms-align-content: flex-end;\n        -webkit-align-content: flex-end;\n        align-content: flex-end;\n      };\n\n      --layout-center-aligned: {\n        -ms-flex-line-pack: center;  /* IE10 */\n        -ms-align-content: center;\n        -webkit-align-content: center;\n        align-content: center;\n      };\n\n      --layout-between-aligned: {\n        -ms-flex-line-pack: justify;  /* IE10 */\n        -ms-align-content: space-between;\n        -webkit-align-content: space-between;\n        align-content: space-between;\n      };\n\n      --layout-around-aligned: {\n        -ms-flex-line-pack: distribute;  /* IE10 */\n        -ms-align-content: space-around;\n        -webkit-align-content: space-around;\n        align-content: space-around;\n      };\n\n      /*******************************\n                Other Layout\n      *******************************/\n\n      --layout-block: {\n        display: block;\n      };\n\n      --layout-invisible: {\n        visibility: hidden !important;\n      };\n\n      --layout-relative: {\n        position: relative;\n      };\n\n      --layout-fit: {\n        position: absolute;\n        top: 0;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-scroll: {\n        -webkit-overflow-scrolling: touch;\n        overflow: auto;\n      };\n\n      --layout-fullbleed: {\n        margin: 0;\n        height: 100vh;\n      };\n\n      /* fixed position */\n\n      --layout-fixed-top: {\n        position: fixed;\n        top: 0;\n        left: 0;\n        right: 0;\n      };\n\n      --layout-fixed-right: {\n        position: fixed;\n        top: 0;\n        right: 0;\n        bottom: 0;\n      };\n\n      --layout-fixed-bottom: {\n        position: fixed;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-fixed-left: {\n        position: fixed;\n        top: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n    }\n  </style>\n</custom-style>'], ['\n<custom-style>\n  <style is="custom-style">\n    [hidden] {\n      display: none !important;\n    }\n  </style>\n</custom-style>\n<custom-style>\n  <style is="custom-style">\n    html {\n\n      --layout: {\n        display: -ms-flexbox;\n        display: -webkit-flex;\n        display: flex;\n      };\n\n      --layout-inline: {\n        display: -ms-inline-flexbox;\n        display: -webkit-inline-flex;\n        display: inline-flex;\n      };\n\n      --layout-horizontal: {\n        @apply --layout;\n\n        -ms-flex-direction: row;\n        -webkit-flex-direction: row;\n        flex-direction: row;\n      };\n\n      --layout-horizontal-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: row-reverse;\n        -webkit-flex-direction: row-reverse;\n        flex-direction: row-reverse;\n      };\n\n      --layout-vertical: {\n        @apply --layout;\n\n        -ms-flex-direction: column;\n        -webkit-flex-direction: column;\n        flex-direction: column;\n      };\n\n      --layout-vertical-reverse: {\n        @apply --layout;\n\n        -ms-flex-direction: column-reverse;\n        -webkit-flex-direction: column-reverse;\n        flex-direction: column-reverse;\n      };\n\n      --layout-wrap: {\n        -ms-flex-wrap: wrap;\n        -webkit-flex-wrap: wrap;\n        flex-wrap: wrap;\n      };\n\n      --layout-wrap-reverse: {\n        -ms-flex-wrap: wrap-reverse;\n        -webkit-flex-wrap: wrap-reverse;\n        flex-wrap: wrap-reverse;\n      };\n\n      --layout-flex-auto: {\n        -ms-flex: 1 1 auto;\n        -webkit-flex: 1 1 auto;\n        flex: 1 1 auto;\n      };\n\n      --layout-flex-none: {\n        -ms-flex: none;\n        -webkit-flex: none;\n        flex: none;\n      };\n\n      --layout-flex: {\n        -ms-flex: 1 1 0.000000001px;\n        -webkit-flex: 1;\n        flex: 1;\n        -webkit-flex-basis: 0.000000001px;\n        flex-basis: 0.000000001px;\n      };\n\n      --layout-flex-2: {\n        -ms-flex: 2;\n        -webkit-flex: 2;\n        flex: 2;\n      };\n\n      --layout-flex-3: {\n        -ms-flex: 3;\n        -webkit-flex: 3;\n        flex: 3;\n      };\n\n      --layout-flex-4: {\n        -ms-flex: 4;\n        -webkit-flex: 4;\n        flex: 4;\n      };\n\n      --layout-flex-5: {\n        -ms-flex: 5;\n        -webkit-flex: 5;\n        flex: 5;\n      };\n\n      --layout-flex-6: {\n        -ms-flex: 6;\n        -webkit-flex: 6;\n        flex: 6;\n      };\n\n      --layout-flex-7: {\n        -ms-flex: 7;\n        -webkit-flex: 7;\n        flex: 7;\n      };\n\n      --layout-flex-8: {\n        -ms-flex: 8;\n        -webkit-flex: 8;\n        flex: 8;\n      };\n\n      --layout-flex-9: {\n        -ms-flex: 9;\n        -webkit-flex: 9;\n        flex: 9;\n      };\n\n      --layout-flex-10: {\n        -ms-flex: 10;\n        -webkit-flex: 10;\n        flex: 10;\n      };\n\n      --layout-flex-11: {\n        -ms-flex: 11;\n        -webkit-flex: 11;\n        flex: 11;\n      };\n\n      --layout-flex-12: {\n        -ms-flex: 12;\n        -webkit-flex: 12;\n        flex: 12;\n      };\n\n      /* alignment in cross axis */\n\n      --layout-start: {\n        -ms-flex-align: start;\n        -webkit-align-items: flex-start;\n        align-items: flex-start;\n      };\n\n      --layout-center: {\n        -ms-flex-align: center;\n        -webkit-align-items: center;\n        align-items: center;\n      };\n\n      --layout-end: {\n        -ms-flex-align: end;\n        -webkit-align-items: flex-end;\n        align-items: flex-end;\n      };\n\n      --layout-baseline: {\n        -ms-flex-align: baseline;\n        -webkit-align-items: baseline;\n        align-items: baseline;\n      };\n\n      /* alignment in main axis */\n\n      --layout-start-justified: {\n        -ms-flex-pack: start;\n        -webkit-justify-content: flex-start;\n        justify-content: flex-start;\n      };\n\n      --layout-center-justified: {\n        -ms-flex-pack: center;\n        -webkit-justify-content: center;\n        justify-content: center;\n      };\n\n      --layout-end-justified: {\n        -ms-flex-pack: end;\n        -webkit-justify-content: flex-end;\n        justify-content: flex-end;\n      };\n\n      --layout-around-justified: {\n        -ms-flex-pack: distribute;\n        -webkit-justify-content: space-around;\n        justify-content: space-around;\n      };\n\n      --layout-justified: {\n        -ms-flex-pack: justify;\n        -webkit-justify-content: space-between;\n        justify-content: space-between;\n      };\n\n      --layout-center-center: {\n        @apply --layout-center;\n        @apply --layout-center-justified;\n      };\n\n      /* self alignment */\n\n      --layout-self-start: {\n        -ms-align-self: flex-start;\n        -webkit-align-self: flex-start;\n        align-self: flex-start;\n      };\n\n      --layout-self-center: {\n        -ms-align-self: center;\n        -webkit-align-self: center;\n        align-self: center;\n      };\n\n      --layout-self-end: {\n        -ms-align-self: flex-end;\n        -webkit-align-self: flex-end;\n        align-self: flex-end;\n      };\n\n      --layout-self-stretch: {\n        -ms-align-self: stretch;\n        -webkit-align-self: stretch;\n        align-self: stretch;\n      };\n\n      --layout-self-baseline: {\n        -ms-align-self: baseline;\n        -webkit-align-self: baseline;\n        align-self: baseline;\n      };\n\n      /* multi-line alignment in main axis */\n\n      --layout-start-aligned: {\n        -ms-flex-line-pack: start;  /* IE10 */\n        -ms-align-content: flex-start;\n        -webkit-align-content: flex-start;\n        align-content: flex-start;\n      };\n\n      --layout-end-aligned: {\n        -ms-flex-line-pack: end;  /* IE10 */\n        -ms-align-content: flex-end;\n        -webkit-align-content: flex-end;\n        align-content: flex-end;\n      };\n\n      --layout-center-aligned: {\n        -ms-flex-line-pack: center;  /* IE10 */\n        -ms-align-content: center;\n        -webkit-align-content: center;\n        align-content: center;\n      };\n\n      --layout-between-aligned: {\n        -ms-flex-line-pack: justify;  /* IE10 */\n        -ms-align-content: space-between;\n        -webkit-align-content: space-between;\n        align-content: space-between;\n      };\n\n      --layout-around-aligned: {\n        -ms-flex-line-pack: distribute;  /* IE10 */\n        -ms-align-content: space-around;\n        -webkit-align-content: space-around;\n        align-content: space-around;\n      };\n\n      /*******************************\n                Other Layout\n      *******************************/\n\n      --layout-block: {\n        display: block;\n      };\n\n      --layout-invisible: {\n        visibility: hidden !important;\n      };\n\n      --layout-relative: {\n        position: relative;\n      };\n\n      --layout-fit: {\n        position: absolute;\n        top: 0;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-scroll: {\n        -webkit-overflow-scrolling: touch;\n        overflow: auto;\n      };\n\n      --layout-fullbleed: {\n        margin: 0;\n        height: 100vh;\n      };\n\n      /* fixed position */\n\n      --layout-fixed-top: {\n        position: fixed;\n        top: 0;\n        left: 0;\n        right: 0;\n      };\n\n      --layout-fixed-right: {\n        position: fixed;\n        top: 0;\n        right: 0;\n        bottom: 0;\n      };\n\n      --layout-fixed-bottom: {\n        position: fixed;\n        right: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n      --layout-fixed-left: {\n        position: fixed;\n        top: 0;\n        bottom: 0;\n        left: 0;\n      };\n\n    }\n  </style>\n</custom-style>']);
 
   /**
   The `<iron-flex-layout>` component provides simple ways to use
@@ -24908,7 +27211,7 @@
   @pseudoElement iron-flex-layout
   @demo demo/index.html
   */
-  var template = html$2(_templateObject$4);
+  var template = html$2(_templateObject$6);
 
   template.setAttribute('style', 'display: none;');
   document.head.appendChild(template.content);
@@ -25365,7 +27668,7 @@
     }
   };
 
-  var _templateObject$5 = taggedTemplateLiteral(['\n    <style>\n      :host {\n        display: inline-block;\n        position: relative;\n        width: 400px;\n        border: 1px solid;\n        padding: 2px;\n        -moz-appearance: textarea;\n        -webkit-appearance: textarea;\n        overflow: hidden;\n      }\n\n      .mirror-text {\n        visibility: hidden;\n        word-wrap: break-word;\n        @apply --iron-autogrow-textarea;\n      }\n\n      .fit {\n        @apply --layout-fit;\n      }\n\n      textarea {\n        position: relative;\n        outline: none;\n        border: none;\n        resize: none;\n        background: inherit;\n        color: inherit;\n        /* see comments in template */\n        width: 100%;\n        height: 100%;\n        font-size: inherit;\n        font-family: inherit;\n        line-height: inherit;\n        text-align: inherit;\n        @apply --iron-autogrow-textarea;\n      }\n\n      textarea::-webkit-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea::-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-ms-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n    </style>\n\n    <!-- the mirror sizes the input/textarea so it grows with typing -->\n    <!-- use &#160; instead &nbsp; of to allow this element to be used in XHTML -->\n    <div id="mirror" class="mirror-text" aria-hidden="true">&nbsp;</div>\n\n    <!-- size the input/textarea with a div, because the textarea has intrinsic size in ff -->\n    <div class="textarea-container fit">\n      <textarea id="textarea" name$="[[name]]" aria-label$="[[label]]" autocomplete$="[[autocomplete]]" autofocus$="[[autofocus]]" inputmode$="[[inputmode]]" placeholder$="[[placeholder]]" readonly$="[[readonly]]" required$="[[required]]" disabled$="[[disabled]]" rows$="[[rows]]" minlength$="[[minlength]]" maxlength$="[[maxlength]]"></textarea>\n    </div>\n'], ['\n    <style>\n      :host {\n        display: inline-block;\n        position: relative;\n        width: 400px;\n        border: 1px solid;\n        padding: 2px;\n        -moz-appearance: textarea;\n        -webkit-appearance: textarea;\n        overflow: hidden;\n      }\n\n      .mirror-text {\n        visibility: hidden;\n        word-wrap: break-word;\n        @apply --iron-autogrow-textarea;\n      }\n\n      .fit {\n        @apply --layout-fit;\n      }\n\n      textarea {\n        position: relative;\n        outline: none;\n        border: none;\n        resize: none;\n        background: inherit;\n        color: inherit;\n        /* see comments in template */\n        width: 100%;\n        height: 100%;\n        font-size: inherit;\n        font-family: inherit;\n        line-height: inherit;\n        text-align: inherit;\n        @apply --iron-autogrow-textarea;\n      }\n\n      textarea::-webkit-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea::-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-ms-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n    </style>\n\n    <!-- the mirror sizes the input/textarea so it grows with typing -->\n    <!-- use &#160; instead &nbsp; of to allow this element to be used in XHTML -->\n    <div id="mirror" class="mirror-text" aria-hidden="true">&nbsp;</div>\n\n    <!-- size the input/textarea with a div, because the textarea has intrinsic size in ff -->\n    <div class="textarea-container fit">\n      <textarea id="textarea" name\\$="[[name]]" aria-label\\$="[[label]]" autocomplete\\$="[[autocomplete]]" autofocus\\$="[[autofocus]]" inputmode\\$="[[inputmode]]" placeholder\\$="[[placeholder]]" readonly\\$="[[readonly]]" required\\$="[[required]]" disabled\\$="[[disabled]]" rows\\$="[[rows]]" minlength\\$="[[minlength]]" maxlength\\$="[[maxlength]]"></textarea>\n    </div>\n']);
+  var _templateObject$7 = taggedTemplateLiteral(['\n    <style>\n      :host {\n        display: inline-block;\n        position: relative;\n        width: 400px;\n        border: 1px solid;\n        padding: 2px;\n        -moz-appearance: textarea;\n        -webkit-appearance: textarea;\n        overflow: hidden;\n      }\n\n      .mirror-text {\n        visibility: hidden;\n        word-wrap: break-word;\n        @apply --iron-autogrow-textarea;\n      }\n\n      .fit {\n        @apply --layout-fit;\n      }\n\n      textarea {\n        position: relative;\n        outline: none;\n        border: none;\n        resize: none;\n        background: inherit;\n        color: inherit;\n        /* see comments in template */\n        width: 100%;\n        height: 100%;\n        font-size: inherit;\n        font-family: inherit;\n        line-height: inherit;\n        text-align: inherit;\n        @apply --iron-autogrow-textarea;\n      }\n\n      textarea::-webkit-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea::-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-ms-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n    </style>\n\n    <!-- the mirror sizes the input/textarea so it grows with typing -->\n    <!-- use &#160; instead &nbsp; of to allow this element to be used in XHTML -->\n    <div id="mirror" class="mirror-text" aria-hidden="true">&nbsp;</div>\n\n    <!-- size the input/textarea with a div, because the textarea has intrinsic size in ff -->\n    <div class="textarea-container fit">\n      <textarea id="textarea" name$="[[name]]" aria-label$="[[label]]" autocomplete$="[[autocomplete]]" autofocus$="[[autofocus]]" inputmode$="[[inputmode]]" placeholder$="[[placeholder]]" readonly$="[[readonly]]" required$="[[required]]" disabled$="[[disabled]]" rows$="[[rows]]" minlength$="[[minlength]]" maxlength$="[[maxlength]]"></textarea>\n    </div>\n'], ['\n    <style>\n      :host {\n        display: inline-block;\n        position: relative;\n        width: 400px;\n        border: 1px solid;\n        padding: 2px;\n        -moz-appearance: textarea;\n        -webkit-appearance: textarea;\n        overflow: hidden;\n      }\n\n      .mirror-text {\n        visibility: hidden;\n        word-wrap: break-word;\n        @apply --iron-autogrow-textarea;\n      }\n\n      .fit {\n        @apply --layout-fit;\n      }\n\n      textarea {\n        position: relative;\n        outline: none;\n        border: none;\n        resize: none;\n        background: inherit;\n        color: inherit;\n        /* see comments in template */\n        width: 100%;\n        height: 100%;\n        font-size: inherit;\n        font-family: inherit;\n        line-height: inherit;\n        text-align: inherit;\n        @apply --iron-autogrow-textarea;\n      }\n\n      textarea::-webkit-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea::-moz-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n\n      textarea:-ms-input-placeholder {\n        @apply --iron-autogrow-textarea-placeholder;\n      }\n    </style>\n\n    <!-- the mirror sizes the input/textarea so it grows with typing -->\n    <!-- use &#160; instead &nbsp; of to allow this element to be used in XHTML -->\n    <div id="mirror" class="mirror-text" aria-hidden="true">&nbsp;</div>\n\n    <!-- size the input/textarea with a div, because the textarea has intrinsic size in ff -->\n    <div class="textarea-container fit">\n      <textarea id="textarea" name\\$="[[name]]" aria-label\\$="[[label]]" autocomplete\\$="[[autocomplete]]" autofocus\\$="[[autofocus]]" inputmode\\$="[[inputmode]]" placeholder\\$="[[placeholder]]" readonly\\$="[[readonly]]" required\\$="[[required]]" disabled\\$="[[disabled]]" rows\\$="[[rows]]" minlength\\$="[[minlength]]" maxlength\\$="[[maxlength]]"></textarea>\n    </div>\n']);
 
   /**
   `iron-autogrow-textarea` is an element containing a textarea that grows in
@@ -25390,7 +27693,7 @@
   @demo demo/index.html
   */
   Polymer({
-    _template: html$2(_templateObject$5),
+    _template: html$2(_templateObject$7),
 
     is: 'iron-autogrow-textarea',
     behaviors: [IronValidatableBehavior, IronControlState],
@@ -25617,7 +27920,7 @@
   var css$2 = "/* stylelint-disable selector-type-no-unknown */\niron-autogrow-textarea {\n  -webkit-appearance: none;\n  background: #fff;\n  background: var(--bg-color, var(--theme-color-white, #fff));\n  border: 1px solid #d4d4d4;\n  border: 1px solid var(--border-color, var(--theme-color-alto, #d4d4d4));\n  border-radius: 5px;\n  box-sizing: border-box;\n  caret-color: #48a1e6;\n  caret-color: var(--caret-color, var(--theme-color-pictonblue, #48a1e6));\n  font-size: 16px;\n  font-size: var(--font-size, var(--theme-font-size, 16px));\n  height: inherit;\n  line-height: 1.2em;\n  max-height: 200px;\n  min-height: 52px;\n  outline: none;\n  -ms-overflow-style: none;\n  width: 100%;\n\n  --iron-autogrow-textarea: {\n    box-sizing: border-box;\n    padding: 16px 70px 14px 20px;\n  };\n\n  --iron-autogrow-textarea-placeholder: {\n    color: #d4d4d4;\n    color: var(--ph-color, var(--theme-color-alto, #d4d4d4));\n  };\n}\niron-autogrow-textarea:hover {\n  border-color: #b8b8b8;\n  border-color: var(--border-color-hover, var(--theme-color-silver, #b8b8b8));\n}\niron-autogrow-textarea[focus-within] {\n  border-color: #48a1e6;\n  border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));\n}\niron-autogrow-textarea:focus-within {\n  border-color: #48a1e6;\n  border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));\n}\n";
   styleInject(css$2);
 
-  var _templateObject$6 = taggedTemplateLiteral(['\n  <iron-autogrow-textarea\n    disabled=\'', '\'\n    id=\'', '\'\n    maxRows=\'', '\'\n    on-input=\'', '\'\n    on-keypress=\'', '\'\n    placeholder=\'', '\'\n    value=\'', '\'\n  />\n'], ['\n  <iron-autogrow-textarea\n    disabled=\'', '\'\n    id=\'', '\'\n    maxRows=\'', '\'\n    on-input=\'', '\'\n    on-keypress=\'', '\'\n    placeholder=\'', '\'\n    value=\'', '\'\n  />\n']);
+  var _templateObject$8 = taggedTemplateLiteral(['\n  <iron-autogrow-textarea\n    disabled=\'', '\'\n    id=\'', '\'\n    maxRows=\'', '\'\n    on-input=\'', '\'\n    on-keypress=\'', '\'\n    placeholder=\'', '\'\n    value=\'', '\'\n  />\n'], ['\n  <iron-autogrow-textarea\n    disabled=\'', '\'\n    id=\'', '\'\n    maxRows=\'', '\'\n    on-input=\'', '\'\n    on-keypress=\'', '\'\n    placeholder=\'', '\'\n    value=\'', '\'\n  />\n']);
 
   var _placeholder = 'Just type something...';
 
@@ -25629,7 +27932,7 @@
         onKeyPress = _ref.onKeyPress,
         placeholder = _ref.placeholder,
         value = _ref.value;
-    return html$1(_templateObject$6, disabled, id, maxRows, function oninput(e) {
+    return html$1(_templateObject$8, disabled, id, maxRows, function oninput(e) {
       onInput(e, this.textarea);
     }, onKeyPress, placeholder || _placeholder, value);
   };
@@ -25747,7 +28050,7 @@
    */
   Map$2.create = function createMap(f, source) {
     if (source instanceof Map$2) {
-      return new Map$2(compose(f, source.f), source.source);
+      return new Map$2(compose$2(f, source.f), source.source);
     }
 
     if (source instanceof Filter) {
@@ -25961,7 +28264,7 @@
   /** @license MIT License (c) copyright 2010-2016 original author or authors */
 
   var map$3 = map;
-  var tail$2 = tail;
+  var tail$2 = tail$1;
 
   /**
    * Combine latest events from all input streams
@@ -26605,89 +28908,6 @@
   }
 
   /**
-   * Internal curryN function.
-   *
-   * @private
-   * @category Function
-   * @param {Number} length The arity of the curried function.
-   * @param {Array} received An array of arguments received thus far.
-   * @param {Function} fn The function to curry.
-   * @return {Function} The curried function.
-   */
-  function _curryN(length, received, fn) {
-    return function () {
-      var combined = [];
-      var argsIdx = 0;
-      var left = length;
-      var combinedIdx = 0;
-      while (combinedIdx < received.length || argsIdx < arguments.length) {
-        var result;
-        if (combinedIdx < received.length && (!_isPlaceholder(received[combinedIdx]) || argsIdx >= arguments.length)) {
-          result = received[combinedIdx];
-        } else {
-          result = arguments[argsIdx];
-          argsIdx += 1;
-        }
-        combined[combinedIdx] = result;
-        if (!_isPlaceholder(result)) {
-          left -= 1;
-        }
-        combinedIdx += 1;
-      }
-      return left <= 0 ? fn.apply(this, combined) : _arity(left, _curryN(length, combined, fn));
-    };
-  }
-
-  /**
-   * Returns a curried equivalent of the provided function, with the specified
-   * arity. The curried function has two unusual capabilities. First, its
-   * arguments needn't be provided one at a time. If `g` is `R.curryN(3, f)`, the
-   * following are equivalent:
-   *
-   *   - `g(1)(2)(3)`
-   *   - `g(1)(2, 3)`
-   *   - `g(1, 2)(3)`
-   *   - `g(1, 2, 3)`
-   *
-   * Secondly, the special placeholder value [`R.__`](#__) may be used to specify
-   * "gaps", allowing partial application of any combination of arguments,
-   * regardless of their positions. If `g` is as above and `_` is [`R.__`](#__),
-   * the following are equivalent:
-   *
-   *   - `g(1, 2, 3)`
-   *   - `g(_, 2, 3)(1)`
-   *   - `g(_, _, 3)(1)(2)`
-   *   - `g(_, _, 3)(1, 2)`
-   *   - `g(_, 2)(1)(3)`
-   *   - `g(_, 2)(1, 3)`
-   *   - `g(_, 2)(_, 3)(1)`
-   *
-   * @func
-   * @memberOf R
-   * @since v0.5.0
-   * @category Function
-   * @sig Number -> (* -> a) -> (* -> a)
-   * @param {Number} length The arity for the returned function.
-   * @param {Function} fn The function to curry.
-   * @return {Function} A new, curried function.
-   * @see R.curry
-   * @example
-   *
-   *      var sumArgs = (...args) => R.sum(args);
-   *
-   *      var curriedAddFourNumbers = R.curryN(4, sumArgs);
-   *      var f = curriedAddFourNumbers(1, 2);
-   *      var g = f(3);
-   *      g(4); //=> 10
-   */
-  var curryN = /*#__PURE__*/_curry2(function curryN(length, fn) {
-    if (length === 1) {
-      return _curry1(fn);
-    }
-    return _arity(length, _curryN(length, [], fn));
-  });
-
-  /**
    * Returns a curried equivalent of the provided function. The curried function
    * has two unusual capabilities. First, its arguments needn't be provided one
    * at a time. If `f` is a ternary function and `g` is `R.curry(f)`, the
@@ -26749,7 +28969,7 @@
   var css$3 = "/* :root, */\n:host {\n  display: block;\n  width: 100%;\n  z-index: initial;\n  z-index: var(--chat-input-z-index, initial);\n}\n:host .input {\n  background: #f8f8f8;\n  background: var(--alabaster, #f8f8f8);\n  bottom: 0;\n  box-sizing: border-box;\n  font-size: 16px;\n  padding: 0 20px 20px;\n  width: 100%;\n}\n:host .input.disabled {\n  color: #b8b8b8;\n  color: var(--silver, #b8b8b8);\n}\n:host .input > * {\n  line-height: 0;\n  position: relative;\n}\n:host .input .enter {\n  background: no-repeat center center;\n  border: none;\n  bottom: 14px;\n  cursor: pointer;\n  height: 24px;\n  outline: none;\n  padding: 0;\n  position: absolute;\n  right: 18px;\n}\n:host .input .enter:active:not(:disabled) {\n  -webkit-transform: translateY(1px);\n          transform: translateY(1px);\n}\n";
   styleInject(css$3);
 
-  var _templateObject$7 = taggedTemplateLiteral(['\n      <section class$=\'', '\'>\n        <form on-submit=\'', '\'>\n          ', '\n          ', '\n        <form>\n      </section>\n    '], ['\n      <section class$=\'', '\'>\n        <form on-submit=\'', '\'>\n          ', '\n          ', '\n        <form>\n      </section>\n    ']);
+  var _templateObject$9 = taggedTemplateLiteral(['\n      <section class$=\'', '\'>\n        <form on-submit=\'', '\'>\n          ', '\n          ', '\n        <form>\n      </section>\n    '], ['\n      <section class$=\'', '\'>\n        <form on-submit=\'', '\'>\n          ', '\n          ', '\n        <form>\n      </section>\n    ']);
 
   var isKeyCode = function isKeyCode(keyCode, code) {
     return keyCode === code;
@@ -26855,7 +29075,7 @@
           return special.shift || special.meta || special.control;
         };
 
-        compose$1(observeC(this._handleSubmit.bind(this)), throttleC(this.delay || 0), filterC(function () {
+        compose(observeC(this._handleSubmit.bind(this)), throttleC(this.delay || 0), filterC(function () {
           return !isSpecialPressed();
         }))(enter$);
 
@@ -26863,14 +29083,14 @@
           isEnterBtn(e) && isSpecialPressed() && _this2._insertLinebreak();
         }, keydown$);
 
-        compose$1(observeC(function (_ref5) {
+        compose(observeC(function (_ref5) {
           var key = _ref5.key;
           special[key.toLowerCase()] = true;
         }), filterC(function (e) {
           return isShiftBtn(e) || isControlBtn(e) || isMetaBtn(e);
         }))(keydown$);
 
-        compose$1(observeC(function (_ref6) {
+        compose(observeC(function (_ref6) {
           var key = _ref6.key;
           special[key.toLowerCase()] = false;
         }), filterC(function (e) {
@@ -26955,7 +29175,7 @@
           value: value
         });
 
-        return html$1(_templateObject$7, classString({ input: true, disabled: disabled }), function (e) {
+        return html$1(_templateObject$9, classString({ input: true, disabled: disabled }), function (e) {
           return _this3._handleSubmit(e);
         }, textarea$$1, button$$1);
       }
@@ -26965,9 +29185,9 @@
 
   var Input = withStyle(html$1)(MessageInput, css$3, css$1, css$2);
 
-  var _templateObject$8 = taggedTemplateLiteral(['<svg id="warninig" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm0 2A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>\n    <path d="M9 9H7V4h2zM9 12H7v-2h2z"/>\n  </g>\n</svg>'], ['<svg id="warninig" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm0 2A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>\n    <path d="M9 9H7V4h2zM9 12H7v-2h2z"/>\n  </g>\n</svg>']),
-      _templateObject2$4 = taggedTemplateLiteral(['<svg id="delete" xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M9 7h2v7H9zM5 7h2v7H5z"/>\n    <path fill-rule="nonzero" d="M3 5v11h10V5H3zM1 3h14v15H1V3z"/>\n    <path d="M4 0h8v5H4V0zm2 2v1h4V2H6z"/>\n    <path fill-rule="nonzero" d="M0 5h16V3H0z"/>\n  </g>\n</svg>'], ['<svg id="delete" xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M9 7h2v7H9zM5 7h2v7H5z"/>\n    <path fill-rule="nonzero" d="M3 5v11h10V5H3zM1 3h14v15H1V3z"/>\n    <path d="M4 0h8v5H4V0zm2 2v1h4V2H6z"/>\n    <path fill-rule="nonzero" d="M0 5h16V3H0z"/>\n  </g>\n</svg>']),
-      _templateObject3$2 = taggedTemplateLiteral(['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23859 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90912C1.30243 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81818 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM2 2.90912C2 2.40704 2.40704 2 2.90912 2H13.0909C13.593 2 14 2.40704 14 2.90912V10.1818C14 12.2905 12.2905 14 10.1818 14H5.81818C3.70947 14 2 12.2905 2 10.1818V2.90912Z" transform="translate(0 6)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.18188 2.64374C2.61658 2.3988 2.90906 1.94104 2.90906 1.41669C2.90906 0.634277 2.25781 0 1.45459 0C0.651245 0 0 0.634277 0 1.41669C0 1.94104 0.29248 2.39886 0.727295 2.6438V3.52277C0.727295 3.92444 1.05286 4.25 1.45459 4.25C1.8562 4.25 2.18188 3.92444 2.18188 3.52277V2.64374Z" transform="translate(6.54541 11.375)" fill="#B8B8B8"/>\n</svg>'], ['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23859 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90912C1.30243 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81818 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM2 2.90912C2 2.40704 2.40704 2 2.90912 2H13.0909C13.593 2 14 2.40704 14 2.90912V10.1818C14 12.2905 12.2905 14 10.1818 14H5.81818C3.70947 14 2 12.2905 2 10.1818V2.90912Z" transform="translate(0 6)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.18188 2.64374C2.61658 2.3988 2.90906 1.94104 2.90906 1.41669C2.90906 0.634277 2.25781 0 1.45459 0C0.651245 0 0 0.634277 0 1.41669C0 1.94104 0.29248 2.39886 0.727295 2.6438V3.52277C0.727295 3.92444 1.05286 4.25 1.45459 4.25C1.8562 4.25 2.18188 3.92444 2.18188 3.52277V2.64374Z" transform="translate(6.54541 11.375)" fill="#B8B8B8"/>\n</svg>']),
+  var _templateObject$a = taggedTemplateLiteral(['<svg id="warninig" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm0 2A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>\n    <path d="M9 9H7V4h2zM9 12H7v-2h2z"/>\n  </g>\n</svg>'], ['<svg id="warninig" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm0 2A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>\n    <path d="M9 9H7V4h2zM9 12H7v-2h2z"/>\n  </g>\n</svg>']),
+      _templateObject2$6 = taggedTemplateLiteral(['<svg id="delete" xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M9 7h2v7H9zM5 7h2v7H5z"/>\n    <path fill-rule="nonzero" d="M3 5v11h10V5H3zM1 3h14v15H1V3z"/>\n    <path d="M4 0h8v5H4V0zm2 2v1h4V2H6z"/>\n    <path fill-rule="nonzero" d="M0 5h16V3H0z"/>\n  </g>\n</svg>'], ['<svg id="delete" xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">\n  <g fill-rule="evenodd">\n    <path fill-rule="nonzero" d="M9 7h2v7H9zM5 7h2v7H5z"/>\n    <path fill-rule="nonzero" d="M3 5v11h10V5H3zM1 3h14v15H1V3z"/>\n    <path d="M4 0h8v5H4V0zm2 2v1h4V2H6z"/>\n    <path fill-rule="nonzero" d="M0 5h16V3H0z"/>\n  </g>\n</svg>']),
+      _templateObject3$1 = taggedTemplateLiteral(['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23859 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90912C1.30243 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81818 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM2 2.90912C2 2.40704 2.40704 2 2.90912 2H13.0909C13.593 2 14 2.40704 14 2.90912V10.1818C14 12.2905 12.2905 14 10.1818 14H5.81818C3.70947 14 2 12.2905 2 10.1818V2.90912Z" transform="translate(0 6)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.18188 2.64374C2.61658 2.3988 2.90906 1.94104 2.90906 1.41669C2.90906 0.634277 2.25781 0 1.45459 0C0.651245 0 0 0.634277 0 1.41669C0 1.94104 0.29248 2.39886 0.727295 2.6438V3.52277C0.727295 3.92444 1.05286 4.25 1.45459 4.25C1.8562 4.25 2.18188 3.92444 2.18188 3.52277V2.64374Z" transform="translate(6.54541 11.375)" fill="#B8B8B8"/>\n</svg>'], ['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23859 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90912C1.30243 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81818 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM2 2.90912C2 2.40704 2.40704 2 2.90912 2H13.0909C13.593 2 14 2.40704 14 2.90912V10.1818C14 12.2905 12.2905 14 10.1818 14H5.81818C3.70947 14 2 12.2905 2 10.1818V2.90912Z" transform="translate(0 6)" fill="#B8B8B8"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.18188 2.64374C2.61658 2.3988 2.90906 1.94104 2.90906 1.41669C2.90906 0.634277 2.25781 0 1.45459 0C0.651245 0 0 0.634277 0 1.41669C0 1.94104 0.29248 2.39886 0.727295 2.6438V3.52277C0.727295 3.92444 1.05286 4.25 1.45459 4.25C1.8562 4.25 2.18188 3.92444 2.18188 3.52277V2.64374Z" transform="translate(6.54541 11.375)" fill="#B8B8B8"/>\n</svg>']),
       _templateObject4$1 = taggedTemplateLiteral(['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23853 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#48A1E6"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90906C1.30249 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81824 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM9.45447 6.79169C9.45447 7.31604 9.16199 7.7738 8.72729 8.01874V8.89777C8.72729 9.29944 8.40161 9.625 8 9.625C7.59827 9.625 7.27271 9.29944 7.27271 8.89777V8.0188C6.83789 7.77386 6.54541 7.31604 6.54541 6.79169C6.54541 6.00928 7.19666 5.375 8 5.375C8.80322 5.375 9.45447 6.00928 9.45447 6.79169Z" transform="translate(0 6)" fill="#48A1E6"/>\n</svg>'], ['<svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 0C2.23853 0 0 2.23859 0 5V8H10V5C10 2.23859 7.76147 0 5 0ZM5 2C3.34314 2 2 3.34314 2 5V6H8V5C8 3.34314 6.65686 2 5 2Z" transform="translate(3)" fill="#48A1E6"/>\n  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0909 0H2.90906C1.30249 0 0 1.30243 0 2.90912V10.1818C0 13.3951 2.60486 16 5.81824 16H10.1818C13.3951 16 16 13.3951 16 10.1818V2.90912C16 1.30243 14.6975 0 13.0909 0ZM9.45447 6.79169C9.45447 7.31604 9.16199 7.7738 8.72729 8.01874V8.89777C8.72729 9.29944 8.40161 9.625 8 9.625C7.59827 9.625 7.27271 9.29944 7.27271 8.89777V8.0188C6.83789 7.77386 6.54541 7.31604 6.54541 6.79169C6.54541 6.00928 7.19666 5.375 8 5.375C8.80322 5.375 9.45447 6.00928 9.45447 6.79169Z" transform="translate(0 6)" fill="#48A1E6"/>\n</svg>']),
       _templateObject5 = taggedTemplateLiteral(['<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="15" viewBox="0 0 16 15">\n  <defs>\n    <path id="a" d="M0 0h16v16H0z"/>\n  </defs>\n  <g fill="none" fill-rule="evenodd" transform="translate(0 -1)">\n    <mask id="b" fill="#fff">\n      <use xlink:href="#a"/>\n    </mask>\n    <path fill="#B8B8B8" fill-rule="nonzero" d="M6.121 2.485v12.172l1 1 1-1V2.485h-2zm-2-2h6v15l-3 3-3-3v-15z" mask="url(#b)" transform="rotate(45 7.121 9.485)"/>\n    <path fill="#B8B8B8" fill-rule="nonzero" d="M9 16v-2h7v2z" mask="url(#b)"/>\n  </g>\n</svg>'], ['<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="15" viewBox="0 0 16 15">\n  <defs>\n    <path id="a" d="M0 0h16v16H0z"/>\n  </defs>\n  <g fill="none" fill-rule="evenodd" transform="translate(0 -1)">\n    <mask id="b" fill="#fff">\n      <use xlink:href="#a"/>\n    </mask>\n    <path fill="#B8B8B8" fill-rule="nonzero" d="M6.121 2.485v12.172l1 1 1-1V2.485h-2zm-2-2h6v15l-3 3-3-3v-15z" mask="url(#b)" transform="rotate(45 7.121 9.485)"/>\n    <path fill="#B8B8B8" fill-rule="nonzero" d="M9 16v-2h7v2z" mask="url(#b)"/>\n  </g>\n</svg>']),
       _templateObject6 = taggedTemplateLiteral(['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\n  <g fill="none" fill-rule="evenodd" transform="rotate(-90 12 12)">\n    <circle cx="12" cy="12" r="12" fill="#48A1E6"/>\n    <path fill="#FFF" fill-rule="nonzero" d="M10.2 8.649l.849-.849 4.024 4.024-4.024 4.025L10.2 15l3.176-3.176z"/>\n  </g>\n</svg>'], ['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\n  <g fill="none" fill-rule="evenodd" transform="rotate(-90 12 12)">\n    <circle cx="12" cy="12" r="12" fill="#48A1E6"/>\n    <path fill="#FFF" fill-rule="nonzero" d="M10.2 8.649l.849-.849 4.024 4.024-4.024 4.025L10.2 15l3.176-3.176z"/>\n  </g>\n</svg>']),
@@ -26976,11 +29196,11 @@
       _templateObject9 = taggedTemplateLiteral(['<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0 8C0 12.4183 3.58203 16 8 16C12.418 16 16 12.4183 16 8C16 3.58167 12.418 0 8 0C3.58203 0 0 3.58167 0 8ZM14 8C14 11.3137 11.3135 14 8 14C4.68652 14 2 11.3137 2 8C2 4.68628 4.68652 2 8 2C11.3135 2 14 4.68628 14 8Z" fill="#B8B8B8"/>\n<path d="M5.85148 9.88464C5.6492 9.53148 5.75819 9.07425 6.09953 8.85971C6.4473 8.64113 6.89926 8.75963 7.10516 9.11911C7.35768 9.55998 7.63379 9.74632 8 9.74632C8.36622 9.74632 8.64233 9.55998 8.89484 9.11911C9.10074 8.75963 9.55271 8.64113 9.90047 8.85971C10.2418 9.07425 10.3508 9.53148 10.1485 9.88464C9.63928 10.7737 8.8986 11.25 8 11.25C7.1014 11.25 6.36072 10.7737 5.85148 9.88464Z" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M5 8C5.55228 8 6 7.55228 6 7C6 6.44772 5.55228 6 5 6C4.44772 6 4 6.44772 4 7C4 7.55228 4.44772 8 5 8Z" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M11 8C11.5523 8 12 7.55228 12 7C12 6.44772 11.5523 6 11 6C10.4477 6 10 6.44772 10 7C10 7.55228 10.4477 8 11 8Z" fill="#B8B8B8"/>\n</svg>'], ['<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0 8C0 12.4183 3.58203 16 8 16C12.418 16 16 12.4183 16 8C16 3.58167 12.418 0 8 0C3.58203 0 0 3.58167 0 8ZM14 8C14 11.3137 11.3135 14 8 14C4.68652 14 2 11.3137 2 8C2 4.68628 4.68652 2 8 2C11.3135 2 14 4.68628 14 8Z" fill="#B8B8B8"/>\n<path d="M5.85148 9.88464C5.6492 9.53148 5.75819 9.07425 6.09953 8.85971C6.4473 8.64113 6.89926 8.75963 7.10516 9.11911C7.35768 9.55998 7.63379 9.74632 8 9.74632C8.36622 9.74632 8.64233 9.55998 8.89484 9.11911C9.10074 8.75963 9.55271 8.64113 9.90047 8.85971C10.2418 9.07425 10.3508 9.53148 10.1485 9.88464C9.63928 10.7737 8.8986 11.25 8 11.25C7.1014 11.25 6.36072 10.7737 5.85148 9.88464Z" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M5 8C5.55228 8 6 7.55228 6 7C6 6.44772 5.55228 6 5 6C4.44772 6 4 6.44772 4 7C4 7.55228 4.44772 8 5 8Z" fill="#B8B8B8"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M11 8C11.5523 8 12 7.55228 12 7C12 6.44772 11.5523 6 11 6C10.4477 6 10 6.44772 10 7C10 7.55228 10.4477 8 11 8Z" fill="#B8B8B8"/>\n</svg>']),
       _templateObject10 = taggedTemplateLiteral(['<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">\n<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">\n<rect width="10" height="10" fill="#C4C4C4"/>\n</mask>\n<g mask="url(#mask0)">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M8.29297 9.70706L0.292969 1.70706L1.70718 0.292847L9.70718 8.29285L8.29297 9.70706Z" fill="white"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0.292969 8.29285L8.29297 0.292847L9.70718 1.70706L1.70718 9.70706L0.292969 8.29285Z" fill="white"/>\n</g>\n</svg>\n'], ['<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">\n<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">\n<rect width="10" height="10" fill="#C4C4C4"/>\n</mask>\n<g mask="url(#mask0)">\n<path fill-rule="evenodd" clip-rule="evenodd" d="M8.29297 9.70706L0.292969 1.70706L1.70718 0.292847L9.70718 8.29285L8.29297 9.70706Z" fill="white"/>\n<path fill-rule="evenodd" clip-rule="evenodd" d="M0.292969 8.29285L8.29297 0.292847L9.70718 1.70706L1.70718 9.70706L0.292969 8.29285Z" fill="white"/>\n</g>\n</svg>\n']);
 
-  var warning$1 = html$1(_templateObject$8);
+  var warning$1 = html$1(_templateObject$a);
 
-  var del = html$1(_templateObject2$4);
+  var del = html$1(_templateObject2$6);
 
-  var lock$1 = html$1(_templateObject3$2);
+  var lock$1 = html$1(_templateObject3$1);
 
   var locked = html$1(_templateObject4$1);
 
@@ -26996,8 +29216,8 @@
 
   var cross = html$1(_templateObject10);
 
-  var _templateObject$9 = taggedTemplateLiteral(['\n    <button\n      class$=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n  '], ['\n    <button\n      class$=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n  ']),
-      _templateObject2$5 = taggedTemplateLiteral(['\n    <button\n      class$=\'', '\'\n      disabled=\'', '\'\n      on-click=\'', '\'\n    >\n      <wc-chat-reactions direction=\'column\' config=\'', '\' showall></wc-chat-reactions>\n    </button>\n'], ['\n    <button\n      class$=\'', '\'\n      disabled=\'', '\'\n      on-click=\'', '\'\n    >\n      <wc-chat-reactions direction=\'column\' config=\'', '\' showall></wc-chat-reactions>\n    </button>\n']);
+  var _templateObject$b = taggedTemplateLiteral(['\n    <button\n      class$=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n  '], ['\n    <button\n      class$=\'', '\'\n      on-click=\'', '\'\n    >', '</button>\n  ']),
+      _templateObject2$7 = taggedTemplateLiteral(['\n    <button\n      class$=\'', '\'\n      disabled=\'', '\'\n      on-click=\'', '\'\n    >\n      <wc-chat-reactions direction=\'column\' config=\'', '\' showall></wc-chat-reactions>\n    </button>\n'], ['\n    <button\n      class$=\'', '\'\n      disabled=\'', '\'\n      on-click=\'', '\'\n    >\n      <wc-chat-reactions direction=\'column\' config=\'', '\' showall></wc-chat-reactions>\n    </button>\n']);
 
   var cn$1 = function cn() {
     for (var _len = arguments.length, argv = Array(_len), _key = 0; _key < _len; _key++) {
@@ -27025,7 +29245,7 @@
 
     if (!allowed) return null;
 
-    return html$1(_templateObject$9, cls, function (e) {
+    return html$1(_templateObject$b, cls, function (e) {
       return handler && handler(e, message);
     }, children);
   };
@@ -27040,7 +29260,7 @@
       return new Map([['thumbsup', { name: ':thumbsup' }]]);
     };
 
-    return html$1(_templateObject2$5, cls, disabled, function (e) {
+    return html$1(_templateObject2$7, cls, disabled, function (e) {
       return handler && handler(e, { message: message });
     }, config());
   };
@@ -27048,9 +29268,9 @@
   var css$4 = ":root {\n  --actions-action-icon-size: 16px;\n  --actions-background-color: #fff;\n  --actions-background-color: var(--chat-message-actions-background-color, var(--white, #fff));\n  --actions-border-color-disabled: #b8b8b8;\n  --actions-border-color-disabled: var(--chat-message-actions-border-color-disabled, var(--silver, #b8b8b8));\n  --actions-border-color-hover: #48a1e6;\n  --actions-border-color-hover: var(--chat-message-actions-border-color-hover, var(--pictonblue, #48a1e6));\n  --actions-border-color: #b8b8b8;\n  --actions-border-color: var(--chat-message-actions-border-color, var(--silver, #b8b8b8));\n  --actions-color-disabled: #b8b8b8;\n  --actions-color-disabled: var(--chat-message-actions-color-disabled, var(--silver, #b8b8b8));\n  --actions-color-fill-hover: #48a1e6;\n  --actions-color-fill-hover: var(--chat-message-actions-color-fill-hover, var(--pictonblue, #48a1e6));\n  --actions-color-fill: #b8b8b8;\n  --actions-color-fill: var(--chat-message-actions-color-fill, var(--silver, #b8b8b8));\n  --actions-color: #b8b8b8;\n  --actions-color: var(--chat-message-actions-color, var(--silver, #b8b8b8));\n  --actions-color-hover: #48a1e6;\n  --actions-color-hover: var(--chat-message-actions-color-hover, var(--pictonblue, #48a1e6));\n  --actions-reactions-shift: -1px;\n  --actions-transition-delay: 0.25s;\n  --actions-transition-delay: var(--chat-message-transition-delay, 0.25s);\n}\n\n/* reactions */\n\n.reaction {\n  height: 36px;\n}\n\n.reactions-group {\n  background: #fff;\n  background: var(--actions-background-color);\n  border: 1px solid;\n  border-color: #b8b8b8;\n  border-color: var(--actions-border-color);\n  border-radius: 5px;\n  left: -1px;\n  left: var(--actions-reactions-shift);\n  min-height: 100%;\n  opacity: 0;\n  position: absolute;\n  top: -1px;\n  top: var(--actions-reactions-shift);\n  transition: all ease-out 0.25s;\n  transition: all ease-out var(--actions-transition-delay);\n  width: 100%;\n  z-index: -1;\n}\n\n.reactions:hover .reactions-group {\n  border-color: #48a1e6;\n  border-color: var(--actions-border-color-hover);\n  opacity: 1;\n  z-index: 200;\n}\n\n.reaction > svg,\n.action > svg {\n  height: 16px;\n  height: var(--actions-action-icon-size);\n  padding: 10px 11px;\n  transition: all ease-out 0.25s;\n  transition: all ease-out var(--actions-transition-delay);\n  width: 16px;\n  width: var(--actions-action-icon-size);\n}\n\n/* actions */\n\n.action {\n  background-color: transparent;\n  border: none;\n  cursor: pointer;\n  outline: none;\n  padding: 0;\n}\n\n.action:disabled {\n  cursor: not-allowed;\n}\n\n.action > svg path {\n  fill: #b8b8b8;\n  fill: var(--actions-color-fill);\n}\n\n.action.user-disable > svg {\n  height: calc(16px + 2px);\n  height: calc(var(--actions-action-icon-size) + 2px);\n}\n\n.action:hover:not(:disabled) > svg path {\n  fill: #48a1e6;\n  fill: var(--actions-color-fill-hover);\n}\n\n.actions {\n  cursor: default;\n  float: right;\n  height: 24px;\n  line-height: 18px;\n  position: relative;\n  text-align: center;\n  width: 24px;\n}\n\n.actions:hover {\n  opacity: 1;\n}\n\n/* stylelint-disable-next-line no-descending-specificity */\n\n.actions:hover > svg path {\n  fill: #48a1e6;\n  fill: var(--actions-color-fill-hover);\n}\n\n.actions-inner {\n  display: none;\n  flex-direction: column;\n  margin-left: -8px;\n  opacity: 0;\n  position: absolute;\n  z-index: -1;\n}\n\n.actions:hover .actions-inner {\n  display: flex;\n  opacity: 1;\n  z-index: 100;\n}\n\n.actions-group {\n  background: #fff;\n  background: var(--actions-background-color);\n  border: 1px solid;\n  border-color: #b8b8b8;\n  border-color: var(--actions-border-color);\n  border-radius: 5px;\n  color: #b8b8b8;\n  color: var(--actions-color);\n  display: flex;\n  flex-direction: column;\n  position: relative;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.actions-group:hover {\n  border-color: #48a1e6;\n  border-color: var(--actions-border-color-hover);\n  color: #48a1e6;\n  color: var(--actions-color-hover);\n}\n\n.reaction:hover > svg,\n.action:hover:not(:disabled) > svg {\n  -webkit-transform: scale(1.2);\n          transform: scale(1.2);\n}\n\n.reaction-add {\n  background: transparent;\n  border: 0;\n  border-radius: 100%;\n  font-size: 16px;\n  font-size: var(--actions-action-icon-size);\n  outline: none;\n  padding: 5px 11px;\n  transition: -webkit-transform ease-out 0.25s;\n  transition: transform ease-out 0.25s;\n  transition: transform ease-out 0.25s, -webkit-transform ease-out 0.25s;\n  transition: -webkit-transform ease-out var(--actions-transition-delay);\n  transition: transform ease-out var(--actions-transition-delay);\n  transition: transform ease-out var(--actions-transition-delay), -webkit-transform ease-out var(--actions-transition-delay);\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  width: 100%;\n}\n\n.reaction-add:hover {\n  -webkit-transform: scale(1.2);\n          transform: scale(1.2);\n}\n\n.reaction-add.disabled {\n  border-color: #b8b8b8;\n  border-color: var(--actions-border-color-disabled);\n  color: #b8b8b8;\n  color: var(--actions-color-disabled);\n  cursor: not-allowed;\n}\n\n.reaction-add:hover:not(.disabled) svg path {\n  fill: #48a1e6;\n  fill: var(--actions-color-hover);\n}\n\n.quickdelete {\n  background: rgba(0, 0, 0, 0.47);\n  border-radius: 100%;\n  height: 32px;\n  left: 0;\n  opacity: 0;\n  position: absolute;\n  top: 0;\n  transition: opacity ease-out 0.25s;\n  transition: opacity ease-out var(--actions-transition-delay);\n  width: 32px;\n}\n\n.quickdelete:hover {\n  opacity: 1;\n}\n\n/* stylelint-disable-next-line no-descending-specificity */\n\n.quickdelete > svg {\n  height: 10px;\n  padding: 0;\n  padding-top: 2px;\n}\n\n/* stylelint-disable-next-line no-descending-specificity */\n\n.quickdelete > svg path {\n  fill: #fff !important;\n  fill: var(--actions-background-color) !important;\n}\n";
   styleInject(css$4);
 
-  var _templateObject$a = taggedTemplateLiteral(['\n  <div class=\'reactions\'>\n    <div class=\'reaction\'>', '</div>\n    <div class=\'reactions-group\'>\n      ', '\n    </div>\n</div>\n'], ['\n  <div class=\'reactions\'>\n    <div class=\'reaction\'>', '</div>\n    <div class=\'reactions-group\'>\n      ', '\n    </div>\n</div>\n']),
-      _templateObject2$6 = taggedTemplateLiteral(['\n  <div class=\'actions-group\'>\n    ', '\n    ', '\n  </div>\n'], ['\n  <div class=\'actions-group\'>\n    ', '\n    ', '\n  </div>\n']),
-      _templateObject3$3 = taggedTemplateLiteral(['\n  ', '\n  ', '\n'], ['\n  ', '\n  ', '\n']),
+  var _templateObject$c = taggedTemplateLiteral(['\n  <div class=\'reactions\'>\n    <div class=\'reaction\'>', '</div>\n    <div class=\'reactions-group\'>\n      ', '\n    </div>\n</div>\n'], ['\n  <div class=\'reactions\'>\n    <div class=\'reaction\'>', '</div>\n    <div class=\'reactions-group\'>\n      ', '\n    </div>\n</div>\n']),
+      _templateObject2$8 = taggedTemplateLiteral(['\n  <div class=\'actions-group\'>\n    ', '\n    ', '\n  </div>\n'], ['\n  <div class=\'actions-group\'>\n    ', '\n    ', '\n  </div>\n']),
+      _templateObject3$2 = taggedTemplateLiteral(['\n  ', '\n  ', '\n'], ['\n  ', '\n  ', '\n']),
       _templateObject4$2 = taggedTemplateLiteral(['', ''], ['', '']),
       _templateObject5$1 = taggedTemplateLiteral(['\n      <div class=\'actions\'>\n        ', '\n        <div class=\'actions-inner\'>\n          ', '\n        </div>\n      </div>\n    '], ['\n      <div class=\'actions\'>\n        ', '\n        <div class=\'actions-inner\'>\n          ', '\n        </div>\n      </div>\n    ']);
 
@@ -27061,15 +29281,15 @@
   };
 
   var _reactions = function _reactions(props) {
-    return html$1(_templateObject$a, smiley$1, props.children);
+    return html$1(_templateObject$c, smiley$1, props.children);
   };
 
   var _actions = function _actions(props) {
-    return html$1(_templateObject2$6, toList(props.children), props.reactions.size ? _reactions({ children: toList(props.reactions) }) : null);
+    return html$1(_templateObject2$8, toList(props.children), props.reactions.size ? _reactions({ children: toList(props.reactions) }) : null);
   };
 
   var actions = function actions(props) {
-    return html$1(_templateObject3$3, props.children.has('message-delete') ? html$1(_templateObject4$2, action(_extends({}, props.actions.get('message-delete'), {
+    return html$1(_templateObject3$2, props.children.has('message-delete') ? html$1(_templateObject4$2, action(_extends({}, props.actions.get('message-delete'), {
       classname: 'quickdelete',
       children: cross
     }))) : null, props.children.size || props.reactions.size ? html$1(_templateObject5$1, menu, _actions(props)) : null);
@@ -27078,8 +29298,8 @@
   var css$5 = "wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */\n  --reaction-count-left: 0;\n}\n\n:root {\n  --message-aggregated-content-border-radius: 5px;\n  --message-aggregated-content-border-radius: var(--chat-aggregated-content-border-radius, var(--message-border-radius));\n  --message-aggregated-margin: 5px;\n  --message-aggregated-margin: var(--chat-message-aggregated-margin, var(--message-border-radius));\n  --message-avatar-margin: 8px;\n  --message-avatar-size: 32px;\n  --message-border-radius: 5px;\n  --message-color-deleted-hover: rgba(238, 238, 238, 0.70196);\n  --message-color-deleted-hover: var(--chat-message-color-deleted-hover, rgba(238, 238, 238, 0.70196));\n  --message-color-deleted: #eee;\n  --message-color-deleted: var(--chat-message-color-watchdog, var(--gallery, #eee));\n  --message-color-hover: rgba(255, 255, 255, 0.50196);\n  --message-color-hover: var(--chat-message-color-hover, rgba(255, 255, 255, 0.50196));\n  --message-color-me-hover: rgba(235, 242, 247, 0.70196);\n  --message-color-me-hover: var(--chat-message-color-me-hover, rgba(235, 242, 247, 0.70196));\n  --message-color-me: #ebf2f7;\n  --message-color-me: var(--chat-message-color-me, var(--cornflowerBlue, #ebf2f7));\n  --message-color-watchdog-hover: rgba(250, 239, 235, 0.70196);\n  --message-color-watchdog-hover: var(--chat-message-color-watchdog-hover, rgba(250, 239, 235, 0.70196));\n  --message-color-watchdog: #faefeb;\n  --message-color-watchdog: var(--chat-message-color-watchdog, var(--whiteLinen, #faefeb));\n  --message-margin-between: 16px;\n  --message-status-color: #b8b8b8;\n  --message-status-color: var(--chat-message-status-color, var(--silver, #b8b8b8));\n}\n\n.avatar {\n  float: left;\n  margin-right: 8px;\n  margin-right: var(--message-avatar-margin);\n  overflow: hidden;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  vertical-align: top;\n  width: 32px;\n  width: var(--message-avatar-size);\n}\n\n.avatar > div:first-child {\n  background: no-repeat center center;\n  background-color: transparent;\n  background-color: var(--message-avatar-color-moderator, transparent);\n  background-size: contain;\n  border-radius: 100%;\n  height: 32px;\n  height: var(--message-avatar-size);\n  width: 32px;\n  width: var(--message-avatar-size);\n}\n\n.avatar.moderator {\n  background-color: transparent;\n  background-color: var(--message-avatar-color, transparent);\n}\n\n.content {\n  background-color: #fff;\n  border-radius: 5px;\n  border-radius: var(--message-border-radius);\n  box-sizing: border-box;\n  display: inline-block;\n  padding: 8px 16px 8px 14px;\n  text-align: left;\n  width: calc(100% - 32px - 8px);\n  width: calc(100% - var(--message-avatar-size) - var(--message-avatar-margin));\n}\n\n.content > [class^=\"actions\"] {\n  opacity: 0;\n}\n\n.content:hover > [class^=\"actions\"] {\n  opacity: 1;\n}\n\n.content.moderator {\n  background-color: #faefeb;\n  background-color: var(--message-color-watchdog);\n}\n\n.content.me {\n  background-color: #ebf2f7;\n  background-color: var(--message-color-me);\n}\n\n.message {\n  position: relative;\n}\n\n.message:hover .content {\n  background-color: rgba(255, 255, 255, 0.50196);\n  background-color: var(--message-color-hover);\n}\n\n.message:hover .content.moderator {\n  background-color: rgba(250, 239, 235, 0.70196);\n  background-color: var(--message-color-watchdog-hover);\n}\n\n.message:hover .content.me {\n  background-color: rgba(235, 242, 247, 0.70196);\n  background-color: var(--message-color-me-hover);\n}\n\n.message + .message:not(.aggregated) {\n  margin-top: 16px;\n  margin-top: var(--message-margin-between);\n}\n\n.message.aggregated {\n  margin-top: 5px;\n  margin-top: var(--message-aggregated-margin);\n}\n\n.message.aggregated .avatar {\n  height: 1px;\n  visibility: hidden;\n}\n\n.message.aggregated .content {\n  border-radius: 5px;\n  border-radius: var(--message-border-radius);\n}\n\n.message.deleted .avatar,\n.message.deleted .content {\n  -webkit-filter: grayscale(75%);\n          filter: grayscale(75%);\n}\n\n.message.deleted .content {\n  background: #eee;\n  background: var(--message-color-deleted);\n}\n\n.message.deleted:hover .content {\n  background: rgba(238, 238, 238, 0.70196);\n  background: var(--message-color-deleted-hover);\n}\n\n.message-meta {\n  margin-bottom: 5px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.message.aggregated .message-meta {\n  height: 0;\n  opacity: 0;\n}\n\n.message-body {\n  padding-right: 24px;\n}\n\n.message-line {\n  line-height: 1.25em;\n  margin: 0;\n  margin-bottom: 12px;\n  word-wrap: break-word;\n  word-break: break-all;\n}\n\n.message-line:last-child {\n  margin-bottom: 0;\n}\n\n.message-status {\n  margin-bottom: 3px;\n}\n\n.message-stamp,\n.message-status,\n.message-identity {\n  color: #b8b8b8;\n  color: var(--message-status-color);\n  font-size: 0.75em;\n}\n\n.message-author {\n  font-weight: bold;\n  margin-right: 8px;\n}\n\n.moderator .message-status {\n  display: inline-block;\n}\n\n.user.avatar .message-identity {\n  text-align: center;\n}\n\n.moderator .message-author {\n  background: url(\"data:image/svg+xml,%3Csvg width%3D%228%22 height%3D%229%22 viewBox%3D%220 0 8 9%22 fill%3D%22none%22 xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath d%3D%22M6 2C6 3.10457 5.10457 4 4 4C2.89543 4 2 3.10457 2 2C2 0.895431 2.89543 0 4 0C5.10457 0 6 0.895431 6 2Z%22 fill%3D%22%23B8B8B8%22%2F%3E%3Cpath d%3D%22M0 7C0 5.89543 0.895431 5 2 5H6C7.10457 5 8 5.89543 8 7V9H0V7Z%22 fill%3D%22%23B8B8B8%22%2F%3E%3C%2Fsvg%3E\") no-repeat right center transparent;\n  padding-right: 12px;\n}\n\n.message.unseen.normal,\n.message + .message.unseen:not(.aggregated) {\n  margin-top: 45px;\n}\n\n.message.unseen.reversed {\n  margin-bottom: 45px;\n}\n\n.message.unseen .separator {\n  position: absolute;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  width: 100%;\n}\n\n.message.unseen.normal .separator {\n  top: -30px;\n}\n\n.message.unseen.reversed .separator {\n  bottom: -30px;\n}\n\n.message.unseen .separator span {\n  background: #f8f8f8;\n  border-radius: 5px;\n  color: #b8b8b8;\n  font-size: 16px;\n  margin-left: 50px;\n  padding: 2px 5px;\n  position: relative;\n}\n\n.message.unseen .separator hr {\n  border: none;\n  border-top: 1px solid #d4d4d4;\n  height: 0;\n  margin: 0;\n  position: absolute;\n  top: 11px;\n  width: 100%;\n}\n";
   styleInject(css$5);
 
-  var _templateObject$b = taggedTemplateLiteral(['<div class=\'message-line\'>', '</div>'], ['<div class=\'message-line\'>', '</div>']),
-      _templateObject2$7 = taggedTemplateLiteral(['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'background-image: url(', ');\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-status\'>', '</span>\n        </div>\n        <div>', '</div>\n        ', '\n      </section>\n    </div>\n  '], ['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'background-image: url(', ');\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-status\'>', '</span>\n        </div>\n        <div>', '</div>\n        ', '\n      </section>\n    </div>\n  ']);
+  var _templateObject$d = taggedTemplateLiteral(['<div class=\'message-line\'>', '</div>'], ['<div class=\'message-line\'>', '</div>']),
+      _templateObject2$9 = taggedTemplateLiteral(['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'background-image: url(', ');\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-status\'>', '</span>\n        </div>\n        <div>', '</div>\n        ', '\n      </section>\n    </div>\n  '], ['\n    <div class$=\'', '\'>\n      <div\n        class$=\'', '\'\n        style$=\'background-image: url(', ');\'\n      ></div>\n      <section class$=\'', '\'>\n        <div class=\'message-meta\'>\n          <span class=\'message-author\'>', '</span>\n          <span class=\'message-status\'>', '</span>\n        </div>\n        <div>', '</div>\n        ', '\n      </section>\n    </div>\n  ']);
 
   var stampToDate = function stampToDate(stamp) {
     return new Date(stamp * 1e3);
@@ -27093,15 +29313,16 @@
   var text = function text() {
     var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     return message.split('\n').map(function (it) {
-      return html$1(_templateObject$b, it);
+      return html$1(_templateObject$d, it);
     });
   };
 
-  var _templateObject$c = taggedTemplateLiteral(['\n<div class=\'message-meta\'>\n  <span class=\'message-author\' title=\'', '\'>', '</span>\n  <span class=\'message-stamp\'>', '</span>\n  ', '\n</div>\n'], ['\n<div class=\'message-meta\'>\n  <span class=\'message-author\' title=\'', '\'>', '</span>\n  <span class=\'message-stamp\'>', '</span>\n  ', '\n</div>\n']),
-      _templateObject2$8 = taggedTemplateLiteral(['<div class=\'message-status\'>', '</div>'], ['<div class=\'message-status\'>', '</div>']),
-      _templateObject3$4 = taggedTemplateLiteral(['\n    <div class$=\'', '\'>\n      ', '\n      <div class$=\'', '\'>\n        <div style$=\'', '\'></div>\n        ', '\n      </div>\n      <section class$=\'', '\'>\n        ', '\n        ', '\n        <div class=\'message-body\'>', '</div>\n        ', '\n      </section>\n    </div>\n  '], ['\n    <div class$=\'', '\'>\n      ', '\n      <div class$=\'', '\'>\n        <div style$=\'', '\'></div>\n        ', '\n      </div>\n      <section class$=\'', '\'>\n        ', '\n        ', '\n        <div class=\'message-body\'>', '</div>\n        ', '\n      </section>\n    </div>\n  ']),
-      _templateObject4$3 = taggedTemplateLiteral(['<div class=\'separator\'><hr><span>', '</span></div>'], ['<div class=\'separator\'><hr><span>', '</span></div>']),
-      _templateObject5$2 = taggedTemplateLiteral(['<div class=\'message-identity\'>', '</div>'], ['<div class=\'message-identity\'>', '</div>']);
+  var _templateObject$e = taggedTemplateLiteral(['\n  <div class=\'message-meta\'>\n    <span class=\'message-author\' title=\'', '\'>', '</span>\n    <span class=\'message-stamp\'>', '</span>\n    ', '\n  </div>\n'], ['\n  <div class=\'message-meta\'>\n    <span class=\'message-author\' title=\'', '\'>', '</span>\n    <span class=\'message-stamp\'>', '</span>\n    ', '\n  </div>\n']),
+      _templateObject2$a = taggedTemplateLiteral(['<div class=\'message-status\'>', '</div>'], ['<div class=\'message-status\'>', '</div>']),
+      _templateObject3$3 = taggedTemplateLiteral(['<div class=\'separator\'><hr><span>', '</span></div>'], ['<div class=\'separator\'><hr><span>', '</span></div>']),
+      _templateObject4$3 = taggedTemplateLiteral(['<div class=\'message-identity\'>', '</div>'], ['<div class=\'message-identity\'>', '</div>']),
+      _templateObject5$2 = taggedTemplateLiteral(['', ''], ['', '']),
+      _templateObject6$1 = taggedTemplateLiteral(['\n    <div class$=\'', '\'>\n      ', '\n      <div class$=\'', '\'>\n        <div style$=\'', '\'></div>\n        ', '\n      </div>\n      <section class$=\'', '\'>\n        ', '\n        ', '\n        <div class=\'message-body\'>', '</div>\n        ', '\n      </section>\n    </div>\n  '], ['\n    <div class$=\'', '\'>\n      ', '\n      <div class$=\'', '\'>\n        <div style$=\'', '\'></div>\n        ', '\n      </div>\n      <section class$=\'', '\'>\n        ', '\n        ', '\n        <div class=\'message-body\'>', '</div>\n        ', '\n      </section>\n    </div>\n  ']);
 
   var cn$3 = function cn() {
     for (var _len = arguments.length, argv = Array(_len), _key = 0; _key < _len; _key++) {
@@ -27114,7 +29335,7 @@
   var meta = function meta(_ref) {
     var message = _ref.message,
         isWatchdog = _ref.isWatchdog;
-    return html$1(_templateObject$c, isWatchdog ? message.identity : '', message.user_name, formatDate(stampToDate(message.timestamp)), !isWatchdog ? html$1(_templateObject2$8, message.status) : null);
+    return html$1(_templateObject$e, isWatchdog ? message.identity : '', message.user_name, formatDate(stampToDate(message.timestamp)), !isWatchdog ? html$1(_templateObject2$a, message.status) : null);
   };
 
   var messageExtended = function messageExtended(props) {
@@ -27128,16 +29349,28 @@
 
     var isWatchdog = message.user_role === 'moderator';
 
-    return html$1(_templateObject3$4, classString({
+    var voidEl = undefined;
+
+    var _separator = unseen ? html$1(_templateObject3$3, i18n.NEW_MESSAGES) : voidEl;
+
+    var _identity = !isWatchdog ? html$1(_templateObject4$3, message.identity) : voidEl;
+
+    var _messagemeta = !message.aggregated ? html$1(_templateObject5$2, meta({ message: message, isWatchdog: isWatchdog })) : voidEl;
+
+    var _messagebody = message.body ? html$1(_templateObject5$2, text(message.body)) : voidEl;
+
+    var _children = props.chidlren ? html$1(_templateObject5$2, props.chidlren) : voidEl;
+
+    return html$1(_templateObject6$1, classString({
       message: true, deleted: deleted, aggregated: aggregated, unseen: unseen, reversed: reversed, normal: !reversed
-    }), unseen ? html$1(_templateObject4$3, i18n.NEW_MESSAGES) : null, cn$3(message.user_role, 'avatar'), !message.avatar ? '' : 'background-image: url(' + message.avatar + ');', !isWatchdog ? html$1(_templateObject5$2, message.identity) : null, cn$3(message.user_role, 'content', classString({ me: message.user_id === message.current_user_id })), props.actions, !message.aggregated ? meta({ message: message, isWatchdog: isWatchdog }) : undefined, text(message.body), props.children);
+    }), _separator, cn$3(message.user_role, 'avatar'), !message.avatar ? '' : 'background-image: url(' + message.avatar + ');', _identity, cn$3(message.user_role, 'content', classString({ me: message.user_id === message.current_user_id })), props.actions ? props.actions : undefined, _messagemeta, _messagebody, _children);
   };
 
   var css$6 = ":root {\n  --messages-width: 100%;\n  --messages-width: var(--chat-messages-list-width, 100%);\n  --messages-height: 100%;\n  --messages-height: var(--chat-messages-list-height, 100%);\n}\n\n:host {\n  height: inherit;\n  height: var(--chat-messages-height, inherit);\n}\n\n.messages {\n  box-sizing: border-box;\n  font-size: inherit;\n  font-size: var(--messages-font-size, inherit);\n  height: 100%;\n  height: var(--messages-height);\n  padding: 20px;\n  width: 100%;\n  width: var(--messages-width);\n}\n";
   styleInject(css$6);
 
-  var _templateObject$d = taggedTemplateLiteral(['<div class=\'messages-inner\'>\n        ', '\n      </div>'], ['<div class=\'messages-inner\'>\n        ', '\n      </div>']),
-      _templateObject2$9 = taggedTemplateLiteral(['<div class=\'messages\'>', '</div>'], ['<div class=\'messages\'>', '</div>']);
+  var _templateObject$f = taggedTemplateLiteral(['<div class=\'messages-inner\'>\n        ', '\n      </div>'], ['<div class=\'messages-inner\'>\n        ', '\n      </div>']),
+      _templateObject2$b = taggedTemplateLiteral(['<div class=\'messages\'>', '</div>'], ['<div class=\'messages\'>', '</div>']);
 
   var MessagesElement = function (_LitElement) {
     inherits(MessagesElement, _LitElement);
@@ -27174,9 +29407,9 @@
         var _ref$list = _ref.list,
             list = _ref$list === undefined ? [] : _ref$list;
 
-        var content = !list.length ? null : html$1(_templateObject$d, this.__renderMessages(list));
+        var content = !list.length ? null : html$1(_templateObject$f, this.__renderMessages(list));
 
-        return html$1(_templateObject2$9, content);
+        return html$1(_templateObject2$b, content);
       }
     }, {
       key: '_didRender',
@@ -27202,7 +29435,7 @@
 
   withStyle(html$1)(MessagesElement, css$6, css$5, css$4);
 
-  var _templateObject$e = taggedTemplateLiteral(['<wc-chat-reactions config=\'', '\' showcount></wc-chat-reactions>'], ['<wc-chat-reactions config=\'', '\' showcount></wc-chat-reactions>']);
+  var _templateObject$g = taggedTemplateLiteral(['<wc-chat-reactions config=\'', '\' showcount></wc-chat-reactions>'], ['<wc-chat-reactions config=\'', '\' showcount></wc-chat-reactions>']);
 
   var config = function config(message) {
     return new Map([['thumbsup', { name: ':thumbsup', count: message.rating }]]);
@@ -27222,7 +29455,7 @@
         return messageExtended({
           message: message,
           actions: this.__renderActions(_extends({}, message)),
-          children: html$1(_templateObject$e, config(message))
+          children: html$1(_templateObject$g, config(message))
         });
       }
     }, {
@@ -27281,540 +29514,6 @@
   var Messages = withStyle(html$1)(XMessagesElement, css$6, css$5, css$4);
 
   /**
-   * Helpers.
-   */
-
-  var s = 1000;
-  var m$1 = s * 60;
-  var h = m$1 * 60;
-  var d = h * 24;
-  var y = d * 365.25;
-
-  /**
-   * Parse or format the given `val`.
-   *
-   * Options:
-   *
-   *  - `long` verbose formatting [false]
-   *
-   * @param {String|Number} val
-   * @param {Object} [options]
-   * @throws {Error} throw an error if val is not a non-empty string or a number
-   * @return {String|Number}
-   * @api public
-   */
-
-  var ms = function ms(val, options) {
-    options = options || {};
-    var type = typeof val === 'undefined' ? 'undefined' : _typeof(val);
-    if (type === 'string' && val.length > 0) {
-      return parse$1(val);
-    } else if (type === 'number' && isNaN(val) === false) {
-      return options.long ? fmtLong(val) : fmtShort(val);
-    }
-    throw new Error('val is not a non-empty string or a valid number. val=' + JSON.stringify(val));
-  };
-
-  /**
-   * Parse the given `str` and return milliseconds.
-   *
-   * @param {String} str
-   * @return {Number}
-   * @api private
-   */
-
-  function parse$1(str) {
-    str = String(str);
-    if (str.length > 100) {
-      return;
-    }
-    var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
-    if (!match) {
-      return;
-    }
-    var n = parseFloat(match[1]);
-    var type = (match[2] || 'ms').toLowerCase();
-    switch (type) {
-      case 'years':
-      case 'year':
-      case 'yrs':
-      case 'yr':
-      case 'y':
-        return n * y;
-      case 'days':
-      case 'day':
-      case 'd':
-        return n * d;
-      case 'hours':
-      case 'hour':
-      case 'hrs':
-      case 'hr':
-      case 'h':
-        return n * h;
-      case 'minutes':
-      case 'minute':
-      case 'mins':
-      case 'min':
-      case 'm':
-        return n * m$1;
-      case 'seconds':
-      case 'second':
-      case 'secs':
-      case 'sec':
-      case 's':
-        return n * s;
-      case 'milliseconds':
-      case 'millisecond':
-      case 'msecs':
-      case 'msec':
-      case 'ms':
-        return n;
-      default:
-        return undefined;
-    }
-  }
-
-  /**
-   * Short format for `ms`.
-   *
-   * @param {Number} ms
-   * @return {String}
-   * @api private
-   */
-
-  function fmtShort(ms) {
-    if (ms >= d) {
-      return Math.round(ms / d) + 'd';
-    }
-    if (ms >= h) {
-      return Math.round(ms / h) + 'h';
-    }
-    if (ms >= m$1) {
-      return Math.round(ms / m$1) + 'm';
-    }
-    if (ms >= s) {
-      return Math.round(ms / s) + 's';
-    }
-    return ms + 'ms';
-  }
-
-  /**
-   * Long format for `ms`.
-   *
-   * @param {Number} ms
-   * @return {String}
-   * @api private
-   */
-
-  function fmtLong(ms) {
-    return plural(ms, d, 'day') || plural(ms, h, 'hour') || plural(ms, m$1, 'minute') || plural(ms, s, 'second') || ms + ' ms';
-  }
-
-  /**
-   * Pluralization helper.
-   */
-
-  function plural(ms, n, name) {
-    if (ms < n) {
-      return;
-    }
-    if (ms < n * 1.5) {
-      return Math.floor(ms / n) + ' ' + name;
-    }
-    return Math.ceil(ms / n) + ' ' + name + 's';
-  }
-
-  var debug = createCommonjsModule(function (module, exports) {
-    /**
-     * This is the common logic for both the Node.js and web browser
-     * implementations of `debug()`.
-     *
-     * Expose `debug()` as the module.
-     */
-
-    exports = module.exports = createDebug.debug = createDebug['default'] = createDebug;
-    exports.coerce = coerce;
-    exports.disable = disable;
-    exports.enable = enable;
-    exports.enabled = enabled;
-    exports.humanize = ms;
-
-    /**
-     * The currently active debug mode names, and names to skip.
-     */
-
-    exports.names = [];
-    exports.skips = [];
-
-    /**
-     * Map of special "%n" handling functions, for the debug "format" argument.
-     *
-     * Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
-     */
-
-    exports.formatters = {};
-
-    /**
-     * Previous log timestamp.
-     */
-
-    var prevTime;
-
-    /**
-     * Select a color.
-     * @param {String} namespace
-     * @return {Number}
-     * @api private
-     */
-
-    function selectColor(namespace) {
-      var hash = 0,
-          i;
-
-      for (i in namespace) {
-        hash = (hash << 5) - hash + namespace.charCodeAt(i);
-        hash |= 0; // Convert to 32bit integer
-      }
-
-      return exports.colors[Math.abs(hash) % exports.colors.length];
-    }
-
-    /**
-     * Create a debugger with the given `namespace`.
-     *
-     * @param {String} namespace
-     * @return {Function}
-     * @api public
-     */
-
-    function createDebug(namespace) {
-
-      function debug() {
-        // disabled?
-        if (!debug.enabled) return;
-
-        var self = debug;
-
-        // set `diff` timestamp
-        var curr = +new Date();
-        var ms$$1 = curr - (prevTime || curr);
-        self.diff = ms$$1;
-        self.prev = prevTime;
-        self.curr = curr;
-        prevTime = curr;
-
-        // turn the `arguments` into a proper Array
-        var args = new Array(arguments.length);
-        for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i];
-        }
-
-        args[0] = exports.coerce(args[0]);
-
-        if ('string' !== typeof args[0]) {
-          // anything else let's inspect with %O
-          args.unshift('%O');
-        }
-
-        // apply any `formatters` transformations
-        var index = 0;
-        args[0] = args[0].replace(/%([a-zA-Z%])/g, function (match, format) {
-          // if we encounter an escaped % then don't increase the array index
-          if (match === '%%') return match;
-          index++;
-          var formatter = exports.formatters[format];
-          if ('function' === typeof formatter) {
-            var val = args[index];
-            match = formatter.call(self, val);
-
-            // now we need to remove `args[index]` since it's inlined in the `format`
-            args.splice(index, 1);
-            index--;
-          }
-          return match;
-        });
-
-        // apply env-specific formatting (colors, etc.)
-        exports.formatArgs.call(self, args);
-
-        var logFn = debug.log || exports.log || console.log.bind(console);
-        logFn.apply(self, args);
-      }
-
-      debug.namespace = namespace;
-      debug.enabled = exports.enabled(namespace);
-      debug.useColors = exports.useColors();
-      debug.color = selectColor(namespace);
-
-      // env-specific initialization logic for debug instances
-      if ('function' === typeof exports.init) {
-        exports.init(debug);
-      }
-
-      return debug;
-    }
-
-    /**
-     * Enables a debug mode by namespaces. This can include modes
-     * separated by a colon and wildcards.
-     *
-     * @param {String} namespaces
-     * @api public
-     */
-
-    function enable(namespaces) {
-      exports.save(namespaces);
-
-      exports.names = [];
-      exports.skips = [];
-
-      var split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
-      var len = split.length;
-
-      for (var i = 0; i < len; i++) {
-        if (!split[i]) continue; // ignore empty strings
-        namespaces = split[i].replace(/\*/g, '.*?');
-        if (namespaces[0] === '-') {
-          exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
-        } else {
-          exports.names.push(new RegExp('^' + namespaces + '$'));
-        }
-      }
-    }
-
-    /**
-     * Disable debug output.
-     *
-     * @api public
-     */
-
-    function disable() {
-      exports.enable('');
-    }
-
-    /**
-     * Returns true if the given mode name is enabled, false otherwise.
-     *
-     * @param {String} name
-     * @return {Boolean}
-     * @api public
-     */
-
-    function enabled(name) {
-      var i, len;
-      for (i = 0, len = exports.skips.length; i < len; i++) {
-        if (exports.skips[i].test(name)) {
-          return false;
-        }
-      }
-      for (i = 0, len = exports.names.length; i < len; i++) {
-        if (exports.names[i].test(name)) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    /**
-     * Coerce `val`.
-     *
-     * @param {Mixed} val
-     * @return {Mixed}
-     * @api private
-     */
-
-    function coerce(val) {
-      if (val instanceof Error) return val.stack || val.message;
-      return val;
-    }
-  });
-  var debug_1 = debug.coerce;
-  var debug_2 = debug.disable;
-  var debug_3 = debug.enable;
-  var debug_4 = debug.enabled;
-  var debug_5 = debug.humanize;
-  var debug_6 = debug.names;
-  var debug_7 = debug.skips;
-  var debug_8 = debug.formatters;
-
-  var browser = createCommonjsModule(function (module, exports) {
-    /**
-     * This is the web browser implementation of `debug()`.
-     *
-     * Expose `debug()` as the module.
-     */
-
-    exports = module.exports = debug;
-    exports.log = log;
-    exports.formatArgs = formatArgs;
-    exports.save = save;
-    exports.load = load;
-    exports.useColors = useColors;
-    exports.storage = 'undefined' != typeof chrome && 'undefined' != typeof chrome.storage ? chrome.storage.local : localstorage();
-
-    /**
-     * Colors.
-     */
-
-    exports.colors = ['lightseagreen', 'forestgreen', 'goldenrod', 'dodgerblue', 'darkorchid', 'crimson'];
-
-    /**
-     * Currently only WebKit-based Web Inspectors, Firefox >= v31,
-     * and the Firebug extension (any Firefox version) are known
-     * to support "%c" CSS customizations.
-     *
-     * TODO: add a `localStorage` variable to explicitly enable/disable colors
-     */
-
-    function useColors() {
-      // NB: In an Electron preload script, document will be defined but not fully
-      // initialized. Since we know we're in Chrome, we'll just detect this case
-      // explicitly
-      if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
-        return true;
-      }
-
-      // is webkit? http://stackoverflow.com/a/16459606/376773
-      // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
-      return typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance ||
-      // is firebug? http://stackoverflow.com/a/398120/376773
-      typeof window !== 'undefined' && window.console && (window.console.firebug || window.console.exception && window.console.table) ||
-      // is firefox >= v31?
-      // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-      typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31 ||
-      // double check webkit in userAgent just in case we are in a worker
-      typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
-    }
-
-    /**
-     * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
-     */
-
-    exports.formatters.j = function (v) {
-      try {
-        return JSON.stringify(v);
-      } catch (err) {
-        return '[UnexpectedJSONParseError]: ' + err.message;
-      }
-    };
-
-    /**
-     * Colorize log arguments if enabled.
-     *
-     * @api public
-     */
-
-    function formatArgs(args) {
-      var useColors = this.useColors;
-
-      args[0] = (useColors ? '%c' : '') + this.namespace + (useColors ? ' %c' : ' ') + args[0] + (useColors ? '%c ' : ' ') + '+' + exports.humanize(this.diff);
-
-      if (!useColors) return;
-
-      var c = 'color: ' + this.color;
-      args.splice(1, 0, c, 'color: inherit');
-
-      // the final "%c" is somewhat tricky, because there could be other
-      // arguments passed either before or after the %c, so we need to
-      // figure out the correct index to insert the CSS into
-      var index = 0;
-      var lastC = 0;
-      args[0].replace(/%[a-zA-Z%]/g, function (match) {
-        if ('%%' === match) return;
-        index++;
-        if ('%c' === match) {
-          // we only are interested in the *last* %c
-          // (the user may have provided their own)
-          lastC = index;
-        }
-      });
-
-      args.splice(lastC, 0, c);
-    }
-
-    /**
-     * Invokes `console.log()` when available.
-     * No-op when `console.log` is not a "function".
-     *
-     * @api public
-     */
-
-    function log() {
-      // this hackery is required for IE8/9, where
-      // the `console.log` function doesn't have 'apply'
-      return 'object' === (typeof console === 'undefined' ? 'undefined' : _typeof(console)) && console.log && Function.prototype.apply.call(console.log, console, arguments);
-    }
-
-    /**
-     * Save `namespaces`.
-     *
-     * @param {String} namespaces
-     * @api private
-     */
-
-    function save(namespaces) {
-      try {
-        if (null == namespaces) {
-          exports.storage.removeItem('debug');
-        } else {
-          exports.storage.debug = namespaces;
-        }
-      } catch (e) {}
-    }
-
-    /**
-     * Load `namespaces`.
-     *
-     * @return {String} returns the previously persisted debug modes
-     * @api private
-     */
-
-    function load() {
-      var r;
-      try {
-        r = exports.storage.debug;
-      } catch (e) {}
-
-      // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
-      if (!r && typeof process !== 'undefined' && 'env' in process) {
-        r = process.env.DEBUG;
-      }
-
-      return r;
-    }
-
-    /**
-     * Enable namespaces listed in `localStorage.debug` initially.
-     */
-
-    exports.enable(load());
-
-    /**
-     * Localstorage attempts to return the localstorage.
-     *
-     * This is necessary because safari throws
-     * when a user disables cookies/localstorage
-     * and you attempt to access it.
-     *
-     * @return {LocalStorage}
-     * @api private
-     */
-
-    function localstorage() {
-      try {
-        return window.localStorage;
-      } catch (e) {}
-    }
-  });
-  var browser_1 = browser.log;
-  var browser_2 = browser.formatArgs;
-  var browser_3 = browser.save;
-  var browser_4 = browser.load;
-  var browser_5 = browser.useColors;
-  var browser_6 = browser.storage;
-  var browser_7 = browser.colors;
-
-  /**
    * Copyright (c) 2013-present, Facebook, Inc.
    *
    * This source code is licensed under the MIT license found in the
@@ -27860,7 +29559,7 @@
   var browser$1 = invariant;
 
   // eslint-disable-next-line no-unused-vars
-  var _ = function _(ns) {
+  var _$1 = function _(ns) {
     return function (cond) {
       for (var _len = arguments.length, argv = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
         argv[_key - 1] = arguments[_key];
@@ -27870,13 +29569,8 @@
     };
   };
 
-  var registerCustomElement = function registerCustomElement(key, value) {
-    if (!key || !value) throw new Error('CustomElement is not specified');
-    !window.customElements.get(key) && window.customElements.define(key, value);
-  };
-
   var Invariant = function Invariant(namespace) {
-    var nvrnt = _(namespace);
+    var nvrnt = _$1(namespace);
 
     return function () {
       for (var _len2 = arguments.length, argv = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
@@ -27912,12 +29606,12 @@
   var css$7 = ":host {\n  box-sizing: content-box;\n  box-sizing: var(--chat-scrollable-box-sizing, content-box);\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n  padding: 0;\n  padding: var(--chat-scrollable-padding, 0);\n}\n\n:host .wrapper {\n  display: flex;\n  flex: 1 1 auto;\n  flex-direction: column;\n  min-height: 0;\n  position: relative;\n}\n\n:host .wrapper .scrollable {\n  flex: 1 1 auto;\n  overflow-y: scroll;\n}\n\n:host .wrapper .scrollable .inner {\n  min-height: 100%;\n}\n\n:host .wrapper .banner {\n  border-radius: 5px;\n  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);\n  color: #fff;\n  cursor: pointer;\n  font-size: 16px;\n  left: 20px;\n  padding: 8px 40px 8px 16px;\n  position: absolute;\n  right: 20px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n:host .wrapper .banner.top {\n  top: 5px;\n}\n\n:host .wrapper .banner.bottom {\n  bottom: 5px;\n}\n\n:host .wrapper .banner.new {\n  background: #48a1e6;\n}\n\n:host .wrapper .banner.recent {\n  background: #b8b8b8;\n}\n\n:host .wrapper .banner::before {\n  background: transparent url(\"data:image/svg+xml,%3Csvg width%3D%2216%22 height%3D%2216%22 viewBox%3D%220 0 16 16%22 fill%3D%22none%22 xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath d%3D%22M13.1295 4L14.5 5.39309L8 12L1.5 5.39309L2.87054 4L8 9.21383L13.1295 4Z%22 fill%3D%22white%22%2F%3E%3C%2Fsvg%3E\") center center no-repeat;\n  content: '';\n  display: block;\n  height: 100%;\n  position: absolute;\n  right: 16px;\n  top: 0;\n  width: 16px;\n}\n\n:host .wrapper .banner.reverse::before {\n  -webkit-transform: rotate(180deg);\n          transform: rotate(180deg);\n}\n\n:host .row {\n  align-items: center;\n  display: flex;\n  justify-content: space-between;\n}\n";
   styleInject(css$7);
 
-  var _templateObject$f = taggedTemplateLiteral(['<div\n        class$=\'', '\'\n        on-click=\'', '\'>\n          <div class=\'row\'>\n            <div>', '</div>\n            <div>', '</div>\n          </div>\n        </div>'], ['<div\n        class$=\'', '\'\n        on-click=\'', '\'>\n          <div class=\'row\'>\n            <div>', '</div>\n            <div>', '</div>\n          </div>\n        </div>']),
-      _templateObject2$a = taggedTemplateLiteral(['<div\n        class$=\'', '\'\n        on-click=\'', '\'>', '</div>'], ['<div\n        class$=\'', '\'\n        on-click=\'', '\'>', '</div>']),
-      _templateObject3$5 = taggedTemplateLiteral(['\n      <div class=\'wrapper\'>\n        <div class=\'scrollable\' id="scrollable" on-scroll=\'', '\'>\n          <div class=\'inner\'>\n            <slot></slot>\n          </div>\n        </div>\n        ', '\n        ', '\n      </div>\n    '], ['\n      <div class=\'wrapper\'>\n        <div class=\'scrollable\' id="scrollable" on-scroll=\'', '\'>\n          <div class=\'inner\'>\n            <slot></slot>\n          </div>\n        </div>\n        ', '\n        ', '\n      </div>\n    ']);
+  var _templateObject$h = taggedTemplateLiteral(['<div\n        class$=\'', '\'\n        on-click=\'', '\'>\n          <div class=\'row\'>\n            <div>', '</div>\n            <div>', '</div>\n          </div>\n        </div>'], ['<div\n        class$=\'', '\'\n        on-click=\'', '\'>\n          <div class=\'row\'>\n            <div>', '</div>\n            <div>', '</div>\n          </div>\n        </div>']),
+      _templateObject2$c = taggedTemplateLiteral(['<div\n        class$=\'', '\'\n        on-click=\'', '\'>', '</div>'], ['<div\n        class$=\'', '\'\n        on-click=\'', '\'>', '</div>']),
+      _templateObject3$4 = taggedTemplateLiteral(['\n      <div class=\'wrapper\'>\n        <div class=\'scrollable\' id="scrollable" on-scroll=\'', '\'>\n          <div class=\'inner\'>\n            <slot></slot>\n          </div>\n        </div>\n        ', '\n        ', '\n      </div>\n    '], ['\n      <div class=\'wrapper\'>\n        <div class=\'scrollable\' id="scrollable" on-scroll=\'', '\'>\n          <div class=\'inner\'>\n            <slot></slot>\n          </div>\n        </div>\n        ', '\n        ', '\n      </div>\n    ']);
 
   var invariant$1 = Invariant();
-  var debug$2 = debug$1('wc:scrollable');
+  var debug$2 = debug$1(name$1 + ':Scrollable');
 
   var DELAY = 50;
   var DELTA = 20;
@@ -27996,11 +29690,11 @@
           invariant$1('Target is not valid HTMLElement');return;
         }
 
-        this.listen && compose$1(observeC(function (e) {
+        this.listen && compose(observeC(function (e) {
           return _this2._onChildrenUpdate(e);
         }), throttleC(this.delay === 0 ? 0 : this.delay || DELAY))(fromEvent(this.listen, this._scrollable, true));
 
-        compose$1(observeC(function (e) {
+        compose(observeC(function (e) {
           return _this2._onResizeHandler(e);
         }), throttleC(100))(fromEvent('resize', window));
       }
@@ -28185,21 +29879,21 @@
             _this3 = this,
             _cs2;
 
-        var detachedNewBanner = this._detached && props.showbannernew ? html$1(_templateObject$f, classString((_cs = {
+        var detachedNewBanner = this._detached && props.showbannernew ? html$1(_templateObject$h, classString((_cs = {
           banner: true,
           'new': true
         }, defineProperty(_cs, props.reverse ? 'bottom' : 'top', true), defineProperty(_cs, 'reverse', props.reverse), _cs)), function () {
           return _this3._scrollToUnseen();
         }, this.i18n.NEW_MESSAGES_COUNT, this.i18n.SEE) : null;
 
-        var detachedBanner = this._detached && !props.showbannernew ? html$1(_templateObject2$a, classString((_cs2 = {
+        var detachedBanner = this._detached && !props.showbannernew ? html$1(_templateObject2$c, classString((_cs2 = {
           banner: true,
           recent: true
         }, defineProperty(_cs2, props.reverse ? 'top' : 'bottom', true), defineProperty(_cs2, 'reverse', props.reverse), _cs2)), function () {
           return _this3.scrollTo();
         }, this.i18n.GO_TO_RECENT_MESSAGE) : null;
 
-        return html$1(_templateObject3$5, this.__boundScrollHandler, detachedNewBanner, detachedBanner);
+        return html$1(_templateObject3$4, this.__boundScrollHandler, detachedNewBanner, detachedBanner);
       }
     }, {
       key: '_rootElement',
@@ -28261,10 +29955,11 @@
     }
   };
 
-  var _templateObject$g = taggedTemplateLiteral(['\n        <div class=\'input\'>\n          <wc-chat-input\n            delay=\'', '\'\n            maxrows=\'', '\'\n            disabled=\'', '\'\n            on-message-submit=\'', '\'\n            placeholder=\'', '\'\n            placeholderdisabled=\'', '\'\n            value=\'', '\'\n          />\n        </div>\n      '], ['\n        <div class=\'input\'>\n          <wc-chat-input\n            delay=\'', '\'\n            maxrows=\'', '\'\n            disabled=\'', '\'\n            on-message-submit=\'', '\'\n            placeholder=\'', '\'\n            placeholderdisabled=\'', '\'\n            value=\'', '\'\n          />\n        </div>\n      ']),
-      _templateObject2$b = taggedTemplateLiteral(['\n      <div class=\'wrapper\'>\n        <wc-chat-scrollable\n          delay=\'', '\'\n          i18n=\'', '\'\n          freeze=\'', '\'\n          listen=\'', '\'\n          on-last-seen-change=\'', '\'\n          reverse=\'', '\'\n          showbannernew=\'', '\'\n        >\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            i18n=\'', '\'\n            invoke=\'', '\'\n            lastseen=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            reverse=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </wc-chat-scrollable>\n        ', '\n      </div>\n    '], ['\n      <div class=\'wrapper\'>\n        <wc-chat-scrollable\n          delay=\'', '\'\n          i18n=\'', '\'\n          freeze=\'', '\'\n          listen=\'', '\'\n          on-last-seen-change=\'', '\'\n          reverse=\'', '\'\n          showbannernew=\'', '\'\n        >\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            i18n=\'', '\'\n            invoke=\'', '\'\n            lastseen=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            reverse=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </wc-chat-scrollable>\n        ', '\n      </div>\n    ']);
+  var _templateObject$i = taggedTemplateLiteral(['\n        <div class=\'input\'>\n          <wc-chat-input\n            delay=\'', '\'\n            maxrows=\'', '\'\n            disabled=\'', '\'\n            on-message-submit=\'', '\'\n            placeholder=\'', '\'\n            placeholderdisabled=\'', '\'\n            value=\'', '\'\n          />\n        </div>\n      '], ['\n        <div class=\'input\'>\n          <wc-chat-input\n            delay=\'', '\'\n            maxrows=\'', '\'\n            disabled=\'', '\'\n            on-message-submit=\'', '\'\n            placeholder=\'', '\'\n            placeholderdisabled=\'', '\'\n            value=\'', '\'\n          />\n        </div>\n      ']),
+      _templateObject2$d = taggedTemplateLiteral(['\n      <div class=\'wrapper\'>\n        <wc-chat-scrollable\n          delay=\'', '\'\n          i18n=\'', '\'\n          freeze=\'', '\'\n          listen=\'', '\'\n          on-last-seen-change=\'', '\'\n          reverse=\'', '\'\n          showbannernew=\'', '\'\n        >\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            i18n=\'', '\'\n            invoke=\'', '\'\n            lastseen=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            reverse=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </wc-chat-scrollable>\n        ', '\n      </div>\n    '], ['\n      <div class=\'wrapper\'>\n        <wc-chat-scrollable\n          delay=\'', '\'\n          i18n=\'', '\'\n          freeze=\'', '\'\n          listen=\'', '\'\n          on-last-seen-change=\'', '\'\n          reverse=\'', '\'\n          showbannernew=\'', '\'\n        >\n          <wc-chat-messages\n            actions=\'', '\'\n            actionsallowed=\'', '\'\n            i18n=\'', '\'\n            invoke=\'', '\'\n            lastseen=\'', '\'\n            list=\'', '\'\n            on-message-delete=\'', '\'\n            on-message-reaction=\'', '\'\n            on-user-disable=\'', '\'\n            reverse=\'', '\'\n            user=\'', '\'\n            users=\'', '\'\n          />\n        </wc-chat-scrollable>\n        ', '\n      </div>\n    ']);
 
   var EVENT = 'did-update';
+  var debug$3 = browser(name$1 + ':chat');
 
   var Chat = function (_LitElement) {
     inherits(Chat, _LitElement);
@@ -28313,18 +30008,27 @@
       _this.boundedMessageReaction = _this._handleMessageReaction.bind(_this);
       _this.boundedLastSeenChange = _this._handleLastSeenChange.bind(_this);
 
-      registerCustomElement('wc-chat-scrollable', Scroll);
-      registerCustomElement('wc-chat-input', Input);
-      registerCustomElement('wc-chat-messages', Messages);
-      registerCustomElement('wc-chat-reactions', ReactionList);
-
       _this._scrollable = null;
       return _this;
     }
 
     createClass(Chat, [{
+      key: 'connectedCallback',
+      value: function connectedCallback() {
+        if (!this.__setup) {
+          debug$3('`__setup` is not present. Registering customElements...');
+          this._childrenElements.forEach(function (el, k) {
+            utils_1(k, el);
+          });
+        }
+
+        get(Chat.prototype.__proto__ || Object.getPrototypeOf(Chat.prototype), 'connectedCallback', this).call(this);
+      }
+    }, {
       key: 'disconnectedCallback',
       value: function disconnectedCallback() {
+        get(Chat.prototype.__proto__ || Object.getPrototypeOf(Chat.prototype), 'disconnectedCallback', this).call(this);
+
         this.boundedMessageSubmit = null;
         this.boundedMessageDelete = null;
         this.boundedUserDisable = null;
@@ -28370,7 +30074,7 @@
     }, {
       key: '_render',
       value: function _render(props) {
-        var input = props.noinput ? null : html$1(_templateObject$g, props.delaysubmit || 0, props.maxrows || 10, props.disabled, this.boundedMessageSubmit, props.placeholder, props.placeholderdisabled, props.message);
+        var input = props.noinput ? null : html$1(_templateObject$i, props.delaysubmit || 0, props.maxrows || 10, props.disabled, this.boundedMessageSubmit, props.placeholder, props.placeholderdisabled, props.message);
         var list = props.list ? props.reverse ? props.list.slice().reverse() : props.list : undefined;
         var lastSeenIndex = props.list && props.lastseen !== undefined ? getIndexById(props.lastseen, props.list) : null;
         var newMessageCount = props.list && props.lastseen !== undefined && lastSeenIndex !== null ? props.list.length - 1 - lastSeenIndex : 0;
@@ -28385,13 +30089,19 @@
           NEW_MESSAGES: this.i18n[this._lang].NEW_MESSAGES
         };
 
-        return html$1(_templateObject2$b, props.delayupdate, scrollableI18n, props.scrollabledisabled, EVENT, this.boundedLastSeenChange, props.reverse, newMessageCount > 0, props.actions, props.actionsallowed, messagesI18n, EVENT, props.lastseen, list, this.boundedMessageDelete, this.boundedMessageReaction, this.boundedUserDisable, props.reverse, props.user, props.users, input);
+        return html$1(_templateObject2$d, props.delayupdate, scrollableI18n, props.scrollabledisabled, EVENT, this.boundedLastSeenChange, props.reverse, newMessageCount > 0, props.actions, props.actionsallowed, messagesI18n, EVENT, props.lastseen, list, this.boundedMessageDelete, this.boundedMessageReaction, this.boundedUserDisable, props.reverse, props.user, props.users, input);
       }
     }, {
       key: 'i18n',
       get: function get$$1() {
         // eslint-disable-line class-methods-use-this
         return i18n;
+      }
+    }, {
+      key: '_childrenElements',
+      get: function get$$1() {
+        // eslint-disable-line class-methods-use-this
+        return new Map([['wc-chat-scrollable', Scroll], ['wc-chat-input', Input], ['wc-chat-messages', Messages], ['wc-chat-reactions', ReactionList]]);
       }
     }]);
     return Chat;
@@ -28404,8 +30114,11 @@
     default: chat
   });
 
+  var mixins = utils_3(html$1)(_);
+
   exports.chat = chat$1;
   exports.mixins = mixins;
+  exports.utils = utils$2;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
