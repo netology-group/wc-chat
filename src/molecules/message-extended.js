@@ -30,7 +30,7 @@ export const messageExtended = (props) => {
 
   const _messagebody = message.body ? (html`${text(message.body)}`) : voidEl
 
-  const _children = props.chidlren ? (html`${props.chidlren}`) : voidEl
+  const _children = props.children ? (html`${props.children}`) : voidEl
 
   return (html`
     <div class$='${cs({

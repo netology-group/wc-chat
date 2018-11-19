@@ -4279,7 +4279,7 @@
   var browser_6 = browser.storage;
   var browser_7 = browser.colors;
 
-  var _args = [["@netology-group/wc-utils@0.3.2", "/Users/s.prokhorov/projects/@netology-group/wc-chat"]];
+  var _args = [["@netology-group/wc-utils@0.3.2", "/Users/alekseykonstantinov/Documents/netology-projects/wc-chat"]];
   var _from = "@netology-group/wc-utils@0.3.2";
   var _id = "@netology-group/wc-utils@0.3.2";
   var _inBundle = false;
@@ -4300,7 +4300,7 @@
   var _requiredBy = ["/"];
   var _resolved = "https://registry.npmjs.org/@netology-group/wc-utils/-/wc-utils-0.3.2.tgz";
   var _spec = "0.3.2";
-  var _where = "/Users/s.prokhorov/projects/@netology-group/wc-chat";
+  var _where = "/Users/alekseykonstantinov/Documents/netology-projects/wc-chat";
   var author = "";
   var bugs = {
   	url: "https://github.com/netology-group/wc-utils/issues"
@@ -29359,7 +29359,7 @@
 
     var _messagebody = message.body ? html$1(_templateObject5$2, text(message.body)) : voidEl;
 
-    var _children = props.chidlren ? html$1(_templateObject5$2, props.chidlren) : voidEl;
+    var _children = props.children ? html$1(_templateObject5$2, props.children) : voidEl;
 
     return html$1(_templateObject6$1, classString({
       message: true, deleted: deleted, aggregated: aggregated, unseen: unseen, reversed: reversed, normal: !reversed
