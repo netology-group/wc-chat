@@ -1,5 +1,5 @@
-import autoprefixer from 'autoprefixer'
 import babel from 'rollup-plugin-babel'
+import cssdupl from 'postcss-discard-duplicates'
 import cjs from 'rollup-plugin-commonjs'
 import cssfonts from 'postcss-fontpath'
 import cssimport from 'postcss-import'
@@ -40,7 +40,7 @@ const css = () => postcss(noCssTransform
       cssurl({ url: 'inline' }),
       cssfonts(),
       env(),
-      autoprefixer(),
+      cssdupl(),
     ],
   })
 
