@@ -1,22 +1,31 @@
 import autoprefixer from 'autoprefixer'
 import babel from 'rollup-plugin-babel'
 import cjs from 'rollup-plugin-commonjs'
-import copy from 'rollup-plugin-copy'
 import cssfonts from 'postcss-fontpath'
 import cssimport from 'postcss-import'
 import cssurl from 'postcss-url'
 import env from 'postcss-preset-env'
 import json from 'rollup-plugin-json'
-import postcss from 'rollup-plugin-postcss'
 import npm from 'rollup-plugin-node-resolve'
+import postcss from 'rollup-plugin-postcss'
 import svg from 'rollup-plugin-svg'
 
-import { shouldUglify } from './rollup.utils'
-import { directories } from './package.json'
+import { shouldUglify } from './util/rollup-uglify'
+import { name as pkgname, directories, peerDependencies } from './package.json'
+
+const copy = require('./util/copy')
+const moduleName = require('./util/module-name')
 
 const entry = process.env.ENTRY || 'index'
-const ns = process.env.NAMESPACE || 'WCChat'
 const noCssTransform = process.env.SKIPCSS
+
+const copyModule = (to, ...argv) => argv.reduce((acc, it) => {
+  acc[it] = `${to}/${it}`
+
+  return acc
+}, {})
+
+const copyToPublic = (...list) => copyModule('public', ...list)
 
 const css = () => postcss(noCssTransform
   ? {}
@@ -35,13 +44,14 @@ const css = () => postcss(noCssTransform
     ],
   })
 
-const dist = (name = ns) => ({
+const dist = (name = moduleName(pkgname, true)) => ({
   input: `${directories.lib}/${entry}.js`,
   output: {
     exports: 'named',
     format: 'umd',
     name,
   },
+  external: _ => Object.keys(peerDependencies || {}).includes(_),
   plugins: [
     npm({
       browser: true,
@@ -53,7 +63,11 @@ const dist = (name = ns) => ({
     json(),
     babel(),
     shouldUglify(),
-    copy({ './fonts': 'public/fonts' }),
+    copy(copyToPublic(
+      'node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js',
+      'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
+      'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js.map',
+    )),
   ],
 })
 

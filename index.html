@@ -1,193 +1,70 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Chat component</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Chat component</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script src="./dist/polyfill.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ulid@2.3.0/dist/index.umd.min.js"></script>
 
-    <script>if (!window.customElements) { document.write('<!--'); }</script>
-    <script src="./public/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js" type="text/javascript" ></script>
-    <!--! do not remove -->
+  <script src="https://cdn.jsdelivr.net/npm/core-js@2.6.5/client/shim.min.js"></script>
 
-    <script src="./public/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js" type="text/javascript" ></script>
+  <script>if (!window.customElements) { document.write('<!--'); }</script>
+  <script src="./public/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js" type="text/javascript" ></script>
+  <!--! do not remove -->
 
-    <script src="./dist/chat.min.js"></script>
+  <script src="./public/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js" type="text/javascript" ></script>
 
-    <script>
-      const uuidv4 = (function () {
-        /*
-        https://gist.github.com/jed/982883
-         */
-        function b(a){return a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,b)}
-        return function () {
-            return b()
-        }
-      }())
+  <script src="./dist/chat.min.js"></script>
 
-      var messenger
-      var messengerReversed
-      var avatarUrl = 'https://about.gitlab.com/images/devops-tools/gitlab-logo.svg'
-      var _messages = [
-        {
-          name: 'Admin',
-          user_name: "Admin",
-          role: 'moderator',
-          user_role: 'moderator',
-          identity: 'Administrator',
-          user_id: 99,
-          visible: true,
-          avatar: avatarUrl,
-          id: uuidv4(),
-          body: 'Hello World!',
-          timestamp: Date.now() / 1e3,
-          rating: 100500,
-        }
-      ]
-      var _users = [
-        {
-          name: 'Marco Polo',
-          identity: 'me',
-          user_name: "Marco Polo",
-          user_role: 'user',
-          user_id: 1,
-          visible: true,
-          avatar: avatarUrl
-        },
-        {
-          name: 'Mario',
-          identity: 'me2',
-          user_name: "Mario",
-          user_role: 'user',
-          user_id: 2,
-          visible: true,
-          avatar: avatarUrl
-        },
-      ]
-
-      var _actions = [['message-delete', { self: true }],['message-reaction', { self: true }]]
-
-      var _actionsallowed = ['message-delete', 'user-disable', 'message-reaction']
-
-      function enhanceMessage (message, userId) {
-        const _message = {
-          id: uuidv4(),
-          body: message,
-          timestamp: Date.now() / 1e3,
-          user_id: userId,
-        }
-
-        return Object.assign(_message, _users.filter(function(_){
-          return _.user_id === _message.user_id
-        })[0] || {})
-      }
-
-      function initialize (element, user) {
-        element.actions = _actions
-        element.actionsallowed = _actionsallowed
-        element.list = _messages
-        element.users = _users
-        element.user = user
-
-        element.addEventListener('chat-message-submit', function(e) {
-          setTimeout(function() {
-            _messages = _messages.concat(enhanceMessage(e.detail.message, user))
-
-            update()
-          }, 1e2)
-        })
-
-        element.addEventListener('chat-message-reaction', function(e) {
-          _messages = _messages.map(function(it) {
-            if(it.id === e.detail.message.id) it.rating = !it.rating ? 1 : it.rating + 1
-            return it
-          })
-
-          update()
-        })
-
-        element.addEventListener('chat-message-delete', function(e) {
-          alert('Delete message: ' + JSON.stringify(e.detail))
-        })
-
-        element.addEventListener('chat-user-disable', function(e) {
-          alert('Disable user: '+ JSON.stringify(e.detail))
-        })
-
-        element.addEventListener('chat-last-seen-change', function(e) {
-          element.lastseen = e.detail
-        })
-
-        element.lastseen = _messages && _messages.length ? _messages[_messages.length - 1].id : undefined
-      }
-
-      function update () {
-        messenger.list = _messages
-        messengerReversed.list = _messages
-      }
-
-      window.document.addEventListener('WebComponentsReady', function() {
-        var Chat = window.WCChat.chat.default
-        var mixins = window.WCChat.mixins
-        var utils = window.WCChat.utils
-
-        Chat = mixins.withCustomElements(Chat, function(children){
-          const el = children.get('wc-chat-messages')
-          if(!el) return new Map()
-
-          const applyLinkTo = utils.combineMixins([
-            [mixins.withStyleLink, './public/style.css']
-          ])
-
-          return new Map([
-            ['wc-chat-messages', applyLinkTo(el)]
-          ])
-        })
-
-        window.customElements.define('wc-chat', Chat)
-
-        messenger = document.getElementById('messenger')
-        messengerReversed = document.getElementById('messenger-reverse')
-
-        initialize(messenger, 1)
-        initialize(messengerReversed, 2)
-      })
-    </script>
+  <script src="./public/index.js"></script>
+  </head>
+  <body>
+    <h1>Chat</h1>
+    <div class="row">
+      <div class="container">
+        <wc-chat
+        id="messenger"
+        lang="ru"
+        placeholder="Write something…"
+        placeholderdisabled="Chat is blocked now"
+        />
+      </div>
+      <div class="container">
+        <wc-chat
+        id="messenger-reverse"
+        lang="en-US"
+        reverse
+        placeholder="Write something…"
+        placeholderdisabled="Chat is blocked now"
+        />
+      </div>
+    </div>
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     <style>
-      html,
       body {
-        height: 100%;
-        width: 100%;
+        font-family: "Lato", sans-serif;
+      }
+
+      .container {
+        height: 450px;
+        position: relative;
+        width: 30%;
+      }
+
+      .container + .container {
+        margin-left: 20px;
+      }
+
+      #messenger,
+      #messenger-reverse {
+        position: absolute;
       }
 
       .row {
         display: flex;
       }
     </style>
-    <link href="./public/fonts.css" rel="stylesheet" />
-  </head>
-  <body>
-    <h1>Chat</h1>
-    <div class="row">
-      <div style="height: 450px; width: 30%;">
-        <wc-chat
-          id="messenger"
-          lang="ru"
-          placeholder="Write something…"
-          placeholderdisabled="Chat is blocked now"
-        />
-      </div>
-      <div style="height: 450px; width: 30%; margin-left: 20px;">
-        <wc-chat
-          id="messenger-reverse"
-          lang="en-US"
-          reverse
-          placeholder="Write something…"
-          placeholderdisabled="Chat is blocked now"
-        />
-      </div>
-    </div>
   </body>
-</html>
+  </html>
