@@ -1,36 +1,78 @@
-import { html, classString as cs } from '@polymer/lit-element'
+import { html, LitElement, classString as cs } from '@polymer/lit-element'
+import { unsafeHTML } from 'lit-html/lib/unsafe-html'
+import { withStyle } from '@netology-group/wc-utils'
+
+import { section, avatar } from '../atoms/message'
+
+import { HTMLEntityMessage, MarkdownMessage } from '../utils/message-parser'
 
 import style from './message.css'
 
-const cn = (...argv) => argv.join(' ').trim()
+export { style }
 
-export const stampToDate = stamp => new Date(stamp * 1e3)
+function getMessageBody (message, parserName, parse) {
+  let body = message
 
-export const formatDate = (date, pattern = /\d{2}:\d{2}/) => date.toTimeString().match(pattern)
+  const isMd = parserName === 'markdown'
 
-export const text = (message = '') => message.split('\n').map(it => (html`<div class='message-line'>${it}</div>`))
+  if (parserName === 'html-entities') body = parse(body)
+  if (isMd) body = parse(body)
 
-export const messageDefault = (props) => {
-  const { message } = props
-
-  return (html`
-    <div class$='${cs({
-      message: true, deleted: props.deleted, aggregated: message.aggregated,
-    })}'>
-      <div
-        class$='${cn(message.user_role, 'avatar', cs({ me: message.user_id === message.current_user_id }))}'
-        style$='background-image: url(${message.avatar});'
-      ></div>
-      <section class$='${cn(message.user_role, 'content')}'>
-        <div class='message-meta'>
-          <span class='message-author'>${message.user_name}</span>
-          <span class='message-status'>${message.status || formatDate(stampToDate(message.timestamp))}</span>
-        </div>
-        <div>${text(message.body)}</div>
-        ${props.children}
-      </section>
-    </div>
-  `)
+  return isMd ? (html`${unsafeHTML(body)}`) : body
 }
 
-export { style }
+export class MessageFactory extends LitElement {
+  static get properties () {
+    return {
+      aggregated: Boolean,
+      body: String,
+      classname: String,
+      deleted: Boolean,
+      uid: String,
+      image: String,
+      me: Boolean,
+      parserName: String,
+      reversed: Boolean,
+      unseen: Boolean,
+    }
+  }
+
+  get parsers () { // eslint-disable-line class-methods-use-this
+    return new Map([['markdown', MarkdownMessage()], ['html-entities', HTMLEntityMessage()]])
+  }
+
+  _render (props) { // eslint-disable-line class-methods-use-this
+    const {
+      classname,
+      me,
+      uid,
+      image,
+      user_role,
+    } = props
+
+    const body = getMessageBody(props.body, props.parserName, this.parsers.get(props.parserName))
+
+    const sectionTpl = section({
+      body,
+      classname,
+      me,
+    })
+
+    const avatarTpl = avatar({
+      image,
+      className: user_role,
+    })
+
+    const className = cs({ 'message-inner': true })
+
+    return (html`
+      <div class$='${className}'>
+        <slot name$=${`message-${uid}`}></slot>
+        ${avatarTpl}
+        ${sectionTpl}
+      </div>
+    `)
+  }
+}
+
+export const Message = withStyle(html)(MessageFactory, style)

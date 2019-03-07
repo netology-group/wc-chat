@@ -50,6 +50,9 @@ const dist = (name = moduleName(pkgname, true)) => ({
     exports: 'named',
     format: 'umd',
     name,
+    globals: {
+      'markdown-it': 'markdownit',
+    },
   },
   external: _ => Object.keys(peerDependencies || {}).includes(_),
   plugins: [

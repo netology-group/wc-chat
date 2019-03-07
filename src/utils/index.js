@@ -29,3 +29,9 @@ export const getIndexById = (id, array) => {
 
   return index
 }
+
+export const stampToDate = stamp => new Date(stamp * 1e3)
+
+export const formatDate = (date, pattern = /\d{2}:\d{2}/) => date.toTimeString().match(pattern)
+
+export const classnames = (...argv) => argv.join(' ').trim()

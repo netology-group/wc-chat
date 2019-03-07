@@ -1,6 +1,6 @@
 {
   "name": "@netology-group/wc-chat",
-  "version": "0.5.0-rc.2",
+  "version": "0.6.0-rc.1",
   "description": "Messenger's webcomponents",
   "homepage": "https://github.com/netology-group/wc-chat",
   "bugs": {
@@ -26,7 +26,7 @@
     "build": "npm run build/es && npm run build/umd && npm run build/umd/min",
     "build/es": "cross-env BABEL_ENV=es babel src -d es --copy-files",
     "build/umd": "npm run rollup -- -o dist/chat.js",
-    "build/umd/min": "cross-env NODE_ENV=production npm run rollup -- -o dist/chat.min.js",
+    "build/umd/min": "cross-env npm run rollup -- -o dist/chat.min.js",
     "demo": "http-server .",
     "prepublishOnly": "npm run test && npm run build",
     "rollup": "cross-env BABEL_ENV=rollup rollup -c",
@@ -58,12 +58,14 @@
     "@netology-group/wc-reaction": "^0.2.0",
     "@netology-group/wc-utils": "^0.3.2",
     "@polymer/iron-autogrow-textarea": "^3.0.0-pre.21",
-    "@polymer/lit-element": "~0.5.2",
+    "@polymer/lit-element": "^0.5.2",
     "@webcomponents/webcomponentsjs": "^2.1.2",
     "core-js": "^2.5.7",
     "debug": "^4.1.0",
     "intl-messageformat": "~2.2.0",
     "invariant": "^2.2.4",
+    "lit-html": "^0.10.2",
+    "markdown-it": "^8.4.2",
     "most": "^1.7.3",
     "ramda": "^0.25.0"
   },
@@ -95,7 +97,8 @@
   },
   "peerDependencies": {
     "@webcomponents/webcomponentsjs": "^2.2.7",
-    "core-js": "^2.5"
+    "core-js": "^2.5",
+    "markdown-it": "^8.4"
   },
   "optionalDependencies": {
     "chokidar-cli": "^1.2.2",

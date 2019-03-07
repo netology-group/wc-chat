@@ -41,7 +41,7 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   background-color: var(--message-avatar-color, transparent);
 }
 
-.content {
+.message-content {
   background-color: #fff;
   border-radius: var(--message-border-radius);
   box-sizing: border-box;
@@ -51,19 +51,19 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   width: calc(100% - var(--message-avatar-size) - var(--message-avatar-margin));
 }
 
-.content > [class^="actions"] {
+.message-content > [class^="actions"] {
   opacity: 0;
 }
 
-.content:hover > [class^="actions"] {
+.message-content:hover > [class^="actions"] {
   opacity: 1;
 }
 
-.content.moderator {
+.message-content.moderator {
   background-color: var(--message-color-watchdog);
 }
 
-.content.me {
+.message-content.me {
   background-color: var(--message-color-me);
 }
 
@@ -71,15 +71,15 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   position: relative;
 }
 
-.message:hover .content {
+.message:hover .message-content {
   background-color: var(--message-color-hover);
 }
 
-.message:hover .content.moderator {
+.message:hover .message-content.moderator {
   background-color: var(--message-color-watchdog-hover);
 }
 
-.message:hover .content.me {
+.message:hover .message-content.me {
   background-color: var(--message-color-me-hover);
 }
 
@@ -96,21 +96,33 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   visibility: hidden;
 }
 
-.message.aggregated .content {
+.message.aggregated .message-content {
   border-radius: var(--message-border-radius);
 }
 
 .message.deleted .avatar,
-.message.deleted .content {
+.message.deleted .message-content {
   filter: grayscale(75%);
 }
 
-.message.deleted .content {
+.message.deleted .message-content {
   background: var(--message-color-deleted);
 }
 
-.message.deleted:hover .content {
+.message.deleted:hover .message-content {
   background: var(--message-color-deleted-hover);
+}
+
+.message .message-content p,
+.message .message-content ol,
+.message .message-content ul {
+  margin: 0;
+  padding: 0;
+}
+
+.message .message-content ol,
+.message .message-content ul {
+  padding-left: 10px;
 }
 
 .message-meta {
@@ -177,21 +189,21 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   margin-bottom: 45px;
 }
 
-.message.unseen .separator {
+.message-separator {
   position: absolute;
   user-select: none;
   width: 100%;
 }
 
-.message.unseen.normal .separator {
+.message-separator:not(.reversed) {
   top: -30px;
 }
 
-.message.unseen.reversed .separator {
+.message-separator.reversed {
   bottom: -30px;
 }
 
-.message.unseen .separator span {
+.message-separator span {
   background: #f8f8f8;
   border-radius: 5px;
   color: #b8b8b8;
@@ -201,7 +213,7 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   position: relative;
 }
 
-.message.unseen .separator hr {
+.message-separator hr {
   border: none;
   border-top: 1px solid #d4d4d4;
   height: 0;
@@ -209,4 +221,19 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   position: absolute;
   top: 11px;
   width: 100%;
+}
+
+.message-content pre > code {
+  background-color: #e8e2e2;
+  border: 1px solid #c7c1c1;
+  border-radius: var(--message-border-radius);
+  padding: 5px 10px;
+}
+
+.message-content p > code {
+  background-color: #e8e2e2;
+  border: 1px solid #d6cbcb;
+  border-radius: var(--message-border-radius);
+  color: rebeccapurple;
+  padding: 0 2px;
 }
