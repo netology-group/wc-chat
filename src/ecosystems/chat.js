@@ -24,7 +24,7 @@ export class ChatElement extends LitElement {
       delaysubmit: Number,
       delayupdate: Number,
       disabled: Boolean,
-      lang: String,
+      language: String,
       lastseen: Number,
       list: Array,
       maxrows: Number,
@@ -42,11 +42,7 @@ export class ChatElement extends LitElement {
   constructor (props) {
     super(props)
 
-    this._lang = this.lang || IntlMessageFormat.prototype._resolveLocale(navigator.language)
-
-    if (!this.i18n[this._lang]) {
-      this._lang = 'en-US'
-    }
+    this._lang = this._resolveLanguage(this.language)
 
     // eslint-disable-next-line max-len
     this._strNewMessages = new IntlMessageFormat(this.i18n[this._lang].NEW_MESSAGES_COUNT, this._lang)
@@ -89,6 +85,29 @@ export class ChatElement extends LitElement {
       ['wc-chat-messages', Messages],
       ['wc-chat-reactions', Reactions],
     ])
+  }
+
+  _propertiesChanged (props, changedProps, prevProps) {
+    super._propertiesChanged(props, changedProps, prevProps)
+
+    if (changedProps && changedProps.language !== prevProps.language) {
+      this._lang = this._resolveLanguage(this.language)
+      // eslint-disable-next-line max-len
+      this._strNewMessages = new IntlMessageFormat(this.i18n[this._lang].NEW_MESSAGES_COUNT, this._lang)
+
+      this.requestRender()
+    }
+  }
+
+  _resolveLanguage (language) {
+    // eslint-disable-next-line max-len
+    let resolvedLanguage = language || IntlMessageFormat.prototype._resolveLocale(navigator.language)
+
+    if (!this.i18n[resolvedLanguage]) {
+      resolvedLanguage = 'en-US'
+    }
+
+    return resolvedLanguage
   }
 
   scrollTo () {
