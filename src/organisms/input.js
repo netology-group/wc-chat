@@ -20,6 +20,7 @@ export class MessageInput extends LitElement {
   static get properties () {
     return {
       disabled: Boolean,
+      maxlength: Number,
       maxrows: Number,
       placeholder: String,
       placeholderdisabled: String,
@@ -141,7 +142,7 @@ export class MessageInput extends LitElement {
 
   _render (props) {
     const {
-      disabled, placeholder, placeholderdisabled, value, maxrows,
+      disabled, placeholder, placeholderdisabled, value, maxrows, maxlength,
     } = props
 
     const button = Button({
@@ -151,6 +152,7 @@ export class MessageInput extends LitElement {
 
     const textarea = Textarea({
       disabled,
+      maxlength,
       maxRows: maxrows || 5,
       onKeyPress: this._boundKeyPress,
       onInput: this._boundOnInput,

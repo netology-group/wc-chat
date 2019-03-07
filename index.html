@@ -31,6 +31,7 @@
           language="ru"
           placeholder="Введите сообщение"
           placeholderdisabled="Чат заблокирован"
+          parser='markdown'
         />
       </div>
       <div class="container">
@@ -52,7 +53,7 @@
       .container {
         height: 450px;
         position: relative;
-        width: 30%;
+        width: 45%;
       }
 
       .container + .container {
@@ -62,6 +63,7 @@
       #messenger,
       #messenger-reverse {
         position: absolute;
+        width: inherit;
       }
 
       .row {

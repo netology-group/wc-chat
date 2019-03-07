@@ -27,6 +27,7 @@ export class ChatElement extends LitElement {
       language: String,
       lastseen: Number,
       list: Array,
+      maxlength: Number,
       maxrows: Number,
       message: String,
       noinput: Boolean,
@@ -152,6 +153,7 @@ export class ChatElement extends LitElement {
         <div class='input'>
           <wc-chat-input
             delay='${props.delaysubmit || 0}'
+            maxlength='${props.maxlength}'
             maxrows='${props.maxrows || 10}'
             disabled='${props.disabled}'
             on-message-submit='${this.boundedMessageSubmit}'

@@ -46,7 +46,7 @@ export class XMessagesElement extends MessagesElement {
     const unseenTpl = !message.unseen
       ? undefined
       : (html`
-        <div slot$=${`message-${message.id}`}>
+        <div slot$=${`message-${message.id}`} class='separator-ph'>
           <div class$=${sepClass}>
             <hr><span>${message.i18n.NEW_MESSAGES}</span>
           </div>

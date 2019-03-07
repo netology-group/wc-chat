@@ -5,6 +5,7 @@
   height: var(--chat-height, 100%);
   min-height: var(--chat-min-height, 400px);
   min-width: var(--chat-min-width, 330px);
+  width: var(--chat-width, auto);
 }
 
 :host .wrapper {

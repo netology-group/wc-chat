@@ -16,7 +16,7 @@ export function Message () {
 }
 
 export function HTMLEntityMessage () {
-  return input => sanitize(input)
+  return input => sanitize(input).replace(/\n{2,}/g, '\n')
 }
 
 export function MarkdownMessage (opts = {}) {

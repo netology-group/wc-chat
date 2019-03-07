@@ -14,3 +14,7 @@
   padding: 20px;
   width: var(--messages-width);
 }
+
+.separator-ph {
+  position: relative;
+}
