@@ -43,6 +43,7 @@ export class MessageFactory extends LitElement {
 
   _render (props) { // eslint-disable-line class-methods-use-this
     const {
+      aggregated,
       classname,
       me,
       uid,
@@ -59,8 +60,9 @@ export class MessageFactory extends LitElement {
     })
 
     const avatarTpl = avatar({
-      image,
+      aggregated,
       className: user_role,
+      image,
     })
 
     const className = cs({ 'message-inner': true })

@@ -41,6 +41,11 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   background-color: var(--message-avatar-color, transparent);
 }
 
+.avatar.aggregated {
+  height: 1px;
+  visibility: hidden;
+}
+
 .message-content {
   background-color: #fff;
   border-radius: var(--message-border-radius);
@@ -89,11 +94,6 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 
 .message.aggregated {
   margin-top: var(--message-aggregated-margin);
-}
-
-.message.aggregated .avatar {
-  height: 1px;
-  visibility: hidden;
 }
 
 .message.aggregated .message-content {

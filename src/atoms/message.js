@@ -2,8 +2,12 @@ import { html, classString as cs } from '@polymer/lit-element'
 
 import { stampToDate, formatDate, classnames as cn } from '../utils/index'
 
-export const avatar = ({ image, className }) => (html`
-  <div class$='${cn(className, 'avatar')}'>
+export const avatar = ({
+  aggregated,
+  className,
+  image,
+}) => (html`
+  <div class$='${cn(className, 'avatar', cs({ aggregated }))}'>
     <div style$='${!image ? '' : `background-image: url(${image});`}'></div>
   </div>
 `)
