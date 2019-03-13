@@ -1,13 +1,11 @@
 import { fromEvent } from 'most/src/source/fromEvent'
-import { html, LitElement, classString as cs } from '@polymer/lit-element'
+import { html, LitElement } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils'
 import compose from 'ramda/es/compose'
 
 import { Invariant, debug as Debug } from '../utils/index'
-import style from '../molecules/scrollable.css'
+import style from '../organisms/scrollable.css'
 import { observeC as observe, throttleC as throttle } from '../utils/most'
-
-import { Scrollable } from './scrollable'
 
 const invariant = Invariant()
 const debug = Debug('@netology-group/wc-chat/Scrollable')
@@ -17,16 +15,14 @@ const DELTA = 20
 
 const isNumber = it => typeof it === 'number'
 
-export class ScrollToUnseen extends Scrollable {
+export class Scrollable extends LitElement {
   static get properties () {
     return {
       delay: Number,
-      i18n: Object,
       freeze: Boolean,
       listen: String,
       reverse: Boolean,
       scrolltarget: String,
-      showbannernew: Boolean,
     }
   }
 
@@ -44,19 +40,8 @@ export class ScrollToUnseen extends Scrollable {
     this._x = 0
     this._detached = false
 
-    // this._oldChildrenHeight = 0
-
     this.__boundScrollHandler = this._onScrollHandler.bind(this)
   }
-
-  // set __childrenHeight (val) {
-  //   if (this._height === val) return
-  //   this._oldChildrenHeight = this._height
-
-  //   this._height = val
-
-  //   debug('777 NEXT innerheight', val, this._oldChildrenHeight)
-  // }
 
   get _rootElement () {
     return !this.shadowRoot ? undefined : this.shadowRoot
@@ -122,54 +107,6 @@ export class ScrollToUnseen extends Scrollable {
     )(fromEvent('resize', window))
   }
 
-  _updateDetachedValue (element) {
-    const {
-      offsetHeight,
-      scrollTop,
-      scrollHeight,
-    } = element
-
-    const newDetachedValue = this.reverse
-      ? scrollTop > 0
-      : (scrollHeight - scrollTop) > offsetHeight
-
-    if (!newDetachedValue) {
-      this.dispatchEvent(new CustomEvent('last-seen-change'))
-    }
-
-    if (newDetachedValue !== this._detached) {
-      this._detached = newDetachedValue
-
-      this.requestRender()
-    }
-  }
-
-  _scrollToUnseen () {
-    const slot = this._scrollable.querySelector('slot')
-    const el = slot.assignedNodes() && slot.assignedNodes()[1] && slot.assignedNodes()[1].shadowRoot
-      ? slot.assignedNodes()[1].shadowRoot.querySelector('.message.unseen')
-      : null
-
-    if (el) {
-      this._scrollTo(0, el.offsetTop - this._scrollable.offsetHeight / 2)
-    }
-  }
-
-  _onResizeHandler () {
-    this._onScrollHandler({ currentTarget: this._scrollable })
-  }
-
-  _onScrollHandler (e) {
-    this._defineCoordinates(...[
-      e.currentTarget.scrollLeft,
-      e.currentTarget.scrollTop,
-      e.currentTarget.scrollWidth,
-      e.currentTarget.scrollHeight,
-    ])
-
-    this._updateDetachedValue(e.currentTarget)
-  }
-
   _defineCoordinates (x, y, width, height, left, top, fn) {
     if (!left) left = x // eslint-disable-line no-param-reassign
     if (!top) top = y // eslint-disable-line no-param-reassign
@@ -194,12 +131,21 @@ export class ScrollToUnseen extends Scrollable {
     }
   }
 
+  _onResizeHandler () {
+    this._onScrollHandler({ currentTarget: this._scrollable })
+  }
+
+  _onScrollHandler (e) {
+    this._defineCoordinates(...[
+      e.currentTarget.scrollLeft,
+      e.currentTarget.scrollTop,
+      e.currentTarget.scrollWidth,
+      e.currentTarget.scrollHeight,
+    ])
+  }
+
   _onChildrenUpdate (e) {
     this._shouldScrollTo(e)
-
-    if (e.currentTarget) {
-      this._updateDetachedValue(e.currentTarget)
-    }
   }
 
   _yScroll (el) {
@@ -269,16 +215,13 @@ export class ScrollToUnseen extends Scrollable {
      */
 
     if (!this.reverse) {
-      const { offsetHeight } = this._scrollable
-      const viewingOld = (y + offsetHeight) < this._height
-
       /**
        * To distinguish update on initial data loading
        *  agaist update on user interaction `this._maybeManualScroll` was added.
        * It implements normal user's behaviour check
        *  which is used to change `this.__manual` property
        */
-      scrollTo = ((viewingOld && this.__manual) || this.freeze) ? Y.current : Y.height
+      scrollTo = (this.__manual || this.freeze) ? Y.current : Y.height
     }
 
     this._scrollTo(X.current, scrollTo)
@@ -294,14 +237,7 @@ export class ScrollToUnseen extends Scrollable {
 
     if (el.scrollLeft === x && el.scrollTop === y) {
       debug('Scroll position is the same. Update coordinates manually...')
-      this._defineCoordinates(...[
-        x,
-        y,
-        el.scrollWidth,
-        el.scrollHeight,
-        undefined,
-        undefined,
-      ])
+      this._defineCoordinates(x, y, el.scrollWidth, el.scrollHeight)
     }
 
     if (!el.scrollTo) {
@@ -310,55 +246,9 @@ export class ScrollToUnseen extends Scrollable {
     } else {
       el.scrollTo(x, y)
     }
-    // this.__childrenHeight = el.scrollHeight
-
-    // Promise.resolve()
-    //   .then(() => {
-    //     if (!el.scrollTo) {
-    //       el.scrollLeft = x
-    //       el.scrollTop = y
-    //     } else {
-    //       el.scrollTo(x, y)
-    //     }
-
-    //     return undefined
-    //   })
-    //   .then(() => {
-    //     // this.__childrenHeight = el.scrollHeight
-
-    //     // console.log('Afterupdate', this._height)
-    //   })
-    //   .catch(console.info)
   }
 
-  _render (props) {
-    const detachedNewBanner = this._detached && props.showbannernew
-      ? (html`<div
-        class$='${cs({
-          banner: true,
-          'new': true,
-          [props.reverse ? 'bottom' : 'top']: true,
-          reverse: props.reverse,
-        })}'
-        on-click='${() => this._scrollToUnseen()}'>
-          <div class='row'>
-            <div>${this.i18n.NEW_MESSAGES_COUNT}</div>
-            <div>${this.i18n.SEE}</div>
-          </div>
-        </div>`)
-      : null
-
-    const detachedBanner = this._detached && !props.showbannernew
-      ? (html`<div
-        class$='${cs({
-          banner: true,
-          recent: true,
-          [props.reverse ? 'top' : 'bottom']: true,
-          reverse: props.reverse,
-        })}'
-        on-click='${() => this.scrollTo()}'>${this.i18n.GO_TO_RECENT_MESSAGE}</div>`)
-      : null
-
+  _render () {
     return (html`
       <div class='wrapper'>
         <div class='scrollable' id="scrollable" on-scroll='${this.__boundScrollHandler}'>
@@ -366,11 +256,9 @@ export class ScrollToUnseen extends Scrollable {
             <slot></slot>
           </div>
         </div>
-        ${detachedNewBanner}
-        ${detachedBanner}
       </div>
     `)
   }
 }
 
-export default withStyle(html)(ScrollToUnseen, style)
+export default withStyle(html)(Scrollable, style)
