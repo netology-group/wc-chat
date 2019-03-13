@@ -1,6 +1,5 @@
 import { html, LitElement } from '@polymer/lit-element'
 import IntlMessageFormat from 'intl-messageformat'
-import 'intl-messageformat/lib/locales'
 import { withStyle } from '@netology-group/wc-utils'
 import { registerCustomElement } from '@netology-group/wc-utils/lib/utils'
 import { ReactionList as Reactions } from '@netology-group/wc-reaction/es/organisms/reaction-list'

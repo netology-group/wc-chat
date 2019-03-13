@@ -52,6 +52,7 @@ const dist = (name = moduleName(pkgname, true)) => ({
     name,
     globals: {
       'markdown-it': 'markdownit',
+      'intl-messageformat': 'IntlMessageFormat',
     },
   },
   external: _ => Object.keys(peerDependencies || {}).includes(_),
