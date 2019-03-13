@@ -12,6 +12,9 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  padding: 20px;
+  background: var(--alabaster, #f8f8f8);
 }
 
 /* stylelint-disable selector-type-no-unknown */

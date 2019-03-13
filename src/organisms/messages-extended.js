@@ -1,6 +1,7 @@
 import { html, classString as cs } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils'
 
+import { isAggregatedBy } from '../utils/index'
 import { actions as Actions, style as actionStyle } from '../atoms/actions'
 import { MessagesElement } from '../organisms/messages'
 import { style as messageStyle } from '../molecules/message'
@@ -16,6 +17,7 @@ export class XMessagesElement extends MessagesElement {
   static get properties () {
     return {
       ...super.properties,
+      i18n: Object,
       actions: Array,
       actionsallowed: Array,
       parser: String,
@@ -26,55 +28,67 @@ export class XMessagesElement extends MessagesElement {
     return new Map(this.actions)
   }
 
-  __renderMessage (message) { // eslint-disable-line class-methods-use-this
-    const metaTpl = message.aggregated
-      ? undefined
-      : (html`${
-        meta({
-          classname: message.user_role,
-          display_role: message.user_role,
-          timestamp: message.timestamp,
-          user_name: message.user_name,
-        })
-      }`)
+  _renderMessage (message) { // eslint-disable-line class-methods-use-this
+    const {
+      aggregated,
+      avatar,
+      body,
+      current_user_id,
+      deleted,
+      id,
+      reversed,
+      timestamp,
+      unseen,
+      user_id,
+      user_name,
+      user_role,
+    } = message
 
     const sepClass = cs({
       'message-separator': true,
-      'reversed': message.reversed,
+      reversed,
     })
 
-    const unseenTpl = !message.unseen
+    const unseenTpl = !unseen
       ? undefined
       : (html`
-        <div slot$=${`message-${message.id}`} class='separator-ph'>
+        <div slot$=${`message-${id}`} class='separator-ph'>
           <div class$=${sepClass}>
-            <hr><span>${message.i18n.NEW_MESSAGES}</span>
+            <hr><span>${this.i18n.NEW_MESSAGES}</span>
           </div>
         </div>
       `)
 
+    const metaTpl = aggregated
+      ? undefined
+      : meta({
+        classname: user_role,
+        display_role: user_role,
+        timestamp,
+        user_name,
+      })
+
     const className = cs({
-      aggregated: message.aggregated,
-      deleted: message.deleted,
+      aggregated,
+      deleted,
       message: true,
-      normal: !message.reversed,
-      reversed: message.reversed,
-      unseen: message.unseen,
+      normal: !reversed,
+      reversed,
+      unseen,
     })
 
     return (html`
       <wc-message
         class$='${className}'
-        aggregated='${message.aggregated}'
-        body='${message.body}'
-        classname='${message.user_role}'
-        deleted='${message.deleted}'
-        uid='${message.id}'
-        image='${message.avatar}'
-        me='${message.user_id === message.current_user_id}'
+        aggregated='${aggregated}'
+        body='${body}'
+        classname='${user_role}'
+        deleted='${deleted}'
+        uid='${id}'
+        image='${avatar}'
+        me='${user_id === current_user_id}'
         parserName='${this.parser}'
-        reversed='${message.reversed}'
-        unseen='${message.unseen}'
+        reversed='${reversed}'
       >
         ${unseenTpl}
         <div slot='message-prologue'>
@@ -85,6 +99,38 @@ export class XMessagesElement extends MessagesElement {
           <wc-chat-reactions config='${config(message)}' showcount></wc-chat-reactions>
         </div>
       </wc-message>
+    `)
+  }
+
+  _renderEachMessage (it, i, arr) {
+    const aggregated = isAggregatedBy('user_id', i, arr)
+    const message = { ...it, current_user_id: this.user }
+
+    const idx = this.reverse ? i + 1 : i - 1
+    const unseen = this.lastseen !== undefined
+      ? arr[idx]
+        ? arr[idx].id === this.lastseen
+        : null
+      : null
+
+    const messageTpl = this._renderMessage({
+      ...message,
+      aggregated,
+      reversed: this.reverse,
+      unseen,
+    })
+
+    const className = cs({
+      aggregated,
+      deleted: message.deleted,
+      [this.classname || 'messages-item']: true,
+      normal: !this.reverse,
+      reversed: this.reverse,
+      unseen,
+    })
+
+    return (html`
+      <div class$='${className}'>${messageTpl}</div>
     `)
   }
 

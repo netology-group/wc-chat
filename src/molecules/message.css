@@ -113,38 +113,19 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   background: var(--message-color-deleted-hover);
 }
 
+/** <Meta> */
 .message-meta {
-  margin-bottom: 5px;
+  display: inline-block;
+  line-height: 19px;
+  padding-bottom: 5px;
   user-select: none;
 }
 
-.message.aggregated .message-meta {
-  height: 0;
-  opacity: 0;
-}
-
-.message-status {
-  margin-bottom: 3px;
-}
-
-.message-stamp,
-.message-status,
-.message-identity {
-  color: var(--message-status-color);
-  font-size: 0.75em;
-}
-
 .message-author {
-  font-weight: bold;
-  margin-right: 8px;
-}
-
-.moderator .message-status {
   display: inline-block;
-}
-
-.user.avatar .message-identity {
-  text-align: center;
+  font-weight: bold;
+  line-height: inherit;
+  padding-right: 8px;
 }
 
 .moderator .message-author {
@@ -152,13 +133,30 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   padding-right: 12px;
 }
 
-.message.unseen.normal,
-.message + .message.unseen:not(.aggregated) {
-  margin-top: 45px;
+.message-stamp {
+  color: var(--message-status-color);
+  font-size: 0.75em;
+  line-height: 15px;
 }
 
-.message.unseen.reversed {
-  margin-bottom: 45px;
+/** </Meta> */
+
+.message-status {
+  margin-bottom: 3px;
+}
+
+.message-status,
+.message-identity {
+  color: var(--message-status-color);
+  font-size: 0.75em;
+}
+
+.user.avatar .message-identity {
+  text-align: center;
+}
+
+.moderator .message-status {
+  display: inline-block;
 }
 
 .message-separator {
@@ -195,8 +193,9 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   width: 100%;
 }
 
-/* .md */
+/** .md */
 .message-body {
+  line-height: 19px;
   overflow-wrap: anywhere;
   padding-right: 24px;
   white-space: pre-line;

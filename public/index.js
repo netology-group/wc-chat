@@ -21,6 +21,7 @@ var _messages = [
     visible: true,
     avatar: avatarUrl,
     id: window.ULID.ulid(),
+    uid: window.ULID.ulid(),
     body: 'Hello World!',
     timestamp: Date.now() / 1e3,
     rating: 100500,
@@ -64,23 +65,24 @@ function enhanceMessage (message, userId) {
   })[0] || {})
 }
 
-function initialize (element, user) {
+function update (list, messages) {
+  list.forEach((_) => {
+    _.list = messages
+  })
+}
+
+function initialize (element, user, makeUpdate) {
   element.actions = _actions
   element.actionsallowed = _actionsallowed
   element.list = _messages
   element.users = _users
   element.user = user
 
-  function update () {
-    messenger.list = _messages
-    messengerReversed.list = _messages
-  }
-
   element.addEventListener('chat-message-submit', function onMessageSubmit (e) {
     setTimeout(function onSubmitSuccess () {
       _messages = _messages.concat(enhanceMessage(e.detail.message, user))
 
-      update()
+      makeUpdate(_messages)
     }, 1e2)
   })
 
@@ -91,7 +93,7 @@ function initialize (element, user) {
       return it
     })
 
-    update()
+    makeUpdate(_messages)
   })
 
   element.addEventListener('chat-message-delete', function onMessageDelete (e) {
@@ -128,6 +130,6 @@ window.document.addEventListener('WebComponentsReady', function onComponentsRead
   messenger = document.getElementById('messenger')
   messengerReversed = document.getElementById('messenger-reverse')
 
-  initialize(messenger, 1)
-  initialize(messengerReversed, 2)
+  initialize(messenger, 1, list => update([messenger, messengerReversed], list))
+  initialize(messengerReversed, 2, list => update([messenger, messengerReversed], list))
 })

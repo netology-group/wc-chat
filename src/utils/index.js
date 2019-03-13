@@ -35,3 +35,7 @@ export const stampToDate = stamp => new Date(stamp * 1e3)
 export const formatDate = (date, pattern = /\d{2}:\d{2}/) => date.toTimeString().match(pattern)
 
 export const classnames = (...argv) => argv.join(' ').trim()
+
+export const isAggregatedBy = (field, index, list) => (!index || !field)
+  ? false
+  : list[index][field] === list[index - 1][field]

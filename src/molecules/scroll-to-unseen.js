@@ -7,6 +7,8 @@ import { Invariant, debug as Debug } from '../utils/index'
 import style from '../molecules/scrollable.css'
 import { observeC as observe, throttleC as throttle } from '../utils/most'
 
+import { Scrollable } from './scrollable'
+
 const invariant = Invariant()
 const debug = Debug('@netology-group/wc-chat/Scrollable')
 
@@ -15,7 +17,7 @@ const DELTA = 20
 
 const isNumber = it => typeof it === 'number'
 
-export class Scrollable extends LitElement {
+export class ScrollToUnseen extends Scrollable {
   static get properties () {
     return {
       delay: Number,
@@ -25,7 +27,6 @@ export class Scrollable extends LitElement {
       reverse: Boolean,
       scrolltarget: String,
       showbannernew: Boolean,
-      unseenSelector: String,
     }
   }
 
@@ -43,8 +44,19 @@ export class Scrollable extends LitElement {
     this._x = 0
     this._detached = false
 
+    // this._oldChildrenHeight = 0
+
     this.__boundScrollHandler = this._onScrollHandler.bind(this)
   }
+
+  // set __childrenHeight (val) {
+  //   if (this._height === val) return
+  //   this._oldChildrenHeight = this._height
+
+  //   this._height = val
+
+  //   debug('777 NEXT innerheight', val, this._oldChildrenHeight)
+  // }
 
   get _rootElement () {
     return !this.shadowRoot ? undefined : this.shadowRoot
@@ -134,9 +146,8 @@ export class Scrollable extends LitElement {
 
   _scrollToUnseen () {
     const slot = this._scrollable.querySelector('slot')
-
     const el = slot.assignedNodes() && slot.assignedNodes()[1] && slot.assignedNodes()[1].shadowRoot
-      ? slot.assignedNodes()[1].shadowRoot.querySelector(this.unseenSelector)
+      ? slot.assignedNodes()[1].shadowRoot.querySelector('.message.unseen')
       : null
 
     if (el) {
@@ -283,7 +294,14 @@ export class Scrollable extends LitElement {
 
     if (el.scrollLeft === x && el.scrollTop === y) {
       debug('Scroll position is the same. Update coordinates manually...')
-      this._defineCoordinates(x, y, el.scrollWidth, el.scrollHeight)
+      this._defineCoordinates(...[
+        x,
+        y,
+        el.scrollWidth,
+        el.scrollHeight,
+        undefined,
+        undefined,
+      ])
     }
 
     if (!el.scrollTo) {
@@ -292,6 +310,25 @@ export class Scrollable extends LitElement {
     } else {
       el.scrollTo(x, y)
     }
+    // this.__childrenHeight = el.scrollHeight
+
+    // Promise.resolve()
+    //   .then(() => {
+    //     if (!el.scrollTo) {
+    //       el.scrollLeft = x
+    //       el.scrollTop = y
+    //     } else {
+    //       el.scrollTo(x, y)
+    //     }
+
+    //     return undefined
+    //   })
+    //   .then(() => {
+    //     // this.__childrenHeight = el.scrollHeight
+
+    //     // console.log('Afterupdate', this._height)
+    //   })
+    //   .catch(console.info)
   }
 
   _render (props) {
@@ -336,4 +373,4 @@ export class Scrollable extends LitElement {
   }
 }
 
-export default withStyle(html)(Scrollable, style)
+export default withStyle(html)(ScrollToUnseen, style)

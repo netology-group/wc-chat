@@ -4,10 +4,10 @@ import { stampToDate, formatDate, classnames as cn } from '../utils/index'
 
 export const avatar = ({
   aggregated,
-  className,
+  classname,
   image,
 }) => (html`
-  <div class$='${cn(className, 'avatar', cs({ aggregated }))}'>
+  <div class$='${cn(classname, 'avatar', cs({ aggregated }))}'>
     <div style$='${!image ? '' : `background-image: url(${image});`}'></div>
   </div>
 `)

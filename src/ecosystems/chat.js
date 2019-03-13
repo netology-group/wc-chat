@@ -8,7 +8,7 @@ import Debug from 'debug'
 
 import Input from '../organisms/input'
 import Messages from '../organisms/messages-extended'
-import Scroll from '../molecules/scrollable'
+import Scrollable from '../molecules/scrollable'
 import { getIndexById } from '../utils/index'
 import style from '../ecosystems/chat.css'
 import i18n from '../i18n'
@@ -82,7 +82,7 @@ export class ChatElement extends LitElement {
 
   get _childrenElements () { // eslint-disable-line class-methods-use-this
     return new Map([
-      ['wc-chat-scrollable', Scroll],
+      ['wc-chat-scrollable', Scrollable],
       ['wc-chat-input', Input],
       ['wc-chat-messages', Messages],
       ['wc-chat-reactions', Reactions],
@@ -195,6 +195,7 @@ export class ChatElement extends LitElement {
           on-last-seen-change='${this.boundedLastSeenChange}'
           reverse='${props.reverse}'
           showbannernew='${newMessageCount > 0}'
+          unseenSelector='.messages-item.unseen'
         >
           <wc-chat-messages
             actions='${props.actions}'

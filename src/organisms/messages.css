@@ -1,20 +1,37 @@
 :root {
   --messages-width: var(--chat-messages-list-width, 100%);
   --messages-height: var(--chat-messages-list-height, 100%);
+  --messages-item-aggregated-margin: var(--chat-message-aggregated-margin, var(--messages-item-border-radius));
+  --messages-item-border-radius: 5px;
+  --messages-item-margin-between: 16px;
 }
 
-:host {
-  height: var(--chat-messages-height, inherit);
+.separator-ph {
+  position: relative;
 }
 
 .messages {
   box-sizing: border-box;
   font-size: var(--messages-font-size, inherit);
   height: var(--messages-height);
-  padding: 20px;
   width: var(--messages-width);
 }
 
-.separator-ph {
+.messages-item {
+  box-sizing: border-box;
+  padding-bottom: var(--messages-item-aggregated-margin);
   position: relative;
+}
+
+.messages-item.normal.unseen,
+.messages-item + .messages-item.unseen:not(.aggregated) {
+  margin-top: 45px;
+}
+
+.messages-item.reversed.unseen {
+  margin-bottom: 45px;
+}
+
+.messages-item + .messages-item:not(.aggregated) {
+  margin-top: calc(var(--messages-item-margin-between) - var(--messages-item-aggregated-margin));
 }

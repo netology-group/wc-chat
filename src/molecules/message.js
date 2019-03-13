@@ -33,7 +33,6 @@ export class MessageFactory extends LitElement {
       me: Boolean,
       parserName: String,
       reversed: Boolean,
-      unseen: Boolean,
     }
   }
 
@@ -61,7 +60,7 @@ export class MessageFactory extends LitElement {
 
     const avatarTpl = avatar({
       aggregated,
-      className: user_role,
+      classname: user_role,
       image,
     })
 
@@ -69,7 +68,7 @@ export class MessageFactory extends LitElement {
 
     return (html`
       <div class$='${className}'>
-        <slot name$=${`message-${uid}`}></slot>
+        <slot name$=${`message-${uid || Math.ceil(Math.random() * 1e3)}`}></slot>
         ${avatarTpl}
         ${sectionTpl}
       </div>
