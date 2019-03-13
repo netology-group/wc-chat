@@ -1,4 +1,4 @@
-:root {
+:host {
   --actions-action-icon-size: 16px;
   --actions-background-color: var(--chat-message-actions-background-color, var(--white, #fff));
   --actions-border-color-disabled: var(--chat-message-actions-border-color-disabled, var(--silver, #b8b8b8));
@@ -14,11 +14,11 @@
 }
 
 /** reactions */
-.reaction {
+:host .reaction {
   height: 36px;
 }
 
-.reactions-group {
+:host .reactions-group {
   background: var(--actions-background-color);
   border: 1px solid;
   border-color: var(--actions-border-color);
@@ -33,14 +33,14 @@
   z-index: -1;
 }
 
-.reactions:hover .reactions-group {
+:host .reactions:hover .reactions-group {
   border-color: var(--actions-border-color-hover);
   opacity: 1;
   z-index: 200;
 }
 
-.reaction > svg,
-.action > svg {
+:host .reaction > svg,
+:host .action > svg {
   height: var(--actions-action-icon-size);
   padding: 10px 11px;
   transition: all ease-out var(--actions-transition-delay);
@@ -48,7 +48,7 @@
 }
 
 /** actions */
-.action {
+:host .action {
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -56,23 +56,23 @@
   padding: 0;
 }
 
-.action:disabled {
+:host .action:disabled {
   cursor: not-allowed;
 }
 
-.action > svg path {
+:host .action > svg path {
   fill: var(--actions-color-fill);
 }
 
-.action.user-disable > svg {
+:host .action.user-disable > svg {
   height: calc(var(--actions-action-icon-size) + 2px);
 }
 
-.action:hover:not(:disabled) > svg path {
+:host .action:hover:not(:disabled) > svg path {
   fill: var(--actions-color-fill-hover);
 }
 
-.actions {
+:host .actions {
   cursor: default;
   float: right;
   height: 24px;
@@ -82,16 +82,16 @@
   width: 24px;
 }
 
-.actions:hover {
+:host .actions:hover {
   opacity: 1;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
-.actions:hover > svg path {
+:host .actions:hover > svg path {
   fill: var(--actions-color-fill-hover);
 }
 
-.actions-inner {
+:host .actions-inner {
   display: none;
   flex-direction: column;
   margin-left: -8px;
@@ -100,13 +100,13 @@
   z-index: -1;
 }
 
-.actions:hover .actions-inner {
+:host .actions:hover .actions-inner {
   display: flex;
   opacity: 1;
   z-index: 100;
 }
 
-.actions-group {
+:host .actions-group {
   background: var(--actions-background-color);
   border: 1px solid;
   border-color: var(--actions-border-color);
@@ -118,17 +118,17 @@
   user-select: none;
 }
 
-.actions-group:hover {
+:host .actions-group:hover {
   border-color: var(--actions-border-color-hover);
   color: var(--actions-color-hover);
 }
 
-.reaction:hover > svg,
-.action:hover:not(:disabled) > svg {
+:host .reaction:hover > svg,
+:host .action:hover:not(:disabled) > svg {
   transform: scale(1.2);
 }
 
-.reaction-add {
+:host .reaction-add {
   background: transparent;
   border: 0;
   border-radius: 100%;
@@ -140,21 +140,21 @@
   width: 100%;
 }
 
-.reaction-add:hover {
+:host .reaction-add:hover {
   transform: scale(1.2);
 }
 
-.reaction-add.disabled {
+:host .reaction-add.disabled {
   border-color: var(--actions-border-color-disabled);
   color: var(--actions-color-disabled);
   cursor: not-allowed;
 }
 
-.reaction-add:hover:not(.disabled) svg path {
+:host .reaction-add:hover:not(.disabled) svg path {
   fill: var(--actions-color-hover);
 }
 
-.quickdelete {
+:host .quickdelete {
   background: rgba(0, 0, 0, 0.47);
   border-radius: 100%;
   height: 32px;
@@ -166,18 +166,18 @@
   width: 32px;
 }
 
-.quickdelete:hover {
+:host .quickdelete:hover {
   opacity: 1;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
-.quickdelete > svg {
+:host .quickdelete > svg {
   height: 10px;
   padding: 0;
   padding-top: 2px;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
-.quickdelete > svg path {
+:host .quickdelete > svg path {
   fill: var(--actions-background-color) !important;
 }

@@ -64,7 +64,7 @@ export class MessageFactory extends LitElement {
       image,
     })
 
-    const className = cs({ 'message-inner': true })
+    const className = cs({ 'message-inner': true, aggregated })
 
     return (html`
       <div class$='${className}'>

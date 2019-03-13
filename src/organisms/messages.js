@@ -3,13 +3,11 @@ import { registerCustomElement } from '@netology-group/wc-utils/lib/utils'
 import { withStyle } from '@netology-group/wc-utils'
 
 import { XLitElement as LitElement } from '../utils/rendered-lit-element'
-
 import { debug, isAggregatedBy } from '../utils/index'
-import { style as actionStyle } from '../atoms/actions'
-import { style as messageStyle, Message } from '../molecules/message'
-import style from '../organisms/messages.css'
-
+import { Message } from '../molecules/message'
 import { meta } from '../atoms/message'
+import { style as actionStyle } from '../atoms/actions'
+import style from '../organisms/messages.css'
 
 export class MessagesElement extends LitElement {
   static get properties () {
@@ -132,4 +130,4 @@ export class MessagesElement extends LitElement {
   }
 }
 
-export default withStyle(html)(MessagesElement, style, messageStyle, actionStyle)
+export default withStyle(html)(MessagesElement, style, actionStyle)

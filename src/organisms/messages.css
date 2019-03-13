@@ -1,37 +1,103 @@
-:root {
+:host {
   --messages-width: var(--chat-messages-list-width, 100%);
   --messages-height: var(--chat-messages-list-height, 100%);
   --messages-item-aggregated-margin: var(--chat-message-aggregated-margin, var(--messages-item-border-radius));
   --messages-item-border-radius: 5px;
   --messages-item-margin-between: 16px;
+  --message-status-color: var(--chat-message-status-color, var(--silver, #b8b8b8));
 }
 
-.separator-ph {
+:host .separator-ph {
   position: relative;
 }
 
-.messages {
+:host .messages {
   box-sizing: border-box;
   font-size: var(--messages-font-size, inherit);
   height: var(--messages-height);
   width: var(--messages-width);
 }
 
-.messages-item {
+:host .messages-item {
   box-sizing: border-box;
   padding-bottom: var(--messages-item-aggregated-margin);
   position: relative;
 }
 
-.messages-item.normal.unseen,
-.messages-item + .messages-item.unseen:not(.aggregated) {
+:host .messages-item.normal.unseen,
+:host .messages-item + .messages-item.unseen:not(.aggregated) {
   margin-top: 45px;
 }
 
-.messages-item.reversed.unseen {
+:host .messages-item.reversed.unseen {
   margin-bottom: 45px;
 }
 
-.messages-item + .messages-item:not(.aggregated) {
+:host .messages-item + .messages-item:not(.aggregated) {
   margin-top: calc(var(--messages-item-margin-between) - var(--messages-item-aggregated-margin));
 }
+
+/** <Meta> */
+:host .message-meta {
+  display: inline-block;
+  line-height: 19px;
+  padding-bottom: 5px;
+  user-select: none;
+}
+
+:host .message-author {
+  display: inline-block;
+  font-weight: bold;
+  line-height: inherit;
+  padding-right: 8px;
+}
+
+:host .moderator .message-author {
+  background: url('../images/human.svg') no-repeat right center transparent;
+  padding-right: 12px;
+}
+
+:host .message-stamp {
+  color: var(--message-status-color);
+  font-size: 0.75em;
+  line-height: 15px;
+}
+
+/** </Meta> */
+
+/** <Separator> */
+:host .message-separator {
+  position: absolute;
+  user-select: none;
+  width: 100%;
+}
+
+:host .message-separator:not(.reversed) {
+  top: -35px;
+}
+
+:host .message-separator.reversed {
+  bottom: -70px;
+}
+
+:host .message-separator span {
+  background: #f8f8f8;
+  border-radius: 5px;
+  color: #b8b8b8;
+  font-size: 16px;
+  margin-left: 50px;
+  padding: 2px 5px;
+  position: relative;
+}
+
+:host .message-separator hr {
+  border: none;
+  border-top: 1px solid #d4d4d4;
+  height: 0;
+  margin: 0;
+  position: absolute;
+  top: 11px;
+  width: 100%;
+}
+
+/** </Separator> */
