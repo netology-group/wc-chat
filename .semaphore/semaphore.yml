@@ -1,0 +1,38 @@
+version: v1.0
+name: wc-chat
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+promotions:
+  - name: Deploy 2 docs
+    pipeline_file: docs.deploy.yml
+    auto_promote_on:
+      - result: passed
+        branch:
+          - "master"
+
+blocks:
+  - name: Install
+    task:
+      jobs:
+        - name: prepare
+          commands:
+            - checkout
+            - nvm use $(cat .nvmrc) # semaphore does not use node version from .nvmrc for some reason
+            - cache restore node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-$SEMAPHORE_GIT_BRANCH,node-modules-master
+            - npm ci
+            - cache store node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
+  - name: Commit
+    task:
+      env_vars:
+        - name: NODE_ENV
+          value: production
+      jobs:
+        - name: test
+          commands:
+            - checkout
+            - nvm use $(cat .nvmrc) # semaphore does not use node version from .nvmrc for some reason
+            - cache restore node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
+            - npm test

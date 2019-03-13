@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { uglify } from 'rollup-plugin-uglify'
+import { terser as uglify } from 'rollup-plugin-terser'
 
 const uglifyOptions = {
   compress: {

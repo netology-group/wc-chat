@@ -1,0 +1,29 @@
+version: v1.0
+name: wc-chat-docs-deployment
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+blocks:
+  - name: Build
+    task:
+      jobs:
+        - name: build
+          commands:
+          - checkout
+          - nvm use $(cat .nvmrc) # semaphore does not use node version from .nvmrc for some reason
+          - cache restore node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
+          - NODE_ENV=production npm run build
+          - cache store artefacts-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) dist
+  - name: Deploy
+    task:
+      secrets:
+        - name: docs-bucket
+      jobs:
+        - name: publish
+          commands:
+            - checkout
+            - cache restore artefacts-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
+            - mkdir -p build && cp -r dist ./build/ && cp -r public ./build/ && cp -r index.html ./build/
+            - SSL_ALLOW="set ftp:ssl-allow no;" SOURCE=build PROJECT=wc-chat ./scripts/publish.sh
