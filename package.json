@@ -26,7 +26,7 @@
     "build": "npm run build/es && npm run build/umd && npm run build/umd/min",
     "build/es": "cross-env BABEL_ENV=es babel src -d es --copy-files",
     "build/umd": "npm run rollup -- -o dist/chat.js",
-    "build/umd/min": "cross-env npm run rollup -- -o dist/chat.min.js",
+    "build/umd/min": "cross-env NODE_ENV=production npm run rollup -- -o dist/chat.min.js",
     "demo": "http-server .",
     "prepublishOnly": "npm run test && npm run build",
     "rollup": "cross-env BABEL_ENV=rollup rollup -c",
