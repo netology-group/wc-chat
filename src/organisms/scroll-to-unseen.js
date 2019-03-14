@@ -18,6 +18,11 @@ export class ScrollToUnseen extends Scrollable {
     }
   }
 
+  constructor (...argv) {
+    super(...argv)
+    this._detached = undefined
+  }
+
   _updateDetachedValue (element) {
     const {
       offsetHeight,
@@ -123,32 +128,32 @@ export class ScrollToUnseen extends Scrollable {
   }
 
   _render (props) {
-    const detachedNewBanner = this._detached && props.showbannernew
-      ? (html`<div
-        class$='${cs({
-          banner: true,
-          'new': true,
-          [props.reverse ? 'bottom' : 'top']: true,
-          reverse: props.reverse,
-        })}'
-        on-click='${() => this._scrollToUnseen()}'>
-          <div class='row'>
-            <div>${this.i18n.NEW_MESSAGES_COUNT}</div>
-            <div>${this.i18n.SEE}</div>
-          </div>
-        </div>`)
-      : null
+    const showNewBanner = this._detached && props.showbannernew
+    const detachedNewBanner = (html`<div
+      class$='${cs({
+        banner: true,
+        'new': true,
+        [props.reverse ? 'bottom' : 'top']: true,
+        inactive: !showNewBanner,
+        reverse: props.reverse,
+      })}'
+      on-click='${!showNewBanner ? undefined : () => this._scrollToUnseen()}'>
+        <div class='row'>
+          <div>${this.i18n.NEW_MESSAGES_COUNT}</div>
+          <div>${this.i18n.SEE}</div>
+        </div>
+      </div>`)
 
-    const detachedBanner = this._detached && !props.showbannernew
-      ? (html`<div
-        class$='${cs({
-          banner: true,
-          recent: true,
-          [props.reverse ? 'top' : 'bottom']: true,
-          reverse: props.reverse,
-        })}'
-        on-click='${() => this.scrollTo()}'>${this.i18n.GO_TO_RECENT_MESSAGE}</div>`)
-      : null
+    const showRecentBanner = this._detached && !props.showbannernew
+    const detachedBanner = (html`<div
+      class$='${cs({
+        banner: true,
+        recent: true,
+        [props.reverse ? 'top' : 'bottom']: true,
+        inactive: !showRecentBanner,
+        reverse: props.reverse,
+      })}'
+      on-click='${!showRecentBanner ? undefined : () => this.scrollTo()}'>${this.i18n.GO_TO_RECENT_MESSAGE}</div>`)
 
     return (html`
       <div class='wrapper'>
