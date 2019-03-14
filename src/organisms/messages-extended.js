@@ -85,7 +85,7 @@ export class XMessagesElement extends MessagesElement {
         uid='${id}'
         image='${avatar}'
         me='${user_id === current_user_id}'
-        parserName='${this.parser}'
+        parsername='${this.parser}'
         reversed='${reversed}'
       >
         ${unseenTpl}
