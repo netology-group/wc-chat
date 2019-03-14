@@ -10,6 +10,7 @@
 
 :host .wrapper {
   background: var(--alabaster, #f8f8f8);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   height: 100%;
