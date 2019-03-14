@@ -7,7 +7,8 @@ import { debug, isAggregatedBy } from '../utils/index'
 import { Message } from '../molecules/message'
 import { meta } from '../atoms/message'
 import { style as actionStyle } from '../atoms/actions'
-import style from '../organisms/messages.css'
+
+import style from './messages.css'
 
 export class MessagesElement extends LitElement {
   static get properties () {

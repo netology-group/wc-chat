@@ -9,8 +9,9 @@ import Input from '../organisms/input'
 import Messages from '../organisms/messages-extended'
 import Scrollable from '../organisms/scroll-to-unseen'
 import { getIndexById } from '../utils/index'
-import style from '../ecosystems/chat.css'
 import i18n from '../i18n'
+
+import style from './chat.css'
 
 const EVENT = 'did-update'
 const debug = Debug('@netology-group/wc-chat/chat')

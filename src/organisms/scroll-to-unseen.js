@@ -2,8 +2,9 @@ import { html, classString as cs } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils'
 
 import { debug as Debug } from '../utils/index'
-import { Scrollable } from '../organisms/scrollable'
-import style from '../organisms/scrollable.css'
+
+import { Scrollable } from './scrollable'
+import style from './scrollable.css'
 
 const debug = Debug('@netology-group/wc-chat/Scrollable')
 

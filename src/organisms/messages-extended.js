@@ -3,11 +3,11 @@ import { withStyle } from '@netology-group/wc-utils'
 
 import { actions as Actions, style as actionStyle } from '../atoms/actions'
 import { isAggregatedBy } from '../utils/index'
-import { MessagesElement } from '../organisms/messages'
-import { meta } from '../atoms/message'
-import style from '../organisms/messages.css'
-
 import * as actions from '../atoms/action'
+import { meta } from '../atoms/message'
+
+import { MessagesElement } from './messages'
+import style from './messages.css'
 
 const config = message => new Map([['thumbsup', { name: ':thumbsup', count: message.rating }]])
 

@@ -4,8 +4,9 @@ import { withStyle } from '@netology-group/wc-utils'
 import compose from 'ramda/es/compose'
 
 import { Invariant, debug as Debug } from '../utils/index'
-import style from '../organisms/scrollable.css'
 import { observeC as observe, throttleC as throttle } from '../utils/most'
+
+import style from './scrollable.css'
 
 const invariant = Invariant()
 const debug = Debug('@netology-group/wc-chat/Scrollable')
