@@ -1,15 +1,19 @@
-import { html, LitElement } from '@polymer/lit-element'
+import { html, classString as cs } from '@polymer/lit-element'
+import { registerCustomElement } from '@netology-group/wc-utils/lib/utils'
 import { withStyle } from '@netology-group/wc-utils'
 
+import { XLitElement as LitElement } from '../utils/rendered-lit-element'
+import { debug, isAggregatedBy } from '../utils/index'
+import { Message } from '../molecules/message'
+import { meta } from '../atoms/message'
 import { style as actionStyle } from '../atoms/actions'
-import { messageExtended as Message } from '../molecules/message-extended'
-import { style as messageStyle } from '../molecules/message'
-import style from '../organisms/messages.css'
+
+import style from './messages.css'
 
 export class MessagesElement extends LitElement {
   static get properties () {
     return {
-      i18n: Object,
+      classname: String,
       invoke: String,
       lastseen: Number,
       list: Array,
@@ -19,25 +23,95 @@ export class MessagesElement extends LitElement {
     }
   }
 
-  __renderMessage (message) { // eslint-disable-line class-methods-use-this
-    return Message({ message })
+  connectedCallback () {
+    if (!this.__setup) {
+      debug('Registering customElements...')
+      this._childrenElements.forEach((el, k) => { registerCustomElement(k, el) })
+    }
+
+    super.connectedCallback()
+  }
+
+  get _childrenElements () { // eslint-disable-line class-methods-use-this
+    return new Map([['wc-message', Message]])
+  }
+
+  _renderMessage (message) { // eslint-disable-line class-methods-use-this
+    const {
+      aggregated,
+      avatar,
+      body,
+      current_user_id,
+      deleted,
+      id,
+      reversed,
+      timestamp,
+      user_id,
+      user_name,
+      user_role,
+    } = message
+
+    const metaTpl = aggregated
+      ? undefined
+      : meta({
+        classname: user_role,
+        display_role: user_role,
+        timestamp,
+        user_name,
+      })
+
+    const className = cs({
+      aggregated,
+      deleted,
+      message: true,
+      normal: !reversed,
+      reversed,
+    })
+
+    return (html`
+      <wc-message
+        class$='${className}'
+        aggregated='${aggregated}'
+        body='${body}'
+        classname='${user_role}'
+        deleted='${deleted}'
+        uid='${id}'
+        image='${avatar}'
+        me='${user_id === current_user_id}'
+        reversed='${reversed}'
+      >
+        <div slot='message-prologue'>
+          ${metaTpl}
+        </div>
+      </wc-message>
+    `)
+  }
+
+  _renderEachMessage (it, i, arr) {
+    const aggregated = isAggregatedBy('user_id', i, arr)
+    const message = { ...it, current_user_id: this.user }
+
+    const messageTpl = this._renderMessage({
+      ...message,
+      aggregated,
+      reversed: this.reverse,
+    })
+
+    const className = cs({
+      aggregated,
+      deleted: message.deleted,
+      [this.classname || 'messages-item']: true,
+      normal: !this.reverse,
+      reversed: this.reverse,
+    })
+
+    return (html`
+      <div class$='${className}'>${messageTpl}</div>
+    `)
   }
 
   __renderMessages (list) {
-    return list.map((it, i, arr) => {
-      const aggregated = !i ? false : arr[i].user_id === arr[i - 1].user_id
-      const idx = this.reverse ? i + 1 : i - 1
-      const unseen = this.lastseen !== undefined
-        ? arr[idx]
-          ? arr[idx].id === this.lastseen
-          : null
-        : null
-      const message = { ...it, current_user_id: this.user }
-
-      return this.__renderMessage({
-        ...message, aggregated, i18n: this.i18n, unseen, reversed: this.reverse,
-      })
-    })
+    return list.map((it, i, arr) => this._renderEachMessage(it, i, arr))
   }
 
   _render ({ list = [] }) {
@@ -51,8 +125,10 @@ export class MessagesElement extends LitElement {
   }
 
   _didRender () {
-    this.dispatchEvent(new CustomEvent(this.invoke))
+    this.renderComplete
+      .then(() => this.dispatchEvent(new CustomEvent(this.invoke)))
+      .catch(error => debug(error.message))
   }
 }
 
-export default withStyle(html)(MessagesElement, style, messageStyle, actionStyle)
+export default withStyle(html)(MessagesElement, style, actionStyle)

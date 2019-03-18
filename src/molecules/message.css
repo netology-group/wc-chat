@@ -2,9 +2,7 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   --reaction-count-left: 0;
 }
 
-:root {
-  --message-aggregated-content-border-radius: var(--chat-aggregated-content-border-radius, var(--message-border-radius));
-  --message-aggregated-margin: var(--chat-message-aggregated-margin, var(--message-border-radius));
+:host {
   --message-avatar-margin: 8px;
   --message-avatar-size: 32px;
   --message-border-radius: 5px;
@@ -15,11 +13,9 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   --message-color-me: var(--chat-message-color-me, var(--cornflowerBlue, #ebf2f7));
   --message-color-watchdog-hover: var(--chat-message-color-watchdog-hover, #faefebb3);
   --message-color-watchdog: var(--chat-message-color-watchdog, var(--whiteLinen, #faefeb));
-  --message-margin-between: 16px;
-  --message-status-color: var(--chat-message-status-color, var(--silver, #b8b8b8));
 }
 
-.avatar {
+:host .avatar {
   float: left;
   margin-right: var(--message-avatar-margin);
   overflow: hidden;
@@ -28,7 +24,7 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   width: var(--message-avatar-size);
 }
 
-.avatar > div:first-child {
+:host .avatar > div:first-child {
   background: no-repeat center center;
   background-color: var(--message-avatar-color-moderator, transparent);
   background-size: contain;
@@ -37,11 +33,16 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   width: var(--message-avatar-size);
 }
 
-.avatar.moderator {
+:host .avatar.moderator {
   background-color: var(--message-avatar-color, transparent);
 }
 
-.content {
+:host .message-inner.aggregated .avatar {
+  height: 1px;
+  visibility: hidden;
+}
+
+:host .message-content {
   background-color: #fff;
   border-radius: var(--message-border-radius);
   box-sizing: border-box;
@@ -51,162 +52,108 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   width: calc(100% - var(--message-avatar-size) - var(--message-avatar-margin));
 }
 
-.content > [class^="actions"] {
+:host .message-content > [class^="actions"] {
   opacity: 0;
 }
 
-.content:hover > [class^="actions"] {
+:host .message-content:hover > [class^="actions"] {
   opacity: 1;
 }
 
-.content.moderator {
+:host .message-content.moderator {
   background-color: var(--message-color-watchdog);
 }
 
-.content.me {
+:host .message-content.me {
   background-color: var(--message-color-me);
 }
 
-.message {
-  position: relative;
-}
-
-.message:hover .content {
+:host .message-inner:hover .message-content {
   background-color: var(--message-color-hover);
 }
 
-.message:hover .content.moderator {
+:host .message-inner:hover .message-content.moderator {
   background-color: var(--message-color-watchdog-hover);
 }
 
-.message:hover .content.me {
+:host .message-inner:hover .message-content.me {
   background-color: var(--message-color-me-hover);
 }
 
-.message + .message:not(.aggregated) {
-  margin-top: var(--message-margin-between);
-}
-
-.message.aggregated {
-  margin-top: var(--message-aggregated-margin);
-}
-
-.message.aggregated .avatar {
-  height: 1px;
-  visibility: hidden;
-}
-
-.message.aggregated .content {
+:host .message-inner.aggregated .message-content {
   border-radius: var(--message-border-radius);
 }
 
-.message.deleted .avatar,
-.message.deleted .content {
+:host .message-inner.deleted .avatar,
+:host .message-inner.deleted .message-content {
   filter: grayscale(75%);
 }
 
-.message.deleted .content {
+:host .message-inner.deleted .message-content {
   background: var(--message-color-deleted);
 }
 
-.message.deleted:hover .content {
+:host .message-inner.deleted:hover .message-content {
   background: var(--message-color-deleted-hover);
 }
 
-.message-meta {
-  margin-bottom: 5px;
-  user-select: none;
-}
-
-.message.aggregated .message-meta {
-  height: 0;
-  opacity: 0;
-}
-
-.message-body {
+/** .md */
+:host .message-body {
+  line-height: 19px;
+  overflow-wrap: anywhere;
   padding-right: 24px;
+  white-space: pre-line;
+  word-break: break-word;
 }
 
-.message-line {
-  line-height: 1.25em;
+:host .message-body h1,
+:host .message-body h2 {
+  margin-bottom: 7px;
+  margin-top: 5px;
+}
+
+:host .message-body h3,
+:host .message-body h4,
+:host .message-body h5,
+:host .message-body h6 {
+  margin-bottom: 5px;
+  margin-top: 3px;
+}
+
+:host .message-body p,
+:host .message-body ol,
+:host .message-body ul {
   margin: 0;
-  margin-bottom: 12px;
-  overflow-wrap: break-word;
-  word-break: break-all;
+  padding: 0;
 }
 
-.message-line:last-child {
-  margin-bottom: 0;
+:host .message-body p {
+  display: inline;
+  word-break: break-word;
 }
 
-.message-status {
-  margin-bottom: 3px;
-}
-
-.message-stamp,
-.message-status,
-.message-identity {
-  color: var(--message-status-color);
-  font-size: 0.75em;
-}
-
-.message-author {
-  font-weight: bold;
-  margin-right: 8px;
-}
-
-.moderator .message-status {
+:host .message-body ol,
+:host .message-body ul {
   display: inline-block;
+  padding-left: 10px;
 }
 
-.user.avatar .message-identity {
-  text-align: center;
+:host .message-body pre {
+  overflow-x: scroll;
 }
 
-.moderator .message-author {
-  background: url('../images/human.svg') no-repeat right center transparent;
-  padding-right: 12px;
+:host .message-body pre > code {
+  background-color: #e8e2e2;
+  border: 1px solid #c7c1c1;
+  border-radius: var(--message-border-radius);
+  display: inline-block;
+  padding: 5px 10px;
 }
 
-.message.unseen.normal,
-.message + .message.unseen:not(.aggregated) {
-  margin-top: 45px;
-}
-
-.message.unseen.reversed {
-  margin-bottom: 45px;
-}
-
-.message.unseen .separator {
-  position: absolute;
-  user-select: none;
-  width: 100%;
-}
-
-.message.unseen.normal .separator {
-  top: -30px;
-}
-
-.message.unseen.reversed .separator {
-  bottom: -30px;
-}
-
-.message.unseen .separator span {
-  background: #f8f8f8;
-  border-radius: 5px;
-  color: #b8b8b8;
-  font-size: 16px;
-  margin-left: 50px;
-  padding: 2px 5px;
-  position: relative;
-}
-
-.message.unseen .separator hr {
-  border: none;
-  border-top: 1px solid #d4d4d4;
-  height: 0;
-  margin: 0;
-  position: absolute;
-  top: 11px;
-  width: 100%;
+:host .message-body p > code {
+  background-color: #e8e2e2;
+  border: 1px solid #d6cbcb;
+  border-radius: var(--message-border-radius);
+  color: rebeccapurple;
+  padding: 0 2px;
 }

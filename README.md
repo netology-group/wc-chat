@@ -19,13 +19,73 @@ Chat in a nutshell can be accessed like this:
 
 ```html
 <script src="<path/to>/dist/chat.min.js"></script>
-```
-```javascript
-window.customElements.define('wc-chat', window.WcChat.Chat);
+<script>
+  window.customElements.define('wc-chat', window.WcChat.Chat);
+</script>
 ```
 
 ### Customization
 
-Chat is able to be customized. It provides some [mixins and utilities](https://github.com/netology-group/wc-utils).
+#### Enhance
 
-An example can be seen [here](https://github.com/netology-group/wc-utils)
+Chat is able to be enhanced. It provides some [mixins and utilities](https://github.com/netology-group/wc-utils).
+
+An example can be seen [here](https://github.com/netology-group/wc-utils).
+
+#### I18n
+
+Chat supports internationalization and contains basic dictionary within. You have to specify language attribute to make it work (uses `en-US` locale by default).
+
+For instance:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/intl-messageformat@2.2.0/dist/intl-messageformat-with-locales.min.js"></script>
+<wc-chat
+  language="en-US"
+  placeholder="Write something…"
+  placeholderdisabled="Chat is blocked now"
+/>
+```
+
+##### Dependencies
+
+- [intl-messageformat](https://github.com/yahoo/intl-messageformat)
+
+#### Using parsers
+
+Chat supports parsers to render a message.
+
+Here are built-in ones:
+
+##### No parser
+
+Chat renders string as is unless `parser` is defined.
+
+##### HTML Entities parser
+
+This parser just encodes a string with HTML entities.
+
+For instance:
+
+```html
+<wc-chat parser='html-entities' />
+```
+Result
+
+```sh
+:s/Scotch & Soda/Scotch &amp; Soda/
+```
+
+##### Markdown parser
+
+This parser renders any string according to Markdown markup.
+
+For instance:
+```html
+<script src="https://cdn.jsdelivr.net/npm/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
+<wc-chat parser='markdown' />
+```
+
+###### Dependencies
+
+- [markdown-it](https://github.com/markdown-it/markdown-it) 

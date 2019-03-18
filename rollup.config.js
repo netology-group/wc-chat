@@ -22,6 +22,8 @@ const noCssTransform = process.env.SKIPCSS
 const copyModule = (to, ...argv) => argv.reduce((acc, it) => {
   acc[it] = `${to}/${it}`
 
+  console.info('Copying', it, 'to', acc[it]) // eslint-disable-line no-console
+
   return acc
 }, {})
 
@@ -50,6 +52,10 @@ const dist = (name = moduleName(pkgname, true)) => ({
     exports: 'named',
     format: 'umd',
     name,
+    globals: {
+      'markdown-it': 'markdownit',
+      'intl-messageformat': 'IntlMessageFormat',
+    },
   },
   external: _ => Object.keys(peerDependencies || {}).includes(_),
   plugins: [

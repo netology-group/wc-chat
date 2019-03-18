@@ -29,11 +29,17 @@
   color: #fff;
   cursor: pointer;
   font-size: 16px;
-  left: 20px;
+  left: 0;
   padding: 8px 40px 8px 16px;
   position: absolute;
-  right: 20px;
+  right: 0;
+  transition: 0.25s ease-in opacity;
   user-select: none;
+}
+
+:host .wrapper .banner.inactive {
+  opacity: 0;
+  z-index: -1;
 }
 
 :host .wrapper .banner.top {
@@ -70,5 +76,6 @@
 :host .row {
   align-items: center;
   display: flex;
+  font-size: 0.85em;
   justify-content: space-between;
 }

@@ -17,7 +17,9 @@ iron-autogrow-textarea {
 
   --iron-autogrow-textarea: {
     box-sizing: border-box;
+    overflow-wrap: break-word;
     padding: 16px 70px 14px 20px;
+    word-break: break-all;
   };
 
   --iron-autogrow-textarea-placeholder: {

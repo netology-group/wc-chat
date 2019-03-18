@@ -8,6 +8,7 @@ const _placeholder = 'Just type something...'
 export const textarea = ({
   disabled,
   id,
+  maxlength,
   maxRows,
   onInput,
   onKeyPress,
@@ -16,6 +17,7 @@ export const textarea = ({
 }) => (html`
   <iron-autogrow-textarea
     disabled='${disabled}'
+    maxlength='${maxlength}'
     id='${id}'
     maxRows='${maxRows}'
     on-input='${function oninput (e) { onInput(e, this.textarea) }}'

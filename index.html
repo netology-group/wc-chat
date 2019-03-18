@@ -14,6 +14,10 @@
   <script src="./public/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js" type="text/javascript" ></script>
   <!--! do not remove -->
 
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/intl-messageformat@2.2.0/dist/intl-messageformat-with-locales.min.js"></script>
+
   <script src="./public/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js" type="text/javascript" ></script>
 
   <script src="./dist/chat.min.js"></script>
@@ -27,6 +31,7 @@
         <wc-chat
           id="messenger"
           language="ru"
+          parser='markdown'
           placeholder="Введите сообщение"
           placeholderdisabled="Чат заблокирован"
         />
@@ -35,14 +40,14 @@
         <wc-chat
           id="messenger-reverse"
           language="en-US"
-          reverse
           placeholder="Write something…"
           placeholderdisabled="Chat is blocked now"
+          reverse
         />
       </div>
     </div>
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    <style>
+   <style>
       body {
         font-family: "Lato", sans-serif;
       }
@@ -50,7 +55,7 @@
       .container {
         height: 450px;
         position: relative;
-        width: 30%;
+        width: 45%;
       }
 
       .container + .container {
@@ -60,6 +65,7 @@
       #messenger,
       #messenger-reverse {
         position: absolute;
+        width: inherit;
       }
 
       .row {
