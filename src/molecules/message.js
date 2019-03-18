@@ -85,6 +85,7 @@ export class MessageFactory extends LitElement {
         <slot name$=${`message-${uid || Math.ceil(Math.random() * 1e3)}`}></slot>
         ${avatarTpl}
         ${sectionTpl}
+        <slot name$=${`message-rev-${uid || Math.ceil(Math.random() * 1e3)}`}></slot>
       </div>
     `)
   }

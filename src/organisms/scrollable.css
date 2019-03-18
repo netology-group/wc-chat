@@ -39,6 +39,7 @@
 
 :host .wrapper .banner.inactive {
   opacity: 0;
+  z-index: -1;
 }
 
 :host .wrapper .banner.top {

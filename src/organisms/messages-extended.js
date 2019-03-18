@@ -47,15 +47,15 @@ export class XMessagesElement extends MessagesElement {
       reversed,
     })
 
-    const unseenTpl = !unseen
-      ? undefined
-      : (html`
-        <div slot$=${`message-${id}`} class='separator-ph'>
+    const unseenTpl = unseen && (current_user_id !== user_id)
+      ? (html`
+        <div slot$=${`message-${reversed ? 'rev-' : ''}${id}`} class='separator-ph'>
           <div class$=${sepClass}>
             <hr><span>${this.i18n.NEW_MESSAGES}</span>
           </div>
         </div>
       `)
+      : undefined
 
     const metaTpl = aggregated
       ? undefined

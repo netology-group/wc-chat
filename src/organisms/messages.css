@@ -24,15 +24,6 @@
   position: relative;
 }
 
-:host .messages-item.normal.unseen,
-:host .messages-item + .messages-item.unseen:not(.aggregated) {
-  margin-top: 45px;
-}
-
-:host .messages-item.reversed.unseen {
-  margin-bottom: 45px;
-}
-
 :host .messages-item + .messages-item:not(.aggregated) {
   margin-top: calc(var(--messages-item-margin-between) - var(--messages-item-aggregated-margin));
 }
@@ -42,7 +33,6 @@
   display: inline-block;
   line-height: 19px;
   padding-bottom: 5px;
-  user-select: none;
 }
 
 :host .message-author {
@@ -67,17 +57,16 @@
 
 /** <Separator> */
 :host .message-separator {
-  position: absolute;
   user-select: none;
   width: 100%;
 }
 
 :host .message-separator:not(.reversed) {
-  top: -35px;
+  margin: 10px 0 15px;
 }
 
 :host .message-separator.reversed {
-  bottom: -70px;
+  margin: 15px 0 10px;
 }
 
 :host .message-separator span {
