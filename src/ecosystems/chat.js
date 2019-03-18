@@ -1,6 +1,5 @@
 import { html, LitElement } from '@polymer/lit-element'
 import IntlMessageFormat from 'intl-messageformat'
-import 'intl-messageformat/lib/locales'
 import { withStyle } from '@netology-group/wc-utils'
 import { registerCustomElement } from '@netology-group/wc-utils/lib/utils'
 import { ReactionList as Reactions } from '@netology-group/wc-reaction/es/organisms/reaction-list'
@@ -8,10 +7,11 @@ import Debug from 'debug'
 
 import Input from '../organisms/input'
 import Messages from '../organisms/messages-extended'
-import Scroll from '../molecules/scrollable'
+import Scrollable from '../organisms/scroll-to-unseen'
 import { getIndexById } from '../utils/index'
-import style from '../ecosystems/chat.css'
 import i18n from '../i18n'
+
+import style from './chat.css'
 
 const EVENT = 'did-update'
 const debug = Debug('@netology-group/wc-chat/chat')
@@ -27,9 +27,11 @@ export class ChatElement extends LitElement {
       language: String,
       lastseen: Number,
       list: Array,
+      maxlength: Number,
       maxrows: Number,
       message: String,
       noinput: Boolean,
+      parser: String,
       placeholder: String,
       placeholderdisabled: String,
       reverse: Boolean,
@@ -80,7 +82,7 @@ export class ChatElement extends LitElement {
 
   get _childrenElements () { // eslint-disable-line class-methods-use-this
     return new Map([
-      ['wc-chat-scrollable', Scroll],
+      ['wc-chat-scrollable', Scrollable],
       ['wc-chat-input', Input],
       ['wc-chat-messages', Messages],
       ['wc-chat-reactions', Reactions],
@@ -151,6 +153,7 @@ export class ChatElement extends LitElement {
         <div class='input'>
           <wc-chat-input
             delay='${props.delaysubmit || 0}'
+            maxlength='${props.maxlength}'
             maxrows='${props.maxrows || 10}'
             disabled='${props.disabled}'
             on-message-submit='${this.boundedMessageSubmit}'
@@ -192,6 +195,7 @@ export class ChatElement extends LitElement {
           on-last-seen-change='${this.boundedLastSeenChange}'
           reverse='${props.reverse}'
           showbannernew='${newMessageCount > 0}'
+          unseenSelector='.messages-item.unseen'
         >
           <wc-chat-messages
             actions='${props.actions}'
@@ -203,6 +207,7 @@ export class ChatElement extends LitElement {
             on-message-delete='${this.boundedMessageDelete}'
             on-message-reaction='${this.boundedMessageReaction}'
             on-user-disable='${this.boundedUserDisable}'
+            parser='${this.parser}'
             reverse='${props.reverse}'
             user='${props.user}'
             users='${props.users}'

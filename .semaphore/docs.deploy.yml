@@ -16,6 +16,7 @@ blocks:
           - cache restore node-modules-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
           - NODE_ENV=production npm run build
           - cache store artefacts-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) dist
+          - cache store artefacts-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)-public public
   - name: Deploy
     task:
       secrets:
@@ -25,5 +26,6 @@ blocks:
           commands:
             - checkout
             - cache restore artefacts-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
+            - cache restore artefacts-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)-public
             - mkdir -p build && cp -r dist ./build/ && cp -r public ./build/ && cp -r index.html ./build/
             - SSL_ALLOW="set ftp:ssl-allow no;" SOURCE=build PROJECT=wc-chat ./scripts/publish.sh

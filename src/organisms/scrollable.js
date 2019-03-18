@@ -1,11 +1,12 @@
 import { fromEvent } from 'most/src/source/fromEvent'
-import { html, LitElement, classString as cs } from '@polymer/lit-element'
+import { html, LitElement } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils'
 import compose from 'ramda/es/compose'
 
 import { Invariant, debug as Debug } from '../utils/index'
-import style from '../molecules/scrollable.css'
 import { observeC as observe, throttleC as throttle } from '../utils/most'
+
+import style from './scrollable.css'
 
 const invariant = Invariant()
 const debug = Debug('@netology-group/wc-chat/Scrollable')
@@ -19,12 +20,10 @@ export class Scrollable extends LitElement {
   static get properties () {
     return {
       delay: Number,
-      i18n: Object,
       freeze: Boolean,
       listen: String,
       reverse: Boolean,
       scrolltarget: String,
-      showbannernew: Boolean,
     }
   }
 
@@ -109,36 +108,27 @@ export class Scrollable extends LitElement {
     )(fromEvent('resize', window))
   }
 
-  _updateDetachedValue (element) {
-    const {
-      offsetHeight,
-      scrollTop,
-      scrollHeight,
-    } = element
+  _defineCoordinates (x, y, width, height, left, top, fn) {
+    if (!left) left = x // eslint-disable-line no-param-reassign
+    if (!top) top = y // eslint-disable-line no-param-reassign
 
-    const newDetachedValue = this.reverse
-      ? scrollTop > 0
-      : (scrollHeight - scrollTop) > offsetHeight
+    debug('Updating current scroll coordinates', {
+      x, y, width, height, left, top,
+    })
 
-    if (!newDetachedValue) {
-      this.dispatchEvent(new CustomEvent('last-seen-change'))
-    }
+    this._x = x
+    this._y = y
+    this._width = width
+    this._height = height
+    this._left = left
+    this._top = top
 
-    if (newDetachedValue !== this._detached) {
-      this._detached = newDetachedValue
+    if (typeof fn === 'function') {
+      this.__childrenHeight = height
 
-      this.requestRender()
-    }
-  }
-
-  _scrollToUnseen () {
-    const slot = this._scrollable.querySelector('slot')
-    const el = slot.assignedNodes() && slot.assignedNodes()[1] && slot.assignedNodes()[1].shadowRoot
-      ? slot.assignedNodes()[1].shadowRoot.querySelector('.message.unseen')
-      : null
-
-    if (el) {
-      this._scrollTo(0, el.offsetTop - this._scrollable.offsetHeight / 2)
+      fn({
+        x, y, width, height, left, top,
+      })
     }
   }
 
@@ -153,37 +143,17 @@ export class Scrollable extends LitElement {
       e.currentTarget.scrollWidth,
       e.currentTarget.scrollHeight,
     ])
-
-    this._updateDetachedValue(e.currentTarget)
-  }
-
-  _defineCoordinates (x, y, width, height, left, top) {
-    if (!left) left = x // eslint-disable-line no-param-reassign
-    if (!top) top = y // eslint-disable-line no-param-reassign
-
-    debug('Update current scroll coordinates', {
-      x, y, width, height, left, top,
-    })
-
-    this._x = x
-    this._y = y
-    this._width = width
-    this._height = height
-    this._left = left
-    this._top = top
   }
 
   _onChildrenUpdate (e) {
     this._shouldScrollTo(e)
-
-    if (e.currentTarget) {
-      this._updateDetachedValue(e.currentTarget)
-    }
   }
 
   _yScroll (el) {
     const { _y: y } = this
     const { scrollTop: top, scrollHeight: height } = el
+
+    debug(`Prev height: ${this._height}`, `Next height: ${height}`)
 
     return {
       current: y || top,
@@ -191,6 +161,7 @@ export class Scrollable extends LitElement {
       tail: height - y,
       prevtail: this._height - y,
       top,
+      y,
     }
   }
 
@@ -233,7 +204,7 @@ export class Scrollable extends LitElement {
     // skip scrolling on empty children (initial render might has 0/0)
 
     const head = Y.height - Y.tail // eslint-disable-line no-unused-vars
-    const prevhead = Y.height - Y.prevtail
+    const prevhead = ((Y.height - Y.prevtail) < 0) ? 0 : (Y.height - Y.prevtail)
 
     const { _y: y } = this
     let scrollTo
@@ -245,16 +216,13 @@ export class Scrollable extends LitElement {
      */
 
     if (!this.reverse) {
-      const { offsetHeight } = this._scrollable
-      const viewingOld = (y + offsetHeight) < this._height
-
       /**
        * To distinguish update on initial data loading
        *  agaist update on user interaction `this._maybeManualScroll` was added.
        * It implements normal user's behaviour check
        *  which is used to change `this.__manual` property
        */
-      scrollTo = ((viewingOld && this.__manual) || this.freeze) ? Y.current : Y.height
+      scrollTo = (this.__manual || this.freeze) ? Y.current : Y.height
     }
 
     this._scrollTo(X.current, scrollTo)
@@ -281,34 +249,7 @@ export class Scrollable extends LitElement {
     }
   }
 
-  _render (props) {
-    const detachedNewBanner = this._detached && props.showbannernew
-      ? (html`<div
-        class$='${cs({
-          banner: true,
-          'new': true,
-          [props.reverse ? 'bottom' : 'top']: true,
-          reverse: props.reverse,
-        })}'
-        on-click='${() => this._scrollToUnseen()}'>
-          <div class='row'>
-            <div>${this.i18n.NEW_MESSAGES_COUNT}</div>
-            <div>${this.i18n.SEE}</div>
-          </div>
-        </div>`)
-      : null
-
-    const detachedBanner = this._detached && !props.showbannernew
-      ? (html`<div
-        class$='${cs({
-          banner: true,
-          recent: true,
-          [props.reverse ? 'top' : 'bottom']: true,
-          reverse: props.reverse,
-        })}'
-        on-click='${() => this.scrollTo()}'>${this.i18n.GO_TO_RECENT_MESSAGE}</div>`)
-      : null
-
+  _render () {
     return (html`
       <div class='wrapper'>
         <div class='scrollable' id="scrollable" on-scroll='${this.__boundScrollHandler}'>
@@ -316,8 +257,6 @@ export class Scrollable extends LitElement {
             <slot></slot>
           </div>
         </div>
-        ${detachedNewBanner}
-        ${detachedBanner}
       </div>
     `)
   }

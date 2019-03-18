@@ -1,8 +1,8 @@
 import { html } from '@polymer/lit-element'
 
 import { menu, smiley, cross } from '../images'
-import { action } from '../atoms/action'
 
+import { action } from './action'
 import style from './actions.css'
 
 const toList = map => map.toJSON().map(tuple => tuple[1])
