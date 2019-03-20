@@ -19,6 +19,8 @@ export class XMessagesElement extends MessagesElement {
       actions: Array,
       actionsallowed: Array,
       parser: String,
+      parserpreset: String,
+      parserrules: String,
     }
   }
 
@@ -86,6 +88,8 @@ export class XMessagesElement extends MessagesElement {
         image='${avatar}'
         me='${user_id === current_user_id}'
         parsername='${this.parser}'
+        parserpreset='${this.parserpreset}'
+        parserrules='${this.parserrules}'
         reversed='${reversed}'
       >
         ${unseenTpl}

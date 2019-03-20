@@ -1,8 +1,7 @@
 import { html, classString as cs } from '@polymer/lit-element'
 
 import * as images from '../images'
-
-const cn = (...argv) => argv.filter(x => !!x).join(' ').trim()
+import { cn } from '../utils/index'
 
 export const actionImages = new Map([['message-delete', images.del], ['user-disable', images.lock]])
 

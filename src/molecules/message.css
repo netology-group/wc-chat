@@ -102,7 +102,6 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   line-height: 19px;
   overflow-wrap: anywhere;
   padding-right: 24px;
-  white-space: pre-line;
   word-break: break-word;
 }
 
@@ -128,8 +127,13 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 }
 
 :host .message-body p {
-  display: inline;
+  display: inline-block;
+  white-space: pre-line;
   word-break: break-word;
+}
+
+:host .message-body p + p {
+  display: block;
 }
 
 :host .message-body ol,
@@ -154,6 +158,41 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   background-color: #e8e2e2;
   border: 1px solid #d6cbcb;
   border-radius: var(--message-border-radius);
-  color: rebeccapurple;
+  color: #ff732b;
   padding: 0 2px;
+}
+
+/** blockquote */
+:host .message-body blockquote {
+  margin: 0;
+  margin-bottom: 5px;
+  position: relative;
+}
+
+:host .message-body blockquote::before {
+  border-left: 5px solid #c6c6c66c;
+  border-radius: var(--message-border-radius);
+  box-sizing: border-box;
+  content: ' ';
+  height: 100%;
+  margin: 0;
+  position: absolute;
+}
+
+:host .message-body blockquote p {
+  margin-left: 15px;
+}
+
+:host .message-markdown .message-body blockquote {
+  white-space: normal;
+}
+
+/** /blockquote */
+
+:host .message-markdown .message-body pre {
+  white-space: normal;
+}
+
+:host .message-markdown .message-body code {
+  white-space: pre;
 }
