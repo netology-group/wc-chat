@@ -43,7 +43,7 @@
 }
 
 :host .moderator .message-author {
-  background: url('../images/human.svg') no-repeat right center transparent;
+  background: url('../images/human.svg') no-repeat right 7px transparent;
   padding-right: 12px;
 }
 

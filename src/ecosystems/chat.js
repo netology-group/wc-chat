@@ -32,6 +32,8 @@ export class ChatElement extends LitElement {
       message: String,
       noinput: Boolean,
       parser: String,
+      parserpreset: String,
+      parserrules: String,
       placeholder: String,
       placeholderdisabled: String,
       reverse: Boolean,
@@ -208,6 +210,8 @@ export class ChatElement extends LitElement {
             on-message-reaction='${this.boundedMessageReaction}'
             on-user-disable='${this.boundedUserDisable}'
             parser='${this.parser}'
+            parserpreset='${this.parserpreset}'
+            parserrules='${this.parserrules}'
             reverse='${props.reverse}'
             user='${props.user}'
             users='${props.users}'

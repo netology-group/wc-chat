@@ -20,12 +20,38 @@ export function HTMLEntityMessage () {
 }
 
 export function MarkdownMessage (opts = {}) {
-  const md = new MarkdownIt({
-    html: false,
-    linkify: true,
-    typographer: true,
-    ...(opts.markdownit || {}),
-  })
+  const { preset, rules } = opts.parser
+
+  const isStrict = preset && preset === 'strict'
+
+  const options = isStrict
+    ? ['zero', { linkify: true, typographer: true }]
+    : [
+      (preset || {
+        linkify: true,
+        typographer: true,
+        ...(opts.markdownit || {}),
+      }),
+    ]
+
+  const md = new MarkdownIt(...options)
+
+  const hasExternalRules = rules && Array.isArray(rules) && rules.length
+
+  md.enable(hasExternalRules
+    ? rules
+    : isStrict
+      ? [
+        'linkify',
+        'normalize',
+        'blockquote',
+        'paragraph',
+        'smartquotes',
+        'emphasis',
+        'backticks',
+        'fence',
+      ]
+      : [])
 
   return input => md.render(input)
 }

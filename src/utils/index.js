@@ -1,5 +1,6 @@
 import Debug from 'debug'
 import invariant from 'invariant'
+import { classString as cs } from '@polymer/lit-element'
 
 // eslint-disable-next-line no-unused-vars
 const _ = ns => (cond, ...argv) => invariant(cond, ...argv)
@@ -34,7 +35,25 @@ export const stampToDate = stamp => new Date(stamp * 1e3)
 
 export const formatDate = (date, pattern = /\d{2}:\d{2}/) => date.toTimeString().match(pattern)
 
-export const classnames = (...argv) => argv.join(' ').trim()
+export const classnames = function classnames (...argv) {
+  if (argv.length === 1) return cs(argv[0])
+
+  const acc = {}
+
+  argv.forEach((it) => {
+    if (!it) return
+
+    if (typeof it === 'object') {
+      Object.assign(acc, it)
+
+      return
+    }
+
+    acc[it] = true
+  })
+
+  return cs(acc)
+}
 
 export const isAggregatedBy = (field, index, list) => (!index || !field)
   ? false
