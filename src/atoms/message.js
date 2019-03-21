@@ -1,4 +1,4 @@
-import { html, classString as cs } from '@polymer/lit-element'
+import { html } from '@polymer/lit-element'
 
 import { stampToDate, formatDate, classnames as cn } from '../utils/index'
 
@@ -7,7 +7,7 @@ export const avatar = ({
   classname,
   image,
 }) => (html`
-  <div class$='${cn(classname, 'avatar', cs({ aggregated }))}'>
+  <div class$='${cn(classname, 'avatar', { aggregated })}'>
     <div style$='${!image ? '' : `background-image: url(${image});`}'></div>
   </div>
 `)
@@ -29,7 +29,7 @@ export const section = ({
   classname,
   me,
 }) => (html`
-  <section class$='${cn(classname, 'message-content', cs({ me }))}'>
+  <section class$='${cn(classname, 'message-content', { me })}'>
     <slot name="message-prologue"></slot>
     <div class='message-body'>${body}</div>
     <slot name="message-epilogue"></slot>

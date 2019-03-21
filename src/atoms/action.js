@@ -1,7 +1,7 @@
-import { html, classString as cs } from '@polymer/lit-element'
+import { html } from '@polymer/lit-element'
 
 import * as images from '../images'
-import { cn } from '../utils/index'
+import { classnames as cn } from '../utils/index'
 
 export const actionImages = new Map([['message-delete', images.del], ['user-disable', images.lock]])
 
@@ -20,7 +20,7 @@ export const action = ({
     classname,
     key,
     name,
-    cs({ disabled, allowed }),
+    { disabled, allowed },
   )
 
   if (!allowed) return null
@@ -38,7 +38,7 @@ export const reaction = ({
   handler,
   message,
 }) => {
-  const cls = cn('reaction-add', cs({ disabled }))
+  const cls = cn('reaction-add', { disabled })
   const config = () => new Map([['thumbsup', { name: ':thumbsup' }]])
 
   return (html`

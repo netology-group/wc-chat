@@ -1,9 +1,9 @@
-import { html, LitElement, classString as cs } from '@polymer/lit-element'
+import { html, LitElement } from '@polymer/lit-element'
 import { unsafeHTML } from 'lit-html/lib/unsafe-html'
 import { withStyle } from '@netology-group/wc-utils'
 
 import { section, avatar } from '../atoms/message'
-import { cn } from '../utils/index'
+import { classnames as cn } from '../utils/index'
 import { HTMLEntityMessage, MarkdownMessage } from '../utils/message-parser'
 
 import style from './message.css'
@@ -86,7 +86,7 @@ export class MessageFactory extends LitElement {
       image,
     })
 
-    const className = cs({ 'message-inner': true, aggregated })
+    const className = cn('message-inner', { aggregated })
 
     return (html`
       <div class$='${className}'>

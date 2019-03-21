@@ -38,7 +38,7 @@ var _messages = [
   { body: '> hello world' },
   { body: '> hello\nworld\n\nhello world' },
   { body: 'hello\n\nworld' },
-  { body: '```html\n<wc-chat\nid="messenger"\nlanguage="en"\nparser=\'markdown\'\nparserpreset=\'strict\'\nparserrules=\'linkify,normalize,blockquote,paragraph,smartquotes,emphasis,code,fence,backticks\'\n/>\n```' },
+  { body: '```html\n<wc-chat\nid="messenger"\nlanguage="en"\nparser=\'markdown\'\nparserpreset=\'strict\'\nparserrules=\'linkify,normalize,blockquote,paragraph,smartquotes,emphasis,backticks,fence\'\n/>\n```' },
   { body: '[hello](world)' },
   { body: '![hello](world)' },
   { body: '# hello world' },
