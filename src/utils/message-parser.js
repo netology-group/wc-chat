@@ -38,23 +38,20 @@ export function MarkdownMessage (opts = {}) {
 
   const hasExternalRules = rules && Array.isArray(rules) && rules.length
 
-  if (isStrict) {
-    md.enable(hasExternalRules
-      ? rules
-      : [
+  md.enable(hasExternalRules
+    ? rules
+    : isStrict
+      ? [
         'linkify',
         'normalize',
         'blockquote',
         'paragraph',
         'smartquotes',
         'emphasis',
-        'code',
-        'fence',
         'backticks',
-      ])
-  } else {
-    md.enable(hasExternalRules ? rules : [])
-  }
+        'fence',
+      ]
+      : [])
 
   return input => md.render(input)
 }
