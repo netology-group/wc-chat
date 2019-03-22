@@ -1,10 +1,8 @@
 import { html, classString as cs } from '@polymer/lit-element'
-import { registerCustomElement } from '@netology-group/wc-utils/lib/utils'
 import { withStyle } from '@netology-group/wc-utils'
 
 import { XLitElement as LitElement } from '../utils/rendered-lit-element'
 import { debug, isAggregatedBy } from '../utils/index'
-import { Message } from '../molecules/message'
 import { meta } from '../atoms/message'
 import { style as actionStyle } from '../atoms/actions'
 
@@ -21,19 +19,6 @@ export class MessagesElement extends LitElement {
       user: Number,
       users: Array,
     }
-  }
-
-  connectedCallback () {
-    if (!this.__setup) {
-      debug('Registering customElements...')
-      this._childrenElements.forEach((el, k) => { registerCustomElement(k, el) })
-    }
-
-    super.connectedCallback()
-  }
-
-  get _childrenElements () { // eslint-disable-line class-methods-use-this
-    return new Map([['wc-message', Message]])
   }
 
   _renderMessage (message) { // eslint-disable-line class-methods-use-this
@@ -69,7 +54,7 @@ export class MessagesElement extends LitElement {
     })
 
     return (html`
-      <wc-message
+      <wc-chat-message
         class$='${className}'
         aggregated='${aggregated}'
         body='${body}'
@@ -83,7 +68,7 @@ export class MessagesElement extends LitElement {
         <div slot='message-prologue'>
           ${metaTpl}
         </div>
-      </wc-message>
+      </wc-chat-message>
     `)
   }
 

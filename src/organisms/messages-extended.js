@@ -78,7 +78,7 @@ export class XMessagesElement extends MessagesElement {
     })
 
     return (html`
-      <wc-message
+      <wc-chat-message
         class$='${className}'
         aggregated='${aggregated}'
         body='${body}'
@@ -100,7 +100,7 @@ export class XMessagesElement extends MessagesElement {
         <div slot='message-epilogue'>
           <wc-chat-reactions config='${config(message)}' showcount></wc-chat-reactions>
         </div>
-      </wc-message>
+      </wc-chat-message>
     `)
   }
 
