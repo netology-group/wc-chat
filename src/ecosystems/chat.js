@@ -7,6 +7,7 @@ import Debug from 'debug'
 
 import Input from '../organisms/input'
 import Messages from '../organisms/messages-extended'
+import { Message } from '../molecules/message'
 import Scrollable from '../organisms/scroll-to-unseen'
 import { getIndexById } from '../utils/index'
 import i18n from '../i18n'
@@ -88,6 +89,7 @@ export class ChatElement extends LitElement {
       ['wc-chat-input', Input],
       ['wc-chat-messages', Messages],
       ['wc-chat-reactions', Reactions],
+      ['wc-chat-message', Message],
     ])
   }
 
