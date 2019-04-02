@@ -193,6 +193,6 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   white-space: normal;
 }
 
-:host .message-markdown .message-body code {
+:host .message-markdown .message-body pre code {
   white-space: pre;
 }
