@@ -10,22 +10,8 @@ no-extra-semi */
 var messenger
 var messengerReversed
 var avatarUrl = 'https://about.gitlab.com/images/devops-tools/gitlab-logo.svg'
-var _messages = [
-  {
-    name: 'Admin',
-    user_name: 'Admin',
-    role: 'moderator',
-    user_role: 'moderator',
-    identity: 'Administrator',
-    user_id: 99,
-    visible: true,
-    avatar: avatarUrl,
-    id: window.ULID.ulid(),
-    uid: window.ULID.ulid(),
-    body: 'Hello World!',
-    timestamp: Date.now() / 1e3,
-    rating: 100500,
-  },
+
+var bodyMessages = [
   { body: '\'hello world\'' },
   { body: '"hello world"' },
   { body: 'http://hello.world' },
@@ -51,6 +37,25 @@ var _messages = [
   { body: '<a name="n" href="javascript:alert(\'hello world\')">*hello world*</a>' },
   { body: 'hello <a name="n\n" > href="javascript:alert(\'hello world\')">*hello world*</a>' },
 ]
+
+var _messages = [
+  {
+    name: 'Admin',
+    user_name: 'Admin',
+    role: 'moderator',
+    user_role: 'moderator',
+    identity: 'Administrator',
+    user_id: 99,
+    visible: true,
+    avatar: avatarUrl,
+    id: window.ULID.ulid(),
+    uid: window.ULID.ulid(),
+    body: 'Hello World!',
+    timestamp: Date.now() / 1e3,
+    rating: 100500,
+  },
+].concat(bodyMessages.map(_ => ({ ..._, id: window.ULID.ulid() })))
+
 var _users = [
   {
     name: 'Marco Polo',
@@ -112,7 +117,7 @@ function initialize (element, user, makeUpdate) {
 
   element.addEventListener('chat-message-reaction', function onMessageReaction (e) {
     _messages = _messages.map(function calcRating (it) {
-      if (it.id === e.detail.message.id) it.rating = !it.rating ? 1 : it.rating + 1
+      if (it.id && e.detail.message.id && it.id === e.detail.message.id) it.rating = !it.rating ? 1 : it.rating + 1
 
       return it
     })

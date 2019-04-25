@@ -25,7 +25,7 @@ export class XMessagesElement extends MessagesElement {
   }
 
   get _actions () {
-    return new Map(this.actions)
+    return new Map(Array.isArray(this.actions) ? this.actions : [])
   }
 
   _renderMessage (message) { // eslint-disable-line class-methods-use-this
@@ -144,7 +144,7 @@ export class XMessagesElement extends MessagesElement {
     const isAllowed = (action, d) => d.current_user_id !== d.user_id
       || (d.current_user_id === d.user_id && action.self)
 
-    this.actionsallowed.forEach((key) => {
+    Array.isArray(this.actionsallowed) && this.actionsallowed.forEach((key) => {
       const _action = this._actions.get(key) || {}
       const actionOpts = {
         message: data,
