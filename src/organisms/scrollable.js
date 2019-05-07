@@ -16,12 +16,37 @@ const DELTA = 20
 
 const isNumber = it => typeof it === 'number'
 
+/**
+ *      normal mode
+ *  .________________ ... tail
+ *  |                |
+ *  |                |
+ *  |                |
+ *  |----------------|... frame tail
+ *  |                |
+ *  |                |  | old
+ *  |                |  |
+ *  |                |  |
+ *  |                |  | data order ("reverse" mode disabled)
+ *  |                |  |
+ *  |                |  | new
+ *  |                |  √
+ *  |                |
+ *  |----------------|... frame head
+ *  |                |
+ *  |                |
+ *  |________________|... head
+ *
+ *  edge literals should be reverted (mentally) when "reverse" mode is enabled
+ */
+
 export class Scrollable extends LitElement {
   static get properties () {
     return {
       delay: Number,
       freeze: Boolean,
       listen: String,
+      omni: Boolean,
       reverse: Boolean,
       scrolltarget: String,
     }
@@ -40,8 +65,6 @@ export class Scrollable extends LitElement {
     this._top = 0
     this._x = 0
     this._detached = false
-
-    this.__boundScrollHandler = this._onScrollHandler.bind(this)
   }
 
   get _rootElement () {
@@ -106,11 +129,46 @@ export class Scrollable extends LitElement {
       observe(e => this._onResizeHandler(e)),
       throttle(100),
     )(fromEvent('resize', window))
+
+    /* eslint-disable function-paren-newline */
+    compose(
+      observe(e => this._onScrollHandler(e)),
+    )(fromEvent('scroll', this._scrollable))
+    /* eslint-enable function-paren-newline */
   }
 
-  _defineCoordinates (x, y, width, height, left, top, fn) {
-    if (!left) left = x // eslint-disable-line no-param-reassign
-    if (!top) top = y // eslint-disable-line no-param-reassign
+  _shouldThrowSeekEvents (position) {
+    const { dispatchEvent } = window.document
+    const {
+      frameHeight,
+      height,
+      top,
+    } = position
+
+    const frameHead = top + frameHeight
+    const atHead = frameHead === height
+    const atTail = top === 0
+
+    // seek before
+    if (
+      (this.reverse && atHead)
+      || (!this.reverse && atTail)
+    ) debug('Seek before') || dispatchEvent(new CustomEvent('chat-messages-seek-before'))
+
+    // seek after
+    if (
+      this.omni && (
+        (this.reverse && atTail)
+        || (!this.reverse && atHead)
+      )
+    ) debug('Seek after') || dispatchEvent(new CustomEvent('chat-messages-seek-after'))
+  }
+
+  _defineCoordinates (position, fn) {
+    // eslint-disable-next-line array-element-newline, array-bracket-newline
+    const [x, y, width, height, _left, _top] = position
+    const left = _left || x
+    const top = _top || y
 
     debug('Updating current scroll coordinates', {
       x, y, width, height, left, top,
@@ -137,12 +195,22 @@ export class Scrollable extends LitElement {
   }
 
   _onScrollHandler (e) {
-    this._defineCoordinates(...[
-      e.currentTarget.scrollLeft,
-      e.currentTarget.scrollTop,
-      e.currentTarget.scrollWidth,
-      e.currentTarget.scrollHeight,
+    const {
+      scrollLeft, scrollTop, scrollWidth, scrollHeight, offsetHeight,
+    } = e.currentTarget
+
+    this._defineCoordinates([
+      scrollLeft,
+      scrollTop,
+      scrollWidth,
+      scrollHeight,
     ])
+
+    this._shouldThrowSeekEvents({
+      frameHeight: offsetHeight,
+      height: scrollHeight,
+      top: scrollTop,
+    })
   }
 
   _onChildrenUpdate (e) {
@@ -190,14 +258,14 @@ export class Scrollable extends LitElement {
      * )
      */
     if (!this._height || (Y.height / this._height) >= 2) {
-      this._defineCoordinates(
+      this._defineCoordinates([
         X.current,
         Y.current,
         X.width,
         Y.height,
         X.left,
         Y.top,
-      )
+      ])
     }
 
     if (Y.top === Y.height) return // eslint-disable-line padding-line-between-statements
@@ -238,7 +306,12 @@ export class Scrollable extends LitElement {
 
     if (el.scrollLeft === x && el.scrollTop === y) {
       debug('Scroll position is the same. Update coordinates manually...')
-      this._defineCoordinates(x, y, el.scrollWidth, el.scrollHeight)
+      this._defineCoordinates([
+        x,
+        y,
+        el.scrollWidth,
+        el.scrollHeight,
+      ])
     }
 
     if (!el.scrollTo) {
@@ -249,10 +322,11 @@ export class Scrollable extends LitElement {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   _render () {
     return (html`
       <div class='wrapper'>
-        <div class='scrollable' id="scrollable" on-scroll='${this.__boundScrollHandler}'>
+        <div class='scrollable' id="scrollable">
           <div class='inner'>
             <slot></slot>
           </div>

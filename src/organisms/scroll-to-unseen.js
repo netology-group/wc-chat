@@ -86,14 +86,14 @@ export class ScrollToUnseen extends Scrollable {
      * )
      */
     if (!this._height || (Y.height / this._height) >= 2) {
-      this._defineCoordinates(
+      this._defineCoordinates([
         X.current,
         Y.current,
         X.width,
         Y.height,
         X.left,
         Y.top,
-      )
+      ])
     }
 
     if (Y.top === Y.height) return // eslint-disable-line padding-line-between-statements

@@ -32,6 +32,7 @@ export class ChatElement extends LitElement {
       maxrows: Number,
       message: String,
       noinput: Boolean,
+      omni: Boolean,
       parser: String,
       parserpreset: String,
       parserrules: String,
@@ -196,6 +197,7 @@ export class ChatElement extends LitElement {
           i18n='${scrollableI18n}'
           freeze='${props.scrollabledisabled}'
           listen='${EVENT}'
+          omni='${props.omni}'
           on-last-seen-change='${this.boundedLastSeenChange}'
           reverse='${props.reverse}'
           showbannernew='${newMessageCount > 0}'
