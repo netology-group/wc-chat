@@ -104,7 +104,7 @@ export class Scrollable extends LitElement {
     const _x = 0
     const _y = this.reverse ? 0 : el.scrollHeight
 
-    this._scrollTo(isNumber(x) ? x : _x, isNumber(y) ? y : _y)
+    // this._scrollTo(isNumber(x) ? x : _x, isNumber(y) ? y : _y)
   }
 
   _scrollMinMax (shift, min = 1, max = DELTA) { // eslint-disable-line class-methods-use-this
@@ -138,7 +138,6 @@ export class Scrollable extends LitElement {
   }
 
   _shouldThrowSeekEvents (position) {
-    const { dispatchEvent } = window.document
     const {
       frameHeight,
       height,
@@ -153,7 +152,10 @@ export class Scrollable extends LitElement {
     if (
       (this.reverse && atHead)
       || (!this.reverse && atTail)
-    ) debug('Seek before') || dispatchEvent(new CustomEvent('chat-messages-seek-before'))
+    ) {
+      debug('Seek before')
+      this.dispatchEvent(new CustomEvent('seek-before'))
+    }
 
     // seek after
     if (
@@ -161,18 +163,23 @@ export class Scrollable extends LitElement {
         (this.reverse && atTail)
         || (!this.reverse && atHead)
       )
-    ) debug('Seek after') || dispatchEvent(new CustomEvent('chat-messages-seek-after'))
+    ) {
+      debug('Seek after')
+      this.dispatchEvent(new CustomEvent('seek-after'))
+    }
   }
 
   _defineCoordinates (position, fn) {
     // eslint-disable-next-line array-element-newline, array-bracket-newline
+    console.log(position)
+
     const [x, y, width, height, _left, _top] = position
     const left = _left || x
     const top = _top || y
 
-    debug('Updating current scroll coordinates', {
-      x, y, width, height, left, top,
-    })
+    // debug('Updating current scroll coordinates', {
+    //   x, y, width, height, left, top,
+    // })
 
     this._x = x
     this._y = y
@@ -181,13 +188,13 @@ export class Scrollable extends LitElement {
     this._left = left
     this._top = top
 
-    if (typeof fn === 'function') {
-      this.__childrenHeight = height
+    // if (typeof fn === 'function') {
+    //   this.__childrenHeight = height
 
-      fn({
-        x, y, width, height, left, top,
-      })
-    }
+    //   fn({
+    //     x, y, width, height, left, top,
+    //   })
+    // }
   }
 
   _onResizeHandler () {
@@ -214,7 +221,9 @@ export class Scrollable extends LitElement {
   }
 
   _onChildrenUpdate (e) {
-    this._shouldScrollTo(e)
+    console.log(8888, e.detail)
+    this._shouldScrollTo(e, e.detail.direction)
+    console.log('upd')
   }
 
   _yScroll (el) {
@@ -243,7 +252,7 @@ export class Scrollable extends LitElement {
     }
   }
 
-  _shouldScrollTo (e) { // eslint-disable-line no-unused-vars
+  _shouldScrollTo (e, direction = 0) { // eslint-disable-line no-unused-vars
     const X = this._xScroll(this._scrollable)
     const Y = this._yScroll(this._scrollable)
 
@@ -257,6 +266,7 @@ export class Scrollable extends LitElement {
      *  before new element was appended and no scroll behaviour has been present
      * )
      */
+    console.log(this._height, Y.height)
     if (!this._height || (Y.height / this._height) >= 2) {
       this._defineCoordinates([
         X.current,
@@ -291,8 +301,11 @@ export class Scrollable extends LitElement {
        *  which is used to change `this.__manual` property
        */
       scrollTo = (this.__manual || this.freeze) ? Y.current : Y.height
+
+      if (direction === -1) scrollTo = (Y.height - Y.prevtail) < 0 ? 0 : (Y.height - Y.prevtail)
     }
 
+    console.log(X.current, scrollTo)
     this._scrollTo(X.current, scrollTo)
   }
 
