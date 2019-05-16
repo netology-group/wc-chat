@@ -251,7 +251,9 @@ export class ChatElement extends LitElement {
       NEW_MESSAGES: this.i18n[this._lang].NEW_MESSAGES,
     }
 
-    console.log(666, list, this._listdir)
+    /**
+     *  Scrollable & messages are ment to work together
+     */
 
     return (html`
       <div class='wrapper'>
