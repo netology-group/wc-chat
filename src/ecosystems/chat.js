@@ -32,6 +32,7 @@ export class ChatElement extends LitElement {
       maxrows: Number,
       message: String,
       noinput: Boolean,
+      omni: Boolean,
       parser: String,
       parserpreset: String,
       parserrules: String,
@@ -57,8 +58,12 @@ export class ChatElement extends LitElement {
     this.boundedUserDisable = this._handleUserDisable.bind(this)
     this.boundedMessageReaction = this._handleMessageReaction.bind(this)
     this.boundedLastSeenChange = this._handleLastSeenChange.bind(this)
+    this.boundedSeekBefore = this._handleSeekBefore.bind(this)
+    this.boundedSeekAfter = this._handleSeekAfter.bind(this)
 
-    this._scrollable = null
+    this._scrollable = undefined
+
+    this._listdir = 0
   }
 
   connectedCallback () {
@@ -73,10 +78,13 @@ export class ChatElement extends LitElement {
   disconnectedCallback () {
     super.disconnectedCallback()
 
-    this.boundedMessageSubmit = null
-    this.boundedMessageDelete = null
-    this.boundedUserDisable = null
-    this.boundedMessageReaction = null
+    this.boundedMessageSubmit = undefined
+    this.boundedMessageDelete = undefined
+    this.boundedUserDisable = undefined
+    this.boundedMessageReaction = undefined
+    this.boundedLastSeenChange = undefined
+    this.boundedSeekBefore = undefined
+    this.boundedSeekAfter = undefined
   }
 
   get i18n () { // eslint-disable-line class-methods-use-this
@@ -91,6 +99,27 @@ export class ChatElement extends LitElement {
       ['wc-chat-reactions', Reactions],
       ['wc-chat-message', Message],
     ])
+  }
+
+  append (list) {
+    if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type')
+
+    this.list = list
+    this._listdir = 1
+  }
+
+  prepend (list) {
+    if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type')
+
+    this.list = list
+    this._listdir = -1
+  }
+
+  update (list) {
+    if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type')
+
+    this.list = list
+    this._listdir = 0
   }
 
   _propertiesChanged (props, changedProps, prevProps) {
@@ -150,6 +179,36 @@ export class ChatElement extends LitElement {
     }
   }
 
+  _handleSeekBefore () {
+    if (!(Array.isArray(this.list) && this.list.length)) return
+    const {
+      offset, id: last_id, timestamp,
+    } = this.list[0]
+
+    this.dispatchEvent(new CustomEvent('chat-messages-seek-before', {
+      detail: {
+        before: Math.ceil(timestamp),
+        last_id,
+        offset,
+      },
+    }))
+  }
+
+  _handleSeekAfter () {
+    if (!(Array.isArray(this.list) && this.list.length)) return
+    const {
+      offset, id: last_id, timestamp,
+    } = this.list[this.list.length - 1]
+
+    this.dispatchEvent(new CustomEvent('chat-messages-seek-after', {
+      detail: {
+        after: Math.round(timestamp),
+        last_id,
+        offset,
+      },
+    }))
+  }
+
   _render (props) {
     const input = props.noinput
       ? null
@@ -189,6 +248,10 @@ export class ChatElement extends LitElement {
       NEW_MESSAGES: this.i18n[this._lang].NEW_MESSAGES,
     }
 
+    /**
+     *  Scrollable & messages are ment to work together
+     */
+
     return (html`
       <div class='wrapper'>
         <wc-chat-scrollable
@@ -196,7 +259,10 @@ export class ChatElement extends LitElement {
           i18n='${scrollableI18n}'
           freeze='${props.scrollabledisabled}'
           listen='${EVENT}'
+          omni='${props.omni}'
           on-last-seen-change='${this.boundedLastSeenChange}'
+          on-seek-before='${this.boundedSeekBefore}'
+          on-seek-after='${this.boundedSeekAfter}'
           reverse='${props.reverse}'
           showbannernew='${newMessageCount > 0}'
           unseenSelector='.messages-item.unseen'
@@ -208,6 +274,7 @@ export class ChatElement extends LitElement {
             invoke='${EVENT}'
             lastseen='${props.lastseen}'
             list='${list}'
+            listdir='${this._listdir}'
             on-message-delete='${this.boundedMessageDelete}'
             on-message-reaction='${this.boundedMessageReaction}'
             on-user-disable='${this.boundedUserDisable}'

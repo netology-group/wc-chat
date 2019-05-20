@@ -19,10 +19,6 @@
   overflow-y: scroll;
 }
 
-:host .wrapper .scrollable .inner {
-  min-height: 100%;
-}
-
 :host .wrapper .banner {
   border-radius: 5px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);

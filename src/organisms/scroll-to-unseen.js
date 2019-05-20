@@ -1,12 +1,8 @@
 import { html, classString as cs } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils'
 
-import { debug as Debug } from '../utils/index'
-
 import { Scrollable } from './scrollable'
 import style from './scrollable.css'
-
-const debug = Debug('@netology-group/wc-chat/Scrollable')
 
 export class ScrollToUnseen extends Scrollable {
   static get properties () {
@@ -71,60 +67,43 @@ export class ScrollToUnseen extends Scrollable {
     }
   }
 
-  _shouldScrollTo (e) { // eslint-disable-line no-unused-vars
-    const X = this._xScroll(this._scrollable)
-    const Y = this._yScroll(this._scrollable)
+  __shouldScrollByYAxis (params, changedParams, prevParams) {
+    const {
+      direction, current, top, y,
+    } = changedParams
 
-    debug('X', X)
-    debug('Y', Y)
+    const prevHead = prevParams.height - current
 
-    /**
-     * At the moment `Y.height` and `this._height` are not the same.
-     * - `Y.height` is equal to the new container height (new message has been appended already)
-     * - `this._height` is equal to the old container height (
-     *  before new element was appended and no scroll behaviour has been present
-     * )
-     */
-    if (!this._height || (Y.height / this._height) >= 2) {
-      this._defineCoordinates(
-        X.current,
-        Y.current,
-        X.width,
-        Y.height,
-        X.left,
-        Y.top,
-      )
+    const atHead = current + this._scrollable.offsetHeight === prevParams.height
+    // means that user is seeing the latest message
+
+    const atZero = top === 0 && top === y
+
+    if (this.reverse && this.freeze) {
+      return (!atHead && !atZero)
+        ? params.height - prevHead
+        : undefined
     }
+    // preserve top position in reverse & freezed mode unless at the edge
 
-    if (Y.top === Y.height) return // eslint-disable-line padding-line-between-statements
-    // skip scrolling on empty children (initial render might has 0/0)
-
-    const head = Y.height - Y.tail // eslint-disable-line no-unused-vars
-    const prevhead = ((Y.height - Y.prevtail) < 0) ? 0 : (Y.height - Y.prevtail)
-
-    const { _y: y } = this
-    let scrollTo
-
-    if (this.reverse) scrollTo = (!this.freeze && y === 0) ? y : prevhead
-    /**
-     * for unfreezed scroll we preserve top position (y=0)
-     * otherwise scroll to the tail
-     */
-
-    if (!this.reverse) {
-      const { offsetHeight } = this._scrollable
-      const viewingOld = (y + offsetHeight) < this._height
-
-      /**
-       * To distinguish update on initial data loading
-       *  agaist update on user interaction `this._maybeManualScroll` was added.
-       * It implements normal user's behaviour check
-       *  which is used to change `this.__manual` property
-       */
-      scrollTo = ((viewingOld && this.__manual) || this.freeze) ? Y.current : Y.height
+    if (this.reverse) {
+      return atZero
+        ? top
+        : atHead ? top : params.height - prevHead
     }
+    // preserve top position in `reverse` mode
 
-    this._scrollTo(X.current, scrollTo)
+    const viewingOld = (y + this._scrollable.offsetHeight) < prevParams.height
+
+    if (this.freeze || (viewingOld && this.__manual && direction !== -1)) return top
+    // preserve top position if is freezed
+
+    if (direction === -1) return params.height - prevHead
+    // calculate top position according the previous distance
+    // between hight (head) and current position
+
+    return atHead ? params.height - prevHead : y
+    // preserve current position unless user is near the latest message
   }
 
   _render (props) {
