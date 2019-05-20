@@ -8,7 +8,7 @@ import Debug from 'debug'
 import Input from '../organisms/input'
 import Messages from '../organisms/messages-extended'
 import { Message } from '../molecules/message'
-import Scrollable from '../organisms/scrollable'
+import Scrollable from '../organisms/scroll-to-unseen'
 import { getIndexById } from '../utils/index'
 import i18n from '../i18n'
 
@@ -179,8 +179,7 @@ export class ChatElement extends LitElement {
     }
   }
 
-  _handleSeekBefore (e) {
-    console.log('seek before')
+  _handleSeekBefore () {
     if (!(Array.isArray(this.list) && this.list.length)) return
     const {
       offset, id: last_id, timestamp,
@@ -195,9 +194,7 @@ export class ChatElement extends LitElement {
     }))
   }
 
-  _handleSeekAfter (e) {
-    console.log('seek after')
-    console.log(this.list)
+  _handleSeekAfter () {
     if (!(Array.isArray(this.list) && this.list.length)) return
     const {
       offset, id: last_id, timestamp,

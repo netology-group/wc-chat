@@ -3,8 +3,6 @@ import { html, LitElement } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils'
 import compose from 'ramda/es/compose'
 
-import { toPairs } from 'ramda'
-
 import { Invariant, debug as Debug } from '../utils/index'
 import { observeC as observe, throttleC as throttle } from '../utils/most'
 
@@ -20,27 +18,25 @@ const THROTTLE_DELAY = 50
 const isNumber = it => typeof it === 'number'
 
 /**
- *      normal mode
- *  .________________ ... tail
+ *  .________________ ... zero
  *  |                |
  *  |                |
  *  |                |
- *  |----------------|... frame tail
+ *  |----------------|... current
  *  |                |
- *  |                |  | old
+ *  |                |  A
  *  |                |  |
  *  |                |  |
- *  |                |  | data order ("reverse" mode disabled)
+ *  |                |  | frame height
  *  |                |  |
- *  |                |  | new
- *  |                |  √
+ *  |                |  |
+ *  |                |  V
  *  |                |
  *  |----------------|... frame head
  *  |                |
  *  |                |
  *  |________________|... head
  *
- *  edge literals should be reverted (mentally) when "reverse" mode is enabled
  */
 
 export class Scrollable extends LitElement {
@@ -249,27 +245,39 @@ export class Scrollable extends LitElement {
 
   __shouldScrollByYAxis (params, changedParams, prevParams) {
     const {
-      direction, current, top: ytop, y,
+      direction, current, top, y,
     } = changedParams
 
     const prevHead = prevParams.height - current
 
-    let top
+    const atHead = current + this._scrollable.offsetHeight === prevParams.height
+    // means that user is seeing the latest message
 
-    if (!this.reverse) {
-      top = (this.freeze)
-        ? ytop
-        : direction !== -1
-          ? (current + this._scrollable.offsetHeight === prevParams.height
-            ? params.height - prevHead
-            : y)
-          : (params.height - prevHead)
-    } else {
-      // eslint-disable-next-line prefer-destructuring
-      top = ytop
+    const atZero = top === 0 && top === y
+
+    if (this.reverse && this.freeze) {
+      return (!atHead && !atZero)
+        ? params.height - prevHead
+        : undefined
     }
+    // preserve top position in reverse & freezed mode unless at the edge
 
-    return top
+    if (this.reverse) {
+      return atZero
+        ? top
+        : atHead ? top : params.height - prevHead
+    }
+    // preserve top position in `reverse` mode
+
+    if (this.freeze) return top
+    // preserve top position if is freezed
+
+    if (direction === -1) return params.height - prevHead
+    // calculate top position according the previous distance
+    // between hight (head) and current position
+
+    return atHead ? params.height - prevHead : y
+    // preserve current position unless user is near the latest message
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -306,37 +314,7 @@ export class Scrollable extends LitElement {
     )
     const x = this.__shouldScrollByXAxis({}, { current: X.current })
 
-    return this._scrollTo(x, y)
-
-    // if (Y.top === Y.height) return // eslint-disable-line padding-line-between-statements
-    // // skip scrolling on empty children (initial render might has 0/0)
-
-    // const head = Y.height - Y.tail // eslint-disable-line no-unused-vars
-    // const prevhead = ((Y.height - Y.prevtail) < 0) ? 0 : (Y.height - Y.prevtail)
-
-    // const { _y: y } = this
-    // let scrollTo
-
-    // if (this.reverse) scrollTo = (!this.freeze && y === 0) ? y : prevhead
-    // /**
-    //  * for unfreezed scroll we preserve top position (y=0)
-    //  * otherwise scroll to the tail
-    //  */
-
-    // if (!this.reverse) {
-    //   /**
-    //    * To distinguish update on initial data loading
-    //    *  agaist update on user interaction `this._maybeManualScroll` was added.
-    //    * It implements normal user's behaviour check
-    //    *  which is used to change `this.__manual` property
-    //    */
-    //   scrollTo = (this.__manual || this.freeze) ? Y.current : Y.height
-
-    //   if (direction === -1) scrollTo = (Y.height - Y.prevtail) < 0 ? 0 : (Y.height - Y.prevtail)
-    // }
-
-    // console.log(X.current, scrollTo)
-    // this._scrollTo(X.current, scrollTo)
+    return (typeof y !== 'undefined' && typeof x !== 'undefined') && this._scrollTo(x, y)
   }
 
   _scrollTo (x, y) {
