@@ -1,6 +1,6 @@
 {
   "name": "@netology-group/wc-chat",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Messenger's webcomponents",
   "homepage": "https://github.com/netology-group/wc-chat",
   "bugs": {
@@ -33,8 +33,7 @@
     "prestart": "npm run build",
     "start": "npm run demo",
     "stylelint": "stylelint src",
-    "test": "eslint . && npm run stylelint",
-    "watch": "chokidar src -pc \"npm run build/umd/min\""
+    "test": "eslint . && npm run stylelint"
   },
   "stylelint": {
     "extends": [

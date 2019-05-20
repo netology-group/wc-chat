@@ -141,7 +141,6 @@ export class MessagesElement extends LitElement {
       && prevProps.list
       && Array.isArray(props.list)
       && Array.isArray(prevProps.list)
-    // should not dispatch 'onChange' event unless new messages appear
 
     /* eslint-disable max-len */
     /**

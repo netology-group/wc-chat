@@ -96,16 +96,17 @@ function enhanceMessage (message, userId) {
 
 function update (list, messages) {
   list.forEach((_) => {
-    _.list = messages
+    _.update(messages)
   })
 }
 
 function initialize (element, user, makeUpdate) {
   element.actions = _actions
   element.actionsallowed = _actionsallowed
-  element.list = _messages
   element.users = _users
   element.user = user
+
+  element.update(_messages)
 
   element.addEventListener('chat-message-submit', function onMessageSubmit (e) {
     setTimeout(function onSubmitSuccess () {
