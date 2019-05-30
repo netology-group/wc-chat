@@ -1,4 +1,6 @@
 :host {
+  --input-font-size: var(--chat-input-font-size, 14px);
+
   display: block;
   width: 100%;
   z-index: var(--chat-input-z-index, initial);
@@ -8,7 +10,7 @@
   background: var(--alabaster, #f8f8f8);
   bottom: 0;
   box-sizing: border-box;
-  font-size: 16px;
+  font-size: var(--input-font-size);
   width: 100%;
 }
 

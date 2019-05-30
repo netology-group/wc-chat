@@ -6,7 +6,7 @@ export class XLitElement extends LitElement {
     if (!this.__renderComplete) {
       this.__renderComplete = new Promise((resolve) => {
         this.__resolveRenderComplete = (value) => {
-          this.__resolveRenderComplete = this.__renderComplete = null
+          this.__resolveRenderComplete = this.__renderComplete = undefined
           resolve(value)
         }
       })

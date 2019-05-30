@@ -1,8 +1,8 @@
-import { html, LitElement } from '@polymer/lit-element'
+import { html, LitElement, classString as cs } from '@polymer/lit-element'
 import { unsafeHTML } from 'lit-html/lib/unsafe-html'
 import { withStyle } from '@netology-group/wc-utils'
 
-import { section, avatar } from '../atoms/message'
+import { section, avatar, meta } from '../atoms/message'
 import { classnames as cn } from '../utils/index'
 import { HTMLEntityMessage, MarkdownMessage } from '../utils/message-parser'
 
@@ -25,16 +25,20 @@ export class MessageFactory extends LitElement {
   static get properties () {
     return {
       aggregated: Boolean,
-      body: String,
-      classname: String,
       deleted: Boolean,
-      uid: String,
+      icon: String,
+      identity: String,
       image: String,
       me: Boolean,
       parsername: String,
       parserpreset: String,
       parserrules: String,
       reversed: Boolean,
+      text: String,
+      theme: String,
+      timestamp: Number,
+      username: String,
+      uid: String,
     }
   }
 
@@ -64,21 +68,19 @@ export class MessageFactory extends LitElement {
   _render (props) { // eslint-disable-line class-methods-use-this
     const {
       aggregated,
-      classname,
+      deleted,
+      icon,
       image,
+      identity,
       me,
       parsername,
+      text,
+      theme,
+      timestamp,
       uid,
       user_role,
+      username,
     } = props
-
-    const body = getMessageBody(props.body, props.parsername, this.parser)
-
-    const sectionTpl = section({
-      body,
-      classname: cn(classname, `message-${parsername}`),
-      me,
-    })
 
     const avatarTpl = avatar({
       aggregated,
@@ -86,13 +88,38 @@ export class MessageFactory extends LitElement {
       image,
     })
 
-    const className = cn('message-inner', { aggregated })
+    const metaTpl = aggregated
+      ? undefined
+      : meta({
+        icon,
+        identity,
+        timestamp,
+        username,
+      })
+
+    const sectionTpl = section({
+      body: getMessageBody(text, parsername, this.parser),
+      classname: cn(`parser-${parsername}`),
+      me,
+    })
+
+    const cname = cs({
+      [`theme-${theme}`]: theme,
+      deleted,
+      inner: true,
+      me,
+    })
 
     return (html`
-      <div class$='${className}'>
+      <div class$='${cname}'>
         <slot name$=${`message-${uid || Math.ceil(Math.random() * 1e3)}`}></slot>
         ${avatarTpl}
-        ${sectionTpl}
+        <div class="content">
+          <slot name="message-prologue"></slot>
+          ${metaTpl}
+          ${sectionTpl}
+          <slot name="message-epilogue"></slot>
+        </div>
         <slot name$=${`message-rev-${uid || Math.ceil(Math.random() * 1e3)}`}></slot>
       </div>
     `)

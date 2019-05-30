@@ -46,7 +46,7 @@ export class ScrollToUnseen extends Scrollable {
 
     const el = slot.assignedNodes() && slot.assignedNodes()[1] && slot.assignedNodes()[1].shadowRoot
       ? slot.assignedNodes()[1].shadowRoot.querySelector(this.unseenSelector)
-      : null
+      : undefined
 
     if (el) {
       this._scrollTo(0, el.offsetTop - this._scrollable.offsetHeight / 2)

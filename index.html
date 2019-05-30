@@ -29,12 +29,20 @@
     <div class="row">
       <div class="container">
         <wc-chat
-          id="messenger"
+          id="messenger1"
           language="ru"
           parser='markdown'
           parserpreset='strict'
           placeholder="Введите сообщение"
           placeholderdisabled="Чат заблокирован"
+        />
+      </div>
+      <div class="container">
+        <wc-chat
+          id="messenger2"
+          language="en-US"
+          placeholder="Write something…"
+          placeholderdisabled="Chat is blocked now"
         />
       </div>
       <div class="container">
@@ -54,23 +62,18 @@
       }
 
       .container {
+        display: inline-block;
         height: 450px;
+        margin-bottom: 3px;
         position: relative;
-        width: 45%;
+        vertical-align: top;
+        width: 280px;
       }
 
-      .container + .container {
-        margin-left: 20px;
-      }
-
-      #messenger,
+      #messenger1,
+      #messenger2,
       #messenger-reverse {
-        position: absolute;
         width: inherit;
-      }
-
-      .row {
-        display: flex;
       }
     </style>
   </body>

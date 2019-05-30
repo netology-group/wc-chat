@@ -14,11 +14,11 @@ export const Invariant = (namespace) => {
 export const debug = (namespace) => {
   const deb = Debug(namespace)
 
-  return (...argv) => process.env.NODE_ENV !== 'production' ? deb(...argv) : null
+  return (...argv) => process.env.NODE_ENV !== 'production' ? deb(...argv) : undefined
 }
 
 export const getIndexById = (id, array) => {
-  let index = null
+  let index
 
   for (let i = 0; i < array.length; i++) {
     if (array[i].id === id) {
@@ -58,3 +58,18 @@ export const classnames = function classnames (...argv) {
 export const isAggregatedBy = (field, index, list) => (!index || !field)
   ? false
   : list[index][field] === list[index - 1][field]
+
+export const isLastseen = ({
+  index,
+  lastseen,
+  list,
+  reverse,
+}) => {
+  const idx = reverse ? index + 1 : index - 1
+
+  return lastseen !== undefined
+    ? list[idx]
+      ? list[idx].id === lastseen
+      : undefined
+    : undefined
+}
