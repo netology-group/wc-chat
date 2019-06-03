@@ -35,9 +35,9 @@ export class MessageInput extends LitElement {
     this._boundValueChange = this._onValueChanged.bind(this)
     this._boundKeyPress = this._onKeyPress.bind(this)
     this._boundOnInput = this._onInput.bind(this)
-    this._underlyingTextarea = null
-    this.__pre = null
-    this.__post = null
+    this._underlyingTextarea = undefined
+    this.__pre = undefined
+    this.__post = undefined
   }
 
   connectedCallback () {
@@ -49,9 +49,9 @@ export class MessageInput extends LitElement {
   disconnectedCallback () {
     super.disconnectedCallback()
 
-    this._underlyingTextarea = null
-    this.__pre = null
-    this.__post = null
+    this._underlyingTextarea = undefined
+    this.__pre = undefined
+    this.__post = undefined
 
     this.removeEventListener('bind-value-changed', this._boundValueChange)
   }
@@ -65,8 +65,8 @@ export class MessageInput extends LitElement {
 
     if (this._underlyingTextarea && this.__pre && this.__post) {
       this._underlyingTextarea.setSelectionRange(this.__pre, this.__post)
-      this.__pre = null
-      this.__post = null
+      this.__pre = undefined
+      this.__post = undefined
     }
   }
 

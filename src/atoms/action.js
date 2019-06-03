@@ -3,6 +3,8 @@ import { html } from '@polymer/lit-element'
 import * as images from '../images'
 import { classnames as cn } from '../utils/index'
 
+const tplFromMap = map => map.toJSON().map(tuple => tuple[1])
+
 export const actionImages = new Map([['message-delete', images.del], ['user-disable', images.lock]])
 
 export const action = ({
@@ -23,7 +25,7 @@ export const action = ({
     { disabled, allowed },
   )
 
-  if (!allowed) return null
+  if (!allowed) return undefined
 
   return (html`
     <button
@@ -51,3 +53,19 @@ export const reaction = ({
     </button>
 `)
 }
+
+export const reactions = ({ children }) => (html`
+  <div class='reactions'>
+    <div class='reaction'>${images.smiley}</div>
+    <div class='reactions-group'>
+      ${children}
+    </div>
+</div>
+`)
+
+export const actions = ({ children, reactions: rctns }) => (html`
+  <div class='actions-group'>
+    ${tplFromMap(children)}
+    ${rctns.size ? reactions({ children: tplFromMap(rctns) }) : undefined}
+  </div>
+`)

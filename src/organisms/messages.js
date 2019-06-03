@@ -3,8 +3,7 @@ import { withStyle } from '@netology-group/wc-utils'
 
 import { XLitElement as LitElement } from '../utils/rendered-lit-element'
 import { debug as Debug, isAggregatedBy } from '../utils/index'
-import { meta } from '../atoms/message'
-import { style as actionStyle } from '../atoms/actions'
+import { style as actionStyle } from '../molecules/actions'
 
 import style from './messages.css'
 
@@ -48,7 +47,6 @@ export class MessagesElement extends LitElement {
     return {
       classname: String,
       invoke: String,
-      lastseen: Number,
       list: Array,
       listdir: Number,
       reverse: Boolean,
@@ -57,83 +55,102 @@ export class MessagesElement extends LitElement {
     }
   }
 
-  _renderMessage (message) { // eslint-disable-line class-methods-use-this
+  __renderMessage (message) { // eslint-disable-line class-methods-use-this
     const {
       aggregated,
       avatar,
-      body,
+      classname,
       current_user_id,
       deleted,
+      icon,
       id,
+      identity,
       reversed,
+      text,
+      theme,
       timestamp,
       user_id,
       user_name,
-      user_role,
     } = message
 
-    const metaTpl = aggregated
-      ? undefined
-      : meta({
-        classname: user_role,
-        display_role: user_role,
-        timestamp,
-        user_name,
-      })
-
     const className = cs({
+      [classname]: classname,
       aggregated,
-      deleted,
       message: true,
-      normal: !reversed,
-      reversed,
     })
 
     return (html`
-      <wc-chat-message class$='${className}' aggregated='${aggregated}' body='${body}' classname='${user_role}' deleted='${deleted}'
-        uid='${id}' image='${avatar}' me='${user_id === current_user_id}' reversed='${reversed}'>
-        <div slot='message-prologue'>
-          ${metaTpl}
-        </div>
-      </wc-chat-message>
+      <wc-chat-message
+        aggregated='${aggregated}'
+        class$='${className}'
+        deleted='${deleted}'
+        icon='${icon}'
+        identity='${identity}'
+        image='${avatar}'
+        me='${user_id === current_user_id}'
+        reversed='${reversed}'
+        text='${text}'
+        theme='${theme}'
+        timestamp='${timestamp}'
+        uid='${id}'
+        username='${user_name}'
+      />
     `)
   }
 
-  _renderEachMessage (it, i, arr) {
-    const aggregated = isAggregatedBy('user_id', i, arr)
-    const message = { ...it, current_user_id: this.user }
+  _renderEach (it, i, arr) {
+    const {
+      avatar,
+      body: text,
+      classname,
+      deleted,
+      icon,
+      id,
+      identity,
+      rating,
+      theme,
+      timestamp,
+      user_id,
+      user_name,
+      visible,
+    } = it
 
-    const messageTpl = this._renderMessage({
-      ...message,
-      aggregated,
+    return this.__renderMessage({
+      aggregated: isAggregatedBy('user_id', i, arr),
+      avatar,
+      classname,
+      current_user_id: this.user,
+      deleted,
+      icon,
+      id,
+      identity,
       reversed: this.reverse,
+      rating,
+      text,
+      theme,
+      timestamp,
+      user_id,
+      user_icon: icon,
+      user_name,
+      visible,
     })
-
-    const className = cs({
-      aggregated,
-      deleted: message.deleted,
-      [this.classname || 'messages-item']: true,
-      normal: !this.reverse,
-      reversed: this.reverse,
-    })
-
-    return (html`
-      <div class$='${className}'>${messageTpl}</div>
-    `)
   }
 
   __renderMessages (list) {
-    return list.map((it, i, arr) => this._renderEachMessage(it, i, arr))
+    return list.map((it, i, arr) => this._renderEach(it, i, arr))
   }
 
-  _render ({ list = [] }) {
-    const content = !list.length
-      ? null
-      : (html`<div class='messages-inner'>
-        ${this.__renderMessages(list)}
-      </div>`)
+  _render (props) {
+    const { list = [] } = props
+    const contentTpl = !list.length
+      ? undefined
+      : (html`
+        <div class='messages-inner'>
+          ${this.__renderMessages(list)}
+        </div>
+      `)
 
-    return (html`<div class='messages'>${content}</div>`)
+    return (html`<div class='messages'>${contentTpl}</div>`)
   }
 
   _didRender (props, changed, prevProps) {
@@ -186,4 +203,8 @@ export class MessagesElement extends LitElement {
   }
 }
 
-export default withStyle(html)(MessagesElement, style, actionStyle)
+export default withStyle(html)(
+  MessagesElement,
+  style,
+  actionStyle
+)

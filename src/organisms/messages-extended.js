@@ -1,170 +1,232 @@
 import { html, classString as cs } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils'
 
-import { actions as Actions, style as actionStyle } from '../atoms/actions'
-import { isAggregatedBy } from '../utils/index'
-import * as actions from '../atoms/action'
-import { meta } from '../atoms/message'
+import { Actions, style as actionStyle } from '../molecules/actions'
+import { isAggregatedBy, isLastseen } from '../utils/index'
+import { actionImages } from '../atoms/action'
+import { separator } from '../atoms/separator'
+
+import separatorStyle from '../atoms/separator.css'
 
 import { MessagesElement } from './messages'
 import style from './messages.css'
-
-const config = message => new Map([['thumbsup', { name: ':thumbsup', count: message.rating }]])
+import styleExt from './messages-extended.css'
 
 export class XMessagesElement extends MessagesElement {
   static get properties () {
     return {
       ...super.properties,
-      i18n: Object,
       actions: Array,
-      actionsallowed: Array,
+      i18n: Object,
+      lastseen: Number,
       parser: String,
       parserpreset: String,
       parserrules: String,
+      reactions: Array,
     }
   }
 
-  get _actions () {
+  get __actions () {
     return new Map(Array.isArray(this.actions) ? this.actions : [])
   }
 
-  _renderMessage (message) { // eslint-disable-line class-methods-use-this
+  get __reactions () {
+    const rctns = new Map([])
+
+    Array.isArray(this.reactions) && this.reactions.forEach((it) => {
+      rctns.set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 })
+    })
+
+    return rctns
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  __renderReactions (opts) {
+    const { rating } = opts
+    let config
+
+    if (typeof rating === 'number') {
+      config = new Map([['thumbsup', { name: ':thumbsup:', count: rating }]])
+    } else if (Array.isArray(rating)) {
+      config = new Map([])
+      rating.forEach((it) => {
+        config.set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 })
+      })
+    } else if (opts.rating !== undefined) {
+      throw new TypeError('Wrong rating type')
+    }
+
+    if (!config) return undefined
+
+    return (html`
+      <wc-chat-reactions
+        config='${config}'
+        showcount
+      />
+    `)
+  }
+
+  __renderMessage (message) { // eslint-disable-line class-methods-use-this
     const {
       aggregated,
       avatar,
-      body,
+      classname,
       current_user_id,
       deleted,
+      icon,
       id,
+      identity,
+      lastseen,
+      rating,
       reversed,
+      text,
+      theme,
       timestamp,
-      unseen,
       user_id,
       user_name,
-      user_role,
+      visible,
     } = message
 
-    const sepClass = cs({
-      'message-separator': true,
-      reversed,
-    })
-
-    const unseenTpl = unseen && (current_user_id !== user_id)
-      ? (html`
-        <div slot$=${`message-${reversed ? 'rev-' : ''}${id}`} class='separator-ph'>
-          <div class$=${sepClass}>
-            <hr><span>${this.i18n.NEW_MESSAGES}</span>
-          </div>
-        </div>
-      `)
-      : undefined
-
-    const metaTpl = aggregated
+    const maybeUnseen = lastseen && (current_user_id !== user_id)
+    const unseenTpl = !maybeUnseen
       ? undefined
-      : meta({
-        classname: user_role,
-        display_role: user_role,
-        timestamp,
-        user_name,
-      })
+      : (html`
+          <div slot$=${`message-${reversed ? 'rev-' : ''}${id}`} class='messages-separator'>
+            ${separator({ reversed, text: this.i18n.NEW_MESSAGES })}
+          </div>
+        `)
 
     const className = cs({
+      [classname]: classname,
       aggregated,
-      deleted,
       message: true,
-      normal: !reversed,
-      reversed,
-      unseen,
+      unseen: lastseen,
     })
+
+    if (!visible) return undefined
+    // skip unless visible
 
     return (html`
       <wc-chat-message
-        class$='${className}'
         aggregated='${aggregated}'
-        body='${body}'
-        classname='${user_role}'
+        class$='${className}'
         deleted='${deleted}'
-        uid='${id}'
+        icon='${icon}'
+        identity='${identity}'
         image='${avatar}'
         me='${user_id === current_user_id}'
         parsername='${this.parser}'
         parserpreset='${this.parserpreset}'
         parserrules='${this.parserrules}'
+        rating='${this.rating}'
         reversed='${reversed}'
+        text='${text}'
+        theme='${theme}'
+        timestamp='${timestamp}'
+        uid='${id}'
+        username='${user_name}'
       >
         ${unseenTpl}
         <div slot='message-prologue'>
-          ${this.__renderActions({ ...message })}
-          ${metaTpl}
+          ${this.__renderActions(message)}
         </div>
         <div slot='message-epilogue'>
-          <wc-chat-reactions config='${config(message)}' showcount></wc-chat-reactions>
+          ${this.__renderReactions({ rating })}
         </div>
       </wc-chat-message>
     `)
   }
 
-  _renderEachMessage (it, i, arr) {
-    const aggregated = isAggregatedBy('user_id', i, arr)
-    const message = { ...it, current_user_id: this.user }
+  _renderEach (message, i, arr) {
+    const {
+      avatar,
+      body: text,
+      classname,
+      deleted,
+      icon,
+      id,
+      identity,
+      rating,
+      theme,
+      timestamp,
+      user_id,
+      user_name,
+      visible,
+    } = message
 
-    const idx = this.reverse ? i + 1 : i - 1
-    const unseen = this.lastseen !== undefined
-      ? arr[idx]
-        ? arr[idx].id === this.lastseen
-        : null
-      : null
-
-    const messageTpl = this._renderMessage({
-      ...message,
-      aggregated,
+    return this.__renderMessage({
+      aggregated: isAggregatedBy('user_id', i, arr),
+      avatar,
+      classname,
+      current_user_id: this.user,
+      deleted,
+      icon,
+      id,
+      identity,
+      lastseen: isLastseen({
+        index: i,
+        lastseen: this.lastseen,
+        list: arr,
+        reverse: this.reverse,
+      }),
+      rating,
       reversed: this.reverse,
-      unseen,
+      text,
+      theme,
+      timestamp,
+      user_id,
+      user_icon: icon,
+      user_name,
+      visible,
     })
-
-    const className = cs({
-      aggregated,
-      deleted: message.deleted,
-      [this.classname || 'messages-item']: true,
-      normal: !this.reverse,
-      reversed: this.reverse,
-      unseen,
-    })
-
-    return (html`
-      <div class$='${className}'>${messageTpl}</div>
-    `)
   }
 
   __renderActions (data) {
     const children = new Map()
     const reactions = new Map()
-    const actionsOpts = new Map()
 
-    const isAllowed = (action, d) => d.current_user_id !== d.user_id
-      || (d.current_user_id === d.user_id && action.self)
+    // eslint-disable-next-line no-bitwise
+    const isAllowed4Other = (a, b) => (b.current_user_id !== b.user_id && (a & 1))
+    // eslint-disable-next-line no-bitwise
+    const isAllowed4Group = (a, b) => (b.current_user_id !== b.user_id && (a & 10))
+    // eslint-disable-next-line no-bitwise
+    const isAllowed4Self = (a, b) => (b.current_user_id === b.user_id && (a & 100))
 
-    Array.isArray(this.actionsallowed) && this.actionsallowed.forEach((key) => {
-      const _action = this._actions.get(key) || {}
+    const isAllowed = (a, b) => isAllowed4Other(a, b)
+      || isAllowed4Group(a, b)
+      || isAllowed4Self(a, b)
+
+    Array.isArray(this.actions) && this.actions.forEach((_) => {
+      const key = _[0]
+      const _action = this.__actions.get(key) || {}
+
       const actionOpts = {
         message: data,
-        allowed: isAllowed(_action, data) || undefined,
-        children: actions.actionImages.get(key),
+        allowed: isAllowed(_action, data),
+        children: actionImages.get(key),
         handler: (e, detail) => { this.dispatchEvent(new CustomEvent(key, { detail })) },
       }
 
-      actionsOpts.set(key, actionOpts)
-
-      if (key === 'message-reaction') {
-        reactions.set(key, actions.reaction(actionOpts))
+      if (key === 'message-reaction' && isAllowed(_action, data)) {
+        reactions.set(key, (actionOpts))
       } else {
-        children.set(key, actions.action(actionOpts))
+        children.set(key, (actionOpts))
       }
     })
 
     // eslint-disable-next-line object-curly-newline
-    return Actions({ children, reactions, actions: actionsOpts })
+    return Actions({ children, reactions })
+  }
+
+  _render (props) {
+    return super._render(props)
   }
 }
 
-export default withStyle(html)(XMessagesElement, style, actionStyle)
+export default withStyle(html)(
+  XMessagesElement,
+  style,
+  separatorStyle,
+  actionStyle,
+  styleExt
+)

@@ -1,4 +1,4 @@
-/* stylelint-disable selector-type-no-unknown */
+/* stylelint-disable-next-line selector-type-no-unknown */
 iron-autogrow-textarea {
   -webkit-appearance: none;
   background: var(--bg-color, var(--theme-color-white, #fff));
@@ -6,7 +6,7 @@ iron-autogrow-textarea {
   border-radius: 5px;
   box-sizing: border-box;
   caret-color: var(--caret-color, var(--theme-color-pictonblue, #48a1e6));
-  font-size: var(--font-size, var(--theme-font-size, 16px));
+  font-size: var(--font-size, var(--theme-font-size, inherit));
   height: inherit;
   line-height: 1.2em;
   max-height: 200px;
@@ -27,10 +27,12 @@ iron-autogrow-textarea {
   };
 }
 
+/* stylelint-disable-next-line selector-type-no-unknown */
 iron-autogrow-textarea:hover {
   border-color: var(--border-color-hover, var(--theme-color-silver, #b8b8b8));
 }
 
+/* stylelint-disable-next-line selector-type-no-unknown */
 iron-autogrow-textarea:focus-within {
   border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));
 }

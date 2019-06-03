@@ -7,7 +7,8 @@ semi-style, no-param-reassign,
 prefer-destructuring,
 no-extra-semi */
 
-var messenger
+var messenger1
+var messenger2
 var messengerReversed
 var avatarUrl = 'https://about.gitlab.com/images/devops-tools/gitlab-logo.svg'
 
@@ -40,53 +41,59 @@ var bodyMessages = [
 
 var _messages = [
   {
-    name: 'Admin',
-    user_name: 'Admin',
-    role: 'moderator',
-    user_role: 'moderator',
-    identity: 'Administrator',
-    user_id: 99,
-    visible: true,
     avatar: avatarUrl,
-    id: window.ULID.ulid(),
-    uid: window.ULID.ulid(),
     body: 'Hello World!',
+    icon: 'man',
+    id: window.ULID.ulid(),
+    identity: (function getIdentity (user_role = 'moderator') { return 'Administrator' }()), // eslint-disable-line no-unused-vars
+    rating: 0 || [['thumbsup']],
+    theme: 'red',
     timestamp: Date.now() / 1e3,
-    rating: 100500,
+    user_id: 99,
+    user_name: 'Alan Mathison Turing',
+    visible: true,
   },
-].concat(bodyMessages.map(_ => ({ ..._, id: window.ULID.ulid() })))
+].concat(bodyMessages.map(_ => ({
+  ..._,
+  id: window.ULID.ulid(),
+  visible: true,
+})))
 
 var _users = [
   {
-    name: 'Marco Polo',
-    identity: 'me',
-    user_name: 'Marco Polo',
-    user_role: 'user',
-    user_id: 1,
-    visible: true,
     avatar: avatarUrl,
+    identity: 'me',
+    user_id: 1,
+    user_name: 'Marco Polo',
+    visible: true,
   },
   {
-    name: 'Mario',
-    identity: 'me2',
-    user_name: 'Mario',
-    user_role: 'user',
-    user_id: 2,
-    visible: true,
     avatar: avatarUrl,
+    identity: 'me2',
+    user_id: 2,
+    user_name: 'Mario',
+    visible: true,
+  },
+  {
+    avatar: avatarUrl,
+    identity: (function getIdentity (user_role = 'moderator') { return 'Administrator' }()), // eslint-disable-line no-unused-vars
+    user_id: 99,
+    user_name: 'Alan Mathison Turing',
+    visible: true,
   },
 ]
 
-var _actions = [['message-delete', { self: true }], ['message-reaction', { self: true }]]
-
-var _actionsallowed = ['message-delete', 'user-disable', 'message-reaction']
-
 function enhanceMessage (message, userId) {
-  const _message = {
+  var _message = {
     id: window.ULID.ulid(),
     body: message,
     timestamp: Date.now() / 1e3,
     user_id: userId,
+  }
+
+  if (userId === 99) {
+    _message.theme = 'red'
+    _message.icon = 'man'
   }
 
   return Object.assign(_message, _users.filter(function selectUsers (_) {
@@ -96,15 +103,22 @@ function enhanceMessage (message, userId) {
 
 function update (list, messages) {
   list.forEach((_) => {
-    _.update(messages)
+    _ && _.update(messages)
   })
 }
 
 function initialize (element, user, makeUpdate) {
-  element.actions = _actions
-  element.actionsallowed = _actionsallowed
   element.users = _users
   element.user = user
+
+  if (element === messengerReversed) {
+    // means user is admin and stuff
+    element.actions = [['user-disable', 11], ['message-delete', 111], ['message-reaction', 1]]
+    element.reactions = [['thumbsup']]
+  } else {
+    element.actions = [['user-disable', 0], ['message-delete', 100], ['message-reaction', 1]]
+    element.reactions = [['thumbsup']]
+  }
 
   element.update(_messages)
 
@@ -118,7 +132,18 @@ function initialize (element, user, makeUpdate) {
 
   element.addEventListener('chat-message-reaction', function onMessageReaction (e) {
     _messages = _messages.map(function calcRating (it) {
-      if (it.id && e.detail.message.id && it.id === e.detail.message.id) it.rating = !it.rating ? 1 : it.rating + 1
+      if (it.id
+        && e.detail.message.id
+        && it.id === e.detail.message.id
+      ) {
+        if (Array.isArray(it.rating)) {
+          it.rating = [['thumbsup', (it.rating[0][1] || 0) + 1]]
+        } else if (typeof it.rating === 'number') {
+          it.rating = !it.rating ? 1 : it.rating + 1
+        } else {
+          it.rating = [['thumbsup', 1]]
+        }
+      }
 
       return it
     })
@@ -157,9 +182,11 @@ window.document.addEventListener('WebComponentsReady', function onComponentsRead
 
   window.customElements.define('wc-chat', Chat)
 
-  messenger = document.getElementById('messenger')
+  messenger1 = document.getElementById('messenger1')
+  messenger2 = document.getElementById('messenger2')
   messengerReversed = document.getElementById('messenger-reverse')
 
-  initialize(messenger, 1, list => update([messenger, messengerReversed], list))
-  initialize(messengerReversed, 2, list => update([messenger, messengerReversed], list))
+  initialize(messenger1, 1, list => update([messenger1, messenger2, messengerReversed], list))
+  initialize(messenger2, 2, list => update([messenger1, messenger2, messengerReversed], list))
+  initialize(messengerReversed, 99, list => update([messenger1, messenger2, messengerReversed], list))
 })

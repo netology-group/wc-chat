@@ -13,9 +13,12 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   --message-color-me: var(--chat-message-color-me, var(--cornflowerBlue, #ebf2f7));
   --message-color-watchdog-hover: var(--chat-message-color-watchdog-hover, #faefebb3);
   --message-color-watchdog: var(--chat-message-color-watchdog, var(--whiteLinen, #faefeb));
+  --message-status-color: var(--chat-message-status-color, var(--silver, #b8b8b8));
+
+  display: block;
 }
 
-:host .avatar {
+:host .inner .avatar {
   float: left;
   margin-right: var(--message-avatar-margin);
   overflow: hidden;
@@ -24,7 +27,7 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   width: var(--message-avatar-size);
 }
 
-:host .avatar > div:first-child {
+:host .inner .avatar > div:first-child {
   background: no-repeat center center;
   background-color: var(--message-avatar-color-moderator, transparent);
   background-size: contain;
@@ -33,16 +36,16 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   width: var(--message-avatar-size);
 }
 
-:host .avatar.moderator {
+:host .inner.theme-red .avatar {
   background-color: var(--message-avatar-color, transparent);
 }
 
-:host .message-inner.aggregated .avatar {
+:host .inner.aggregated .avatar {
   height: 1px;
   visibility: hidden;
 }
 
-:host .message-content {
+:host .content {
   background-color: #fff;
   border-radius: var(--message-border-radius);
   box-sizing: border-box;
@@ -52,101 +55,142 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   width: calc(100% - var(--message-avatar-size) - var(--message-avatar-margin));
 }
 
-:host .message-content > [class^="actions"] {
+:host .content > [class^="actions"] {
   opacity: 0;
 }
 
-:host .message-content:hover > [class^="actions"] {
+:host .content:hover > [class^="actions"] {
   opacity: 1;
 }
 
-:host .message-content.moderator {
-  background-color: var(--message-color-watchdog);
-}
-
-:host .message-content.me {
-  background-color: var(--message-color-me);
-}
-
-:host .message-inner:hover .message-content {
-  background-color: var(--message-color-hover);
-}
-
-:host .message-inner:hover .message-content.moderator {
-  background-color: var(--message-color-watchdog-hover);
-}
-
-:host .message-inner:hover .message-content.me {
-  background-color: var(--message-color-me-hover);
-}
-
-:host .message-inner.aggregated .message-content {
+:host .inner.aggregated .content {
   border-radius: var(--message-border-radius);
 }
 
-:host .message-inner.deleted .avatar,
-:host .message-inner.deleted .message-content {
+:host .inner.deleted .avatar,
+:host .inner.deleted .content {
   filter: grayscale(75%);
 }
 
-:host .message-inner.deleted .message-content {
+:host .inner.deleted .content {
   background: var(--message-color-deleted);
 }
 
-:host .message-inner.deleted:hover .message-content {
+:host .inner.me .content {
+  background-color: var(--message-color-me);
+}
+
+:host .inner.theme-red .content {
+  background-color: var(--message-color-watchdog);
+}
+
+:host .inner:hover .content {
+  background-color: var(--message-color-hover);
+}
+
+:host .inner.deleted:hover .content {
   background: var(--message-color-deleted-hover);
 }
 
-/** .md */
-:host .message-body {
+:host .inner:hover.me .content {
+  background-color: var(--message-color-me-hover);
+}
+
+:host .inner:hover.theme-red .content {
+  background-color: var(--message-color-watchdog-hover);
+}
+
+/** Meta */
+
+:host .meta {
+  display: inline-block;
+  line-height: 19px;
+  padding-bottom: 5px;
+}
+
+:host .meta .author,
+:host .meta .icon,
+:host .meta .stamp {
+  vertical-align: top;
+}
+
+:host .meta .author {
+  display: inline-block;
+  font-weight: bold;
+  padding-right: 8px;
+}
+
+/* stylelint-disable-next-line no-duplicate-selectors */
+:host .meta .author {
+  max-width: 80px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+
+  /* white-space: nowrap; */
+}
+
+:host .meta .stamp {
+  color: var(--message-status-color);
+}
+
+:host .meta .stamp > span {
+  font-size: 0.75em;
+}
+
+/** /Meta */
+
+/** Markdown */
+
+:host .body {
   line-height: 19px;
   overflow-wrap: anywhere;
+  padding-bottom: 5px;
   padding-right: 24px;
   word-break: break-word;
 }
 
-:host .message-body h1,
-:host .message-body h2 {
+:host .body h1,
+:host .body h2 {
   margin-bottom: 7px;
   margin-top: 5px;
 }
 
-:host .message-body h3,
-:host .message-body h4,
-:host .message-body h5,
-:host .message-body h6 {
+:host .body h3,
+:host .body h4,
+:host .body h5,
+:host .body h6 {
   margin-bottom: 5px;
   margin-top: 3px;
 }
 
-:host .message-body p,
-:host .message-body ol,
-:host .message-body ul {
+:host .body p,
+:host .body ol,
+:host .body ul {
   margin: 0;
   padding: 0;
 }
 
-:host .message-body p {
+:host .body p {
   display: inline-block;
   white-space: pre-line;
   word-break: break-word;
 }
 
-:host .message-body p + p {
+:host .body p + p {
   display: block;
 }
 
-:host .message-body ol,
-:host .message-body ul {
+:host .body ol,
+:host .body ul {
   display: inline-block;
   padding-left: 10px;
 }
 
-:host .message-body pre {
+:host .body pre {
   overflow-x: scroll;
 }
 
-:host .message-body pre > code {
+:host .body pre > code {
   background-color: #e8e2e2;
   border: 1px solid #c7c1c1;
   border-radius: var(--message-border-radius);
@@ -154,7 +198,7 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   padding: 5px 10px;
 }
 
-:host .message-body p > code {
+:host .body p > code {
   background-color: #e8e2e2;
   border: 1px solid #d6cbcb;
   border-radius: var(--message-border-radius);
@@ -163,13 +207,14 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 }
 
 /** blockquote */
-:host .message-body blockquote {
+
+:host .body blockquote {
   margin: 0;
   margin-bottom: 5px;
   position: relative;
 }
 
-:host .message-body blockquote::before {
+:host .body blockquote::before {
   border-left: 5px solid #c6c6c66c;
   border-radius: var(--message-border-radius);
   box-sizing: border-box;
@@ -179,20 +224,22 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   position: absolute;
 }
 
-:host .message-body blockquote p {
+:host .body blockquote p {
   margin-left: 15px;
 }
 
-:host .message-markdown .message-body blockquote {
+:host .parser-markdown .body blockquote {
   white-space: normal;
 }
 
 /** /blockquote */
 
-:host .message-markdown .message-body pre {
+:host .parser-markdown .body pre {
   white-space: normal;
 }
 
-:host .message-markdown .message-body pre code {
+:host .parser-markdown .body pre code {
   white-space: pre;
 }
+
+/** /Markdown */

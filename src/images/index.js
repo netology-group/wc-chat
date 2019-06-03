@@ -79,3 +79,9 @@ export const cross = (html`<svg width="10" height="10" viewBox="0 0 10 10" fill=
 </g>
 </svg>
 `)
+
+export const human = (html`<svg width="8" height="9" viewBox="0 0 8 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6 2C6 3.10457 5.10457 4 4 4C2.89543 4 2 3.10457 2 2C2 0.895431 2.89543 0 4 0C5.10457 0 6 0.895431 6 2Z" fill="#B8B8B8"/>
+<path d="M0 7C0 5.89543 0.895431 5 2 5H6C7.10457 5 8 5.89543 8 7V9H0V7Z" fill="#B8B8B8"/>
+</svg>
+`)

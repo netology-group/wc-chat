@@ -21,7 +21,6 @@ export class ChatElement extends LitElement {
   static get properties () {
     return {
       actions: Array,
-      actionsallowed: Array,
       delaysubmit: Number,
       delayupdate: Number,
       disabled: Boolean,
@@ -38,6 +37,7 @@ export class ChatElement extends LitElement {
       parserrules: String,
       placeholder: String,
       placeholderdisabled: String,
+      reactions: Array,
       reverse: Boolean,
       scrollabledisabled: Boolean,
       user: Number,
@@ -211,7 +211,7 @@ export class ChatElement extends LitElement {
 
   _render (props) {
     const input = props.noinput
-      ? null
+      ? undefined
       : (html`
         <div class='input'>
           <wc-chat-input
@@ -233,8 +233,9 @@ export class ChatElement extends LitElement {
       : undefined
     const lastSeenIndex = props.list && props.lastseen !== undefined
       ? getIndexById(props.lastseen, props.list)
-      : null
-    const newMessageCount = props.list && props.lastseen !== undefined && lastSeenIndex !== null
+      : undefined
+    // eslint-disable-next-line max-len
+    const newMessageCount = props.list && props.lastseen !== undefined && lastSeenIndex !== undefined
       ? props.list.length - 1 - lastSeenIndex
       : 0
 
@@ -251,7 +252,6 @@ export class ChatElement extends LitElement {
     /**
      *  Scrollable & messages are ment to work together
      */
-
     return (html`
       <div class='wrapper'>
         <wc-chat-scrollable
@@ -265,11 +265,10 @@ export class ChatElement extends LitElement {
           on-seek-after='${this.boundedSeekAfter}'
           reverse='${props.reverse}'
           showbannernew='${newMessageCount > 0}'
-          unseenSelector='.messages-item.unseen'
+          unseenSelector='.message.unseen'
         >
           <wc-chat-messages
-            actions='${props.actions}'
-            actionsallowed='${props.actionsallowed}'
+            actions='${this.actions}'
             i18n='${messagesI18n}'
             invoke='${EVENT}'
             lastseen='${props.lastseen}'
@@ -281,6 +280,7 @@ export class ChatElement extends LitElement {
             parser='${this.parser}'
             parserpreset='${this.parserpreset}'
             parserrules='${this.parserrules}'
+            reactions='${this.reactions}'
             reverse='${props.reverse}'
             user='${props.user}'
             users='${props.users}'

@@ -1,6 +1,16 @@
-import { html } from '@polymer/lit-element'
+import { html, classString as cs } from '@polymer/lit-element'
 
 import { stampToDate, formatDate, classnames as cn } from '../utils/index'
+import { human as humansvg } from '../images/index'
+
+export const icon = ({ name }) => {
+  switch (name) {
+    case 'man':
+      return humansvg
+    default:
+      return undefined
+  }
+}
 
 export const avatar = ({
   aggregated,
@@ -14,24 +24,24 @@ export const avatar = ({
 
 export const meta = ({
   classname,
-  display_role,
+  icon: iconname,
+  identity,
   timestamp,
-  user_name,
+  username,
 }) => (html`
-  <div class$='${cn(classname, 'message-meta')}'>
-    <span class='message-author' title='${display_role || ''}'>${user_name}</span>
-    <span class='message-stamp'>${formatDate(stampToDate(timestamp))}</span>
-  </div>
-`)
+    <div class$='${cs({ 'meta': true, [classname]: classname })}'>
+      <span class='author' title='${identity || ''}'>${username}</span>
+      <span class='icon'>${icon({ name: iconname })}</span>
+      <span class='stamp'><span>${formatDate(stampToDate(timestamp))}</span></span>
+    </div>
+  `)
 
 export const section = ({
   body,
   classname,
   me,
 }) => (html`
-  <section class$='${cn(classname, 'message-content', { me })}'>
-    <slot name="message-prologue"></slot>
-    <div class='message-body'>${body}</div>
-    <slot name="message-epilogue"></slot>
+  <section class$='${cn(classname, { [classname]: classname, me })}'>
+    <div class='body'>${body}</div>
   </section>
 `)
