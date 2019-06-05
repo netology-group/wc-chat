@@ -228,17 +228,17 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   margin-left: 15px;
 }
 
-:host .parser-markdown .body blockquote {
+:host .section.parser-markdown .body blockquote {
   white-space: normal;
 }
 
 /** /blockquote */
 
-:host .parser-markdown .body pre {
+:host .section.parser-markdown .body pre {
   white-space: normal;
 }
 
-:host .parser-markdown .body pre code {
+:host .section.parser-markdown .body pre code {
   white-space: pre;
 }
 

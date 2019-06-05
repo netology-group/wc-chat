@@ -182,15 +182,15 @@ export class XMessagesElement extends MessagesElement {
   }
 
   __renderActions (data) {
-    const children = new Map()
+    const actions = new Map()
     const reactions = new Map()
 
-    // eslint-disable-next-line no-bitwise
-    const isAllowed4Other = (a, b) => (b.current_user_id !== b.user_id && (a & 1))
-    // eslint-disable-next-line no-bitwise
-    const isAllowed4Group = (a, b) => (b.current_user_id !== b.user_id && (a & 10))
-    // eslint-disable-next-line no-bitwise
-    const isAllowed4Self = (a, b) => (b.current_user_id === b.user_id && (a & 100))
+    // eslint-disable-next-line no-bitwise,max-len
+    const isAllowed4Other = (a, b) => (b.current_user_id && b.user_id && b.current_user_id !== b.user_id && Boolean(a & 1))
+    // eslint-disable-next-line no-bitwise,max-len
+    const isAllowed4Group = (a, b) => (b.current_user_id && b.user_id && b.current_user_id !== b.user_id && Boolean(a & 10))
+    // eslint-disable-next-line no-bitwise,max-len
+    const isAllowed4Self = (a, b) => (b.current_user_id && b.user_id && b.current_user_id === b.user_id && Boolean(a & 100))
 
     const isAllowed = (a, b) => isAllowed4Other(a, b)
       || isAllowed4Group(a, b)
@@ -200,22 +200,22 @@ export class XMessagesElement extends MessagesElement {
       const key = _[0]
       const _action = this.__actions.get(key) || {}
 
+      if (!isAllowed(_action, data)) return
+
       const actionOpts = {
         message: data,
-        allowed: isAllowed(_action, data),
         children: actionImages.get(key),
         handler: (e, detail) => { this.dispatchEvent(new CustomEvent(key, { detail })) },
       }
 
-      if (key === 'message-reaction' && isAllowed(_action, data)) {
-        reactions.set(key, (actionOpts))
+      if (key === 'message-reaction') {
+        reactions.set(key, actionOpts)
       } else {
-        children.set(key, (actionOpts))
+        actions.set(key, actionOpts)
       }
     })
 
-    // eslint-disable-next-line object-curly-newline
-    return Actions({ children, reactions })
+    return Actions({ actions, reactions })
   }
 
   _render (props) {
