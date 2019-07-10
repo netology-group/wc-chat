@@ -2,7 +2,7 @@ import { html, classString as cs } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils'
 
 import { Actions, style as actionStyle } from '../molecules/actions'
-import { isAggregatedBy, isLastseen } from '../utils/index'
+import { isAggregatedBy, isLastseen, debug as Debug } from '../utils/index'
 import { actionImages } from '../atoms/action'
 import { separator } from '../atoms/separator'
 
@@ -11,6 +11,8 @@ import separatorStyle from '../atoms/separator.css'
 import { MessagesElement } from './messages'
 import style from './messages.css'
 import styleExt from './messages-extended.css'
+
+const debug = Debug('@netology-group/wc-chat/MessagesExtended')
 
 export class XMessagesElement extends MessagesElement {
   static get properties () {
@@ -76,7 +78,7 @@ export class XMessagesElement extends MessagesElement {
       icon,
       id,
       identity,
-      lastseen,
+      is_lastseen,
       rating,
       reversed,
       text,
@@ -87,7 +89,8 @@ export class XMessagesElement extends MessagesElement {
       visible,
     } = message
 
-    const maybeUnseen = lastseen && (current_user_id !== user_id)
+    const maybeUnseen = is_lastseen && (current_user_id !== user_id)
+
     const unseenTpl = !maybeUnseen
       ? undefined
       : (html`
@@ -100,7 +103,7 @@ export class XMessagesElement extends MessagesElement {
       [classname]: classname,
       aggregated,
       message: true,
-      unseen: lastseen,
+      unseen: is_lastseen,
     })
 
     if (!visible) return undefined
@@ -163,7 +166,7 @@ export class XMessagesElement extends MessagesElement {
       icon,
       id,
       identity,
-      lastseen: isLastseen({
+      is_lastseen: isLastseen({
         index: i,
         lastseen: this.lastseen,
         list: arr,
@@ -200,7 +203,11 @@ export class XMessagesElement extends MessagesElement {
       const key = _[0]
       const _action = this.__actions.get(key) || {}
 
-      if (!isAllowed(_action, data)) return
+      if (!isAllowed(_action, data)) {
+        debug('Action is not alllowed')
+
+        return
+      }
 
       const actionOpts = {
         message: data,

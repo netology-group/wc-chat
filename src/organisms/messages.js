@@ -25,6 +25,8 @@ function predictDirection (list, prevList, predicate) {
   if (!Array.isArray(list) || !Array.isArray(prevList)) throw new TypeError('Wrong list\'s format')
   if (typeof preedicate === 'function') return predicate(list, prevList)
 
+  if (!prevList.length || !list.length) return 0
+
   if (list.length !== prevList.length) {
     const first = _ => _[0]
     const last = _ => _[_.length - 1]
@@ -154,10 +156,10 @@ export class MessagesElement extends LitElement {
   }
 
   _didRender (props, changed, prevProps) {
-    const shouldDispatch = props.list
-      && prevProps.list
-      && Array.isArray(props.list)
-      && Array.isArray(prevProps.list)
+    const prev = prevProps.list || [] // use empty list on initial render
+    const next = props.list
+
+    const shouldDispatch = props.list && Array.isArray(props.list)
 
     /* eslint-disable max-len */
     /**
@@ -196,9 +198,11 @@ export class MessagesElement extends LitElement {
       this.renderComplete
         .then(() => this.dispatchEvent(new CustomEvent(
           this.invoke,
-          { detail: { direction: predictDirection(props.list, prevProps.list) } }
+          { detail: { direction: predictDirection(next, prev) } }
         )))
         .catch(error => debug(error.message))
+    } else {
+      debug('Skip dispatching')
     }
   }
 }

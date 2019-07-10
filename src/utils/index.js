@@ -16,20 +16,6 @@ export const debug = (namespace) => {
   return (...argv) => process.env.NODE_ENV !== 'production' ? deb(...argv) : undefined
 }
 
-export const getIndexById = (id, array) => {
-  let index
-
-  for (let i = 0; i < array.length; i++) {
-    if (array[i].id === id) {
-      index = i
-
-      break
-    }
-  }
-
-  return index
-}
-
 export const stampToDate = stamp => new Date(stamp * 1e3)
 
 export const formatDate = (date, pattern = /\d{2}:\d{2}/) => date.toTimeString().match(pattern)
@@ -46,9 +32,11 @@ export const isLastseen = ({
 }) => {
   const idx = reverse ? index + 1 : index - 1
 
-  return lastseen !== undefined
-    ? list[idx]
+  const result = lastseen !== undefined
+    ? (list[idx] && typeof list[idx].id !== 'undefined')
       ? list[idx].id === lastseen
       : undefined
     : undefined
+
+  return Boolean(result)
 }

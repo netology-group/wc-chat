@@ -113,11 +113,10 @@ export class Scrollable extends LitElement {
 
   scrollTo (x, y) {
     const el = this._scrollable
+    const _x = isNumber(x) ? x : 0
+    const _y = isNumber(y) ? y : (this.reverse ? 0 : el.scrollHeight)
 
-    const _x = 0
-    const _y = this.reverse ? 0 : el.scrollHeight
-
-    this._scrollTo(isNumber(x) ? x : _x, isNumber(y) ? y : _y)
+    this._scrollTo(_x, _y)
   }
 
   _scrollMinMax (shift, min = 1, max = DELTA) { // eslint-disable-line class-methods-use-this
@@ -149,7 +148,7 @@ export class Scrollable extends LitElement {
     )(fromEvent('scroll', this._scrollable))
     /* eslint-enable function-paren-newline */
 
-    this._scrollTo(this._x, this._y)
+    // NOTE: removed initial scroll as any content update should trigger scrolling
   }
 
   _shouldThrowSeekEvents (position) {
@@ -195,10 +194,12 @@ export class Scrollable extends LitElement {
   }
 
   _onResizeHandler () {
+    debug('onResize')
     this._onScrollHandler({ currentTarget: this._scrollable })
   }
 
   _onScrollHandler (e) {
+    debug('onScroll')
     const {
       scrollLeft, scrollTop, scrollWidth, scrollHeight, offsetHeight,
     } = e.currentTarget
@@ -218,6 +219,7 @@ export class Scrollable extends LitElement {
   }
 
   _onChildrenUpdate (e) {
+    debug('onUpdate')
     this._shouldScrollTo(e, e.detail.direction)
   }
 
@@ -243,49 +245,54 @@ export class Scrollable extends LitElement {
     }
   }
 
-  __shouldScrollByYAxis (params, changedParams, prevParams) {
+  __shouldScrollByYAxis (params, changed, prevParams) {
     const {
-      direction, current, top, y,
-    } = changedParams
+      direction,
+      top,
+      viewHeight,
+    } = changed
 
-    const prevHead = prevParams.height - current
+    const prevHead = this.reverse
+      ? prevParams.height - prevParams.top
+      : prevParams.height - prevParams.top - viewHeight
 
-    const atHead = current + this._scrollable.offsetHeight === prevParams.height
-    // means that user is seeing the latest message
+    const wasAtHead = (prevParams.height - viewHeight) === prevParams.top
 
-    const atZero = top === 0 && top === y
-
-    if (this.reverse && this.freeze) {
-      return (!atHead && !atZero)
-        ? params.height - prevHead
-        : undefined
-    }
-    // preserve top position in reverse & freezed mode unless at the edge
+    const atZero = top === 0
+    // means that user is seeing the top message ↑
 
     if (this.reverse) {
+      // NOTE: logic beneath is similar for `freeze` mode also
       return atZero
-        ? top
-        : atHead ? top : params.height - prevHead
+        ? params.top
+        : params.height - prevHead
     }
-    // preserve top position in `reverse` mode
+    // preserve top position on both `reverse` & `freeze` mode
 
     if (this.freeze) return top
     // preserve top position if is freezed
 
+    if (prevParams.height !== 0 && atZero) return top
+    // preserve position on top unless initial render
+
     if (direction === -1) return params.height - prevHead
     // calculate top position according the previous distance
-    // between hight (head) and current position
+    //  between hight (head) and current position
 
-    return atHead ? params.height - prevHead : y
+    const result = wasAtHead ? params.height - viewHeight : prevParams.top
     // preserve current position unless user is near the latest message
+
+    return result
   }
 
   // eslint-disable-next-line class-methods-use-this
-  __shouldScrollByXAxis (params, changed) {
-    return changed.current
+  __shouldScrollByXAxis (params, changed, prevParams) {
+    debug('calcX', params, prevParams, changed)
+
+    return params.left
   }
 
-  _shouldScrollTo (e, direction = 0) { // eslint-disable-line no-unused-vars
+  _shouldScrollTo (e, direction = 0) {
     /**
      * At the moment `Y.height` and `this._height` are not the same.
      * - `Y.height` is equal to the new container height (new message has been appended already)
@@ -295,35 +302,43 @@ export class Scrollable extends LitElement {
      */
     const X = this._xScroll(this._scrollable)
     const Y = this._yScroll(this._scrollable)
+    const { offsetHeight } = this._scrollable
 
     debug('X', X)
     debug('Y', Y)
 
-    if (Y.top === Y.height) return debug('Skip scrolling') // eslint-disable-line padding-line-between-statements
+    if (Y.top === Y.height) return debug('Skip scrolling')
     // skip scrolling on empty children (initial render might has 0/0)
 
     const y = this.__shouldScrollByYAxis(
-      { height: Y.height },
+      { height: Y.height, top: Y.top },
       {
         direction,
-        current: Y.current,
         top: Y.top,
-        y: Y.y,
+        viewHeight: offsetHeight,
       },
-      { height: this._height }
+      { height: this._height, top: this._y }
     )
-    const x = this.__shouldScrollByXAxis({}, { current: X.current })
+    const x = this.__shouldScrollByXAxis(
+      { width: X.width, left: X.left },
+      {
+        left: X.left,
+        viewHeight: offsetHeight,
+      },
+      { width: this._width, left: this._x }
+    )
 
-    return (typeof y !== 'undefined' && typeof x !== 'undefined') && this._scrollTo(x, y)
+    return this._scrollTo(x, y)
   }
 
   _scrollTo (x, y) {
-    const el = this._scrollable
+    debug('Maybe scroll to:', x, y)
 
     // eslint-disable-next-line padding-line-between-statements
     if (!isNumber(x) || !isNumber(y)) { invariant('Wrong coordinate type'); return }
 
-    debug('Maybe scroll to:', x, y)
+    debug('Scroll to:', x, y)
+    const el = this._scrollable
 
     if (!el.scrollTo) {
       el.scrollLeft = x
@@ -331,6 +346,13 @@ export class Scrollable extends LitElement {
     } else {
       el.scrollTo(x, y)
     }
+
+    this._defineCoordinates([
+      el.scrollLeft,
+      el.scrollTop,
+      el.scrollWidth,
+      el.scrollHeight,
+    ])
   }
 
   // eslint-disable-next-line class-methods-use-this
