@@ -195,27 +195,12 @@ export class Scrollable extends LitElement {
 
   _onResizeHandler () {
     debug('onResize')
-    this._onScrollHandler({ currentTarget: this._scrollable })
+    this.__handleScroll(this._scrollable)
   }
 
   _onScrollHandler (e) {
     debug('onScroll')
-    const {
-      scrollLeft, scrollTop, scrollWidth, scrollHeight, offsetHeight,
-    } = e.currentTarget
-
-    this._defineCoordinates([
-      scrollLeft,
-      scrollTop,
-      scrollWidth,
-      scrollHeight,
-    ])
-
-    this._shouldThrowSeekEvents({
-      frameHeight: offsetHeight,
-      height: scrollHeight,
-      top: scrollTop,
-    })
+    this.__handleScroll(e.currentTarget)
   }
 
   _onChildrenUpdate (e) {
@@ -243,6 +228,25 @@ export class Scrollable extends LitElement {
       width,
       x: this._x,
     }
+  }
+
+  __handleScroll (target) {
+    const {
+      scrollLeft, scrollTop, scrollWidth, scrollHeight, offsetHeight,
+    } = target
+
+    this._defineCoordinates([
+      scrollLeft,
+      scrollTop,
+      scrollWidth,
+      scrollHeight,
+    ])
+
+    this._shouldThrowSeekEvents({
+      frameHeight: offsetHeight,
+      height: scrollHeight,
+      top: scrollTop,
+    })
   }
 
   __shouldScrollByYAxis (params, changed, prevParams) {

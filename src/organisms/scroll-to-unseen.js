@@ -104,7 +104,7 @@ export class ScrollToUnseen extends Scrollable {
 
     return (html`
       <div class='wrapper'>
-        <div class='scrollable' id="scrollable" on-scroll='${this.__boundScrollHandler}'>
+        <div class='scrollable' id="scrollable">
           <div class='inner'>
             <slot></slot>
           </div>
