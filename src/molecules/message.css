@@ -103,7 +103,7 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 /** Meta */
 
 :host .meta {
-  display: inline-block;
+  display: flex;
   line-height: 19px;
   padding-bottom: 5px;
 }
@@ -115,22 +115,23 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 }
 
 :host .meta .author {
-  display: inline-block;
   font-weight: bold;
+  padding-right: 8px;
+}
+
+:host .meta .icon {
   padding-right: 8px;
 }
 
 /* stylelint-disable-next-line no-duplicate-selectors */
 :host .meta .author {
-  max-width: 80px;
   overflow-x: hidden;
   text-overflow: ellipsis;
-
-  /* white-space: nowrap; */
 }
 
 :host .meta .stamp {
   color: var(--message-status-color);
+  padding-right: 15px;
 }
 
 :host .meta .stamp > span {

@@ -29,8 +29,8 @@ export const meta = ({
   username,
 }) => (html`
     <div class$='${cs({ meta: true, [classname]: classname })}'>
-      <span class='author' title='${identity || ''}'>${username}</span>
-      <span class='icon'>${icon({ name: iconname })}</span>
+      <span class='author' title='${identity || username}'>${username}</span>
+      ${iconname ? html`<span class='icon'>${icon({ name: iconname })}</span>` : undefined}
       <span class='stamp'><span>${formatDate(stampToDate(timestamp))}</span></span>
     </div>
   `)
