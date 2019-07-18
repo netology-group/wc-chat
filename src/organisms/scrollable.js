@@ -148,7 +148,7 @@ export class Scrollable extends LitElement {
     )(fromEvent('scroll', this._scrollable))
     /* eslint-enable function-paren-newline */
 
-    // NOTE: removed initial scroll as any content update should trigger scrolling
+    // NOTE: remove initial scroll as any content update should trigger scrolling
   }
 
   _shouldThrowSeekEvents (position) {
