@@ -212,10 +212,10 @@ export class Scrollable extends LitElement {
     const { scrollTop: top, scrollHeight: height } = el
 
     return {
-      current: top,
       height,
       top,
-      y: this._y,
+      prevTop: this._y,
+      prevHeight: this._height,
     }
   }
 
@@ -223,10 +223,10 @@ export class Scrollable extends LitElement {
     const { scrollLeft: left, scrollWidth: width } = el
 
     return {
-      current: left,
       left,
       width,
-      x: this._x,
+      prevLeft: this._x,
+      prevWidth: this._width,
     }
   }
 
@@ -256,9 +256,15 @@ export class Scrollable extends LitElement {
       viewHeight,
     } = changed
 
-    const prevHead = this.reverse
+    let prevHead = this.reverse
       ? prevParams.height - prevParams.top
       : prevParams.height - prevParams.top - viewHeight
+
+    prevHead = prevHead < 0 ? 0 : prevHead
+    // got value below zero on initial render (prevPrams.height == 0)
+
+    if (prevParams.height === 0) return this.reverse ? 0 : params.height
+    // scroll to top/bottom on initial render
 
     const wasAtHead = (prevParams.height - viewHeight) === prevParams.top
 
@@ -311,8 +317,8 @@ export class Scrollable extends LitElement {
     debug('X', X)
     debug('Y', Y)
 
-    if (Y.top === Y.height) return debug('Skip scrolling')
-    // skip scrolling on empty children (initial render might has 0/0)
+    if (Y.top === Y.height || Y.height === Y.prevHeight) return debug('Skip scrolling')
+    // skip scrolling on empty children (initial render might has 0/0 or equal values)
 
     const y = this.__shouldScrollByYAxis(
       { height: Y.height, top: Y.top },
@@ -321,15 +327,12 @@ export class Scrollable extends LitElement {
         top: Y.top,
         viewHeight: offsetHeight,
       },
-      { height: this._height, top: this._y }
+      { height: Y.prevHeight, top: Y.prevTop }
     )
     const x = this.__shouldScrollByXAxis(
-      { width: X.width, left: X.left },
-      {
-        left: X.left,
-        viewHeight: offsetHeight,
-      },
-      { width: this._width, left: this._x }
+      { left: X.left, width: X.width },
+      { left: X.left, viewHeight: offsetHeight },
+      { left: X.prevLeft, width: X.prevWidth }
     )
 
     return this._scrollTo(x, y)
@@ -350,13 +353,6 @@ export class Scrollable extends LitElement {
     } else {
       el.scrollTo(x, y)
     }
-
-    this._defineCoordinates([
-      el.scrollLeft,
-      el.scrollTop,
-      el.scrollWidth,
-      el.scrollHeight,
-    ])
   }
 
   // eslint-disable-next-line class-methods-use-this
