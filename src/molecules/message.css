@@ -125,7 +125,7 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 
 /* stylelint-disable-next-line no-duplicate-selectors */
 :host .meta .author {
-  overflow-x: hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
