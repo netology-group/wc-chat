@@ -42,30 +42,52 @@ export class XMessagesElement extends MessagesElement {
     return rctns
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  __renderReactions (opts) {
-    const { rating } = opts
-    let config
+  _render (props) {
+    return super._render(props)
+  }
 
-    if (typeof rating === 'number') {
-      config = new Map([['thumbsup', { name: ':thumbsup:', count: rating }]])
-    } else if (Array.isArray(rating)) {
-      config = new Map([])
-      rating.forEach((it) => {
-        config.set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 })
-      })
-    } else if (opts.rating !== undefined) {
-      throw new TypeError('Wrong rating type')
-    }
+  __renderEach (message, i, arr) {
+    const {
+      avatar,
+      body: text,
+      classname,
+      deleted,
+      icon,
+      id,
+      identity,
+      invisible,
+      rating,
+      theme,
+      timestamp,
+      user_id,
+      user_name,
+    } = message
 
-    if (!config) return undefined
-
-    return (html`
-      <wc-chat-reactions
-        config='${config}'
-        showcount
-      />
-    `)
+    return this.__renderMessage({
+      aggregated: isAggregatedBy('user_id', i, arr),
+      avatar,
+      classname,
+      current_user_id: this.user,
+      deleted,
+      icon,
+      id,
+      identity,
+      invisible,
+      is_lastseen: isLastseen({
+        index: i,
+        lastseen: this.lastseen,
+        list: arr,
+        reverse: this.reverse,
+      }),
+      rating,
+      reversed: this.reverse,
+      text,
+      theme,
+      timestamp,
+      user_id,
+      user_icon: icon,
+      user_name,
+    })
   }
 
   __renderMessage (message) { // eslint-disable-line class-methods-use-this
@@ -78,6 +100,7 @@ export class XMessagesElement extends MessagesElement {
       icon,
       id,
       identity,
+      invisible,
       is_lastseen,
       rating,
       reversed,
@@ -86,7 +109,6 @@ export class XMessagesElement extends MessagesElement {
       timestamp,
       user_id,
       user_name,
-      visible,
     } = message
 
     const maybeUnseen = is_lastseen && (current_user_id !== user_id)
@@ -106,7 +128,7 @@ export class XMessagesElement extends MessagesElement {
       unseen: is_lastseen,
     })
 
-    if (!visible) return undefined
+    if (invisible) return undefined
     // skip unless visible
 
     return (html`
@@ -138,50 +160,6 @@ export class XMessagesElement extends MessagesElement {
         </div>
       </wc-chat-message>
     `)
-  }
-
-  _renderEach (message, i, arr) {
-    const {
-      avatar,
-      body: text,
-      classname,
-      deleted,
-      icon,
-      id,
-      identity,
-      rating,
-      theme,
-      timestamp,
-      user_id,
-      user_name,
-      visible,
-    } = message
-
-    return this.__renderMessage({
-      aggregated: isAggregatedBy('user_id', i, arr),
-      avatar,
-      classname,
-      current_user_id: this.user,
-      deleted,
-      icon,
-      id,
-      identity,
-      is_lastseen: isLastseen({
-        index: i,
-        lastseen: this.lastseen,
-        list: arr,
-        reverse: this.reverse,
-      }),
-      rating,
-      reversed: this.reverse,
-      text,
-      theme,
-      timestamp,
-      user_id,
-      user_icon: icon,
-      user_name,
-      visible,
-    })
   }
 
   __renderActions (data) {
@@ -225,8 +203,30 @@ export class XMessagesElement extends MessagesElement {
     return Actions({ actions, reactions })
   }
 
-  _render (props) {
-    return super._render(props)
+  // eslint-disable-next-line class-methods-use-this
+  __renderReactions (opts) {
+    const { rating } = opts
+    let config
+
+    if (typeof rating === 'number') {
+      config = new Map([['thumbsup', { name: ':thumbsup:', count: rating }]])
+    } else if (Array.isArray(rating)) {
+      config = new Map([])
+      rating.forEach((it) => {
+        config.set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 })
+      })
+    } else if (opts.rating !== undefined) {
+      throw new TypeError('Wrong rating type')
+    }
+
+    if (!config) return undefined
+
+    return (html`
+      <wc-chat-reactions
+        config='${config}'
+        showcount
+      />
+    `)
   }
 }
 

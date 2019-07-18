@@ -57,91 +57,6 @@ export class MessagesElement extends LitElement {
     }
   }
 
-  __renderMessage (message) { // eslint-disable-line class-methods-use-this
-    const {
-      aggregated,
-      avatar,
-      classname,
-      current_user_id,
-      deleted,
-      icon,
-      id,
-      identity,
-      reversed,
-      text,
-      theme,
-      timestamp,
-      user_id,
-      user_name,
-    } = message
-
-    const className = cs({
-      [classname]: classname,
-      aggregated,
-      message: true,
-    })
-
-    return (html`
-      <wc-chat-message
-        aggregated='${aggregated}'
-        class$='${className}'
-        deleted='${deleted}'
-        icon='${icon}'
-        identity='${identity}'
-        image='${avatar}'
-        me='${user_id === current_user_id}'
-        reversed='${reversed}'
-        text='${text}'
-        theme='${theme}'
-        timestamp='${timestamp}'
-        uid='${id}'
-        username='${user_name}'
-      />
-    `)
-  }
-
-  _renderEach (it, i, arr) {
-    const {
-      avatar,
-      body: text,
-      classname,
-      deleted,
-      icon,
-      id,
-      identity,
-      rating,
-      theme,
-      timestamp,
-      user_id,
-      user_name,
-      visible,
-    } = it
-
-    return this.__renderMessage({
-      aggregated: isAggregatedBy('user_id', i, arr),
-      avatar,
-      classname,
-      current_user_id: this.user,
-      deleted,
-      icon,
-      id,
-      identity,
-      reversed: this.reverse,
-      rating,
-      text,
-      theme,
-      timestamp,
-      user_id,
-      user_icon: icon,
-      user_name,
-      visible,
-    })
-  }
-
-  __renderMessages (list) {
-    return list.map((it, i, arr) => this._renderEach(it, i, arr))
-  }
-
   _render (props) {
     const { list = [] } = props
     const contentTpl = !list.length
@@ -204,6 +119,91 @@ export class MessagesElement extends LitElement {
     } else {
       debug('Skip dispatching')
     }
+  }
+
+  __renderMessages (list) {
+    return list.map((it, i, arr) => this.__renderEach(it, i, arr))
+  }
+
+  __renderEach (it, i, arr) {
+    const {
+      avatar,
+      body: text,
+      classname,
+      deleted,
+      icon,
+      id,
+      identity,
+      rating,
+      theme,
+      timestamp,
+      user_id,
+      user_name,
+      visible,
+    } = it
+
+    return this.__renderMessage({
+      aggregated: isAggregatedBy('user_id', i, arr),
+      avatar,
+      classname,
+      current_user_id: this.user,
+      deleted,
+      icon,
+      id,
+      identity,
+      reversed: this.reverse,
+      rating,
+      text,
+      theme,
+      timestamp,
+      user_id,
+      user_icon: icon,
+      user_name,
+      visible,
+    })
+  }
+
+  __renderMessage (message) { // eslint-disable-line class-methods-use-this
+    const {
+      aggregated,
+      avatar,
+      classname,
+      current_user_id,
+      deleted,
+      icon,
+      id,
+      identity,
+      reversed,
+      text,
+      theme,
+      timestamp,
+      user_id,
+      user_name,
+    } = message
+
+    const className = cs({
+      [classname]: classname,
+      aggregated,
+      message: true,
+    })
+
+    return (html`
+      <wc-chat-message
+        aggregated='${aggregated}'
+        class$='${className}'
+        deleted='${deleted}'
+        icon='${icon}'
+        identity='${identity}'
+        image='${avatar}'
+        me='${user_id === current_user_id}'
+        reversed='${reversed}'
+        text='${text}'
+        theme='${theme}'
+        timestamp='${timestamp}'
+        uid='${id}'
+        username='${user_name}'
+      />
+    `)
   }
 }
 
