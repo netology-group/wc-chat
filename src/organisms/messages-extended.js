@@ -2,7 +2,7 @@ import { html, classString as cs } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils'
 
 import { Actions, style as actionStyle } from '../molecules/actions'
-import { isAggregatedBy, isLastseen } from '../utils/index'
+import { isAggregatedBy, isLastseen, debug as Debug } from '../utils/index'
 import { actionImages } from '../atoms/action'
 import { separator } from '../atoms/separator'
 
@@ -11,6 +11,8 @@ import separatorStyle from '../atoms/separator.css'
 import { MessagesElement } from './messages'
 import style from './messages.css'
 import styleExt from './messages-extended.css'
+
+const debug = Debug('@netology-group/wc-chat/MessagesExtended')
 
 export class XMessagesElement extends MessagesElement {
   static get properties () {
@@ -40,30 +42,52 @@ export class XMessagesElement extends MessagesElement {
     return rctns
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  __renderReactions (opts) {
-    const { rating } = opts
-    let config
+  _render (props) {
+    return super._render(props)
+  }
 
-    if (typeof rating === 'number') {
-      config = new Map([['thumbsup', { name: ':thumbsup:', count: rating }]])
-    } else if (Array.isArray(rating)) {
-      config = new Map([])
-      rating.forEach((it) => {
-        config.set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 })
-      })
-    } else if (opts.rating !== undefined) {
-      throw new TypeError('Wrong rating type')
-    }
+  __renderEach (message, i, arr) {
+    const {
+      avatar,
+      body: text,
+      classname,
+      deleted,
+      icon,
+      id,
+      identity,
+      invisible,
+      rating,
+      theme,
+      timestamp,
+      user_id,
+      user_name,
+    } = message
 
-    if (!config) return undefined
-
-    return (html`
-      <wc-chat-reactions
-        config='${config}'
-        showcount
-      />
-    `)
+    return this.__renderMessage({
+      aggregated: isAggregatedBy('user_id', i, arr),
+      avatar,
+      classname,
+      current_user_id: this.user,
+      deleted,
+      icon,
+      id,
+      identity,
+      invisible,
+      is_lastseen: isLastseen({
+        index: i,
+        lastseen: this.lastseen,
+        list: arr,
+        reverse: this.reverse,
+      }),
+      rating,
+      reversed: this.reverse,
+      text,
+      theme,
+      timestamp,
+      user_id,
+      user_icon: icon,
+      user_name,
+    })
   }
 
   __renderMessage (message) { // eslint-disable-line class-methods-use-this
@@ -76,7 +100,8 @@ export class XMessagesElement extends MessagesElement {
       icon,
       id,
       identity,
-      lastseen,
+      invisible,
+      is_lastseen,
       rating,
       reversed,
       text,
@@ -84,10 +109,10 @@ export class XMessagesElement extends MessagesElement {
       timestamp,
       user_id,
       user_name,
-      visible,
     } = message
 
-    const maybeUnseen = lastseen && (current_user_id !== user_id)
+    const maybeUnseen = is_lastseen && (current_user_id !== user_id)
+
     const unseenTpl = !maybeUnseen
       ? undefined
       : (html`
@@ -100,10 +125,10 @@ export class XMessagesElement extends MessagesElement {
       [classname]: classname,
       aggregated,
       message: true,
-      unseen: lastseen,
+      unseen: is_lastseen,
     })
 
-    if (!visible) return undefined
+    if (invisible) return undefined
     // skip unless visible
 
     return (html`
@@ -137,60 +162,16 @@ export class XMessagesElement extends MessagesElement {
     `)
   }
 
-  _renderEach (message, i, arr) {
-    const {
-      avatar,
-      body: text,
-      classname,
-      deleted,
-      icon,
-      id,
-      identity,
-      rating,
-      theme,
-      timestamp,
-      user_id,
-      user_name,
-      visible,
-    } = message
-
-    return this.__renderMessage({
-      aggregated: isAggregatedBy('user_id', i, arr),
-      avatar,
-      classname,
-      current_user_id: this.user,
-      deleted,
-      icon,
-      id,
-      identity,
-      lastseen: isLastseen({
-        index: i,
-        lastseen: this.lastseen,
-        list: arr,
-        reverse: this.reverse,
-      }),
-      rating,
-      reversed: this.reverse,
-      text,
-      theme,
-      timestamp,
-      user_id,
-      user_icon: icon,
-      user_name,
-      visible,
-    })
-  }
-
   __renderActions (data) {
-    const children = new Map()
+    const actions = new Map()
     const reactions = new Map()
 
-    // eslint-disable-next-line no-bitwise
-    const isAllowed4Other = (a, b) => (b.current_user_id !== b.user_id && (a & 1))
-    // eslint-disable-next-line no-bitwise
-    const isAllowed4Group = (a, b) => (b.current_user_id !== b.user_id && (a & 10))
-    // eslint-disable-next-line no-bitwise
-    const isAllowed4Self = (a, b) => (b.current_user_id === b.user_id && (a & 100))
+    // eslint-disable-next-line no-bitwise,max-len
+    const isAllowed4Other = (a, b) => (b.current_user_id && b.user_id && b.current_user_id !== b.user_id && Boolean(a & 1))
+    // eslint-disable-next-line no-bitwise,max-len
+    const isAllowed4Group = (a, b) => (b.current_user_id && b.user_id && b.current_user_id !== b.user_id && Boolean(a & 10))
+    // eslint-disable-next-line no-bitwise,max-len
+    const isAllowed4Self = (a, b) => (b.current_user_id && b.user_id && b.current_user_id === b.user_id && Boolean(a & 100))
 
     const isAllowed = (a, b) => isAllowed4Other(a, b)
       || isAllowed4Group(a, b)
@@ -200,26 +181,52 @@ export class XMessagesElement extends MessagesElement {
       const key = _[0]
       const _action = this.__actions.get(key) || {}
 
+      if (!isAllowed(_action, data)) {
+        debug('Action is not alllowed')
+
+        return
+      }
+
       const actionOpts = {
         message: data,
-        allowed: isAllowed(_action, data),
         children: actionImages.get(key),
         handler: (e, detail) => { this.dispatchEvent(new CustomEvent(key, { detail })) },
       }
 
-      if (key === 'message-reaction' && isAllowed(_action, data)) {
-        reactions.set(key, (actionOpts))
+      if (key === 'message-reaction') {
+        reactions.set(key, actionOpts)
       } else {
-        children.set(key, (actionOpts))
+        actions.set(key, actionOpts)
       }
     })
 
-    // eslint-disable-next-line object-curly-newline
-    return Actions({ children, reactions })
+    return Actions({ actions, reactions })
   }
 
-  _render (props) {
-    return super._render(props)
+  // eslint-disable-next-line class-methods-use-this
+  __renderReactions (opts) {
+    const { rating } = opts
+    let config
+
+    if (typeof rating === 'number') {
+      config = new Map([['thumbsup', { name: ':thumbsup:', count: rating }]])
+    } else if (Array.isArray(rating)) {
+      config = new Map([])
+      rating.forEach((it) => {
+        config.set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 })
+      })
+    } else if (opts.rating !== undefined) {
+      throw new TypeError('Wrong rating type')
+    }
+
+    if (!config) return undefined
+
+    return (html`
+      <wc-chat-reactions
+        config='${config}'
+        showcount
+      />
+    `)
   }
 }
 

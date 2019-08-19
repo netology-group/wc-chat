@@ -1,8 +1,12 @@
 import { html, classString as cs } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils'
 
+import { debug as Debug } from '../utils/index'
+
 import { Scrollable } from './scrollable'
 import style from './scrollable.css'
+
+const debug = Debug('@netology-group/wc-chat/ScrollableUnseen')
 
 export class ScrollToUnseen extends Scrollable {
   static get properties () {
@@ -31,6 +35,7 @@ export class ScrollToUnseen extends Scrollable {
       : (scrollHeight - scrollTop) > offsetHeight
 
     if (!newDetachedValue) {
+      debug('Changed last-seen')
       this.dispatchEvent(new CustomEvent('last-seen-change'))
     }
 
@@ -67,44 +72,7 @@ export class ScrollToUnseen extends Scrollable {
     }
   }
 
-  __shouldScrollByYAxis (params, changedParams, prevParams) {
-    const {
-      direction, current, top, y,
-    } = changedParams
-
-    const prevHead = prevParams.height - current
-
-    const atHead = current + this._scrollable.offsetHeight === prevParams.height
-    // means that user is seeing the latest message
-
-    const atZero = top === 0 && top === y
-
-    if (this.reverse && this.freeze) {
-      return (!atHead && !atZero)
-        ? params.height - prevHead
-        : undefined
-    }
-    // preserve top position in reverse & freezed mode unless at the edge
-
-    if (this.reverse) {
-      return atZero
-        ? top
-        : atHead ? top : params.height - prevHead
-    }
-    // preserve top position in `reverse` mode
-
-    const viewingOld = (y + this._scrollable.offsetHeight) < prevParams.height
-
-    if (this.freeze || (viewingOld && this.__manual && direction !== -1)) return top
-    // preserve top position if is freezed
-
-    if (direction === -1) return params.height - prevHead
-    // calculate top position according the previous distance
-    // between hight (head) and current position
-
-    return atHead ? params.height - prevHead : y
-    // preserve current position unless user is near the latest message
-  }
+  // NOTE: it seems super method covers all the needed logic
 
   _render (props) {
     const showNewBanner = this._detached && props.showbannernew
@@ -136,7 +104,7 @@ export class ScrollToUnseen extends Scrollable {
 
     return (html`
       <div class='wrapper'>
-        <div class='scrollable' id="scrollable" on-scroll='${this.__boundScrollHandler}'>
+        <div class='scrollable' id="scrollable">
           <div class='inner'>
             <slot></slot>
           </div>

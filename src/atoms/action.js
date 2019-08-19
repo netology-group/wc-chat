@@ -1,7 +1,6 @@
-import { html } from '@polymer/lit-element'
+import { html, classString as cs } from '@polymer/lit-element'
 
 import * as images from '../images'
-import { classnames as cn } from '../utils/index'
 
 const tplFromMap = map => map.toJSON().map(tuple => tuple[1])
 
@@ -17,15 +16,16 @@ export const action = ({
   message,
   name,
 }) => {
-  const cls = cn(
-    'action',
-    classname,
-    key,
-    name,
-    { disabled, allowed },
-  )
+  const cls = cs({
+    allowed,
+    [classname]: classname,
+    [key]: key,
+    [name]: name,
+    action: true,
+    disabled,
+  })
 
-  if (!allowed) return undefined
+  if (typeof allowed !== 'undefined' && !allowed) return undefined
 
   return (html`
     <button
@@ -40,7 +40,7 @@ export const reaction = ({
   handler,
   message,
 }) => {
-  const cls = cn('reaction-add', { disabled })
+  const cls = cs({ 'reaction-add': true, disabled })
   const config = () => new Map([['thumbsup', { name: ':thumbsup' }]])
 
   return (html`
@@ -60,12 +60,15 @@ export const reactions = ({ children }) => (html`
     <div class='reactions-group'>
       ${children}
     </div>
-</div>
+  </div>
 `)
 
-export const actions = ({ children, reactions: rctns }) => (html`
+export const actions = ({
+  actions: actns,
+  reactions: rctns,
+}) => (actns.size || rctns.size) && (html`
   <div class='actions-group'>
-    ${tplFromMap(children)}
+    ${actns.size ? tplFromMap(actns) : undefined}
     ${rctns.size ? reactions({ children: tplFromMap(rctns) }) : undefined}
   </div>
 `)

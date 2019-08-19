@@ -25,6 +25,8 @@ function predictDirection (list, prevList, predicate) {
   if (!Array.isArray(list) || !Array.isArray(prevList)) throw new TypeError('Wrong list\'s format')
   if (typeof preedicate === 'function') return predicate(list, prevList)
 
+  if (!prevList.length || !list.length) return 0
+
   if (list.length !== prevList.length) {
     const first = _ => _[0]
     const last = _ => _[_.length - 1]
@@ -53,6 +55,112 @@ export class MessagesElement extends LitElement {
       user: Number,
       users: Array,
     }
+  }
+
+  _render (props) {
+    const { list = [] } = props
+    const contentTpl = !list.length
+      ? undefined
+      : (html`
+        <div class='messages-inner'>
+          ${this.__renderMessages(list)}
+        </div>
+      `)
+
+    return (html`<div class='messages'>${contentTpl}</div>`)
+  }
+
+  _didRender (props, changed, prevProps) {
+    const prev = prevProps.list || [] // use empty list on initial render
+    const next = props.list
+
+    const shouldDispatch = props.list && Array.isArray(props.list)
+
+    /* eslint-disable max-len */
+    /**
+     *  Scrollable and messages elements meant to work together:
+        - the messages element renders bypassed data (messages),
+        - the scrollable element maintains a scroll position;
+
+        ** Scenarios:
+        - User should be moved to the latest message when entered a new one,
+        - User should stay where he is (he might be near the latest message or not if browsing old messages) when a new message or messages were added,
+        - All previous scenarios are valid for a `reverse` (lifo) mode (new messages are on top, old ones at the bottom),
+        - Scroll position should not be changed on any event where the cursor is over the element;
+
+        ** Interoperability:
+        The messages element just renders data. It does not have any info about the scroll position.
+        The scrollable element directs the scroll position. It does not have (should not have at all) any info about the kind of elements which lays inside.
+
+        Messages element and scrollable element work together via events:
+        - the message element dispatch a `did-update` event on any `list` change,
+        - the scrollable element might dispatch `seek-before` and `seek-after`  events when the user reaches the top or the bottom of the list respectively.
+
+        *** Pagination
+        The messages element will dispatch the `did-update` event on any list's update.
+        Next page loading works the same as the standard update (e.g. user added new message,..). We bypass the updated list to the messages element (a new piece of data is pushed to the end of the old list).
+        Previous page loading works slightly different. A new piece of data is pushed to the start of the list but the scrollable element cannot separate the previous page's update event from the next page's update event.
+        So the messages element should provide some details inside the `did-update` event.
+
+        ** Possible problems
+        There might be an issue with recovering any message somewhere inside the list.
+        At that case we have to know an active message to understand where an old (deleted or something) message was recovered.
+     */
+    /* eslint-enable max-len */
+
+    if (shouldDispatch) {
+      debug(`dispatch '${this.invoke}' event`)
+      this.renderComplete
+        .then(() => this.dispatchEvent(new CustomEvent(
+          this.invoke,
+          { detail: { direction: predictDirection(next, prev) } }
+        )))
+        .catch(error => debug(error.message))
+    } else {
+      debug('Skip dispatching')
+    }
+  }
+
+  __renderMessages (list) {
+    return list.map((it, i, arr) => this.__renderEach(it, i, arr))
+  }
+
+  __renderEach (it, i, arr) {
+    const {
+      avatar,
+      body: text,
+      classname,
+      deleted,
+      icon,
+      id,
+      identity,
+      rating,
+      theme,
+      timestamp,
+      user_id,
+      user_name,
+      visible,
+    } = it
+
+    return this.__renderMessage({
+      aggregated: isAggregatedBy('user_id', i, arr),
+      avatar,
+      classname,
+      current_user_id: this.user,
+      deleted,
+      icon,
+      id,
+      identity,
+      reversed: this.reverse,
+      rating,
+      text,
+      theme,
+      timestamp,
+      user_id,
+      user_icon: icon,
+      user_name,
+      visible,
+    })
   }
 
   __renderMessage (message) { // eslint-disable-line class-methods-use-this
@@ -96,110 +204,6 @@ export class MessagesElement extends LitElement {
         username='${user_name}'
       />
     `)
-  }
-
-  _renderEach (it, i, arr) {
-    const {
-      avatar,
-      body: text,
-      classname,
-      deleted,
-      icon,
-      id,
-      identity,
-      rating,
-      theme,
-      timestamp,
-      user_id,
-      user_name,
-      visible,
-    } = it
-
-    return this.__renderMessage({
-      aggregated: isAggregatedBy('user_id', i, arr),
-      avatar,
-      classname,
-      current_user_id: this.user,
-      deleted,
-      icon,
-      id,
-      identity,
-      reversed: this.reverse,
-      rating,
-      text,
-      theme,
-      timestamp,
-      user_id,
-      user_icon: icon,
-      user_name,
-      visible,
-    })
-  }
-
-  __renderMessages (list) {
-    return list.map((it, i, arr) => this._renderEach(it, i, arr))
-  }
-
-  _render (props) {
-    const { list = [] } = props
-    const contentTpl = !list.length
-      ? undefined
-      : (html`
-        <div class='messages-inner'>
-          ${this.__renderMessages(list)}
-        </div>
-      `)
-
-    return (html`<div class='messages'>${contentTpl}</div>`)
-  }
-
-  _didRender (props, changed, prevProps) {
-    const shouldDispatch = props.list
-      && prevProps.list
-      && Array.isArray(props.list)
-      && Array.isArray(prevProps.list)
-
-    /* eslint-disable max-len */
-    /**
-     *  Scrollable and messages elements meant to work together:
-        - the messages element renders bypassed data (messages),
-        - the scrollable element maintains a scroll position;
-
-        ** Scenarios:
-        - User should be moved to the latest message when entered a new one,
-        - User should stay where he is (he might be near the latest message or not if browsing old messages) when a new message or messages were added,
-        - All previous scenarios are valid for a `reverse` (lifo) mode (new messages are on top, old ones at the bottom),
-        - Scroll position should not be changed on any event where the cursor is over the element;
-
-        ** Interoperability:
-        The messages element just renders data. It does not have any info about the scroll position.
-        The scrollable element directs the scroll position. It does not have (should not have at all) any info about the kind of elements which lays inside.
-
-        Messages element and scrollable element work together via events:
-        - the message element dispatch a `did-update` event on any `list` change,
-        - the scrollable element might dispatch `seek-before` and `seek-after`  events when the user reaches the top or the bottom of the list respectively.
-
-        *** Pagination
-        The messages element will dispatch the `did-update` event on any list's update.
-        Next page loading works the same as the standard update (e.g. user added new message,..). We bypass the updated list to the messages element (a new piece of data is pushed to the end of the old list).
-        Previous page loading works slightly different. A new piece of data is pushed to the start of the list but the scrollable element cannot separate the previous page's update event from the next page's update event.
-        So the messages element should provide some details inside the `did-update` event.
-
-        ** Possible problems
-        There might be an issue with recovering any message somewhere inside the list.
-        At that case we have to know an active message to understand where an old (deleted or something) message was recovered.
-     */
-    /* eslint-enable max-len */
-
-    if (shouldDispatch) {
-      debug(`dispatch '${this.invoke}' event`)
-      this.renderComplete
-        .then(() => this.dispatchEvent(new CustomEvent(
-          this.invoke,
-          { detail: { direction: predictDirection(props.list, prevProps.list) } }
-        )))
-        .catch(error => debug(error.message))
-    }
   }
 }
 

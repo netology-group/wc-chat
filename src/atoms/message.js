@@ -1,6 +1,6 @@
 import { html, classString as cs } from '@polymer/lit-element'
 
-import { stampToDate, formatDate, classnames as cn } from '../utils/index'
+import { stampToDate, formatDate } from '../utils/index'
 import { human as humansvg } from '../images/index'
 
 export const icon = ({ name }) => {
@@ -13,11 +13,10 @@ export const icon = ({ name }) => {
 }
 
 export const avatar = ({
-  aggregated,
   classname,
   image,
 }) => (html`
-  <div class$='${cn(classname, 'avatar', { aggregated })}'>
+  <div class$='${cs({ classname, 'avatar': true })}'>
     <div style$='${!image ? '' : `background-image: url(${image});`}'></div>
   </div>
 `)
@@ -29,9 +28,9 @@ export const meta = ({
   timestamp,
   username,
 }) => (html`
-    <div class$='${cs({ 'meta': true, [classname]: classname })}'>
-      <span class='author' title='${identity || ''}'>${username}</span>
-      <span class='icon'>${icon({ name: iconname })}</span>
+    <div class$='${cs({ meta: true, [classname]: classname })}'>
+      <span class='author' title='${identity || username}'>${username}</span>
+      ${iconname ? html`<span class='icon'>${icon({ name: iconname })}</span>` : undefined}
       <span class='stamp'><span>${formatDate(stampToDate(timestamp))}</span></span>
     </div>
   `)
@@ -39,9 +38,8 @@ export const meta = ({
 export const section = ({
   body,
   classname,
-  me,
 }) => (html`
-  <section class$='${cn(classname, { [classname]: classname, me })}'>
+  <section class$='${cs({ section: true, [classname]: classname })}'>
     <div class='body'>${body}</div>
   </section>
 `)

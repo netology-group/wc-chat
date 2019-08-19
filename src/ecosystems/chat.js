@@ -9,7 +9,6 @@ import Input from '../organisms/input'
 import Messages from '../organisms/messages-extended'
 import { Message } from '../molecules/message'
 import Scrollable from '../organisms/scroll-to-unseen'
-import { getIndexById } from '../utils/index'
 import i18n from '../i18n'
 
 import style from './chat.css'
@@ -25,7 +24,7 @@ export class ChatElement extends LitElement {
       delayupdate: Number,
       disabled: Boolean,
       language: String,
-      lastseen: Number,
+      lastseen: String,
       list: Array,
       maxlength: Number,
       maxrows: Number,
@@ -145,8 +144,9 @@ export class ChatElement extends LitElement {
     return resolvedLanguage
   }
 
-  scrollTo () {
-    this._scrollable.scrollTo && this._scrollable.scrollTo()
+  scrollTo (x, y) {
+    debug('Maybe manual scroll to', x, y)
+    this._scrollable.scrollTo && this._scrollable.scrollTo(x, y)
   }
 
   _firstRendered () {
@@ -231,8 +231,9 @@ export class ChatElement extends LitElement {
         ? props.list.slice().reverse()
         : props.list
       : undefined
+
     const lastSeenIndex = props.list && props.lastseen !== undefined
-      ? getIndexById(props.lastseen, props.list)
+      ? props.list.findIndex(_ => _.id === props.lastseen)
       : undefined
     // eslint-disable-next-line max-len
     const newMessageCount = props.list && props.lastseen !== undefined && lastSeenIndex !== undefined

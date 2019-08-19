@@ -3,7 +3,6 @@ import { unsafeHTML } from 'lit-html/lib/unsafe-html'
 import { withStyle } from '@netology-group/wc-utils'
 
 import { section, avatar, meta } from '../atoms/message'
-import { classnames as cn } from '../utils/index'
 import { HTMLEntityMessage, MarkdownMessage } from '../utils/message-parser'
 
 import style from './message.css'
@@ -83,7 +82,6 @@ export class MessageFactory extends LitElement {
     } = props
 
     const avatarTpl = avatar({
-      aggregated,
       classname: user_role,
       image,
     })
@@ -99,12 +97,12 @@ export class MessageFactory extends LitElement {
 
     const sectionTpl = section({
       body: getMessageBody(text, parsername, this.parser),
-      classname: cn(`parser-${parsername}`),
-      me,
+      classname: `parser-${parsername}`,
     })
 
     const cname = cs({
       [`theme-${theme}`]: theme,
+      aggregated,
       deleted,
       inner: true,
       me,

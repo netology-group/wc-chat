@@ -11,21 +11,18 @@ import style from './actions.css'
 
 export { style }
 
-export const Actions = (props) => {
-  const {
-    reactions,
-    children: actions,
-  } = props
-
-  const renderChildren = actions.size || reactions.size
-  const renderQuickDelete = actions.has('message-delete')
-
+export const Actions = ({
+  reactions,
+  actions,
+}) => {
   const rctns = new Map([])
   const actns = new Map([])
 
   reactions.forEach((v, k) => { rctns.set(k, reactionEl(v)) })
-
   actions.forEach((v, k) => { actns.set(k, actionEl(v)) })
+
+  const renderChildren = actns.size || rctns.size
+  const renderQuickDelete = actions.has('message-delete')
 
   return (html`
     ${renderQuickDelete
@@ -43,11 +40,11 @@ export const Actions = (props) => {
         <div class='actions'>
           ${menu}
           <div class='actions-inner'>
-            ${actionsEl({ children: actns, reactions: rctns })}
+            ${actionsEl({ actions: actns, reactions: rctns })}
           </div>
         </div>
       `)
       : undefined
     }
-`)
+  `)
 }

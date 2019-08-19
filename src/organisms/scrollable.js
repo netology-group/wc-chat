@@ -113,11 +113,10 @@ export class Scrollable extends LitElement {
 
   scrollTo (x, y) {
     const el = this._scrollable
+    const _x = isNumber(x) ? x : 0
+    const _y = isNumber(y) ? y : (this.reverse ? 0 : el.scrollHeight)
 
-    const _x = 0
-    const _y = this.reverse ? 0 : el.scrollHeight
-
-    this._scrollTo(isNumber(x) ? x : _x, isNumber(y) ? y : _y)
+    this._scrollTo(_x, _y)
   }
 
   _scrollMinMax (shift, min = 1, max = DELTA) { // eslint-disable-line class-methods-use-this
@@ -149,7 +148,7 @@ export class Scrollable extends LitElement {
     )(fromEvent('scroll', this._scrollable))
     /* eslint-enable function-paren-newline */
 
-    this._scrollTo(this._x, this._y)
+    // NOTE: remove initial scroll as any content update should trigger scrolling
   }
 
   _shouldThrowSeekEvents (position) {
@@ -195,13 +194,46 @@ export class Scrollable extends LitElement {
   }
 
   _onResizeHandler () {
-    this._onScrollHandler({ currentTarget: this._scrollable })
+    debug('onResize')
+    this.__handleScroll(this._scrollable)
   }
 
   _onScrollHandler (e) {
+    debug('onScroll')
+    this.__handleScroll(e.currentTarget)
+  }
+
+  _onChildrenUpdate (e) {
+    debug('onUpdate')
+    this._shouldScrollTo(e, e.detail.direction)
+  }
+
+  _yScroll (el) {
+    const { scrollTop: top, scrollHeight: height } = el
+
+    return {
+      height,
+      top,
+      prevTop: this._y,
+      prevHeight: this._height,
+    }
+  }
+
+  _xScroll (el) {
+    const { scrollLeft: left, scrollWidth: width } = el
+
+    return {
+      left,
+      width,
+      prevLeft: this._x,
+      prevWidth: this._width,
+    }
+  }
+
+  __handleScroll (target) {
     const {
       scrollLeft, scrollTop, scrollWidth, scrollHeight, offsetHeight,
-    } = e.currentTarget
+    } = target
 
     this._defineCoordinates([
       scrollLeft,
@@ -217,75 +249,60 @@ export class Scrollable extends LitElement {
     })
   }
 
-  _onChildrenUpdate (e) {
-    this._shouldScrollTo(e, e.detail.direction)
-  }
-
-  _yScroll (el) {
-    const { scrollTop: top, scrollHeight: height } = el
-
-    return {
-      current: top,
-      height,
-      top,
-      y: this._y,
-    }
-  }
-
-  _xScroll (el) {
-    const { scrollLeft: left, scrollWidth: width } = el
-
-    return {
-      current: left,
-      left,
-      width,
-      x: this._x,
-    }
-  }
-
-  __shouldScrollByYAxis (params, changedParams, prevParams) {
+  __shouldScrollByYAxis (params, changed, prevParams) {
     const {
-      direction, current, top, y,
-    } = changedParams
+      direction,
+      top,
+      viewHeight,
+    } = changed
 
-    const prevHead = prevParams.height - current
+    let prevHead = this.reverse
+      ? prevParams.height - prevParams.top
+      : prevParams.height - prevParams.top - viewHeight
 
-    const atHead = current + this._scrollable.offsetHeight === prevParams.height
-    // means that user is seeing the latest message
+    prevHead = prevHead < 0 ? 0 : prevHead
+    // got value below zero on initial render (prevPrams.height == 0)
 
-    const atZero = top === 0 && top === y
+    if (prevParams.height === 0) return this.reverse ? 0 : params.height
+    // scroll to top/bottom on initial render
 
-    if (this.reverse && this.freeze) {
-      return (!atHead && !atZero)
-        ? params.height - prevHead
-        : undefined
-    }
-    // preserve top position in reverse & freezed mode unless at the edge
+    const wasAtHead = (prevParams.height - viewHeight) === prevParams.top
+
+    const atZero = top === 0
+    // means that user is seeing the top message ↑
 
     if (this.reverse) {
+      // NOTE: logic beneath is similar for `freeze` mode also
       return atZero
-        ? top
-        : atHead ? top : params.height - prevHead
+        ? params.top
+        : params.height - prevHead
     }
-    // preserve top position in `reverse` mode
+    // preserve top position on both `reverse` & `freeze` mode
 
     if (this.freeze) return top
     // preserve top position if is freezed
 
+    if (prevParams.height !== 0 && atZero) return top
+    // preserve position on top unless initial render
+
     if (direction === -1) return params.height - prevHead
     // calculate top position according the previous distance
-    // between hight (head) and current position
+    //  between hight (head) and current position
 
-    return atHead ? params.height - prevHead : y
+    const result = wasAtHead ? params.height - viewHeight : prevParams.top
     // preserve current position unless user is near the latest message
+
+    return result
   }
 
   // eslint-disable-next-line class-methods-use-this
-  __shouldScrollByXAxis (params, changed) {
-    return changed.current
+  __shouldScrollByXAxis (params, changed, prevParams) {
+    debug('calcX', params, prevParams, changed)
+
+    return params.left
   }
 
-  _shouldScrollTo (e, direction = 0) { // eslint-disable-line no-unused-vars
+  _shouldScrollTo (e, direction = 0) {
     /**
      * At the moment `Y.height` and `this._height` are not the same.
      * - `Y.height` is equal to the new container height (new message has been appended already)
@@ -295,35 +312,40 @@ export class Scrollable extends LitElement {
      */
     const X = this._xScroll(this._scrollable)
     const Y = this._yScroll(this._scrollable)
+    const { offsetHeight } = this._scrollable
 
     debug('X', X)
     debug('Y', Y)
 
-    if (Y.top === Y.height) return debug('Skip scrolling') // eslint-disable-line padding-line-between-statements
-    // skip scrolling on empty children (initial render might has 0/0)
+    if (Y.top === Y.height || Y.height === Y.prevHeight) return debug('Skip scrolling')
+    // skip scrolling on empty children (initial render might has 0/0 or equal values)
 
     const y = this.__shouldScrollByYAxis(
-      { height: Y.height },
+      { height: Y.height, top: Y.top },
       {
         direction,
-        current: Y.current,
         top: Y.top,
-        y: Y.y,
+        viewHeight: offsetHeight,
       },
-      { height: this._height }
+      { height: Y.prevHeight, top: Y.prevTop }
     )
-    const x = this.__shouldScrollByXAxis({}, { current: X.current })
+    const x = this.__shouldScrollByXAxis(
+      { left: X.left, width: X.width },
+      { left: X.left, viewHeight: offsetHeight },
+      { left: X.prevLeft, width: X.prevWidth }
+    )
 
-    return (typeof y !== 'undefined' && typeof x !== 'undefined') && this._scrollTo(x, y)
+    return this._scrollTo(x, y)
   }
 
   _scrollTo (x, y) {
-    const el = this._scrollable
+    debug('Maybe scroll to:', x, y)
 
     // eslint-disable-next-line padding-line-between-statements
     if (!isNumber(x) || !isNumber(y)) { invariant('Wrong coordinate type'); return }
 
-    debug('Maybe scroll to:', x, y)
+    debug('Scroll to:', x, y)
+    const el = this._scrollable
 
     if (!el.scrollTo) {
       el.scrollLeft = x
