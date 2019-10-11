@@ -5,11 +5,11 @@ import { registerCustomElement } from '@netology-group/wc-utils/lib/utils'
 import { ReactionList as Reactions } from '@netology-group/wc-reaction/es/organisms/reaction-list'
 import Debug from 'debug'
 
+import { Message } from '../molecules/message'
+import i18n from '../i18n'
 import Input from '../organisms/input'
 import Messages from '../organisms/messages-extended'
-import { Message } from '../molecules/message'
 import Scrollable from '../organisms/scroll-to-unseen'
-import i18n from '../i18n'
 
 import style from './chat.css'
 
@@ -22,6 +22,8 @@ export class ChatElement extends LitElement {
       actions: Array,
       delaysubmit: Number,
       delayupdate: Number,
+      delayresize: Number,
+      delayscroll: Number,
       disabled: Boolean,
       language: String,
       lastseen: String,
@@ -37,15 +39,14 @@ export class ChatElement extends LitElement {
       placeholder: String,
       placeholderdisabled: String,
       reactions: Array,
-      reverse: Boolean,
       scrollabledisabled: Boolean,
       user: Number,
       users: Array,
     }
   }
 
-  constructor (props) {
-    super(props)
+  constructor () {
+    super()
 
     this._lang = this._resolveLanguage(this.language)
 
@@ -119,18 +120,6 @@ export class ChatElement extends LitElement {
 
     this.list = list
     this._listdir = 0
-  }
-
-  _propertiesChanged (props, changedProps, prevProps) {
-    super._propertiesChanged(props, changedProps, prevProps)
-
-    if (changedProps && changedProps.language !== prevProps.language) {
-      this._lang = this._resolveLanguage(this.language)
-      // eslint-disable-next-line max-len
-      this._strNewMessages = new IntlMessageFormat(this.i18n[this._lang].NEW_MESSAGES_COUNT, this._lang)
-
-      this.requestRender()
-    }
   }
 
   _resolveLanguage (language) {
@@ -210,15 +199,17 @@ export class ChatElement extends LitElement {
   }
 
   _render (props) {
+    const { list } = props
+
     const input = props.noinput
       ? undefined
       : (html`
         <div class='input'>
           <wc-chat-input
             delay='${props.delaysubmit || 0}'
+            disabled='${props.disabled}'
             maxlength='${props.maxlength}'
             maxrows='${props.maxrows || 10}'
-            disabled='${props.disabled}'
             on-message-submit='${this.boundedMessageSubmit}'
             placeholder='${props.placeholder}'
             placeholderdisabled='${props.placeholderdisabled}'
@@ -226,11 +217,6 @@ export class ChatElement extends LitElement {
           />
         </div>
       `)
-    const list = props.list
-      ? props.reverse
-        ? props.list.slice().reverse()
-        : props.list
-      : undefined
 
     const lastSeenIndex = props.list && props.lastseen !== undefined
       ? props.list.findIndex(_ => _.id === props.lastseen)
@@ -257,14 +243,15 @@ export class ChatElement extends LitElement {
       <div class='wrapper'>
         <wc-chat-scrollable
           delay='${props.delayupdate}'
-          i18n='${scrollableI18n}'
+          delayresize='${props.delayresize}'
+          delayscroll='${props.delayscroll}'
           freeze='${props.scrollabledisabled}'
+          i18n='${scrollableI18n}'
           listen='${EVENT}'
           omni='${props.omni}'
           on-last-seen-change='${this.boundedLastSeenChange}'
-          on-seek-before='${this.boundedSeekBefore}'
           on-seek-after='${this.boundedSeekAfter}'
-          reverse='${props.reverse}'
+          on-seek-before='${this.boundedSeekBefore}'
           showbannernew='${newMessageCount > 0}'
           unseenSelector='.message.unseen'
         >
@@ -282,7 +269,6 @@ export class ChatElement extends LitElement {
             parserpreset='${this.parserpreset}'
             parserrules='${this.parserrules}'
             reactions='${this.reactions}'
-            reverse='${props.reverse}'
             user='${props.user}'
             users='${props.users}'
           />
