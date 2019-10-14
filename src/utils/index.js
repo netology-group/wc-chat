@@ -41,6 +41,7 @@ export const requestAnimation = fn => {
 // TODO: get rid of `toJSON` method
 export const mapToJSON = map => {
   const list = [];
+
   [...map.keys()].forEach(key => {
     list.push([key, map.get(key)]);
   });

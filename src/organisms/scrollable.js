@@ -135,7 +135,10 @@ export class _ScrollableElement extends LitElement {
   }
 
   scrollTo(x, y) {
-    this.__scrollTo(isNumber(x) ? x : 0, isNumber(y) ? y : this._scrollable.scrollHeight);
+    this.__scrollTo(
+      isNumber(x) ? x : 0,
+      isNumber(y) ? y : this._scrollable.scrollHeight - this._scrollable.offsetHeight,
+    );
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -162,6 +165,7 @@ export class _ScrollableElement extends LitElement {
     if (!this._isTarget) {
       // eslint-disable-next-line no-console
       console.error('Target is not a valid HTMLElement');
+
       return;
     }
 
@@ -264,6 +268,13 @@ export class _ScrollableElement extends LitElement {
 
     this._defineCoordinates([scrollLeft, scrollTop, scrollWidth, scrollHeight]);
 
+    const nextHead = scrollTop === scrollHeight - offsetHeight;
+
+    debug('Changing head position', `current: ${this[wasAtHeadSym]} next: ${nextHead}`);
+
+    this[wasAtHeadSym] = nextHead;
+    // update head position' flag on scroll event
+
     this._shouldThrowSeekEvents({
       frameHeight: offsetHeight,
       height: scrollHeight,
@@ -282,7 +293,7 @@ export class _ScrollableElement extends LitElement {
     if (prevParams.height === 0) return params.height;
     // scroll to top/bottom on initial render
 
-    if (this.freeze) return top;
+    if (this.freeze) return this[wasAtHeadSym] ? params.top : prevParams.top;
     // preserve top position if is freezed
 
     const _wasAtHead = prevParams.height - viewHeight === prevParams.top;
@@ -329,6 +340,7 @@ export class _ScrollableElement extends LitElement {
     if (Y.top === Y.height || Y.height === Y.prevHeight) return debug('Skip scrolling');
     // skip scrolling on empty children (initial render might has 0/0 or equal values)
 
+    // TODO: clarify changed data
     const y = this.__shouldScrollByYAxis(
       { height: Y.height, top: Y.top },
       {
@@ -353,6 +365,7 @@ export class _ScrollableElement extends LitElement {
     if (!isNumber(x) || !isNumber(y)) {
       // eslint-disable-next-line no-console
       console.error('Wrong coordinate type');
+
       return;
     }
 
