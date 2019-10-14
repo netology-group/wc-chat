@@ -35,6 +35,8 @@
           parserpreset='strict'
           placeholder="Введите сообщение"
           placeholderdisabled="Чат заблокирован"
+          delayupdate=200
+          delayresize=400
         />
       </div>
       <div class="container">
@@ -43,15 +45,19 @@
           language="en-US"
           placeholder="Write something…"
           placeholderdisabled="Chat is blocked now"
+          delayupdate=200
+          delayresize=400
         />
       </div>
       <div class="container">
         <wc-chat
-          id="messenger-reverse"
+          id="messenger99"
           language="en-US"
           placeholder="Write something…"
           placeholderdisabled="Chat is blocked now"
-          reverse
+          scrollabledisabled
+          delayupdate=200
+          delayresize=400
         />
       </div>
     </div>
@@ -78,7 +84,7 @@
 
       #messenger1,
       #messenger2,
-      #messenger-reverse {
+      #messenger99 {
         width: inherit;
       }
       </style>

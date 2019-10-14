@@ -51,7 +51,6 @@ export class MessagesElement extends LitElement {
       invoke: String,
       list: Array,
       listdir: Number,
-      reverse: Boolean,
       user: Number,
       users: Array,
     }
@@ -87,6 +86,7 @@ export class MessagesElement extends LitElement {
         - User should stay where he is (he might be near the latest message or not if browsing old messages) when a new message or messages were added,
         - All previous scenarios are valid for a `reverse` (lifo) mode (new messages are on top, old ones at the bottom),
         - Scroll position should not be changed on any event where the cursor is over the element;
+        // TODO: reverse mode was deprecated. Remove this scenario from docs
 
         ** Interoperability:
         The messages element just renders data. It does not have any info about the scroll position.
@@ -151,7 +151,6 @@ export class MessagesElement extends LitElement {
       icon,
       id,
       identity,
-      reversed: this.reverse,
       rating,
       text,
       theme,
@@ -173,7 +172,6 @@ export class MessagesElement extends LitElement {
       icon,
       id,
       identity,
-      reversed,
       text,
       theme,
       timestamp,
@@ -196,7 +194,6 @@ export class MessagesElement extends LitElement {
         identity='${identity}'
         image='${avatar}'
         me='${user_id === current_user_id}'
-        reversed='${reversed}'
         text='${text}'
         theme='${theme}'
         timestamp='${timestamp}'

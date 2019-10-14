@@ -9,7 +9,7 @@ no-extra-semi */
 
 var messenger1
 var messenger2
-var messengerReversed
+var messenger99
 var avatarUrl = 'https://about.gitlab.com/images/devops-tools/gitlab-logo.svg'
 
 var bodyMessages = [
@@ -111,7 +111,7 @@ function initialize (element, user, makeUpdate) {
   element.users = _users
   element.user = user
 
-  if (element === messengerReversed) {
+  if (element === messenger99) {
     // means user is admin and stuff
     element.actions = [['user-disable', 11], ['message-delete', 111], ['message-reaction', 1]]
     element.reactions = [['thumbsup']]
@@ -184,9 +184,9 @@ window.document.addEventListener('WebComponentsReady', function onComponentsRead
 
   messenger1 = document.getElementById('messenger1')
   messenger2 = document.getElementById('messenger2')
-  messengerReversed = document.getElementById('messenger-reverse')
+  messenger99 = document.getElementById('messenger99')
 
-  initialize(messenger1, 1, list => update([messenger1, messenger2, messengerReversed], list))
-  initialize(messenger2, 2, list => update([messenger1, messenger2, messengerReversed], list))
-  initialize(messengerReversed, 99, list => update([messenger1, messenger2, messengerReversed], list))
+  initialize(messenger1, 1, list => update([messenger1, messenger2, messenger99], list))
+  initialize(messenger2, 2, list => update([messenger1, messenger2, messenger99], list))
+  initialize(messenger99, 99, list => update([messenger1, messenger2, messenger99], list))
 })

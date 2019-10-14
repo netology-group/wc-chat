@@ -32,7 +32,6 @@ export class MessageFactory extends LitElement {
       parsername: String,
       parserpreset: String,
       parserrules: String,
-      reversed: Boolean,
       text: String,
       theme: String,
       timestamp: Number,
@@ -118,7 +117,6 @@ export class MessageFactory extends LitElement {
           ${sectionTpl}
           <slot name="message-epilogue"></slot>
         </div>
-        <slot name$=${`message-rev-${uid || Math.ceil(Math.random() * 1e3)}`}></slot>
       </div>
     `)
   }

@@ -4,15 +4,15 @@ import { withStyle } from '@netology-group/wc-utils'
 import { Actions, style as actionStyle } from '../molecules/actions'
 import { isAggregatedBy, isLastseen, debug as Debug } from '../utils/index'
 import { actionImages } from '../atoms/action'
-import { separator } from '../atoms/separator'
-
-import separatorStyle from '../atoms/separator.css'
+import { maybeSeparator, styles as separatorStyle } from '../atoms/separator'
 
 import { MessagesElement } from './messages'
 import style from './messages.css'
 import styleExt from './messages-extended.css'
 
 const debug = Debug('@netology-group/wc-chat/MessagesExtended')
+
+const showPosHelpers = element => element && typeof element.wasAtHead !== 'undefined' && !element.wasAtHead
 
 export class XMessagesElement extends MessagesElement {
   static get properties () {
@@ -40,6 +40,10 @@ export class XMessagesElement extends MessagesElement {
     })
 
     return rctns
+  }
+
+  __outputTplAccordingParentPosition () {
+    return showPosHelpers(this.parentElement)
   }
 
   _render (props) {
@@ -77,10 +81,8 @@ export class XMessagesElement extends MessagesElement {
         index: i,
         lastseen: this.lastseen,
         list: arr,
-        reverse: this.reverse,
       }),
       rating,
-      reversed: this.reverse,
       text,
       theme,
       timestamp,
@@ -103,7 +105,6 @@ export class XMessagesElement extends MessagesElement {
       invisible,
       is_lastseen,
       rating,
-      reversed,
       text,
       theme,
       timestamp,
@@ -111,15 +112,13 @@ export class XMessagesElement extends MessagesElement {
       user_name,
     } = message
 
-    const maybeUnseen = is_lastseen && (current_user_id !== user_id)
-
-    const unseenTpl = !maybeUnseen
-      ? undefined
-      : (html`
-          <div slot$=${`message-${reversed ? 'rev-' : ''}${id}`} class='messages-separator'>
-            ${separator({ reversed, text: this.i18n.NEW_MESSAGES })}
-          </div>
-        `)
+    /* eslint-disable max-len */
+    const unseenTpl = maybeSeparator({
+      id,
+      text: this.i18n.NEW_MESSAGES,
+      enabled: is_lastseen && (current_user_id !== user_id) && this.__outputTplAccordingParentPosition(), // show chunks according the parentElement
+    })
+    /* eslint-enable max-len */
 
     const className = cs({
       [classname]: classname,
@@ -144,7 +143,6 @@ export class XMessagesElement extends MessagesElement {
         parserpreset='${this.parserpreset}'
         parserrules='${this.parserrules}'
         rating='${this.rating}'
-        reversed='${reversed}'
         text='${text}'
         theme='${theme}'
         timestamp='${timestamp}'

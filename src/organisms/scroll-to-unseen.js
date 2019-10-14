@@ -1,12 +1,54 @@
 import { html, classString as cs } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils'
 
-import { debug as Debug } from '../utils/index'
+import { debug as Debug, requestAnimation } from '../utils/index'
 
 import { Scrollable } from './scrollable'
 import style from './scrollable.css'
+import styleUnseen from './scroll-to-unseen.css'
 
 const debug = Debug('@netology-group/wc-chat/ScrollableUnseen')
+
+const freshBanner = ({
+  active,
+  i18n,
+  onClick,
+}) => {
+  const cname = cs({
+    banner: true,
+    'new': true,
+    top: true,
+    inactive: !active,
+  })
+
+  return (html`
+    <div class$='${cname}' on-click='${!active ? undefined : onClick}'>
+      <div class='row'>
+        <div>${i18n.NEW_MESSAGES_COUNT}</div>
+        <div>${i18n.SEE}</div>
+      </div>
+    </div>
+  `)
+}
+
+const recentBanner = ({
+  active,
+  i18n,
+  onClick,
+}) => {
+  const cname = cs({
+    banner: true,
+    recent: true,
+    bottom: true,
+    inactive: !active,
+  })
+
+  return (html`
+    <div class$='${cname}' on-click='${!active ? undefined : onClick}'>
+      ${i18n.GO_TO_RECENT_MESSAGE}
+    </div>`
+  )
+}
 
 export class ScrollToUnseen extends Scrollable {
   static get properties () {
@@ -18,8 +60,8 @@ export class ScrollToUnseen extends Scrollable {
     }
   }
 
-  constructor (...argv) {
-    super(...argv)
+  constructor () {
+    super()
     this._detached = undefined
   }
 
@@ -30,9 +72,7 @@ export class ScrollToUnseen extends Scrollable {
       scrollHeight,
     } = element
 
-    const newDetachedValue = this.reverse
-      ? scrollTop > 0
-      : (scrollHeight - scrollTop) > offsetHeight
+    const newDetachedValue = (scrollHeight - scrollTop) > offsetHeight
 
     if (!newDetachedValue) {
       debug('Changed last-seen')
@@ -42,20 +82,22 @@ export class ScrollToUnseen extends Scrollable {
     if (newDetachedValue !== this._detached) {
       this._detached = newDetachedValue
 
-      this.requestRender()
+      requestAnimation(() => this.requestRender())
     }
   }
 
-  _scrollToUnseen () {
+  __scrollToUnseen () {
     const slot = this._scrollable.querySelector('slot')
 
     const el = slot.assignedNodes() && slot.assignedNodes()[1] && slot.assignedNodes()[1].shadowRoot
       ? slot.assignedNodes()[1].shadowRoot.querySelector(this.unseenSelector)
       : undefined
 
-    if (el) {
-      this._scrollTo(0, el.offsetTop - this._scrollable.offsetHeight / 2)
-    }
+    if (!el) return
+
+    const nextPoint = [0, el.offsetTop - this._scrollable.offsetHeight / 2]
+
+    requestAnimation(() => this.__scrollTo(...nextPoint))
   }
 
   _onScrollHandler (e) {
@@ -72,35 +114,18 @@ export class ScrollToUnseen extends Scrollable {
     }
   }
 
-  // NOTE: it seems super method covers all the needed logic
-
   _render (props) {
-    const showNewBanner = this._detached && props.showbannernew
-    const detachedNewBanner = (html`<div
-      class$='${cs({
-        banner: true,
-        'new': true,
-        [props.reverse ? 'bottom' : 'top']: true,
-        inactive: !showNewBanner,
-        reverse: props.reverse,
-      })}'
-      on-click='${!showNewBanner ? undefined : () => this._scrollToUnseen()}'>
-        <div class='row'>
-          <div>${this.i18n.NEW_MESSAGES_COUNT}</div>
-          <div>${this.i18n.SEE}</div>
-        </div>
-      </div>`)
+    const detachedNewBanner = freshBanner({
+      active: Boolean(this._detached && props.showbannernew),
+      i18n: this.i18n,
+      onClick: () => this.__scrollToUnseen(),
+    })
 
-    const showRecentBanner = this._detached && !props.showbannernew
-    const detachedBanner = (html`<div
-      class$='${cs({
-        banner: true,
-        recent: true,
-        [props.reverse ? 'top' : 'bottom']: true,
-        inactive: !showRecentBanner,
-        reverse: props.reverse,
-      })}'
-      on-click='${!showRecentBanner ? undefined : () => this.scrollTo()}'>${this.i18n.GO_TO_RECENT_MESSAGE}</div>`)
+    const detachedBanner = recentBanner({
+      active: Boolean(this._detached && !props.showbannernew),
+      i18n: this.i18n,
+      onClick: () => this.scrollTo(),
+    })
 
     return (html`
       <div class='wrapper'>
@@ -116,4 +141,4 @@ export class ScrollToUnseen extends Scrollable {
   }
 }
 
-export default withStyle(html)(ScrollToUnseen, style)
+export default withStyle(html)(ScrollToUnseen, style, styleUnseen)

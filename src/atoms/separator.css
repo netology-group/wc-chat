@@ -1,14 +1,7 @@
 :host .separator {
+  margin: 10px 0 15px;
   user-select: none;
   width: 100%;
-}
-
-:host .separator:not(.reversed) {
-  margin: 10px 0 15px;
-}
-
-:host .separator.reversed {
-  margin: 15px 0 10px;
 }
 
 :host .separator span {

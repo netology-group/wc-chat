@@ -3,8 +3,11 @@ import { html, LitElement } from '@polymer/lit-element'
 import { withStyle } from '@netology-group/wc-utils'
 import compose from 'ramda/es/compose'
 
-import { Invariant, debug as Debug } from '../utils/index'
-import { observeC as observe, throttleC as throttle } from '../utils/most'
+import { Invariant, debug as Debug, requestAnimation } from '../utils/index'
+import {
+  observeC as observe,
+  throttleC as throttle,
+} from '../utils/most'
 
 import style from './scrollable.css'
 
@@ -12,10 +15,20 @@ const invariant = Invariant()
 const debug = Debug('@netology-group/wc-chat/Scrollable')
 
 const DELTA = 20
-const THROTTLE_RESIZE = 50
-const THROTTLE_DELAY = 50
+const THROTTLE_RESIZE = 33
+const THROTTLE_DELAY = 33
+const THROTTLE_SCROLL = 14
 
 const isNumber = it => typeof it === 'number'
+
+const scrollTo = (el, [x, y]) => {
+  if (!el.scrollTo) {
+    el.scrollLeft = x // eslint-disable-line no-param-reassign
+    el.scrollTop = y // eslint-disable-line no-param-reassign
+  } else {
+    el.scrollTo(x, y)
+  }
+}
 
 /**
  *  .________________ ... zero
@@ -43,16 +56,17 @@ export class Scrollable extends LitElement {
   static get properties () {
     return {
       delay: Number,
+      delayresize: Number,
+      delayscroll: Number,
       freeze: Boolean,
       listen: String,
       omni: Boolean,
-      reverse: Boolean,
       scrolltarget: String,
     }
   }
 
-  constructor (props) {
-    super(props)
+  constructor () {
+    super()
 
     this.__manual = false
 
@@ -60,9 +74,11 @@ export class Scrollable extends LitElement {
     this.__x = undefined
     // _x & _y
 
-    this.delay = undefined
-    this._throttleResize = undefined
+    this.__delay = undefined
+    this.__delayResize = undefined
+    this.__delayScroll = undefined
     this._detached = false
+    this.wasAtHead = undefined
 
     this._height = 0
     this._width = 0
@@ -93,7 +109,7 @@ export class Scrollable extends LitElement {
   }
 
   get _y () {
-    return this.__y ? this.__y : (this.reverse ? 0 : this._scrollable.scrollHeight)
+    return this.__y ? this.__y : this._scrollable.scrollHeight
   }
 
   set _y (y = 0) {
@@ -112,11 +128,7 @@ export class Scrollable extends LitElement {
   }
 
   scrollTo (x, y) {
-    const el = this._scrollable
-    const _x = isNumber(x) ? x : 0
-    const _y = isNumber(y) ? y : (this.reverse ? 0 : el.scrollHeight)
-
-    this._scrollTo(_x, _y)
+    this.__scrollTo(isNumber(x) ? x : 0, isNumber(y) ? y : this._scrollable.scrollHeight)
   }
 
   _scrollMinMax (shift, min = 1, max = DELTA) { // eslint-disable-line class-methods-use-this
@@ -129,26 +141,29 @@ export class Scrollable extends LitElement {
   }
 
   _firstRendered () {
+    this.__delay = this.delay === 0 ? 0 : this.delay || THROTTLE_DELAY
+    this.__delayResize = this.delayresize === 0 ? 0 : this.delayresize || THROTTLE_RESIZE
+    this.__delayScroll = this.delayscroll === 0 ? 0 : this.delayscroll || THROTTLE_SCROLL
+
     // eslint-disable-next-line padding-line-between-statements
     if (!this._isTarget) { invariant('Target is not a valid HTMLElement'); return }
 
     this.listen && compose(
       observe(e => this._onChildrenUpdate(e)),
-      throttle(this.delay === 0 ? 0 : this.delay || THROTTLE_DELAY),
+      throttle(this.__delay),
     )(fromEvent(this.listen, this._scrollable, true))
 
     compose(
       observe(e => this._onResizeHandler(e)),
-      throttle(this._throttleResize === 0 ? 0 : this._throttleResize || THROTTLE_RESIZE),
+      throttle(this.__delayResize),
     )(fromEvent('resize', this._rootDocument.defaultView))
 
     /* eslint-disable function-paren-newline */
     compose(
       observe(e => this._onScrollHandler(e)),
+      throttle(this.__delayScroll),
     )(fromEvent('scroll', this._scrollable))
     /* eslint-enable function-paren-newline */
-
-    // NOTE: remove initial scroll as any content update should trigger scrolling
   }
 
   _shouldThrowSeekEvents (position) {
@@ -163,21 +178,13 @@ export class Scrollable extends LitElement {
     const atTail = top === 0
 
     // seek before
-    if (
-      (this.reverse && atHead)
-      || (!this.reverse && atTail)
-    ) {
+    if (atTail) {
       debug('Seek before')
       this.dispatchEvent(new CustomEvent('seek-before'))
     }
 
     // seek after
-    if (
-      this.omni && (
-        (this.reverse && atTail)
-        || (!this.reverse && atHead)
-      )
-    ) {
+    if (this.omni && atHead) {
       debug('Seek after')
       this.dispatchEvent(new CustomEvent('seek-after'))
     }
@@ -230,6 +237,13 @@ export class Scrollable extends LitElement {
     }
   }
 
+  /**
+   * Update position on scroll
+   *
+   * @function __handleScroll
+   * @param  {} target
+   * @return {} undefined
+   */
   __handleScroll (target) {
     const {
       scrollLeft, scrollTop, scrollWidth, scrollHeight, offsetHeight,
@@ -256,31 +270,23 @@ export class Scrollable extends LitElement {
       viewHeight,
     } = changed
 
-    let prevHead = this.reverse
-      ? prevParams.height - prevParams.top
-      : prevParams.height - prevParams.top - viewHeight
+    let prevHead = prevParams.height - prevParams.top - viewHeight
 
     prevHead = prevHead < 0 ? 0 : prevHead
     // got value below zero on initial render (prevPrams.height == 0)
 
-    if (prevParams.height === 0) return this.reverse ? 0 : params.height
+    if (prevParams.height === 0) return params.height
     // scroll to top/bottom on initial render
-
-    const wasAtHead = (prevParams.height - viewHeight) === prevParams.top
-
-    const atZero = top === 0
-    // means that user is seeing the top message ↑
-
-    if (this.reverse) {
-      // NOTE: logic beneath is similar for `freeze` mode also
-      return atZero
-        ? params.top
-        : params.height - prevHead
-    }
-    // preserve top position on both `reverse` & `freeze` mode
 
     if (this.freeze) return top
     // preserve top position if is freezed
+
+    const wasAtHead = (prevParams.height - viewHeight) === prevParams.top
+
+    this.wasAtHead = wasAtHead
+
+    const atZero = top === 0
+    // means that user is seeing the top message ↑
 
     if (prevParams.height !== 0 && atZero) return top
     // preserve position on top unless initial render
@@ -314,8 +320,7 @@ export class Scrollable extends LitElement {
     const Y = this._yScroll(this._scrollable)
     const { offsetHeight } = this._scrollable
 
-    debug('X', X)
-    debug('Y', Y)
+    debug('XY x:', X, 'y:', Y)
 
     if (Y.top === Y.height || Y.height === Y.prevHeight) return debug('Skip scrolling')
     // skip scrolling on empty children (initial render might has 0/0 or equal values)
@@ -335,24 +340,16 @@ export class Scrollable extends LitElement {
       { left: X.prevLeft, width: X.prevWidth }
     )
 
-    return this._scrollTo(x, y)
+    return this.__scrollTo(x, y)
   }
 
-  _scrollTo (x, y) {
+  __scrollTo (x, y) {
     debug('Maybe scroll to:', x, y)
 
     // eslint-disable-next-line padding-line-between-statements
     if (!isNumber(x) || !isNumber(y)) { invariant('Wrong coordinate type'); return }
 
-    debug('Scroll to:', x, y)
-    const el = this._scrollable
-
-    if (!el.scrollTo) {
-      el.scrollLeft = x
-      el.scrollTop = y
-    } else {
-      el.scrollTo(x, y)
-    }
+    requestAnimation(() => scrollTo(this._scrollable, [x, y]))
   }
 
   // eslint-disable-next-line class-methods-use-this
