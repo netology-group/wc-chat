@@ -9,6 +9,7 @@ import json from 'rollup-plugin-json'
 import npm from 'rollup-plugin-node-resolve'
 import postcss from 'rollup-plugin-postcss'
 import svg from 'rollup-plugin-svg'
+import nodeBuiltins from 'rollup-plugin-node-builtins'
 
 import { shouldUglify } from './util/rollup-uglify'
 import { name as pkgname, directories, peerDependencies } from './package.json'
@@ -59,6 +60,7 @@ const dist = (name = moduleName(pkgname, true)) => ({
   },
   external: _ => Object.keys(peerDependencies || {}).includes(_),
   plugins: [
+    nodeBuiltins(),
     npm({
       browser: true,
       node: true,

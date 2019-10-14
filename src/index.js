@@ -5,7 +5,10 @@ import * as _ from '@netology-group/wc-utils'
 import Chat from './ecosystems/chat'
 import * as Parsers from './utils/message-parser'
 
+// console.log(EventEmitter)
 const mixins = utils.bindMixins(html)(_)
+
+export { EventEmitter } from './utils/emitter'
 
 export { Chat, mixins, utils }
 

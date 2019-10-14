@@ -9,7 +9,7 @@ no-extra-semi */
 
 var messenger1
 var messenger2
-var messenger99
+var messenger3
 var avatarUrl = 'https://about.gitlab.com/images/devops-tools/gitlab-logo.svg'
 
 var bodyMessages = [
@@ -49,7 +49,7 @@ var _messages = [
     rating: 0 || [['thumbsup']],
     theme: 'red',
     timestamp: Date.now() / 1e3,
-    user_id: 99,
+    user_id: 3,
     user_name: 'Alan Mathison Turing',
     visible: true,
   },
@@ -77,7 +77,7 @@ var _users = [
   {
     avatar: avatarUrl,
     identity: (function getIdentity (user_role = 'moderator') { return 'Administrator' }()), // eslint-disable-line no-unused-vars
-    user_id: 99,
+    user_id: 3,
     user_name: 'Alan Mathison Turing',
     visible: true,
   },
@@ -91,7 +91,7 @@ function enhanceMessage (message, userId) {
     user_id: userId,
   }
 
-  if (userId === 99) {
+  if (userId === 3) {
     _message.theme = 'red'
     _message.icon = 'man'
   }
@@ -99,6 +99,14 @@ function enhanceMessage (message, userId) {
   return Object.assign(_message, _users.filter(function selectUsers (_) {
     return _.user_id === _message.user_id
   })[0] || {})
+}
+
+function messageFactory () {
+  var index = Math.round(Math.random() * 2)
+
+  console.log({ index: _users[index] })
+
+  return enhanceMessage(Math.random().toString(36).substring(7), index + 1)
 }
 
 function update (list, messages) {
@@ -111,7 +119,7 @@ function initialize (element, user, makeUpdate) {
   element.users = _users
   element.user = user
 
-  if (element === messenger99) {
+  if (element === messenger3) {
     // means user is admin and stuff
     element.actions = [['user-disable', 11], ['message-delete', 111], ['message-reaction', 1]]
     element.reactions = [['thumbsup']]
@@ -171,6 +179,9 @@ window.document.addEventListener('WebComponentsReady', function onComponentsRead
   var mixins = window.WcChat.mixins
   var utils = window.WcChat.utils
 
+  var emitter = window.__WcChatEmitter = new window.WcChat.EventEmitter() // eslint-disable-line no-multi-assign
+  // define emitter to simulate messaging
+
   Chat = mixins.withCustomElements(Chat, function withCustomElements (children) {
     const el = children.get('wc-chat-messages')
     if (!el) return new Map()
@@ -184,9 +195,35 @@ window.document.addEventListener('WebComponentsReady', function onComponentsRead
 
   messenger1 = document.getElementById('messenger1')
   messenger2 = document.getElementById('messenger2')
-  messenger99 = document.getElementById('messenger99')
+  messenger3 = document.getElementById('messenger3')
 
-  initialize(messenger1, 1, list => update([messenger1, messenger2, messenger99], list))
-  initialize(messenger2, 2, list => update([messenger1, messenger2, messenger99], list))
-  initialize(messenger99, 99, list => update([messenger1, messenger2, messenger99], list))
+  initialize(messenger1, 1, list => update([messenger1, messenger2, messenger3], list))
+  initialize(messenger2, 2, list => update([messenger1, messenger2, messenger3], list))
+  initialize(messenger3, 3, list => update([messenger1, messenger2, messenger3], list))
+
+  window.__WcChatEmitter.start = function startEmitting () {
+    function emit (fn, timeout) {
+      timeout = timeout || 200
+      // eslint-disable-next-line vars-on-top
+      var timerId = window.setTimeout(() => {
+        fn()
+        // console.log({ timerId, timeout })
+        window.clearInterval(timerId)
+
+        if (window.__WcChatEmitter.__stop) return
+        emit(fn, timeout)
+      }, timeout)
+    }
+
+    emit(function Fn () {
+      _messages = _messages.concat([messageFactory(), messageFactory()]);
+
+      ((list) => {
+        update([messenger1, messenger2, messenger3], list)
+      })(_messages)
+    })
+  }
+  window.__WcChatEmitter.kill = function killthis () {
+    window.__WcChatEmitter.__stop = true
+  }
 })

@@ -6,6 +6,10 @@ import { map } from 'most/src/combinator/transform'
 import { observe } from 'most/src/combinator/observe'
 import curry from 'ramda/es/curry'
 
+import { fromEvent } from 'most'
+
+window.fe = fromEvent
+
 export const combineC = curry(combine)
 
 export const debounceC = curry(debounce)
