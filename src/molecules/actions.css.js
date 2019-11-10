@@ -1,3 +1,6 @@
+import { css } from 'lit-element'
+
+export const style = css`
 :host {
   --actions-action-icon-size: 16px;
   --actions-background-color: var(--chat-message-actions-background-color, var(--white, #fff));
@@ -181,3 +184,4 @@
 :host .quickdelete > svg path {
   fill: var(--actions-background-color) !important;
 }
+`

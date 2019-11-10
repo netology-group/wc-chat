@@ -1,3 +1,6 @@
+import { css } from 'lit-element'
+
+export const style = css`
 :host {
   --messages-width: var(--chat-messages-list-width, 100%);
   --messages-height: var(--chat-messages-list-height, 100%);
@@ -15,6 +18,12 @@
   font-size: var(--messages-font-size, inherit);
   height: var(--messages-height);
   width: var(--messages-width);
+
+  /*height: 100%;*/
+}
+
+:host .messages-inner {
+  /*height:100%;*/
 }
 
 :host .message {
@@ -26,3 +35,4 @@
 :host .message + .message:not(.aggregated) {
   margin-top: calc(var(--messages-item-margin-between) - var(--messages-item-aggregated-margin));
 }
+`

@@ -1,13 +1,15 @@
-import { html, classString as cs } from '@polymer/lit-element'
-import { withStyle } from '@netology-group/wc-utils'
+import { html } from 'lit-element'
+import cs from 'classnames-es'
 
-import { debug as Debug, requestAnimation } from '../utils/index'
+import { _ScrollableElement } from './scrollable.js'
+import { debug as Debug, requestAnimation } from '../utils/index.js'
+import { withStyle } from '../mixins/with-style.js'
+import { arrowDown as arrowDownSvg } from '../images/index.js'
 
-import { Scrollable } from './scrollable'
-import style from './scrollable.css'
-import styleUnseen from './scroll-to-unseen.css'
+import { style } from './scrollable.css.js'
+import { style as styleUnseen } from './scroll-to-unseen.css.js'
 
-const debug = Debug('@netology-group/wc-chat/ScrollableUnseen')
+const debug = Debug('@netology-group/wc-chat/ScrollableUnseenElement')
 
 const freshBanner = ({
   active,
@@ -22,10 +24,13 @@ const freshBanner = ({
   })
 
   return (html`
-    <div class$='${cname}' on-click='${!active ? undefined : onClick}'>
+    <div class=${cname} @click=${!active ? undefined : onClick}>
       <div class='row'>
         <div>${i18n.NEW_MESSAGES_COUNT}</div>
-        <div>${i18n.SEE}</div>
+        <div>
+          ${i18n.SEE}
+          <span class='icon'>${arrowDownSvg}</span>
+        </div>
       </div>
     </div>
   `)
@@ -44,13 +49,16 @@ const recentBanner = ({
   })
 
   return (html`
-    <div class$='${cname}' on-click='${!active ? undefined : onClick}'>
+    <div class=${cname} @click=${!active ? undefined : onClick}>
       ${i18n.GO_TO_RECENT_MESSAGE}
+      <span class='icon'>${arrowDownSvg}</span>
     </div>`
   )
 }
 
-export class ScrollToUnseen extends Scrollable {
+export { wasAtHeadSym } from './scrollable.js'
+
+export class _ScrollableUnseenElement extends _ScrollableElement {
   static get properties () {
     return {
       ...super.properties,
@@ -62,6 +70,7 @@ export class ScrollToUnseen extends Scrollable {
 
   constructor () {
     super()
+
     this._detached = undefined
   }
 
@@ -82,7 +91,7 @@ export class ScrollToUnseen extends Scrollable {
     if (newDetachedValue !== this._detached) {
       this._detached = newDetachedValue
 
-      requestAnimation(() => this.requestRender())
+      requestAnimation(() => this.requestUpdate())
     }
   }
 
@@ -114,18 +123,10 @@ export class ScrollToUnseen extends Scrollable {
     }
   }
 
-  _render (props) {
-    const detachedNewBanner = freshBanner({
-      active: Boolean(this._detached && props.showbannernew),
-      i18n: this.i18n,
-      onClick: () => this.__scrollToUnseen(),
-    })
-
-    const detachedBanner = recentBanner({
-      active: Boolean(this._detached && !props.showbannernew),
-      i18n: this.i18n,
-      onClick: () => this.scrollTo(),
-    })
+  render () {
+    const {
+      showbannernew,
+    } = this
 
     return (html`
       <div class='wrapper'>
@@ -134,11 +135,23 @@ export class ScrollToUnseen extends Scrollable {
             <slot></slot>
           </div>
         </div>
-        ${detachedNewBanner}
-        ${detachedBanner}
+        ${freshBanner({
+          active: Boolean(this._detached && showbannernew),
+          i18n: this.i18n,
+          onClick: () => this.__scrollToUnseen(),
+        })}
+        ${recentBanner({
+          active: Boolean(this._detached && showbannernew),
+          i18n: this.i18n,
+          onClick: () => this.scrollTo(),
+        })}
       </div>
     `)
   }
 }
 
-export default withStyle(html)(ScrollToUnseen, style, styleUnseen)
+export const ScrollableUnseenElement = withStyle(html)(
+  _ScrollableUnseenElement,
+  style,
+  styleUnseen
+)

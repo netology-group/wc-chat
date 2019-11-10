@@ -22,18 +22,55 @@
     "lib": "src"
   },
   "scripts": {
+    "_start": "npm run demo",
     "prebuild": "rm -rf dist es public/node_modules",
-    "build": "npm run build/es && npm run build/umd && npm run build/umd/min",
+    "build": "rimraf dist && rollup -c rollup.config.js",
     "build/es": "cross-env BABEL_ENV=es babel src -d es --copy-files",
     "build/umd": "npm run rollup -- -o dist/chat.js",
     "build/umd/min": "cross-env NODE_ENV=production1 npm run rollup -- -o dist/chat.min.js",
     "demo": "http-server .",
+    "format": "npm run format:eslint && npm run format:prettier",
+    "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .gitignore",
+    "format:prettier": "prettier \"**/*.js\" --write --ignore-path .gitignore",
+    "lint": "npm run lint:eslint && npm run lint:prettier",
+    "lint:eslint": "eslint --ext .js,.html . --ignore-path .gitignore",
+    "lint:prettier": "prettier \"**/*.js\" --check --ignore-path .gitignore",
     "prepublishOnly": "npm run test && npm run build",
     "rollup": "cross-env BABEL_ENV=rollup rollup -c",
-    "prestart": "npm run build",
-    "start": "npm run demo",
+    "site:build": "npm run storybook:build",
+    "prestart": "scripts/prepare.sh && npm run build",
+    "start": "es-dev-server --app-index demo/index.html --node-resolve --open --watch",
+    "start:build": "cd dist && es-dev-server --open",
+    "start:compatibility": "es-dev-server --app-index demo/index.html --compatibility all --node-resolve --open --watch",
+    "storybook": "start-storybook -p 9001",
+    "storybook:build": "build-storybook -o _site -s storybook-static",
     "stylelint": "stylelint src",
-    "test": "eslint . && npm run stylelint"
+    "test": "karma start --coverage",
+    "test:bs": "karma start karma.bs.config.js --compatibility all --coverage",
+    "test:compatibility": "karma start --compatibility all --coverage",
+    "test:compatibility:watch": "karma start --compatibility all --auto-watch=true --single-run=false",
+    "test:prune-snapshots": "karma start --prune-snapshots",
+    "test:update-snapshots": "karma start --update-snapshots",
+    "test:watch": "karma start --auto-watch=true --single-run=false"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": "@open-wc/prettier-config",
+  "eslintConfig": {
+    "extends": [
+      "@open-wc/eslint-config",
+      "eslint-config-prettier"
+    ]
   },
   "stylelint": {
     "extends": [
@@ -58,35 +95,53 @@
     "@netology-group/wc-reaction": "^0.2.0",
     "@netology-group/wc-utils": "^0.3.2",
     "@polymer/iron-autogrow-textarea": "^3.0.0-pre.21",
-    "@polymer/lit-element": "^0.5.2",
+    "@polymer/iron-list": "^3.1.0",
+    "@ungap/event-target": "^0.1.0",
     "@webcomponents/webcomponentsjs": "^2.2.7",
+    "classnames": "^2.2.6",
+    "classnames-es": "^2.2.6",
     "core-js": "^2.5.7",
     "debug": "^4.1.0",
+    "events": "^3.0.0",
     "intl-messageformat": "~2.2.0",
     "invariant": "^2.2.4",
-    "lit-html": "^0.10.2",
+    "lit-html": "^1.1.2",
     "markdown-it": "^8.4.2",
     "most": "^1.7.3",
+    "node-emoji": "^1.10.0",
     "ramda": "^0.25.0"
   },
   "devDependencies": {
+    "@open-wc/building-rollup": "^0.9.0",
+    "@open-wc/demoing-storybook": "^0.3.0",
+    "@open-wc/eslint-config": "^1.0.0",
+    "@open-wc/prettier-config": "^0.1.10",
+    "@open-wc/testing": "^2.0.0",
+    "@open-wc/testing-karma": "^3.0.0",
+    "@open-wc/testing-karma-bs": "^1.0.0",
     "babel-cli": "^6.26.0",
     "babel-plugin-annotate-pure-calls": "^0.3.0",
     "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-inline-json-import": "^0.3.2",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
+    "eslint": "^6.1.0",
     "eslint-config-adequate": "^1.1.4",
+    "husky": "^1.0.0",
+    "lint-staged": "^8.0.0",
     "postcss-discard-duplicates": "^4.0.2",
     "postcss-fontpath": "^1.0.0",
-    "postcss-import": "^12.0.0",
-    "postcss-preset-env": "^6.6.0",
+    "postcss-import": "^12.0.1",
+    "postcss-preset-env": "^6.7.0",
     "postcss-url": "^8.0.0",
-    "rollup": "^1.2.2",
+    "rimraf": "^2.6.3",
+    "rollup": "^1.15.4",
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-commonjs": "^9.2.1",
     "rollup-plugin-copy": "^0.2.3",
     "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-lit-css": "^2.0.0",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-resolve": "^4.0.1",
     "rollup-plugin-postcss": "^2.0.3",
@@ -94,7 +149,8 @@
     "rollup-plugin-terser": "^4.0.4",
     "stylelint": "^9.10.1",
     "stylelint-config-standard": "^18.2.0",
-    "stylelint-order": "^1.0.0"
+    "stylelint-order": "^1.0.0",
+    "webpack-merge": "^4.1.5"
   },
   "peerDependencies": {
     "@webcomponents/webcomponentsjs": "^2.2.7",
@@ -104,6 +160,7 @@
   },
   "optionalDependencies": {
     "chokidar-cli": "^1.2.2",
-    "cross-env": "^5.2.0"
+    "cross-env": "^5.2.0",
+    "web-component-analyzer": "^0.1.18"
   }
 }

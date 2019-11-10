@@ -1,3 +1,6 @@
+import { css } from 'lit-element'
+
+export const style = css`
 :host .separator {
   margin: 10px 0 15px;
   user-select: none;
@@ -23,3 +26,4 @@
   top: 11px;
   width: 100%;
 }
+`

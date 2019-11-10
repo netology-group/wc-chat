@@ -1,3 +1,6 @@
+import { css } from 'lit-element'
+
+export const style = css`
 :host {
   background-color: var(--chat-background-color, #f8f8f8);
   display: block;
@@ -20,4 +23,7 @@
 /* stylelint-disable selector-type-no-unknown */
 :host .wrapper wc-chat-scrollable {
   flex: 1 1 auto;
+
+  /*overflow: scroll;*/
 }
+`

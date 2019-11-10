@@ -1,15 +1,25 @@
-import { html } from '@polymer/lit-element'
-import * as utils from '@netology-group/wc-utils/lib/utils'
-import * as _ from '@netology-group/wc-utils'
+// import { LitElement, html } from 'lit-element'
+// import * as utils from '@netology-group/wc-utils/lib/utils'
+// import * as _ from '@netology-group/wc-utils'
 
-import Chat from './ecosystems/chat'
-import * as Parsers from './utils/message-parser'
+// console.log(html)
 
-// console.log(EventEmitter)
-const mixins = utils.bindMixins(html)(_)
+export { withStyle } from './mixins/with-style.js'
 
-export { EventEmitter } from './utils/emitter'
+export { InputElement } from './organisms/input.js'
 
-export { Chat, mixins, utils }
+export { ChatElement } from './ecosystems/chat.js'
 
-export const parsers = Parsers
+// export const ChatElement = withStyle()(Chat)
+
+// import * as Parsers from './utils/message-parser'
+
+// const mixins = utils.bindMixins(html)(_)
+
+export { EventEmitter } from './utils/emitter.js'
+
+// console.log(EventEmitter, 123)
+
+// export { Chat, mixins, utils }
+
+// export const parsers = Parsers

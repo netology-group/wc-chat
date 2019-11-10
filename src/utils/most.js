@@ -1,14 +1,10 @@
-import { combine } from 'most/src/combinator/combine'
-import { throttle, debounce } from 'most/src/combinator/limit'
-import { delay } from 'most/src/combinator/delay'
-import { filter } from 'most/src/combinator/filter'
-import { map } from 'most/src/combinator/transform'
-import { observe } from 'most/src/combinator/observe'
-import curry from 'ramda/es/curry'
-
-import { fromEvent } from 'most'
-
-window.fe = fromEvent
+import { combine } from 'most/src/combinator/combine.js'
+import { throttle, debounce } from 'most/src/combinator/limit.js'
+import { delay } from 'most/src/combinator/delay.js'
+import { filter } from 'most/src/combinator/filter.js'
+import { map } from 'most/src/combinator/transform.js'
+import { observe } from 'most/src/combinator/observe.js'
+import curry from 'ramda/es/curry.js'
 
 export const combineC = curry(combine)
 

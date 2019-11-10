@@ -1,38 +1,24 @@
-import babel from 'rollup-plugin-babel'
-import cssdupl from 'postcss-discard-duplicates'
-import cjs from 'rollup-plugin-commonjs'
-import cssfonts from 'postcss-fontpath'
+import { createDefaultConfig } from '@open-wc/building-rollup';
+import nodeBuiltins from 'rollup-plugin-node-builtins'
+
+// if you need to support IE11 use "modern-and-legacy-config" instead.
+// import { createCompatibilityConfig } from '@open-wc/building-rollup';
+// export default createCompatibilityConfig({ input: './index.html' });
+
+// export default createDefaultConfig({ input: './index.html' });
+const config = createDefaultConfig({ input: './index.html' });
+
 import cssimport from 'postcss-import'
+import postcss from 'rollup-plugin-postcss'
+import cssfonts from 'postcss-fontpath'
 import cssurl from 'postcss-url'
 import env from 'postcss-preset-env'
 import json from 'rollup-plugin-json'
-import npm from 'rollup-plugin-node-resolve'
-import postcss from 'rollup-plugin-postcss'
-import svg from 'rollup-plugin-svg'
-import nodeBuiltins from 'rollup-plugin-node-builtins'
 
-import { shouldUglify } from './util/rollup-uglify'
-import { name as pkgname, directories, peerDependencies } from './package.json'
+import litcss from 'rollup-plugin-lit-css'
 
-const copy = require('./util/copy')
-const moduleName = require('./util/module-name')
-
-const entry = process.env.ENTRY || 'index'
-const noCssTransform = process.env.SKIPCSS
-
-const copyModule = (to, ...argv) => argv.reduce((acc, it) => {
-  acc[it] = `${to}/${it}`
-
-  console.info('Copying', it, 'to', acc[it]) // eslint-disable-line no-console
-
-  return acc
-}, {})
-
-const copyToPublic = (...list) => copyModule('public', ...list)
-
-const css = () => postcss(noCssTransform
-  ? {}
-  : {
+const css = () => {
+  return postcss({
     extract: false,
     modules: false,
     namedExports: function namedExports (name) {
@@ -43,40 +29,28 @@ const css = () => postcss(noCssTransform
       cssurl({ url: 'inline' }),
       cssfonts(),
       env(),
-      cssdupl(),
+      // cssdupl(),
     ],
   })
+}
 
-const dist = (name = moduleName(pkgname, true)) => ({
-  input: `${directories.lib}/${entry}.js`,
-  output: {
-    exports: 'named',
-    format: 'umd',
-    name,
-    globals: {
-      'markdown-it': 'markdownit',
-      'intl-messageformat': 'IntlMessageFormat',
-    },
-  },
-  external: _ => Object.keys(peerDependencies || {}).includes(_),
+// config.plugins = config.plugins.concat([
+//   // nodeBuiltins()
+//   css()
+// ])
+
+// config.plugins = [css()].concat(config.plugins)
+
+console.log(config)
+
+export default {
+  ...config,
   plugins: [
-    nodeBuiltins(),
-    npm({
-      browser: true,
-      node: true,
-    }),
-    cjs(),
-    css(),
-    svg(),
-    json(),
-    babel(),
-    shouldUglify(),
-    copy(copyToPublic(
-      'node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js',
-      'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
-      'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js.map',
-    )),
-  ],
-})
-
-export default dist()
+    ...config.plugins,
+    litcss({
+      include: [
+        './src/ecosystems/chat.module.css'
+      ]
+    })
+  ]
+}

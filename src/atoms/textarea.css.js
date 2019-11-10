@@ -1,3 +1,6 @@
+import { css } from 'lit-element'
+
+export const style = css`
 /* stylelint-disable-next-line selector-type-no-unknown */
 iron-autogrow-textarea {
   -webkit-appearance: none;
@@ -14,6 +17,10 @@ iron-autogrow-textarea {
   outline: none;
   -ms-overflow-style: none;
   width: 100%;
+
+  textarea {
+    box-sizing: border-box;
+  }
 
   --iron-autogrow-textarea: {
     box-sizing: border-box;
@@ -36,3 +43,4 @@ iron-autogrow-textarea:hover {
 iron-autogrow-textarea:focus-within {
   border-color: var(--border-color-focus, var(--theme-color-pictonblue, #48a1e6));
 }
+`

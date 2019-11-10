@@ -1,6 +1,7 @@
-import { html, classString as cs } from '@polymer/lit-element'
+import { html } from 'lit-element'
+import cs from 'classnames-es'
 
-import * as images from '../images'
+import * as images from '../images/index.js'
 
 const tplFromMap = map => map.toJSON().map(tuple => tuple[1])
 
@@ -29,8 +30,8 @@ export const action = ({
 
   return (html`
     <button
-      class$='${cls}'
-      on-click='${e => handler && handler(e, message)}'
+      @click=${e => handler && handler(e, message)}
+      class=${cls}
     >${children}</button>
   `)
 }
@@ -45,11 +46,15 @@ export const reaction = ({
 
   return (html`
     <button
-      class$='${cls}'
-      disabled='${disabled}'
-      on-click='${e => handler && handler(e, { message })}'
+      .disabled=${disabled}
+      @click=${e => handler && handler(e, { message })}
+      class=${cls}
     >
-      <wc-chat-reactions direction='column' config='${config()}' showall></wc-chat-reactions>
+      <wc-chat-reactions
+        .config=${config()}
+        direction='column'
+        showall='showall'
+      ></wc-chat-reactions>
     </button>
 `)
 }

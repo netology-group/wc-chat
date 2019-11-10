@@ -1,19 +1,15 @@
-import { html } from '@polymer/lit-element'
+import { html } from 'lit-element'
 
-import { menu, cross } from '../images'
+import { menu, cross } from '../images/index.js'
 import {
   action as actionEl,
   actions as actionsEl,
   reaction as reactionEl,
-} from '../atoms/action'
-
-import style from './actions.css'
-
-export { style }
+} from '../atoms/action.js'
 
 export const Actions = ({
   reactions,
-  actions,
+  actions, // eslint-disable-line no-shadow
 }) => {
   const rctns = new Map([])
   const actns = new Map([])

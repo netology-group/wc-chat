@@ -1,3 +1,6 @@
+import { css } from 'lit-element'
+
+export const style = css`
 wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
   --reaction-count-left: 0;
 }
@@ -244,3 +247,4 @@ wc-chat-reactions { /* stylelint-disable selector-type-no-unknown */
 }
 
 /** /Markdown */
+`

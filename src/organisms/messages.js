@@ -1,11 +1,10 @@
-import { html, classString as cs } from '@polymer/lit-element'
-import { withStyle } from '@netology-group/wc-utils'
+import { LitElement, html } from 'lit-element'
+import cs from 'classnames-es'
 
-import { XLitElement as LitElement } from '../utils/rendered-lit-element'
-import { debug as Debug, isAggregatedBy } from '../utils/index'
-import { style as actionStyle } from '../molecules/actions'
-
-import style from './messages.css'
+import { debug as Debug, isAggregatedBy } from '../utils/index.js'
+import { style } from './messages.css.js'
+import { style as actionStyle } from '../molecules/actions.css.js'
+import { withStyle } from '../mixins/with-style.js'
 
 const debug = Debug('@netology-group/wc-chat/MessagesElement')
 
@@ -44,7 +43,7 @@ function predictDirection (list, prevList, predicate) {
   // 0 means that list was not changed
 }
 
-export class MessagesElement extends LitElement {
+export class _MessagesElement extends LitElement {
   static get properties () {
     return {
       classname: String,
@@ -56,24 +55,26 @@ export class MessagesElement extends LitElement {
     }
   }
 
-  _render (props) {
-    const { list = [] } = props
-    const contentTpl = !list.length
-      ? undefined
-      : (html`
+  render () {
+    const { list = [] } = this
+
+    if(!list.length) return (html`<div class='messages'></div>`)
+
+    return (html`
+      <div class='messages'>
         <div class='messages-inner'>
           ${this.__renderMessages(list)}
         </div>
-      `)
-
-    return (html`<div class='messages'>${contentTpl}</div>`)
+      </div>
+    `)
   }
 
-  _didRender (props, changed, prevProps) {
-    const prev = prevProps.list || [] // use empty list on initial render
-    const next = props.list
+  updated (changed) {
+    super.updated(changed)
 
-    const shouldDispatch = props.list && Array.isArray(props.list)
+    const prev = (changed || new Map()).get('list') || []
+    const next = this.list || []
+    const shouldDispatch = Array.isArray(next)
 
     /* eslint-disable max-len */
     /**
@@ -107,18 +108,22 @@ export class MessagesElement extends LitElement {
         At that case we have to know an active message to understand where an old (deleted or something) message was recovered.
      */
     /* eslint-enable max-len */
+    // eslint-disable-next-line no-unused-expressions
+    !shouldDispatch && debug('Skip dispatching')
 
-    if (shouldDispatch) {
-      debug(`dispatch '${this.invoke}' event`)
-      this.renderComplete
-        .then(() => this.dispatchEvent(new CustomEvent(
+    // eslint-disable-next-line no-unused-expressions
+    shouldDispatch && this.updateComplete
+      .then((result) => {
+        if(!result) return new Error('Could not perform the update. Nested changing was detected')
+
+        debug(`dispatch '${this.invoke}' event`)
+
+        return this.dispatchEvent(new CustomEvent(
           this.invoke,
           { detail: { direction: predictDirection(next, prev) } }
-        )))
-        .catch(error => debug(error.message))
-    } else {
-      debug('Skip dispatching')
-    }
+        ))
+      })
+      .catch(error => debug(error.message))
   }
 
   __renderMessages (list) {
@@ -126,27 +131,14 @@ export class MessagesElement extends LitElement {
   }
 
   __renderEach (it, i, arr) {
+    return this.__renderMessage(this.__hydrateEach(it, i, arr))
+  }
+
+  __hydrateEach (it, i, arr) {
     const {
       avatar,
-      body: text,
+      body, // .body should be depracated later on
       classname,
-      deleted,
-      icon,
-      id,
-      identity,
-      rating,
-      theme,
-      timestamp,
-      user_id,
-      user_name,
-      visible,
-    } = it
-
-    return this.__renderMessage({
-      aggregated: isAggregatedBy('user_id', i, arr),
-      avatar,
-      classname,
-      current_user_id: this.user,
       deleted,
       icon,
       id,
@@ -156,7 +148,26 @@ export class MessagesElement extends LitElement {
       theme,
       timestamp,
       user_id,
+      user_name,
+      visible,
+    } = it
+
+    return ({
+      aggregated: isAggregatedBy('user_id', i, arr),
+      avatar,
+      classname,
+      current_user_id: this.user,
+      deleted,
+      icon,
+      id,
+      identity,
+      me: this.user === user_id,
+      rating,
+      text: body || text,
+      theme,
+      timestamp,
       user_icon: icon,
+      user_id,
       user_name,
       visible,
     })
@@ -167,15 +178,14 @@ export class MessagesElement extends LitElement {
       aggregated,
       avatar,
       classname,
-      current_user_id,
       deleted,
       icon,
       id,
       identity,
+      me,
       text,
       theme,
       timestamp,
-      user_id,
       user_name,
     } = message
 
@@ -187,25 +197,25 @@ export class MessagesElement extends LitElement {
 
     return (html`
       <wc-chat-message
-        aggregated='${aggregated}'
-        class$='${className}'
-        deleted='${deleted}'
-        icon='${icon}'
-        identity='${identity}'
-        image='${avatar}'
-        me='${user_id === current_user_id}'
-        text='${text}'
-        theme='${theme}'
-        timestamp='${timestamp}'
-        uid='${id}'
-        username='${user_name}'
+        .aggregated=${aggregated}
+        .deleted=${deleted}
+        .me=${me}
+        class=${className}
+        icon=${icon}
+        identity=${identity}
+        image=${avatar}
+        text=${text}
+        theme=${theme}
+        timestamp=${timestamp}
+        uid=${id}
+        username=${user_name}
       />
     `)
   }
 }
 
-export default withStyle(html)(
-  MessagesElement,
+export const MessagesElement = withStyle(html)(
+  _MessagesElement,
   style,
   actionStyle
 )

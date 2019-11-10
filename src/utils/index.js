@@ -1,19 +1,12 @@
-import Debug from 'debug'
-import invariant from 'invariant'
-
-// eslint-disable-next-line no-unused-vars
-const _ = ns => (cond, ...argv) => invariant(cond, ...argv)
-
-export const Invariant = (namespace) => {
-  const nvrnt = _(namespace)
-
-  return (...argv) => nvrnt(process.env.NODE_ENV === 'production', ...argv)
-}
+import Debug from './debug.js'
 
 export const debug = (namespace) => {
-  const deb = Debug(namespace)
+  const shouldLog = typeof window.localStorage !== 'undefined'
+    && localStorage.length
+    && localStorage.getItem('debug')
+    && new RegExp(localStorage.getItem('debug')).test(namespace)
 
-  return (...argv) => process.env.NODE_ENV !== 'production' ? deb(...argv) : undefined
+  return (...argv) => shouldLog ? Debug(namespace)(...argv) : undefined
 }
 
 const deb = debug('@netology-group/wc-chat/utils')
@@ -48,6 +41,7 @@ export const requestAnimation = (fn) => {
   const { requestAnimationFrame } = globalThis
 
   if (!requestAnimationFrame) deb('requestAnimationFrame is absent')
+  // eslint-disable-next-line no-unused-expressions
   requestAnimationFrame
     ? requestAnimationFrame(() => fn())
     : fn()

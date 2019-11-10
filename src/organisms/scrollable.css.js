@@ -1,3 +1,6 @@
+import { css } from 'lit-element'
+
+export const style = css`
 :host {
   box-sizing: var(--chat-scrollable-box-sizing, content-box);
   display: flex;
@@ -25,3 +28,4 @@
   font-size: 0.85em;
   justify-content: space-between;
 }
+`

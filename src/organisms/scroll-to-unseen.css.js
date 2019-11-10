@@ -1,3 +1,6 @@
+import { css } from 'lit-element'
+
+export const style = css`
 :host .wrapper .banner {
   border-radius: 5px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
@@ -5,7 +8,7 @@
   cursor: pointer;
   font-size: 16px;
   left: 0;
-  padding: 8px 40px 8px 16px;
+  padding: 8px 16px 8px 16px;
   position: absolute;
   right: 0;
   transition: 0.25s ease-in opacity;
@@ -33,13 +36,14 @@
   background: #b8b8b8;
 }
 
-:host .wrapper .banner::before {
-  background: transparent url('../images/arrow-down.svg') center center no-repeat;
-  content: '';
-  display: block;
-  height: 100%;
-  position: absolute;
-  right: 16px;
-  top: 0;
-  width: 16px;
+:host .wrapper .banner .icon {
+  display: inline-block;
+  position: relative;
+  right: -10px;
+  top: 3px;
 }
+
+:host .wrapper .banner.new .icon {
+  right: -3px;
+}
+`

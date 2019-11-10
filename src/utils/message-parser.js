@@ -1,5 +1,3 @@
-import MarkdownIt from 'markdown-it'
-
 const sanitize = (input) => {
   let tmp = document.createElement('div')
 
@@ -34,7 +32,7 @@ export function MarkdownMessage (opts = {}) {
       }),
     ]
 
-  const md = new MarkdownIt(...options)
+  const md = new globalThis.markdownit(...options) // eslint-disable-line new-cap
 
   const hasExternalRules = rules && Array.isArray(rules) && rules.length
 

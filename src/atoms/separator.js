@@ -1,17 +1,16 @@
-import { html, classString as cs } from '@polymer/lit-element'
-
-import styles from './separator.css'
+import { html } from 'lit-element'
+import cs from 'classnames-es'
 
 const isTruthy = a => Boolean(a)
 
 export const separator = ({ className, text }) => (html`
-  <div class$=${cs({ 'separator': true, [className]: className })}>
+  <div class=${cs({ 'separator': true, [className]: className })}>
     <hr><span>${text}</span>
   </div>
 `)
 
 export const slot = ({ id, text }) => (html`
-  <div slot$=${`message-${id}`} class='messages-separator'>
+  <div slot=${`message-${id}`} class='messages-separator'>
     ${separator({ text })}
   </div>
 `)
@@ -21,5 +20,3 @@ export const maybeSeparator = (props) => {
 
   return isTruthy(enabled) ? slot(p) : undefined
 }
-
-export { styles }

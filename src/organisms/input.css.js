@@ -1,3 +1,6 @@
+import { css } from 'lit-element'
+
+export const style = css`
 :host {
   --input-font-size: var(--chat-input-font-size, 14px);
 
@@ -23,7 +26,7 @@
   position: relative;
 }
 
-:host .input .enter {
+:host .input button {
   background: no-repeat center center;
   border: none;
   bottom: 14px;
@@ -35,6 +38,11 @@
   right: 18px;
 }
 
-:host .input .enter:active:not(:disabled) {
+:host .input button:disabled {
+  cursor: not-allowed;
+}
+
+:host .input button:active:not(:disabled) {
   transform: translateY(1px);
 }
+`

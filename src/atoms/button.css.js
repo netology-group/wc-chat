@@ -1,3 +1,6 @@
+import { css } from 'lit-element'
+
+export const style = css`
 :host .enter:disabled {
   cursor: not-allowed;
   filter: grayscale(100%) !important;
@@ -12,3 +15,4 @@
   filter: brightness(var(--darken-active, 85%));
   transform: translateY(1px);
 }
+`

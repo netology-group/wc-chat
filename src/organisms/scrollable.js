@@ -1,23 +1,25 @@
-import { fromEvent } from 'most/src/source/fromEvent'
-import { html, LitElement } from '@polymer/lit-element'
-import { withStyle } from '@netology-group/wc-utils'
-import compose from 'ramda/es/compose'
+import { fromEvent } from 'most/src/source/fromEvent.js'
+import { LitElement, html } from 'lit-element'
+import compose from 'ramda/es/compose.js'
 
-import { Invariant, debug as Debug, requestAnimation } from '../utils/index'
+import { withStyle } from '../mixins/with-style.js'
+import { debug as Debug, requestAnimation } from '../utils/index.js'
 import {
   observeC as observe,
   throttleC as throttle,
-} from '../utils/most'
+} from '../utils/most.js'
 
-import style from './scrollable.css'
+import { style } from './scrollable.css.js'
 
-const invariant = Invariant()
-const debug = Debug('@netology-group/wc-chat/Scrollable')
+const debug = Debug('@netology-group/wc-chat/ScrollableElement')
 
 const DELTA = 20
 const THROTTLE_RESIZE = 33
 const THROTTLE_DELAY = 33
 const THROTTLE_SCROLL = 14
+
+const xSym = Symbol('x')
+const ySym = Symbol('y')
 
 const isNumber = it => typeof it === 'number'
 
@@ -52,7 +54,13 @@ const scrollTo = (el, [x, y]) => {
  *
  */
 
-export class Scrollable extends LitElement {
+const delaySym = Symbol('delay')
+const delayresizeSym = Symbol('delayresize')
+const delayscrollSym = Symbol('delayscroll')
+
+export const wasAtHeadSym = Symbol('wasAtHead')
+
+export class _ScrollableElement extends LitElement {
   static get properties () {
     return {
       delay: Number,
@@ -70,15 +78,15 @@ export class Scrollable extends LitElement {
 
     this.__manual = false
 
-    this.__y = undefined
-    this.__x = undefined
+    this[ySym] = undefined
+    this[xSym] = undefined
     // _x & _y
 
-    this.__delay = undefined
-    this.__delayResize = undefined
-    this.__delayScroll = undefined
+    this[delaySym] = undefined
+    this[delayresizeSym] = undefined
+    this[delayscrollSym] = undefined
     this._detached = false
-    this.wasAtHead = undefined
+    this[wasAtHeadSym] = undefined
 
     this._height = 0
     this._width = 0
@@ -101,15 +109,15 @@ export class Scrollable extends LitElement {
   }
 
   get _x () {
-    return this.__x ? this.__x : this._scrollable.scrollLeft
+    return this[xSym] ? this[xSym] : this._scrollable.scrollLeft
   }
 
   set _x (x = 0) {
-    this.__x = x
+    this[xSym] = x
   }
 
   get _y () {
-    return this.__y ? this.__y : this._scrollable.scrollHeight
+    return this[ySym] ? this[ySym] : this._scrollable.scrollHeight
   }
 
   set _y (y = 0) {
@@ -124,7 +132,7 @@ export class Scrollable extends LitElement {
      * - shift is in range
      */
 
-    this.__y = y
+    this[ySym] = y
   }
 
   scrollTo (x, y) {
@@ -140,28 +148,35 @@ export class Scrollable extends LitElement {
      */
   }
 
-  _firstRendered () {
-    this.__delay = this.delay === 0 ? 0 : this.delay || THROTTLE_DELAY
-    this.__delayResize = this.delayresize === 0 ? 0 : this.delayresize || THROTTLE_RESIZE
-    this.__delayScroll = this.delayscroll === 0 ? 0 : this.delayscroll || THROTTLE_SCROLL
+  firstUpdated () {
+    const {
+      delay = THROTTLE_DELAY,
+      delayresize = THROTTLE_RESIZE,
+      delayscroll = THROTTLE_SCROLL,
+    } = this
 
-    // eslint-disable-next-line padding-line-between-statements
-    if (!this._isTarget) { invariant('Target is not a valid HTMLElement'); return }
+    this[delaySym] = Number(delay)
+    this[delayresizeSym] = Number(delayresize)
+    this[delayscrollSym] = Number(delayscroll)
 
+    // eslint-disable-next-line no-console
+    if (!this._isTarget) { console.error('Target is not a valid HTMLElement'); return }
+
+    // eslint-disable-next-line no-unused-expressions
     this.listen && compose(
       observe(e => this._onChildrenUpdate(e)),
-      throttle(this.__delay),
+      throttle(this[delaySym]),
     )(fromEvent(this.listen, this._scrollable, true))
 
     compose(
       observe(e => this._onResizeHandler(e)),
-      throttle(this.__delayResize),
+      throttle(this[delayresizeSym]),
     )(fromEvent('resize', this._rootDocument.defaultView))
 
     /* eslint-disable function-paren-newline */
     compose(
       observe(e => this._onScrollHandler(e)),
-      throttle(this.__delayScroll),
+      throttle(this[delayscrollSym]),
     )(fromEvent('scroll', this._scrollable))
     /* eslint-enable function-paren-newline */
   }
@@ -281,9 +296,9 @@ export class Scrollable extends LitElement {
     if (this.freeze) return top
     // preserve top position if is freezed
 
-    const wasAtHead = (prevParams.height - viewHeight) === prevParams.top
+    const _wasAtHead = (prevParams.height - viewHeight) === prevParams.top
 
-    this.wasAtHead = wasAtHead
+    this[wasAtHeadSym] = _wasAtHead
 
     const atZero = top === 0
     // means that user is seeing the top message ↑
@@ -295,7 +310,7 @@ export class Scrollable extends LitElement {
     // calculate top position according the previous distance
     //  between hight (head) and current position
 
-    const result = wasAtHead ? params.height - viewHeight : prevParams.top
+    const result = _wasAtHead ? params.height - viewHeight : prevParams.top
     // preserve current position unless user is near the latest message
 
     return result
@@ -346,14 +361,14 @@ export class Scrollable extends LitElement {
   __scrollTo (x, y) {
     debug('Maybe scroll to:', x, y)
 
-    // eslint-disable-next-line padding-line-between-statements
-    if (!isNumber(x) || !isNumber(y)) { invariant('Wrong coordinate type'); return }
+    // eslint-disable-next-line no-console
+    if (!isNumber(x) || !isNumber(y)) { console.error('Wrong coordinate type'); return }
 
     requestAnimation(() => scrollTo(this._scrollable, [x, y]))
   }
 
   // eslint-disable-next-line class-methods-use-this
-  _render () {
+  render () {
     return (html`
       <div class='wrapper'>
         <div class='scrollable' id="scrollable">
@@ -366,4 +381,7 @@ export class Scrollable extends LitElement {
   }
 }
 
-export default withStyle(html)(Scrollable, style)
+export const ScrollableElement = withStyle(html)(
+  _ScrollableElement,
+  style
+)

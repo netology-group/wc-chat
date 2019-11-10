@@ -10,19 +10,181 @@
 
   <script src="https://cdn.jsdelivr.net/npm/core-js@2.6.5/client/shim.min.js"></script>
 
+  <!--
+
   <script>if (!window.customElements) { document.write('<!--'); }</script>
-  <script src="./public/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js" type="text/javascript" ></script>
+  <script src="./dist/polyfills/custom-elements-es5-adapter.84b300ee818dce8b351c7cc7c100bcf7.js" type="text/javascript" ></script>
   <!--! do not remove -->
 
   <script src="https://cdn.jsdelivr.net/npm/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/intl-messageformat@2.2.0/dist/intl-messageformat-with-locales.min.js"></script>
 
-  <script src="./public/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js" type="text/javascript" ></script>
+  <!-- <script src="./public/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js" type="text/javascript" ></script> -->
 
-  <script src="./dist/chat.min.js"></script>
+  <!-- <script src="./dist/chat.min.js"></script> -->
 
-  <script src="./public/index.js"></script>
+  <!-- <script src="./public/index.js"></script> -->
+  <script type="module" src="./index.js"></script>
+  <script type="module">
+    import './src/chat.index.js'
+
+
+    const elements = [messenger1, messenger2, messenger3]
+
+    var avatarUrl = 'https://about.gitlab.com/images/devops-tools/gitlab-logo.svg'
+
+    var bodyMessages = []
+
+    var _messages = [
+      {
+        avatar: avatarUrl,
+        body: 'Hello World!',
+        icon: 'man',
+        id: window.ULID.ulid(),
+        identity: (function getIdentity (user_role = 'moderator') { return 'Administrator' }()), // eslint-disable-line no-unused-vars
+        rating: 0 || [['thumbsup', 0]],
+        theme: 'red',
+        timestamp: Date.now() / 1e3,
+        user_id: 3,
+        user_name: 'Alan Mathison Turing',
+        visible: true,
+      },
+    ].concat(bodyMessages.map(_ => ({
+      ..._,
+      id: window.ULID.ulid(),
+    })))
+
+    var _users = [
+      {
+        avatar: avatarUrl,
+        identity: 'me',
+        user_id: 1,
+        user_name: 'Marco Polo',
+        visible: true,
+      },
+      {
+        avatar: avatarUrl,
+        identity: 'me2',
+        user_id: 2,
+        user_name: 'Mario',
+        visible: true,
+      },
+      {
+        avatar: avatarUrl,
+        identity: (function getIdentity (user_role = 'moderator') { return 'Administrator' }()), // eslint-disable-line no-unused-vars
+        user_id: 3,
+        user_name: 'Alan Mathison Turing',
+        visible: true,
+      },
+    ]
+
+    function enhanceMessage (message, userId) {
+      var _message = {
+        id: window.ULID.ulid(),
+        body: message,
+        timestamp: Date.now() / 1e3,
+        user_id: userId,
+      }
+
+      if (userId === 3) {
+        _message.theme = 'red'
+        _message.icon = 'man'
+      }
+
+      return Object.assign(_message, _users.filter(function selectUsers (_) {
+        return _.user_id === _message.user_id
+      })[0] || {})
+    }
+
+    function messageFactory () {
+      var index = Math.round(Math.random() * 2)
+
+      console.log({ index: _users[index] })
+
+      return enhanceMessage(Math.random().toString(36).substring(7), index + 1)
+    }
+
+    function update (list, messages) {
+      console.log('update')
+      list.forEach((_) => {
+        _ && _.updateList(messages)
+      })
+    }
+
+    function initialize(element, user, makeUpdate){
+      element.users = _users
+      element.user = user
+
+      if (element === messenger3) {
+        // means user is admin and stuff
+        element.actions = [['user-disable', 11], ['message-delete', 111], ['message-reaction', 1]]
+        element.reactions = [['thumbsup']]
+      } else {
+        element.actions = [['user-disable', 0], ['message-delete', 100], ['message-reaction', 1]]
+        element.reactions = [['thumbsup']]
+      }
+
+      element.update(_messages)
+
+      element.addEventListener('chat-message-submit', function onMessageSubmit (e) {
+        console.log(969699696)
+        setTimeout(function onSubmitSuccess () {
+          _messages = _messages.concat(enhanceMessage(e.detail.message, user))
+
+          makeUpdate(_messages)
+        }, 1e2)
+      })
+
+      element.addEventListener('chat-message-reaction', function onMessageReaction (e) {
+        _messages = _messages.map(function calcRating (it) {
+          if (it.id
+          && e.detail.message.id
+          && it.id === e.detail.message.id
+          ) {
+            // if (Array.isArray(it.rating)) {
+            //   it.rating = [['thumbsup', (it.rating[0][1] || 0) + 1]]
+            // } else if (typeof it.rating === 'number') {
+            //   it.rating = !it.rating ? 1 : it.rating + 1
+            // } else {
+              it.rating = [['thumbsup', 1]]
+            // }
+          }
+
+          return it
+        })
+
+        makeUpdate(_messages)
+      })
+
+      element.addEventListener('chat-message-delete', function onMessageDelete (e) {
+        alert(`Delete message: ${JSON.stringify(e.detail)}`) // eslint-disable-line no-alert
+      })
+
+      element.addEventListener('chat-user-disable', function onUserDisable (e) {
+        alert(`Disable user: ${JSON.stringify(e.detail)}`) // eslint-disable-line no-alert
+      })
+
+      element.addEventListener('chat-last-seen-change', function onLastSeenChange (e) {
+        element.lastseen = e.detail
+      })
+
+      element.lastseen = _messages && _messages.length ? _messages[_messages.length - 1].id : undefined
+    }
+
+    initialize(messenger1, 1, list => update(elements, list))
+    initialize(messenger2, 2, list => update(elements, list))
+    initialize(messenger3, 3, list => update(elements, list))
+
+    import { emitter } from './util/message-emitter.js'
+
+    window.__WcChatEmitter = emitter(() => {
+      _messages = _messages.concat(messageFactory());
+
+      ((list) => { update(elements, list) })(_messages)
+    })
+
+    </script>
   </head>
   <body>
     <h1>Chat</h1>
