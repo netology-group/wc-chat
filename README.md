@@ -1,4 +1,6 @@
-@netology-group/wc-chat
+<img src="https://raw.githubusercontent.com/open-wc/open-wc/master/assets/images/logo.png" alt="open-wc" width="200px" />
+
+# @netology-group/wc-chat
 
 [![](https://data.jsdelivr.com/v1/package/npm/@netology-group/wc-chat/badge?style=rounded)](https://www.jsdelivr.com/package/npm/@netology-group/wc-chat)
 ![](https://img.shields.io/npm/dt/@netology-group/wc-chat.svg)

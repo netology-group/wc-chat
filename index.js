@@ -1,1 +1,1 @@
-export { EventEmitter, ChatElement, InputElement } from './src/index'
+export { EventEmitter, ChatElement, InputElement } from './src/index.js';

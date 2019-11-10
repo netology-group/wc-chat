@@ -10,9 +10,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/core-js@2.6.5/client/shim.min.js"></script>
 
-  <!--
-
-  <script>if (!window.customElements) { document.write('<!--'); }</script>
+  <!--<script>if (!window.customElements) { document.write('<!--'); }</script>
   <script src="./dist/polyfills/custom-elements-es5-adapter.84b300ee818dce8b351c7cc7c100bcf7.js" type="text/javascript" ></script>
   <!--! do not remove -->
 
@@ -20,15 +18,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/intl-messageformat@2.2.0/dist/intl-messageformat-with-locales.min.js"></script>
 
-  <!-- <script src="./public/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js" type="text/javascript" ></script> -->
-
-  <!-- <script src="./dist/chat.min.js"></script> -->
-
-  <!-- <script src="./public/index.js"></script> -->
   <script type="module" src="./index.js"></script>
+  <script type="module" src="./src/chat-i18n.index.js"></script>
   <script type="module">
-    import './src/chat-i18n.index.js'
-
     const elements = [messenger1, messenger2, messenger3]
 
     var avatarUrl = 'https://about.gitlab.com/images/devops-tools/gitlab-logo.svg'

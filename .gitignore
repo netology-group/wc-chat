@@ -6,3 +6,4 @@
 /build
 node_modules
 /src/misc/emoji.json.js
+/coverage
