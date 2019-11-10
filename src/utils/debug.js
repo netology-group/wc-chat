@@ -1,7 +1,11 @@
-const logger = console || function Logger(){ return { log: () => {}} }
+const logger =
+  console ||
+  function Logger() {
+    return { log: () => {} };
+  };
 
-export default function(namespace){
+export default function(namespace) {
   return (...argv) => {
-    Promise.resolve(argv).then((_) => logger.log(namespace ? '%s: %s' : '', `${namespace}`, ..._))
-  }
+    Promise.resolve(argv).then(_ => logger.log(namespace ? '%s: %s' : '', `${namespace}`, ..._));
+  };
 }

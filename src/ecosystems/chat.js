@@ -1,14 +1,14 @@
-import { LitElement, html } from 'lit-element'
+import { LitElement, html } from 'lit-element';
 
-import { debug as Debug } from '../utils/index.js'
-import { style } from './chat.css.js'
-import { withStyle } from '../mixins/with-style.js'
+import { debug as Debug } from '../utils/index.js';
+import { style } from './chat.css.js';
+import { withStyle } from '../mixins/with-style.js';
 
-const EVENT = 'did-update'
-const debug = Debug('@netology-group/wc-chat/ChatElement')
+const EVENT = 'did-update';
+const debug = Debug('@netology-group/wc-chat/ChatElement');
 
 export class _ChatElement extends LitElement {
-  static get properties () {
+  static get properties() {
     return {
       actions: Array,
       delaysubmit: Number,
@@ -30,125 +30,127 @@ export class _ChatElement extends LitElement {
       scrollabledisabled: Boolean,
       user: Number,
       users: Array,
-    }
+    };
   }
 
-  constructor () {
-    super()
+  constructor() {
+    super();
 
-    this._handleSubmitBounded = this._handleSubmit.bind(this)
-    this._handleDeleteBounded = this._handleDelete.bind(this)
-    this._handleUserDisableBounded = this._handleUserDisable.bind(this)
-    this._handleMessageReactionBounded = this._handleMessageReaction.bind(this)
-    this._handleLastSeenChangeBounded = this._handleLastSeenChange.bind(this)
-    this._handleSeekBeforeBounded = this._handleSeekBefore.bind(this)
-    this._handleSeekAfterBounded = this._handleSeekAfter.bind(this)
+    this._handleSubmitBounded = this._handleSubmit.bind(this);
+    this._handleDeleteBounded = this._handleDelete.bind(this);
+    this._handleUserDisableBounded = this._handleUserDisable.bind(this);
+    this._handleMessageReactionBounded = this._handleMessageReaction.bind(this);
+    this._handleLastSeenChangeBounded = this._handleLastSeenChange.bind(this);
+    this._handleSeekBeforeBounded = this._handleSeekBefore.bind(this);
+    this._handleSeekAfterBounded = this._handleSeekAfter.bind(this);
 
-    this._scrollable = undefined
-    this._listdir = 0
+    this._scrollable = undefined;
+    this._listdir = 0;
   }
 
-
-  firstUpdated () {
-    if (this.shadowRoot) this._scrollable = this.shadowRoot.querySelector('wc-chat-scrollable')
+  firstUpdated() {
+    if (this.shadowRoot) this._scrollable = this.shadowRoot.querySelector('wc-chat-scrollable');
   }
 
-  disconnectedCallback () {
-    super.disconnectedCallback()
+  disconnectedCallback() {
+    super.disconnectedCallback();
 
-    this._handleSubmitBounded = undefined
-    this._handleDeleteBounded = undefined
-    this._handleUserDisableBounded = undefined
-    this._handleMessageReactionBounded = undefined
-    this._handleLastSeenChangeBounded = undefined
-    this._handleSeekBeforeBounded = undefined
-    this._handleSeekAfterBounded = undefined
+    this._handleSubmitBounded = undefined;
+    this._handleDeleteBounded = undefined;
+    this._handleUserDisableBounded = undefined;
+    this._handleMessageReactionBounded = undefined;
+    this._handleLastSeenChangeBounded = undefined;
+    this._handleSeekBeforeBounded = undefined;
+    this._handleSeekAfterBounded = undefined;
   }
 
-  appendList (list) {
-    if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type')
+  appendList(list) {
+    if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type');
 
-    this.list = list
-    this._listdir = 1
+    this.list = list;
+    this._listdir = 1;
   }
 
-  prependList (list) {
-    if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type')
+  prependList(list) {
+    if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type');
 
-    this.list = list
-    this._listdir = -1
+    this.list = list;
+    this._listdir = -1;
   }
 
-  updateList (list) {
-    if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type')
+  updateList(list) {
+    if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type');
 
-    this.list = list
-    this._listdir = 0
+    this.list = list;
+    this._listdir = 0;
   }
 
-  scrollTo (x, y) {
-    debug('Maybe manual scroll to', x, y)
+  scrollTo(x, y) {
+    debug('Maybe manual scroll to', x, y);
     // eslint-disable-next-line no-unused-expressions
-    this._scrollable.scrollTo && this._scrollable.scrollTo(x, y)
+    this._scrollable.scrollTo && this._scrollable.scrollTo(x, y);
   }
 
-  _handleSubmit (e) {
-    this.dispatchEvent(new CustomEvent('chat-message-submit', { detail: e.detail }))
+  _handleSubmit(e) {
+    this.dispatchEvent(new CustomEvent('chat-message-submit', { detail: e.detail }));
   }
 
-  _handleDelete (e) {
-    this.dispatchEvent(new CustomEvent('chat-message-delete', { detail: e.detail }))
+  _handleDelete(e) {
+    this.dispatchEvent(new CustomEvent('chat-message-delete', { detail: e.detail }));
   }
 
-  _handleUserDisable (e) {
-    this.dispatchEvent(new CustomEvent('chat-user-disable', { detail: e.detail }))
+  _handleUserDisable(e) {
+    this.dispatchEvent(new CustomEvent('chat-user-disable', { detail: e.detail }));
   }
 
-  _handleMessageReaction (e) {
-    this.dispatchEvent(new CustomEvent('chat-message-reaction', { detail: e.detail }))
+  _handleMessageReaction(e) {
+    this.dispatchEvent(new CustomEvent('chat-message-reaction', { detail: e.detail }));
   }
 
-  _handleLastSeenChange () {
-    if (this.list
-      && this.list.length > 0
-      && this.lastseen !== undefined
-      && this.lastseen !== this.list[this.list.length - 1].id
+  _handleLastSeenChange() {
+    if (
+      this.list &&
+      this.list.length > 0 &&
+      this.lastseen !== undefined &&
+      this.lastseen !== this.list[this.list.length - 1].id
     ) {
-      this.dispatchEvent(new CustomEvent('chat-last-seen-change', { detail: this.list[this.list.length - 1].id }))
+      this.dispatchEvent(
+        new CustomEvent('chat-last-seen-change', { detail: this.list[this.list.length - 1].id }),
+      );
     }
   }
 
-  _handleSeekBefore () {
-    if (!(Array.isArray(this.list) && this.list.length)) return
-    const {
-      offset, id: last_id, timestamp,
-    } = this.list[0]
+  _handleSeekBefore() {
+    if (!(Array.isArray(this.list) && this.list.length)) return;
+    const { offset, id: last_id, timestamp } = this.list[0];
 
-    this.dispatchEvent(new CustomEvent('chat-messages-seek-before', {
-      detail: {
-        before: Math.ceil(timestamp),
-        last_id,
-        offset,
-      },
-    }))
+    this.dispatchEvent(
+      new CustomEvent('chat-messages-seek-before', {
+        detail: {
+          before: Math.ceil(timestamp),
+          last_id,
+          offset,
+        },
+      }),
+    );
   }
 
-  _handleSeekAfter () {
-    if (!(Array.isArray(this.list) && this.list.length)) return
-    const {
-      offset, id: last_id, timestamp,
-    } = this.list[this.list.length - 1]
+  _handleSeekAfter() {
+    if (!(Array.isArray(this.list) && this.list.length)) return;
+    const { offset, id: last_id, timestamp } = this.list[this.list.length - 1];
 
-    this.dispatchEvent(new CustomEvent('chat-messages-seek-after', {
-      detail: {
-        after: Math.round(timestamp),
-        last_id,
-        offset,
-      },
-    }))
+    this.dispatchEvent(
+      new CustomEvent('chat-messages-seek-after', {
+        detail: {
+          after: Math.round(timestamp),
+          last_id,
+          offset,
+        },
+      }),
+    );
   }
 
-  render () {
+  render() {
     const {
       actions,
       delayresize,
@@ -169,10 +171,10 @@ export class _ChatElement extends LitElement {
       scrollabledisabled,
       user,
       users,
-    } = this
+    } = this;
 
-    return (html`
-      <div class='wrapper'>
+    return html`
+      <div class="wrapper">
         <wc-chat-scrollable
           .delay=${delayupdate}
           .delayresize=${delayresize}
@@ -183,7 +185,7 @@ export class _ChatElement extends LitElement {
           @seek-after=${this._handleSeekAfterBounded}
           @seek-before=${this._handleSeekBeforeBounded}
           listen=${EVENT}
-          unseenSelector='.message.unseen'
+          unseenSelector=".message.unseen"
         >
           <wc-chat-messages
             .actions=${actions}
@@ -199,23 +201,25 @@ export class _ChatElement extends LitElement {
             user=${user}
           />
         </wc-chat-scrollable>
-        ${noinput ? undefined : (html`
-          <div class='input'>
-            <wc-chat-input
-              .delay=${delaysubmit || 0}
-              .disabled=${disabled}
-              .maxlength=${maxlength}
-              .maxrows=${maxrows || 10}
-              @message-submit=${this._handleSubmitBounded}
-              placeholder=${placeholder}
-              placeholderdisabled=${placeholderdisabled}
-              value=${message}
-            />
-          </div>
-        `)}
+        ${noinput
+          ? undefined
+          : html`
+              <div class="input">
+                <wc-chat-input
+                  .delay=${delaysubmit || 0}
+                  .disabled=${disabled}
+                  .maxlength=${maxlength}
+                  .maxrows=${maxrows || 10}
+                  @message-submit=${this._handleSubmitBounded}
+                  placeholder=${placeholder}
+                  placeholderdisabled=${placeholderdisabled}
+                  value=${message}
+                />
+              </div>
+            `}
       </div>
-    `)
+    `;
   }
 }
 
-export const ChatElement = withStyle(html)(_ChatElement, style)
+export const ChatElement = withStyle(html)(_ChatElement, style);

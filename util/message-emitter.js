@@ -1,28 +1,30 @@
-export const emitter = (predicate) => {
-  const self = function LoadEmitter(){}
+export const emitter = predicate => {
+  const self = function LoadEmitter() {};
 
-  self.start = function startEmitting () {
-    function emit (fn, timeout) {
-      timeout = timeout || 200
-      // eslint-disable-next-line vars-on-top
+  self.start = function startEmitting() {
+    function emit(fn, timeout) {
+      // eslint-disable-next-line no-param-reassign
+      timeout = timeout || 200;
+      // eslint-disable-next-line vars-on-top, no-var
       var timerId = window.setTimeout(() => {
-        fn()
+        fn();
         // console.log({ timerId, timeout })
-        window.clearInterval(timerId)
+        window.clearInterval(timerId);
 
-        if (self.__stop) return
-        emit(fn, timeout)
-      }, timeout)
+        if (self.__stop) return;
+        emit(fn, timeout);
+      }, timeout);
     }
 
-    emit(function Fn () {
-      predicate()
-    })
-  }
+    // eslint-disable-next-line prefer-arrow-callback
+    emit(function Fn() {
+      predicate();
+    });
+  };
 
-  self.stop = function stopEmitting () {
-    self.__stop = true
-  }
+  self.stop = function stopEmitting() {
+    self.__stop = true;
+  };
 
-  return self
-}
+  return self;
+};

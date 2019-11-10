@@ -1,3 +1,3 @@
-import { InputElement } from './organisms/input.js'
+import { InputElement } from './organisms/input.js';
 
-customElements.define('wc-chat-input', InputElement)
+customElements.define('wc-chat-input', InputElement);

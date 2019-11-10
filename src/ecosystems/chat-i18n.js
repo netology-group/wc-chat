@@ -1,14 +1,14 @@
-import { html } from 'lit-element'
+import { html } from 'lit-element';
 
-import { _ChatElement } from './chat.js'
-import { style } from './chat.css.js'
-import { withStyle } from '../mixins/with-style.js'
-import i18n from '../i18n.js'
+import { _ChatElement } from './chat.js';
+import { style } from './chat.css.js';
+import { withStyle } from '../mixins/with-style.js';
+import i18n from '../i18n.js';
 
-const EVENT = 'did-update'
+const EVENT = 'did-update';
 
 export class _ChatI18NElement extends _ChatElement {
-  static get properties () {
+  static get properties() {
     return {
       actions: Array,
       delaysubmit: Number,
@@ -33,34 +33,39 @@ export class _ChatI18NElement extends _ChatElement {
       scrollabledisabled: Boolean,
       user: Number,
       users: Array,
-    }
+    };
   }
 
-  get i18n () { // eslint-disable-line class-methods-use-this
-    return i18n
+  // eslint-disable-next-line class-methods-use-this
+  get i18n() {
+    return i18n;
   }
 
-  constructor () {
-    super()
+  constructor() {
+    super();
 
-    this._lang = this._resolveLanguage(this.language)
+    this._lang = this._resolveLanguage(this.language);
 
     // eslint-disable-next-line max-len
-    this._strNewMessages = new globalThis.IntlMessageFormat(this.i18n[this._lang].NEW_MESSAGES_COUNT, this._lang)
+    this._strNewMessages = new globalThis.IntlMessageFormat(
+      this.i18n[this._lang].NEW_MESSAGES_COUNT,
+      this._lang,
+    );
   }
 
-  _resolveLanguage (language) {
+  _resolveLanguage(language) {
     // eslint-disable-next-line max-len
-    let resolvedLanguage = language || globalThis.IntlMessageFormat.prototype._resolveLocale(navigator.language)
+    let resolvedLanguage =
+      language || globalThis.IntlMessageFormat.prototype._resolveLocale(navigator.language);
 
     if (!this.i18n[resolvedLanguage]) {
-      resolvedLanguage = 'en-US'
+      resolvedLanguage = 'en-US';
     }
 
-    return resolvedLanguage
+    return resolvedLanguage;
   }
 
-  render () {
+  render() {
     const {
       actions,
       delayresize,
@@ -84,31 +89,31 @@ export class _ChatI18NElement extends _ChatElement {
       scrollabledisabled,
       user,
       users,
-    } = this
+    } = this;
 
-    const lastSeenIndex = list && lastseen !== undefined
-      ? list.findIndex(_ => _.id === lastseen)
-      : undefined
+    const lastSeenIndex =
+      list && lastseen !== undefined ? list.findIndex(_ => _.id === lastseen) : undefined;
     // eslint-disable-next-line max-len
-    const newMessageCount = list && lastseen !== undefined && lastSeenIndex !== undefined
-      ? list.length - 1 - lastSeenIndex
-      : 0
+    const newMessageCount =
+      list && lastseen !== undefined && lastSeenIndex !== undefined
+        ? list.length - 1 - lastSeenIndex
+        : 0;
 
     const scrollableI18n = {
       GO_TO_RECENT_MESSAGE: this.i18n[this._lang].GO_TO_RECENT_MESSAGE,
       NEW_MESSAGES_COUNT: this._strNewMessages.format({ count: newMessageCount }),
       SEE: this.i18n[this._lang].SEE,
-    }
+    };
 
     const messagesI18n = {
       NEW_MESSAGES: this.i18n[this._lang].NEW_MESSAGES,
-    }
+    };
 
     /**
      *  Scrollable & messages are ment to work together
      */
-    return (html`
-      <div class='wrapper'>
+    return html`
+      <div class="wrapper">
         <wc-chat-scrollable
           .delay=${delayupdate}
           .delayresize=${delayresize}
@@ -121,7 +126,7 @@ export class _ChatI18NElement extends _ChatElement {
           @seek-after=${this._handleSeekAfterBounded}
           @seek-before=${this._handleSeekBeforeBounded}
           listen=${EVENT}
-          unseenSelector='.message.unseen'
+          unseenSelector=".message.unseen"
         >
           <wc-chat-messages
             .actions=${actions}
@@ -141,23 +146,25 @@ export class _ChatI18NElement extends _ChatElement {
             user=${user}
           />
         </wc-chat-scrollable>
-        ${noinput ? undefined : (html`
-          <div class='input'>
-            <wc-chat-input
-              .delay=${delaysubmit || 0}
-              .disabled=${disabled}
-              .maxlength=${maxlength}
-              .maxrows=${maxrows || 10}
-              @message-submit=${this._handleSubmitBounded}
-              placeholder=${placeholder}
-              placeholderdisabled=${placeholderdisabled}
-              value=${message}
-            />
-          </div>
-        `)}
+        ${noinput
+          ? undefined
+          : html`
+              <div class="input">
+                <wc-chat-input
+                  .delay=${delaysubmit || 0}
+                  .disabled=${disabled}
+                  .maxlength=${maxlength}
+                  .maxrows=${maxrows || 10}
+                  @message-submit=${this._handleSubmitBounded}
+                  placeholder=${placeholder}
+                  placeholderdisabled=${placeholderdisabled}
+                  value=${message}
+                />
+              </div>
+            `}
       </div>
-    `)
+    `;
   }
 }
 
-export const ChatI18NElement = withStyle(html)(_ChatI18NElement, style)
+export const ChatI18NElement = withStyle(html)(_ChatI18NElement, style);

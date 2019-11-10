@@ -1,12 +1,12 @@
-import { LitElement, html } from 'lit-element'
-import cs from 'classnames-es'
+import { LitElement, html } from 'lit-element';
+import cs from 'classnames-es';
 
-import { debug as Debug, isAggregatedBy } from '../utils/index.js'
-import { style } from './messages.css.js'
-import { style as actionStyle } from '../molecules/actions.css.js'
-import { withStyle } from '../mixins/with-style.js'
+import { debug as Debug, isAggregatedBy } from '../utils/index.js';
+import { style } from './messages.css.js';
+import { style as actionStyle } from '../molecules/actions.css.js';
+import { withStyle } from '../mixins/with-style.js';
 
-const debug = Debug('@netology-group/wc-chat/MessagesElement')
+const debug = Debug('@netology-group/wc-chat/MessagesElement');
 
 /**
  * Check a place where new messages should be placed
@@ -20,31 +20,31 @@ const debug = Debug('@netology-group/wc-chat/MessagesElement')
  * @param  {type} predicate {description}
  * @return {type} {description}
  */
-function predictDirection (list, prevList, predicate) {
-  if (!Array.isArray(list) || !Array.isArray(prevList)) throw new TypeError('Wrong list\'s format')
-  if (typeof preedicate === 'function') return predicate(list, prevList)
+function predictDirection(list, prevList, predicate) {
+  if (!Array.isArray(list) || !Array.isArray(prevList)) throw new TypeError("Wrong list's format");
+  if (typeof preedicate === 'function') return predicate(list, prevList);
 
-  if (!prevList.length || !list.length) return 0
+  if (!prevList.length || !list.length) return 0;
 
   if (list.length !== prevList.length) {
-    const first = _ => _[0]
-    const last = _ => _[_.length - 1]
-    const stamp = _ => _.timestamp
+    const first = _ => _[0];
+    const last = _ => _[_.length - 1];
+    const stamp = _ => _.timestamp;
     // we compare messages by the timestamp as any message contains `created_at`
 
-    if (stamp(first(list)) !== stamp(first(prevList))) return -1
+    if (stamp(first(list)) !== stamp(first(prevList))) return -1;
     // means that messages were placed to the start of the list
 
-    if (stamp(last(list)) !== stamp(last(prevList))) return 1
+    if (stamp(last(list)) !== stamp(last(prevList))) return 1;
     // means that messages were placed to the end of the list
   }
 
-  return 0
+  return 0;
   // 0 means that list was not changed
 }
 
 export class _MessagesElement extends LitElement {
-  static get properties () {
+  static get properties() {
     return {
       classname: String,
       invoke: String,
@@ -52,29 +52,32 @@ export class _MessagesElement extends LitElement {
       listdir: Number,
       user: Number,
       users: Array,
-    }
+    };
   }
 
-  render () {
-    const { list = [] } = this
+  render() {
+    const { list = [] } = this;
 
-    if(!list.length) return (html`<div class='messages'></div>`)
+    if (!list.length)
+      return html`
+        <div class="messages"></div>
+      `;
 
-    return (html`
-      <div class='messages'>
-        <div class='messages-inner'>
+    return html`
+      <div class="messages">
+        <div class="messages-inner">
           ${this.__renderMessages(list)}
         </div>
       </div>
-    `)
+    `;
   }
 
-  updated (changed) {
-    super.updated(changed)
+  updated(changed) {
+    super.updated(changed);
 
-    const prev = (changed || new Map()).get('list') || []
-    const next = this.list || []
-    const shouldDispatch = Array.isArray(next)
+    const prev = (changed || new Map()).get('list') || [];
+    const next = this.list || [];
+    const shouldDispatch = Array.isArray(next);
 
     /* eslint-disable max-len */
     /**
@@ -109,32 +112,33 @@ export class _MessagesElement extends LitElement {
      */
     /* eslint-enable max-len */
     // eslint-disable-next-line no-unused-expressions
-    !shouldDispatch && debug('Skip dispatching')
+    !shouldDispatch && debug('Skip dispatching');
 
     // eslint-disable-next-line no-unused-expressions
-    shouldDispatch && this.updateComplete
-      .then((result) => {
-        if(!result) return new Error('Could not perform the update. Nested changing was detected')
+    shouldDispatch &&
+      this.updateComplete
+        .then(result => {
+          if (!result)
+            return new Error('Could not perform the update. Nested changing was detected');
 
-        debug(`dispatch '${this.invoke}' event`)
+          debug(`dispatch '${this.invoke}' event`);
 
-        return this.dispatchEvent(new CustomEvent(
-          this.invoke,
-          { detail: { direction: predictDirection(next, prev) } }
-        ))
-      })
-      .catch(error => debug(error.message))
+          return this.dispatchEvent(
+            new CustomEvent(this.invoke, { detail: { direction: predictDirection(next, prev) } }),
+          );
+        })
+        .catch(error => debug(error.message));
   }
 
-  __renderMessages (list) {
-    return list.map((it, i, arr) => this.__renderEach(it, i, arr))
+  __renderMessages(list) {
+    return list.map((it, i, arr) => this.__renderEach(it, i, arr));
   }
 
-  __renderEach (it, i, arr) {
-    return this.__renderMessage(this.__hydrateEach(it, i, arr))
+  __renderEach(it, i, arr) {
+    return this.__renderMessage(this.__hydrateEach(it, i, arr));
   }
 
-  __hydrateEach (it, i, arr) {
+  __hydrateEach(it, i, arr) {
     const {
       avatar,
       body, // .body should be depracated later on
@@ -150,9 +154,9 @@ export class _MessagesElement extends LitElement {
       user_id,
       user_name,
       visible,
-    } = it
+    } = it;
 
-    return ({
+    return {
       aggregated: isAggregatedBy('user_id', i, arr),
       avatar,
       classname,
@@ -170,10 +174,11 @@ export class _MessagesElement extends LitElement {
       user_id,
       user_name,
       visible,
-    })
+    };
   }
 
-  __renderMessage (message) { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  __renderMessage(message) {
     const {
       aggregated,
       avatar,
@@ -187,15 +192,15 @@ export class _MessagesElement extends LitElement {
       theme,
       timestamp,
       user_name,
-    } = message
+    } = message;
 
     const className = cs({
       [classname]: classname,
       aggregated,
       message: true,
-    })
+    });
 
-    return (html`
+    return html`
       <wc-chat-message
         .aggregated=${aggregated}
         .deleted=${deleted}
@@ -210,12 +215,8 @@ export class _MessagesElement extends LitElement {
         uid=${id}
         username=${user_name}
       />
-    `)
+    `;
   }
 }
 
-export const MessagesElement = withStyle(html)(
-  _MessagesElement,
-  style,
-  actionStyle
-)
+export const MessagesElement = withStyle(html)(_MessagesElement, style, actionStyle);

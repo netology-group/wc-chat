@@ -1,3 +1,3 @@
-import { ScrollableUnseenElement } from './organisms/scroll-to-unseen.js'
+import { ScrollableUnseenElement } from './organisms/scroll-to-unseen.js';
 
-customElements.define('wc-chat-scrollable', ScrollableUnseenElement)
+customElements.define('wc-chat-scrollable', ScrollableUnseenElement);

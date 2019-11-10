@@ -1,3 +1,3 @@
-import { ReactionsElement } from './organisms/reactions.js'
+import { ReactionsElement } from './organisms/reactions.js';
 
-customElements.define('wc-chat-reactions', ReactionsElement)
+customElements.define('wc-chat-reactions', ReactionsElement);

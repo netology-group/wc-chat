@@ -27,8 +27,7 @@
   <!-- <script src="./public/index.js"></script> -->
   <script type="module" src="./index.js"></script>
   <script type="module">
-    import './src/chat.index.js'
-
+    import './src/chat-i18n.index.js'
 
     const elements = [messenger1, messenger2, messenger3]
 
@@ -100,13 +99,10 @@
     function messageFactory () {
       var index = Math.round(Math.random() * 2)
 
-      console.log({ index: _users[index] })
-
       return enhanceMessage(Math.random().toString(36).substring(7), index + 1)
     }
 
     function update (list, messages) {
-      console.log('update')
       list.forEach((_) => {
         _ && _.updateList(messages)
       })
@@ -128,7 +124,6 @@
       element.update(_messages)
 
       element.addEventListener('chat-message-submit', function onMessageSubmit (e) {
-        console.log(969699696)
         setTimeout(function onSubmitSuccess () {
           _messages = _messages.concat(enhanceMessage(e.detail.message, user))
 
@@ -142,13 +137,13 @@
           && e.detail.message.id
           && it.id === e.detail.message.id
           ) {
-            // if (Array.isArray(it.rating)) {
-            //   it.rating = [['thumbsup', (it.rating[0][1] || 0) + 1]]
-            // } else if (typeof it.rating === 'number') {
-            //   it.rating = !it.rating ? 1 : it.rating + 1
-            // } else {
+            if (Array.isArray(it.rating)) {
+              it.rating = [['thumbsup', (it.rating[0][1] || 0) + 1]]
+            } else if (typeof it.rating === 'number') {
+              it.rating = !it.rating ? 1 : it.rating + 1
+            } else {
               it.rating = [['thumbsup', 1]]
-            // }
+            }
           }
 
           return it

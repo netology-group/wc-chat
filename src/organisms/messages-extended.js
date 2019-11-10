@@ -1,28 +1,29 @@
-import { html } from 'lit-element'
-import cs from 'classnames-es'
+import { html } from 'lit-element';
+import cs from 'classnames-es';
 
-import { withStyle } from '../mixins/with-style.js'
-import { Actions as actionsFactory } from '../molecules/actions.js'
-import { isAggregatedBy, isLastseen, debug as Debug } from '../utils/index.js'
-import { actionImages } from '../atoms/action.js'
-import { maybeSeparator } from '../atoms/separator.js'
-import { MessagesElement } from './messages.js'
-import { wasAtHeadSym } from './scrollable.js'
+import { withStyle } from '../mixins/with-style.js';
+import { Actions as actionsFactory } from '../molecules/actions.js';
+import { isAggregatedBy, isLastseen, debug as Debug } from '../utils/index.js';
+import { actionImages } from '../atoms/action.js';
+import { maybeSeparator } from '../atoms/separator.js';
+import { MessagesElement } from './messages.js';
+import { wasAtHeadSym } from './scrollable.js';
 
-import { style } from './messages.css.js'
-import { style as actionsStyle } from '../molecules/actions.css.js'
-import { style as styleExt } from './messages-extended.css.js'
-import { style as separatorStyle } from '../atoms/separator.css.js'
+import { style } from './messages.css.js';
+import { style as actionsStyle } from '../molecules/actions.css.js';
+import { style as styleExt } from './messages-extended.css.js';
+import { style as separatorStyle } from '../atoms/separator.css.js';
 
-const debug = Debug('@netology-group/wc-chat/XMessagesElement')
+const debug = Debug('@netology-group/wc-chat/XMessagesElement');
 
-const showPosHelpers = element => element && typeof element[wasAtHeadSym] !== 'undefined' && !element[wasAtHeadSym]
+const showPosHelpers = element =>
+  element && typeof element[wasAtHeadSym] !== 'undefined' && !element[wasAtHeadSym];
 
-const actionsSym = Symbol('actions')
-const reactionsSym = Symbol('reactions')
+const actionsSym = Symbol('actions');
+const reactionsSym = Symbol('reactions');
 
 export class _XMessagesElement extends MessagesElement {
-  static get properties () {
+  static get properties() {
     return {
       ...super.properties,
       actions: Array,
@@ -32,34 +33,33 @@ export class _XMessagesElement extends MessagesElement {
       parserpreset: String,
       parserrules: String,
       reactions: Array,
-    }
+    };
   }
 
-  get _actions () {
-    return this[actionsSym]
+  get _actions() {
+    return this[actionsSym];
   }
 
   set _actions(_) {
-    this[actionsSym] = new Map(Array.isArray(_) ? _ : [])
+    this[actionsSym] = new Map(Array.isArray(_) ? _ : []);
   }
 
-  get _reactions () {
-    return this[reactionsSym]
+  get _reactions() {
+    return this[reactionsSym];
   }
 
   set _reactions(_) {
-    this[reactionsSym] = new Map(Array.isArray(_) ? _ : [])
+    this[reactionsSym] = new Map(Array.isArray(_) ? _ : []);
   }
 
-  constructor(){
-    super()
+  constructor() {
+    super();
 
-    this.i18n = {}
+    this.i18n = {};
 
-    this[actionsSym] = new Map()
-    this[reactionsSym] = new Map()
+    this[actionsSym] = new Map();
+    this[reactionsSym] = new Map();
   }
-
 
   // get __reactions () {
   //   const rctns = new Map([])
@@ -71,33 +71,33 @@ export class _XMessagesElement extends MessagesElement {
   //   return rctns
   // }
 
-  firstUpdated(){
-    const {
-      actions = [],
-      reactions = []
-    } = this
+  firstUpdated() {
+    const { actions = [], reactions = [] } = this;
 
-    this._actions = actions
-    this._reactions = reactions
+    this._actions = actions;
+    this._reactions = reactions;
 
     // eslint-disable-next-line no-unused-expressions
-    Array.isArray(reactions) && reactions.forEach((it) => {
-      this[reactionsSym].set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 })
-    })
+    Array.isArray(reactions) &&
+      reactions.forEach(it => {
+        this[reactionsSym].set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 });
+      });
   }
 
-  render () { return super.render() }
-
-  __outputTplAccordingParentPosition () {
-    return showPosHelpers(this.parentElement)
+  render() {
+    return super.render();
   }
 
-  __renderEach (it, i, arr) {
-    return this.__renderMessage(this.__hydrateEach(it, i, arr))
+  __outputTplAccordingParentPosition() {
+    return showPosHelpers(this.parentElement);
+  }
+
+  __renderEach(it, i, arr) {
+    return this.__renderMessage(this.__hydrateEach(it, i, arr));
   }
 
   __hydrateEach(it, index, list) {
-    const { lastseen, user } = this
+    const { lastseen, user } = this;
     const {
       avatar,
       body, // .body should be depracated later on
@@ -114,7 +114,7 @@ export class _XMessagesElement extends MessagesElement {
       user_id,
       user_name,
       visible,
-    } = it
+    } = it;
 
     return {
       aggregated: isAggregatedBy('user_id', index, list),
@@ -136,10 +136,11 @@ export class _XMessagesElement extends MessagesElement {
       user_id,
       user_name,
       visible,
-    }
+    };
   }
 
-  __renderMessage (message) { // eslint-disable-line class-methods-use-this
+  __renderMessage(message) {
+    // eslint-disable-line class-methods-use-this
     const {
       aggregated,
       avatar,
@@ -156,19 +157,19 @@ export class _XMessagesElement extends MessagesElement {
       theme,
       timestamp,
       user_name,
-    } = message
+    } = message;
 
     const className = cs({
       [classname]: classname,
       aggregated,
       message: true,
       unseen: is_lastseen,
-    })
+    });
 
-    if (invisible) return undefined
+    if (invisible) return undefined;
     // skip unless visible
 
-    return (html`
+    return html`
       <wc-chat-message
         .aggregated=${aggregated}
         .deleted=${deleted}
@@ -189,84 +190,86 @@ export class _XMessagesElement extends MessagesElement {
         ${maybeSeparator({
           id,
           text: this.i18n.NEW_MESSAGES,
-          enabled: is_lastseen
-            && !me
-            && this.__outputTplAccordingParentPosition(), // show chunks according the parentElement
+          enabled: is_lastseen && !me && this.__outputTplAccordingParentPosition(), // show chunks according the parentElement
         })}
-        <div slot='message-prologue'>
+        <div slot="message-prologue">
           ${this.__renderActions(message)}
         </div>
-        <div slot='message-epilogue'>
+        <div slot="message-epilogue">
           ${this.__renderReactions({ rating, text })}
         </div>
       </wc-chat-message>
-    `)
+    `;
   }
 
-  __renderActions (data) {
-    const actions = new Map()
-    const reactions = new Map()
+  __renderActions(data) {
+    const actions = new Map();
+    const reactions = new Map();
 
-    // eslint-disable-next-line no-bitwise,max-len
-    const isAllowed4Other = (a, b) => (b.current_user_id && b.user_id && b.current_user_id !== b.user_id && Boolean(a & 1))
-    // eslint-disable-next-line no-bitwise,max-len
-    const isAllowed4Group = (a, b) => (b.current_user_id && b.user_id && b.current_user_id !== b.user_id && Boolean(a & 10))
-    // eslint-disable-next-line no-bitwise,max-len
-    const isAllowed4Self = (a, b) => (b.current_user_id && b.user_id && b.current_user_id === b.user_id && Boolean(a & 100))
+    const isAllowed4Other = (a, b) =>
+      // eslint-disable-next-line no-bitwise,max-len
+      b.current_user_id && b.user_id && b.current_user_id !== b.user_id && Boolean(a & 1);
+    const isAllowed4Group = (a, b) =>
+      // eslint-disable-next-line no-bitwise,max-len
+      b.current_user_id && b.user_id && b.current_user_id !== b.user_id && Boolean(a & 10);
+    const isAllowed4Self = (a, b) =>
+      // eslint-disable-next-line no-bitwise,max-len
+      b.current_user_id && b.user_id && b.current_user_id === b.user_id && Boolean(a & 100);
 
-    const isAllowed = (a, b) => isAllowed4Other(a, b)
-      || isAllowed4Group(a, b)
-      || isAllowed4Self(a, b)
+    const isAllowed = (a, b) =>
+      isAllowed4Other(a, b) || isAllowed4Group(a, b) || isAllowed4Self(a, b);
 
     // eslint-disable-next-line no-unused-expressions
-    Array.isArray(this.actions) && this.actions.forEach((_) => {
-      const key = _[0]
-      const _action = this._actions.get(key) || {}
+    Array.isArray(this.actions) &&
+      this.actions.forEach(_ => {
+        const key = _[0];
+        const _action = this._actions.get(key) || {};
 
-      if (!isAllowed(_action, data)) {
-        debug('Action is not alllowed')
+        if (!isAllowed(_action, data)) {
+          debug('Action is not alllowed');
 
-        return
-      }
+          return;
+        }
 
-      const actionOpts = {
-        message: data,
-        children: actionImages.get(key),
-        handler: (e, detail) => { this.dispatchEvent(new CustomEvent(key, { detail })) },
-      }
+        const actionOpts = {
+          message: data,
+          children: actionImages.get(key),
+          handler: (e, detail) => {
+            this.dispatchEvent(new CustomEvent(key, { detail }));
+          },
+        };
 
-      if (key === 'message-reaction') {
-        reactions.set(key, actionOpts)
-      } else {
-        actions.set(key, actionOpts)
-      }
-    })
+        if (key === 'message-reaction') {
+          reactions.set(key, actionOpts);
+        } else {
+          actions.set(key, actionOpts);
+        }
+      });
 
-    return actionsFactory({ actions, reactions })
+    return actionsFactory({ actions, reactions });
   }
 
   // eslint-disable-next-line class-methods-use-this
-  __renderReactions (opts) {
-    const { rating } = opts
-    let config
+  __renderReactions(opts) {
+    const { rating } = opts;
+    let config;
 
     if (typeof rating === 'number') {
-      config = new Map([['thumbsup', { name: ':thumbsup:', count: rating }]])
+      config = new Map([['thumbsup', { name: ':thumbsup:', count: rating }]]);
     } else if (Array.isArray(rating)) {
-      config = new Map([])
-      rating.forEach((it) => {
-        config.set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 })
-      })
+      config = new Map([]);
+      rating.forEach(it => {
+        config.set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 });
+      });
     } else if (opts.rating !== undefined) {
-      throw new TypeError('Wrong rating type')
+      throw new TypeError('Wrong rating type');
     }
 
-    return !config ? undefined : (html`
-      <wc-chat-reactions
-        .config=${config}
-        showcount='showcount'
-      />
-    `)
+    return !config
+      ? undefined
+      : html`
+          <wc-chat-reactions .config=${config} showcount="showcount" />
+        `;
   }
 }
 
@@ -275,5 +278,5 @@ export const XMessagesElement = withStyle(html)(
   style,
   separatorStyle,
   actionsStyle,
-  styleExt
-)
+  styleExt,
+);

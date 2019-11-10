@@ -1,3 +1,3 @@
-import { UnsafeContentElement } from './molecules/content.js'
+import { UnsafeContentElement } from './molecules/content.js';
 
-customElements.define('wc-chat-content', UnsafeContentElement)
+customElements.define('wc-chat-content', UnsafeContentElement);

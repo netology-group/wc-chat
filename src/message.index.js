@@ -1,3 +1,3 @@
-import { MessageElement } from './molecules/message.js'
+import { MessageElement } from './molecules/message.js';
 
-customElements.define('wc-chat-message', MessageElement)
+customElements.define('wc-chat-message', MessageElement);

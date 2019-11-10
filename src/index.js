@@ -4,11 +4,11 @@
 
 // console.log(html)
 
-export { withStyle } from './mixins/with-style.js'
+export { withStyle } from './mixins/with-style.js';
 
-export { InputElement } from './organisms/input.js'
+export { InputElement } from './organisms/input.js';
 
-export { ChatElement } from './ecosystems/chat.js'
+export { ChatElement } from './ecosystems/chat.js';
 
 // export const ChatElement = withStyle()(Chat)
 
@@ -16,7 +16,7 @@ export { ChatElement } from './ecosystems/chat.js'
 
 // const mixins = utils.bindMixins(html)(_)
 
-export { EventEmitter } from './utils/emitter.js'
+export { EventEmitter } from './utils/emitter.js';
 
 // console.log(EventEmitter, 123)
 

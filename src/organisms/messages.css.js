@@ -1,38 +1,41 @@
-import { css } from 'lit-element'
+import { css } from 'lit-element';
 
 export const style = css`
-:host {
-  --messages-width: var(--chat-messages-list-width, 100%);
-  --messages-height: var(--chat-messages-list-height, 100%);
-  --messages-item-aggregated-margin: var(--chat-message-aggregated-margin, var(--messages-item-border-radius));
-  --messages-item-border-radius: 5px;
-  --messages-item-margin-between: 16px;
-}
+  :host {
+    --messages-width: var(--chat-messages-list-width, 100%);
+    --messages-height: var(--chat-messages-list-height, 100%);
+    --messages-item-aggregated-margin: var(
+      --chat-message-aggregated-margin,
+      var(--messages-item-border-radius)
+    );
+    --messages-item-border-radius: 5px;
+    --messages-item-margin-between: 16px;
+  }
 
-:host .messages-separator {
-  position: relative;
-}
+  :host .messages-separator {
+    position: relative;
+  }
 
-:host .messages {
-  box-sizing: border-box;
-  font-size: var(--messages-font-size, inherit);
-  height: var(--messages-height);
-  width: var(--messages-width);
+  :host .messages {
+    box-sizing: border-box;
+    font-size: var(--messages-font-size, inherit);
+    height: var(--messages-height);
+    width: var(--messages-width);
 
-  /*height: 100%;*/
-}
+    /*height: 100%;*/
+  }
 
-:host .messages-inner {
-  /*height:100%;*/
-}
+  :host .messages-inner {
+    /*height:100%;*/
+  }
 
-:host .message {
-  box-sizing: border-box;
-  padding-bottom: var(--messages-item-aggregated-margin);
-  position: relative;
-}
+  :host .message {
+    box-sizing: border-box;
+    padding-bottom: var(--messages-item-aggregated-margin);
+    position: relative;
+  }
 
-:host .message + .message:not(.aggregated) {
-  margin-top: calc(var(--messages-item-margin-between) - var(--messages-item-aggregated-margin));
-}
-`
+  :host .message + .message:not(.aggregated) {
+    margin-top: calc(var(--messages-item-margin-between) - var(--messages-item-aggregated-margin));
+  }
+`;

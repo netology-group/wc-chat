@@ -1,4 +1,4 @@
 // import {EventEmitter} from 'events'
-import EventEmitter from '@ungap/event-target'
+import EventEmitter from '@ungap/event-target';
 
-export { EventEmitter }
+export { EventEmitter };

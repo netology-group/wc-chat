@@ -1,55 +1,57 @@
-const sanitize = (input) => {
-  let tmp = document.createElement('div')
+const sanitize = input => {
+  let tmp = document.createElement('div');
 
-  tmp.textContent = input
-  const { innerHTML } = tmp
+  tmp.textContent = input;
+  const { innerHTML } = tmp;
 
-  tmp = undefined
+  tmp = undefined;
 
-  return innerHTML
+  return innerHTML;
+};
+
+export function Message() {
+  return _ => _;
 }
 
-export function Message () {
-  return _ => _
+export function HTMLEntityMessage() {
+  return input => sanitize(input).replace(/\n{2,}/g, '\n');
 }
 
-export function HTMLEntityMessage () {
-  return input => sanitize(input).replace(/\n{2,}/g, '\n')
-}
+export function MarkdownMessage(opts = {}) {
+  const { preset, rules } = opts.parser;
 
-export function MarkdownMessage (opts = {}) {
-  const { preset, rules } = opts.parser
-
-  const isStrict = preset && preset === 'strict'
+  const isStrict = preset && preset === 'strict';
 
   const options = isStrict
     ? ['zero', { linkify: true, typographer: true }]
     : [
-      (preset || {
-        linkify: true,
-        typographer: true,
-        ...(opts.markdownit || {}),
-      }),
-    ]
+        preset || {
+          linkify: true,
+          typographer: true,
+          ...(opts.markdownit || {}),
+        },
+      ];
 
-  const md = new globalThis.markdownit(...options) // eslint-disable-line new-cap
+  const md = new globalThis.markdownit(...options); // eslint-disable-line new-cap
 
-  const hasExternalRules = rules && Array.isArray(rules) && rules.length
+  const hasExternalRules = rules && Array.isArray(rules) && rules.length;
 
-  md.enable(hasExternalRules
-    ? rules
-    : isStrict
+  md.enable(
+    hasExternalRules
+      ? rules
+      : isStrict
       ? [
-        'linkify',
-        'normalize',
-        'blockquote',
-        'paragraph',
-        'smartquotes',
-        'emphasis',
-        'backticks',
-        'fence',
-      ]
-      : [])
+          'linkify',
+          'normalize',
+          'blockquote',
+          'paragraph',
+          'smartquotes',
+          'emphasis',
+          'backticks',
+          'fence',
+        ]
+      : [],
+  );
 
-  return input => md.render(input)
+  return input => md.render(input);
 }

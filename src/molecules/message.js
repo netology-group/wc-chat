@@ -1,28 +1,34 @@
-import { LitElement, html } from 'lit-element'
-import cs from 'classnames-es'
+import { LitElement, html } from 'lit-element';
+import cs from 'classnames-es';
 
-import { avatar } from '../atoms/avatar.js'
-import { HTMLEntityMessage, MarkdownMessage } from '../utils/message-parser.js'
-import { meta } from '../atoms/meta.js'
-import { section } from '../atoms/section.js'
-import { withStyle } from '../mixins/with-style.js'
+import { avatar } from '../atoms/avatar.js';
+import { HTMLEntityMessage, MarkdownMessage } from '../utils/message-parser.js';
+import { meta } from '../atoms/meta.js';
+import { section } from '../atoms/section.js';
+import { withStyle } from '../mixins/with-style.js';
 
-import { style } from './message.css.js'
+import { style } from './message.css.js';
 
-function getMessageBody (message, parsername, parse) {
-  let body = message
-  const isMd = parsername === 'markdown'
+function getMessageBody(message, parsername, parse) {
+  let body = message;
+  const isMd = parsername === 'markdown';
 
-  if (parsername === 'html-entities' && parse) body = parse(body)
-  if (isMd && parse) body = parse(body)
+  if (parsername === 'html-entities' && parse) body = parse(body);
+  if (isMd && parse) body = parse(body);
 
-  return isMd ? (html`<wc-chat-content>${body}</wc-chat-content>`) : (html`<p>${body}</p>`)
+  return isMd
+    ? html`
+        <wc-chat-content>${body}</wc-chat-content>
+      `
+    : html`
+        <p>${body}</p>
+      `;
 }
 
-const parserSym = Symbol('parser')
+const parserSym = Symbol('parser');
 
 export class _MessageElement extends LitElement {
-  static get properties () {
+  static get properties() {
     return {
       aggregated: Boolean,
       deleted: Boolean,
@@ -39,26 +45,31 @@ export class _MessageElement extends LitElement {
       timestamp: Number,
       username: String,
       uid: String,
-    }
+    };
   }
 
-  get _parsers () { // eslint-disable-line class-methods-use-this
-    return new Map([['markdown', opts => MarkdownMessage(opts)], ['html-entities', opts => HTMLEntityMessage(opts)]])
+  // eslint-disable-next-line class-methods-use-this
+  get _parsers() {
+    return new Map([
+      ['markdown', opts => MarkdownMessage(opts)],
+      ['html-entities', opts => HTMLEntityMessage(opts)],
+    ]);
   }
 
-  constructor () {
-    super()
+  constructor() {
+    super();
 
-    this[parserSym] = undefined
+    this[parserSym] = undefined;
   }
 
-  connectedCallback(){
-    super.connectedCallback()
+  connectedCallback() {
+    super.connectedCallback();
 
-    this.__initializeParser()
+    this.__initializeParser();
   }
 
-  render () { // eslint-disable-line class-methods-use-this
+  render() {
+    // eslint-disable-line class-methods-use-this
     const {
       aggregated = false,
       deleted = false,
@@ -73,7 +84,7 @@ export class _MessageElement extends LitElement {
       uid,
       user_role,
       username,
-    } = this
+    } = this;
 
     const cname = cs({
       [`theme-${theme}`]: theme,
@@ -81,13 +92,11 @@ export class _MessageElement extends LitElement {
       deleted,
       inner: true,
       me,
-    })
+    });
 
-    return (html`
-      <div class='${cname}'>
-        <slot
-          name=${`message-${uid || Math.ceil(Math.random() * 1e3)}`}
-        ></slot>
+    return html`
+      <div class="${cname}">
+        <slot name=${`message-${uid || Math.ceil(Math.random() * 1e3)}`}></slot>
         ${avatar({
           classname: user_role,
           image,
@@ -97,11 +106,11 @@ export class _MessageElement extends LitElement {
           ${aggregated
             ? undefined
             : meta({
-              icon,
-              identity,
-              timestamp,
-              username,
-            })}
+                icon,
+                identity,
+                timestamp,
+                username,
+              })}
           ${section({
             body: getMessageBody(text, parser, this[parserSym]),
             classname: `parser-${parser}`,
@@ -109,15 +118,11 @@ export class _MessageElement extends LitElement {
           <slot name="message-epilogue"></slot>
         </div>
       </div>
-    `)
+    `;
   }
 
-  __initializeParser (){
-    const {
-      parser,
-      parserpreset,
-      parserrules,
-    } = this
+  __initializeParser() {
+    const { parser, parserpreset, parserrules } = this;
 
     if (!this[parserSym] && parser) {
       this[parserSym] = this._parsers.get(parser)({
@@ -125,12 +130,9 @@ export class _MessageElement extends LitElement {
           preset: parserpreset,
           rules: parserrules ? parserrules.split(',') : [],
         },
-      })
+      });
     }
   }
 }
 
-export const MessageElement = withStyle(html)(
-  _MessageElement,
-  style
-)
+export const MessageElement = withStyle(html)(_MessageElement, style);
