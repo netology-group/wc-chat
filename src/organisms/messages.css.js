@@ -4,6 +4,7 @@ export const style = css`
   :host {
     --messages-width: var(--chat-messages-list-width, 100%);
     --messages-height: var(--chat-messages-list-height, 100%);
+    /* stylelint-disable-next-line declaration-colon-newline-after */
     --messages-item-aggregated-margin: var(
       --chat-message-aggregated-margin,
       var(--messages-item-border-radius)
@@ -21,12 +22,6 @@ export const style = css`
     font-size: var(--messages-font-size, inherit);
     height: var(--messages-height);
     width: var(--messages-width);
-
-    /*height: 100%;*/
-  }
-
-  :host .messages-inner {
-    /*height:100%;*/
   }
 
   :host .message {

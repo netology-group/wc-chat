@@ -1,8 +1,8 @@
 import { css } from 'lit-element';
 
 export const style = css`
+  /* stylelint-disable selector-type-no-unknown */
   wc-chat-reactions {
-    /* stylelint-disable selector-type-no-unknown */
     --reaction-count-left: 0;
   }
 

@@ -4,16 +4,19 @@ export const style = css`
   :host {
     --actions-action-icon-size: 16px;
     --actions-background-color: var(--chat-message-actions-background-color, var(--white, #fff));
+    /* stylelint-disable-next-line declaration-colon-newline-after */
     --actions-border-color-disabled: var(
       --chat-message-actions-border-color-disabled,
       var(--silver, #b8b8b8)
     );
+    /* stylelint-disable-next-line declaration-colon-newline-after */
     --actions-border-color-hover: var(
       --chat-message-actions-border-color-hover,
       var(--pictonblue, #48a1e6)
     );
     --actions-border-color: var(--chat-message-actions-border-color, var(--silver, #b8b8b8));
     --actions-color-disabled: var(--chat-message-actions-color-disabled, var(--silver, #b8b8b8));
+    /* stylelint-disable-next-line declaration-colon-newline-after */
     --actions-color-fill-hover: var(
       --chat-message-actions-color-fill-hover,
       var(--pictonblue, #48a1e6)

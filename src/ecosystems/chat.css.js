@@ -23,7 +23,5 @@ export const style = css`
   /* stylelint-disable selector-type-no-unknown */
   :host .wrapper wc-chat-scrollable {
     flex: 1 1 auto;
-
-    /*overflow: scroll;*/
   }
 `;
