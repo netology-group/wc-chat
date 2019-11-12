@@ -37,3 +37,13 @@ export const requestAnimation = fn => {
   // eslint-disable-next-line no-unused-expressions
   requestAnimationFrame ? requestAnimationFrame(() => fn()) : fn();
 };
+
+// TODO: get rid of `toJSON` method
+export const mapToJSON = map => {
+  const list = [];
+  [...map.keys()].forEach(key => {
+    list.push([key, map.get(key)]);
+  });
+
+  return list;
+};

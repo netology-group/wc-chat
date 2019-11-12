@@ -2,8 +2,9 @@ import { html } from 'lit-element';
 import cs from 'classnames-es';
 
 import * as images from '../images/index.js';
+import { mapToJSON } from '../utils/index.js';
 
-const tplFromMap = map => map.toJSON().map(tuple => tuple[1]);
+const tplFromMap = map => mapToJSON(map).map(tuple => tuple[1]);
 
 export const actionImages = new Map([
   ['message-delete', images.del],

@@ -1,9 +1,10 @@
 import { LitElement, html } from 'lit-element';
 import cs from 'classnames-es';
 
-import emojiJSON from '../misc/emoji.json.js'; // eslint-disable-line import/extensions
-import { withStyle } from '../mixins/with-style.js';
+import { mapToJSON } from '../utils/index.js';
 import { style } from './reactions.css.js';
+import { withStyle } from '../mixins/with-style.js';
+import emojiJSON from '../misc/emoji.json.js'; // eslint-disable-line import/extensions
 
 export class _ReactionsElement extends LitElement {
   static get properties() {
@@ -51,7 +52,7 @@ export class _ReactionsElement extends LitElement {
   }
 
   _renderAll(config) {
-    return config.toJSON().map(_ => this._renderEach(_));
+    return mapToJSON(config).map(_ => this._renderEach(_));
   }
 
   _renderEach([k, v]) {
