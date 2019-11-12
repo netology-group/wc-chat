@@ -61,16 +61,6 @@ export class _XMessagesElement extends MessagesElement {
     this[reactionsSym] = new Map();
   }
 
-  // get __reactions () {
-  //   const rctns = new Map([])
-
-  //   // Array.isArray(this.reactions) && this.reactions.forEach((it) => {
-  //   //   rctns.set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 })
-  //   // })
-
-  //   return rctns
-  // }
-
   firstUpdated() {
     const { actions = [], reactions = [] } = this;
 
@@ -171,15 +161,15 @@ export class _XMessagesElement extends MessagesElement {
 
     return html`
       <wc-chat-message
+        ?deleted=${deleted}
+        ?me=${me}
         .aggregated=${aggregated}
-        .deleted=${deleted}
-        .me=${me}
+        .identity=${identity}
         .parser=${this.parser}
         .parserpreset=${this.parserpreset}
         .parserrules=${this.parserrules}
         class=${className}
         icon=${icon}
-        identity=${identity}
         image=${avatar}
         text=${text}
         theme=${theme}
@@ -273,7 +263,7 @@ export class _XMessagesElement extends MessagesElement {
   }
 }
 
-export const XMessagesElement = withStyle(html)(
+export const XMessagesElement = withStyle()(
   _XMessagesElement,
   style,
   separatorStyle,

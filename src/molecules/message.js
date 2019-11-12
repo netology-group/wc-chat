@@ -18,7 +18,11 @@ function getMessageBody(message, parsername, parse) {
 
   return isMd
     ? html`
-        <wc-chat-content>${body}</wc-chat-content>
+        <wc-chat-content
+          >${html`
+            <div>${body}</div>
+          `}</wc-chat-content
+        >
       `
     : html`
         <p>${body}</p>
@@ -30,9 +34,9 @@ const parserSym = Symbol('parser');
 export class _MessageElement extends LitElement {
   static get properties() {
     return {
-      aggregated: Boolean,
-      deleted: Boolean,
+      aggregated: String,
       body: String,
+      deleted: Boolean,
       icon: String,
       identity: String,
       image: String,
@@ -43,8 +47,8 @@ export class _MessageElement extends LitElement {
       text: String,
       theme: String,
       timestamp: Number,
-      username: String,
       uid: String,
+      username: String,
     };
   }
 
@@ -135,4 +139,4 @@ export class _MessageElement extends LitElement {
   }
 }
 
-export const MessageElement = withStyle(html)(_MessageElement, style);
+export const MessageElement = withStyle()(_MessageElement, style);

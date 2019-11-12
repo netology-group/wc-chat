@@ -1,28 +1,22 @@
-import { createDefaultConfig } from '@open-wc/building-rollup';
+import { createCompatibilityConfig } from '@open-wc/building-rollup';
 
 // if you need to support IE11 use "modern-and-legacy-config" instead.
 // import { createCompatibilityConfig } from '@open-wc/building-rollup';
 // export default createCompatibilityConfig({ input: './index.html' });
 
 // export default createDefaultConfig({ input: './index.html' });
-// eslint-disable-next-line import/no-mutable-exports
-let config = createDefaultConfig({
+
+const config = createCompatibilityConfig({
   input: './index.html',
+  outputDir: 'dist',
   indexHTMLPlugin: {
+    loader: 'external',
     polyfills: {
       'core-js': true,
     },
-    loader: 'external',
   },
 });
 
-config = {
-  ...config,
-  output: {
-    ...config.output,
-    filename: '[name].js',
-    chunkFilename: '[name].js',
-  },
-};
+console.info(config); // eslint-disable-line no-console
 
 export default config;

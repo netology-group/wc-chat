@@ -87,4 +87,4 @@ export class _ReactionsElement extends LitElement {
   }
 }
 
-export const ReactionsElement = withStyle(html)(_ReactionsElement, style);
+export const ReactionsElement = withStyle()(_ReactionsElement, style);

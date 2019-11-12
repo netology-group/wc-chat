@@ -1,9 +1,11 @@
+/**
+ * Uses:
+ * ./input.index.js
+ * ./message.index.js
+ * ./messages-extended.index.js
+ * ./scrollable.index.js
+ * ./reactions.index.js
+ */
 import { ChatElement } from './ecosystems/chat.js';
-
-import './input.index.js';
-import './message.index.js';
-import './messages-extended.index.js';
-import './scrollable.index.js';
-import './reactions.index.js';
 
 customElements.define('wc-chat', ChatElement);

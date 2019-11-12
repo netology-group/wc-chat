@@ -373,4 +373,4 @@ export class _ScrollableElement extends LitElement {
   }
 }
 
-export const ScrollableElement = withStyle(html)(_ScrollableElement, style);
+export const ScrollableElement = withStyle()(_ScrollableElement, style);

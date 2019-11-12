@@ -167,4 +167,4 @@ export class _ChatI18NElement extends _ChatElement {
   }
 }
 
-export const ChatI18NElement = withStyle(html)(_ChatI18NElement, style);
+export const ChatI18NElement = withStyle()(_ChatI18NElement, style);

@@ -137,8 +137,4 @@ export class _ScrollableUnseenElement extends _ScrollableElement {
   }
 }
 
-export const ScrollableUnseenElement = withStyle(html)(
-  _ScrollableUnseenElement,
-  style,
-  styleUnseen,
-);
+export const ScrollableUnseenElement = withStyle()(_ScrollableUnseenElement, style, styleUnseen);

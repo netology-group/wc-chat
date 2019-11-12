@@ -7,7 +7,7 @@ export const withStyle = (html, css) => {
   return (base, ...styles) =>
     class extends base {
       static get styles() {
-        return styles || css('');
+        return (base.styles || []).concat(styles || css(''));
       }
     };
 };

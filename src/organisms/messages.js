@@ -202,12 +202,12 @@ export class _MessagesElement extends LitElement {
 
     return html`
       <wc-chat-message
-        .aggregated=${aggregated}
-        .deleted=${deleted}
-        .me=${me}
+        ?aggregated=${aggregated}
+        ?deleted=${deleted}
+        ?me=${me}
+        .identity=${identity}
         class=${className}
         icon=${icon}
-        identity=${identity}
         image=${avatar}
         text=${text}
         theme=${theme}
@@ -219,4 +219,4 @@ export class _MessagesElement extends LitElement {
   }
 }
 
-export const MessagesElement = withStyle(html)(_MessagesElement, style, actionStyle);
+export const MessagesElement = withStyle()(_MessagesElement, style, actionStyle);

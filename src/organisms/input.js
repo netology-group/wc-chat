@@ -187,4 +187,4 @@ export class _InputElement extends LitElement {
   }
 }
 
-export const InputElement = withStyle(html)(_InputElement, buttonStyle, inputStyle, textareaStyle);
+export const InputElement = withStyle()(_InputElement, buttonStyle, inputStyle, textareaStyle);

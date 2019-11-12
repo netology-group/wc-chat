@@ -1,6 +1,6 @@
-import { css } from 'lit-element';
+import { unsafeCSS } from 'lit-element/lib/css-tag.js';
 
-export const style = css`
+export const style = unsafeCSS`
   /* stylelint-disable-next-line selector-type-no-unknown */
   iron-autogrow-textarea {
     -webkit-appearance: none;

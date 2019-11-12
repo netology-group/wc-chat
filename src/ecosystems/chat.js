@@ -222,4 +222,4 @@ export class _ChatElement extends LitElement {
   }
 }
 
-export const ChatElement = withStyle(html)(_ChatElement, style);
+export const ChatElement = withStyle()(_ChatElement, style);
