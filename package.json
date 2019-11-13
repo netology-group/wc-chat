@@ -22,7 +22,7 @@
     "lib": "src"
   },
   "scripts": {
-    "prebuild": "scripts/prepare.sh && rm -rf dist es public/node_modules",
+    "prebuild": "scripts/prepare.sh && rm -rf dist",
     "build": "rimraf dist && rollup -c rollup.config.js",
     "format": "npm run format:eslint && npm run format:prettier",
     "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .gitignore",

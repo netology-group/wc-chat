@@ -24,7 +24,32 @@
 
     var avatarUrl = 'https://about.gitlab.com/images/devops-tools/gitlab-logo.svg'
 
-    var bodyMessages = []
+    var bodyMessages = [
+      { body: '\'hello world\'' },
+      { body: '"hello world"' },
+      { body: 'http://hello.world' },
+      { body: '**hello_world**' },
+      { body: '_hello_world_' },
+      { body: '__hello_world__' },
+      { body: '*hello_world*' },
+      { body: '`hello world`' },
+      { body: '```html\nhello world\n```' },
+      { body: '> hello world' },
+      { body: '> hello\nworld\n\nhello world' },
+      { body: 'hello\n\nworld' },
+      { body: '```html\n<wc-chat\nid="messenger"\nlanguage="en"\nparser=\'markdown\'\nparserpreset=\'strict\'\nparserrules=\'linkify,normalize,blockquote,paragraph,smartquotes,emphasis,backticks,fence\'\n/>\n```' },
+      { body: '[hello](world)' },
+      { body: '![hello](world)' },
+      { body: '# hello world' },
+      { body: '## hello world' },
+      { body: '1. hello\n2. world' },
+      { body: '- hello\n- world' },
+      { body: 'hello|world\n---|---\nhello|world' },
+      { body: "<script>alert(\'hello world!\')<\/script>" },
+      { body: '[hello world](javascript:alert(\'hello world\'))' },
+      { body: '<a name="n" href="javascript:alert(\'hello world\')">*hello world*</a>' },
+      { body: 'hello <a name="n\n" > href="javascript:alert(\'hello world\')">*hello world*</a>' }
+    ]
 
     var _messages = [
       {
