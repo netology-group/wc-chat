@@ -9,6 +9,15 @@
 
 ## Usage
 
+### Polyfills
+
+Workaround for custom-elements-es5-adapter:
+```html
+<script>if (!window.customElements) { document.write('<!--'); }</script>
+<script src="<path_to>/custom-elements-es5-adapter.84b300ee818dce8b351c7cc7c100bcf7.js" type="text/javascript" ></script>
+<!--! do not remove -->
+```
+
 ### Dependencies
 
 Chat relies on dependencies described at [peerDependencies](./package.json#L99-101) section.

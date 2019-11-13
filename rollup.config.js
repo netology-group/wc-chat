@@ -1,4 +1,5 @@
 import { createCompatibilityConfig } from '@open-wc/building-rollup';
+import Debug from 'debug';
 
 // if you need to support IE11 use "modern-and-legacy-config" instead.
 // import { createCompatibilityConfig } from '@open-wc/building-rollup';
@@ -17,6 +18,6 @@ const config = createCompatibilityConfig({
   },
 });
 
-console.info(config); // eslint-disable-line no-console
+Debug(`@netology-group/wc-chat/rollup`)(config);
 
 export default config;

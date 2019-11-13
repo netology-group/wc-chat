@@ -115,6 +115,7 @@
     "@open-wc/testing-karma-bs": "^1.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "debug": "^4.1.1",
     "es-dev-server": "^1.5.0",
     "eslint": "^6.1.0",
     "husky": "^1.0.0",
