@@ -43,13 +43,17 @@ export class _ChatElement extends LitElement {
     this._handleLastSeenChangeBounded = this._handleLastSeenChange.bind(this);
     this._handleSeekBeforeBounded = this._handleSeekBefore.bind(this);
     this._handleSeekAfterBounded = this._handleSeekAfter.bind(this);
-
     this._scrollable = undefined;
     this._listdir = 0;
   }
 
   firstUpdated() {
     if (this.shadowRoot) this._scrollable = this.shadowRoot.querySelector('wc-chat-scrollable');
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.dispatchEvent(new Event('connected'));
   }
 
   disconnectedCallback() {

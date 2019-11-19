@@ -139,7 +139,7 @@
         element.reactions = [['thumbsup']]
       }
 
-      element.update(_messages)
+      _messages.length && element.updateList(_messages)
 
       element.addEventListener('chat-message-submit', function onMessageSubmit (e) {
         setTimeout(function onSubmitSuccess () {
