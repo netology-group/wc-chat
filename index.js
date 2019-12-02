@@ -8,7 +8,6 @@ export { MessagesElement } from './src/organisms/messages.js';
 export { ReactionsElement } from './src/organisms/reactions.js';
 export { ScrollableElement } from './src/organisms/scrollable.js';
 export { ScrollableUnseenElement } from './src/organisms/scroll-to-unseen.js';
-export { UnsafeContentElement } from './src/molecules/content.js';
 export { XMessagesElement } from './src/organisms/messages-extended.js';
 
 export const mixins = {

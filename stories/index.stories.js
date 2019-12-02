@@ -9,6 +9,34 @@ import '../src/input.index.js';
 import '../src/message.index.js';
 import '../src/chat.index.js';
 
+const richMessages = [
+  { body: "'hello world'" },
+  { body: '"hello world"' },
+  { body: 'http://hello.world' },
+  { body: '**hello_world**' },
+  { body: '_hello_world_' },
+  { body: '__hello_world__' },
+  { body: '*hello_world*' },
+  { body: '`hello world`' },
+  { body: '> hello world' },
+  { body: '> hello\nworld\n\nhello world' },
+  { body: 'hello\n\nworld' },
+  { body: '[hello](world)' },
+  { body: '![hello](world)' },
+  { body: '# hello world' },
+  { body: '## hello world' },
+  { body: '1. hello\n2. world' },
+  { body: '- hello\n- world' },
+  { body: 'hello|world\n---|---\nhello|world' },
+  // eslint-disable-next-line no-useless-escape
+  { body: "<script>alert('hello world!')</script>" },
+  { body: "[hello world](javascript:alert('hello world'))" },
+  { body: '<a name="n" href="javascript:alert(\'hello world\')">*hello world*</a>' },
+  { body: 'hello <a name="n\n" > href="javascript:alert(\'hello world\')">*hello world*</a>' },
+  { body: '```html\n<wc-chat></wc-chat>\n```' },
+  { body: '<wc-chat></wc-chat>' },
+];
+
 customElements.define(
   'textarea-atom',
   class Textarea extends LitElement {
@@ -117,6 +145,46 @@ storiesOf('organisms|message-element', module).add(
       timestamp="1572515613205"
       user_role="user"
     ></wc-chat-message>
+  `,
+);
+
+storiesOf('organisms|message-element/markdown', module).add(
+  'basic',
+  () => html`
+    ${richMessages.map(
+      ({ body: text }) => html`
+        <wc-chat-message
+          .parserengine=${globalThis.markdownit}
+          parser="markdown"
+          parserpreset="strict"
+          text="${text}"
+          theme="gray"
+          timestamp="${Date.now()}"
+          user_role="user"
+          username="Marco Polo"
+        ></wc-chat-message>
+      `,
+    )}
+  `,
+);
+
+storiesOf('organisms|message-element/markdown', module).add(
+  'no-engine',
+  () => html`
+    <h3>Output markdown with no engine</h3>
+    ${richMessages.map(
+      ({ body: text }) => html`
+        <wc-chat-message
+          parser="markdown"
+          parserpreset="strict"
+          text="${text}"
+          theme="gray"
+          timestamp="${Date.now()}"
+          user_role="user"
+          username="Marco Polo"
+        ></wc-chat-message>
+      `,
+    )}
   `,
 );
 

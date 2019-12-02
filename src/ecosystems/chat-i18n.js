@@ -7,15 +7,27 @@ import i18n from '../i18n.js';
 
 const EVENT = 'did-update';
 
+const i18nSym = Symbol('i18nengine');
+const parserSym = Symbol('parsearengine');
+
+const format = (Engine, i = {}, o = {}) => {
+  if (!Engine) return i.message;
+
+  const lexem = new Engine(i.message, i.language);
+
+  return lexem && lexem.format ? lexem.format(o) : i.message;
+};
+
 export class _ChatI18NElement extends _ChatElement {
   static get properties() {
     return {
       actions: Array,
-      delaysubmit: Number,
-      delayupdate: Number,
       delayresize: Number,
       delayscroll: Number,
+      delaysubmit: Number,
+      delayupdate: Number,
       disabled: Boolean,
+      i18nengine: Function,
       language: String,
       lastseen: String,
       list: Array,
@@ -25,6 +37,7 @@ export class _ChatI18NElement extends _ChatElement {
       noinput: Boolean,
       omni: Boolean,
       parser: String,
+      parserengine: Object,
       parserpreset: String,
       parserrules: String,
       placeholder: String,
@@ -41,22 +54,30 @@ export class _ChatI18NElement extends _ChatElement {
     return i18n;
   }
 
-  constructor() {
-    super();
+  set ParserEngine(e) {
+    this[parserSym] = e;
+  }
 
-    this._lang = this._resolveLanguage(this.language);
+  get ParserEngine() {
+    return this[parserSym] || this.parserengine;
+  }
 
-    // eslint-disable-next-line max-len
-    this._strNewMessages = new globalThis.IntlMessageFormat(
-      this.i18n[this._lang].NEW_MESSAGES_COUNT,
-      this._lang,
-    );
+  set I18nEngine(e) {
+    this[i18nSym] = e;
+  }
+
+  get I18nEngine() {
+    return this[i18nSym] || this.i18nengine;
   }
 
   _resolveLanguage(language) {
-    // eslint-disable-next-line max-len
     let resolvedLanguage =
-      language || globalThis.IntlMessageFormat.prototype._resolveLocale(navigator.language);
+      !language &&
+      this.I18nEngine &&
+      this.I18nEngine.prototope &&
+      this.I18nEngine.prototope._resolveLocale
+        ? this.I18nEngine.prototype._resolveLocale(navigator.language)
+        : language;
 
     if (!this.i18n[resolvedLanguage]) {
       resolvedLanguage = 'en-US';
@@ -73,6 +94,7 @@ export class _ChatI18NElement extends _ChatElement {
       delaysubmit,
       delayupdate,
       disabled,
+      language,
       lastseen,
       list = [],
       maxlength,
@@ -91,6 +113,11 @@ export class _ChatI18NElement extends _ChatElement {
       users,
     } = this;
 
+    const currentLanguage = this._resolveLanguage(language);
+
+    const { GO_TO_RECENT_MESSAGE, NEW_MESSAGES_COUNT, NEW_MESSAGES, SEE } =
+      this.i18n[currentLanguage] || {};
+
     const lastSeenIndex =
       list && lastseen !== undefined ? list.findIndex(_ => _.id === lastseen) : undefined;
     // eslint-disable-next-line max-len
@@ -100,14 +127,19 @@ export class _ChatI18NElement extends _ChatElement {
         : 0;
 
     const scrollableI18n = {
-      GO_TO_RECENT_MESSAGE: this.i18n[this._lang].GO_TO_RECENT_MESSAGE,
-      NEW_MESSAGES_COUNT: this._strNewMessages.format({ count: newMessageCount }),
-      SEE: this.i18n[this._lang].SEE,
+      GO_TO_RECENT_MESSAGE,
+      NEW_MESSAGES_COUNT: format(
+        this.I18nEngine,
+        {
+          message: NEW_MESSAGES_COUNT,
+          language: currentLanguage,
+        },
+        { count: newMessageCount },
+      ),
+      SEE,
     };
 
-    const messagesI18n = {
-      NEW_MESSAGES: this.i18n[this._lang].NEW_MESSAGES,
-    };
+    const messagesI18n = { NEW_MESSAGES };
 
     /**
      *  Scrollable & messages are ment to work together
@@ -133,6 +165,7 @@ export class _ChatI18NElement extends _ChatElement {
             .i18n=${messagesI18n}
             .list=${list}
             .parser=${parser}
+            .parserengine=${this.ParserEngine}
             .parserpreset=${parserpreset}
             .parserrules=${parserrules}
             .reactions=${reactions}

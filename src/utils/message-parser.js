@@ -1,3 +1,7 @@
+import { debug as Debug } from './index.js';
+
+const debug = Debug('@netology-group/wc-chat/util/message-parser');
+
 const sanitize = input => {
   let tmp = document.createElement('div');
 
@@ -18,7 +22,12 @@ export function HTMLEntityMessage() {
 }
 
 export function MarkdownMessage(opts = {}) {
-  const { preset, rules } = opts.parser;
+  const { preset, rules, engine: Engine } = opts.parser;
+
+  if (!Engine) {
+    debug('Parser is absent');
+    return a => a;
+  }
 
   const isStrict = preset && preset === 'strict';
 
@@ -32,7 +41,7 @@ export function MarkdownMessage(opts = {}) {
         },
       ];
 
-  const md = new globalThis.markdownit(...options); // eslint-disable-line new-cap
+  const md = new Engine(...options); // eslint-disable-line new-cap
 
   const hasExternalRules = rules && Array.isArray(rules) && rules.length;
 

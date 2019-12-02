@@ -88,6 +88,10 @@ export const style = css`
     background-color: var(--message-color-watchdog);
   }
 
+  :host .inner.theme-gray .content {
+    background-color: #f8f8f8;
+  }
+
   :host .inner:hover .content {
     background-color: var(--message-color-hover);
   }

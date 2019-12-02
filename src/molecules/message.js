@@ -1,4 +1,5 @@
 import { LitElement, html } from 'lit-element';
+import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import cs from 'classnames-es';
 
 import { avatar } from '../atoms/avatar.js';
@@ -11,18 +12,14 @@ import { style } from './message.css.js';
 
 function getMessageBody(message, parsername, parse) {
   let body = message;
-  const isMd = parsername === 'markdown';
+  const isMd = parsername === 'markdown' && parse;
 
   if (parsername === 'html-entities' && parse) body = parse(body);
-  if (isMd && parse) body = parse(body);
+  if (isMd) body = parse(body);
 
   return isMd
     ? html`
-        <wc-chat-content
-          >${html`
-            <div>${body}</div>
-          `}</wc-chat-content
-        >
+        ${unsafeHTML(body)}
       `
     : html`
         <p>${body}</p>
@@ -44,6 +41,7 @@ export class _MessageElement extends LitElement {
       parser: String,
       parserpreset: String,
       parserrules: String,
+      parserengine: Object,
       text: String,
       theme: String,
       timestamp: Number,
@@ -98,6 +96,7 @@ export class _MessageElement extends LitElement {
       me,
     });
 
+    // FIXME: Fix "Element has insufficient color contrast"
     return html`
       <div class="${cname}">
         <slot name=${`message-${uid || Math.ceil(Math.random() * 1e3)}`}></slot>
@@ -117,7 +116,7 @@ export class _MessageElement extends LitElement {
               })}
           ${section({
             body: getMessageBody(text, parser, this[parserSym]),
-            classname: `parser-${parser}`,
+            cname: `parser-${parser}`,
           })}
           <slot name="message-epilogue"></slot>
         </div>
@@ -126,13 +125,14 @@ export class _MessageElement extends LitElement {
   }
 
   __initializeParser() {
-    const { parser, parserpreset, parserrules } = this;
+    const { parser, parserpreset, parserrules, parserengine } = this;
 
-    if (!this[parserSym] && parser) {
+    if (!this[parserSym] && parserengine && parser) {
       this[parserSym] = this._parsers.get(parser)({
         parser: {
           preset: parserpreset,
           rules: parserrules ? parserrules.split(',') : [],
+          engine: parserengine,
         },
       });
     }

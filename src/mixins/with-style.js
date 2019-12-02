@@ -8,6 +8,7 @@ export const withStyle = (html, css) => {
     class extends base {
       static get styles() {
         return (base.styles || []).concat(styles || css(''));
+        // return (base.styles || []).concat(styles.length ? styles.map((style) => style instanceof TemplateResult ? style : css(style)) : css(''));
       }
     };
 };

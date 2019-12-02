@@ -34,9 +34,9 @@
     "prepublishOnly": "npm run lint && npm run test && npm run build",
     "site:build": "npm run storybook:build",
     "prestart": "scripts/prepare.sh",
-    "start": "es-dev-server --app-index demo/index.html --node-resolve --open --watch",
+    "start": "es-dev-server --app-index index.html --node-resolve --open --watch",
     "start:build": "cd dist && es-dev-server --open",
-    "start:compatibility": "es-dev-server --app-index demo/index.html --compatibility all --node-resolve --open --watch",
+    "start:compatibility": "es-dev-server --app-index index.html --compatibility all --node-resolve --open --watch",
     "storybook": "start-storybook -p 9001",
     "storybook:build": "build-storybook -o _site -s storybook-static",
     "test": "karma start --coverage",
@@ -98,7 +98,7 @@
     "classnames-es": "^2.2.6",
     "intl-messageformat": "^2.2.0",
     "lit-element": "^2.0.1",
-    "lit-html": "^1.0.0",
+    "lit-html": "^1.1.2",
     "markdown-it": "^8.4.2",
     "most": "^1.7.3",
     "node-emoji": "^1.10.0",
@@ -129,6 +129,7 @@
   },
   "peerDependencies": {
     "intl-messageformat": "~2.2.0",
+    "lit-element": ">=2.2.1",
     "markdown-it": "^8.4"
   },
   "optionalDependencies": {

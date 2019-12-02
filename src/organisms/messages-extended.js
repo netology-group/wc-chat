@@ -21,6 +21,7 @@ const showPosHelpers = element =>
 
 const actionsSym = Symbol('actions');
 const reactionsSym = Symbol('reactions');
+const parserSym = Symbol('parserengine');
 
 export class _XMessagesElement extends MessagesElement {
   static get properties() {
@@ -30,6 +31,7 @@ export class _XMessagesElement extends MessagesElement {
       i18n: Object,
       lastseen: Number,
       parser: String,
+      parserengine: Object,
       parserpreset: String,
       parserrules: String,
       reactions: Array,
@@ -52,6 +54,10 @@ export class _XMessagesElement extends MessagesElement {
     this[reactionsSym] = new Map(Array.isArray(_) ? _ : []);
   }
 
+  get __prsrengine() {
+    return this.parserengine;
+  }
+
   constructor() {
     super();
 
@@ -59,19 +65,29 @@ export class _XMessagesElement extends MessagesElement {
 
     this[actionsSym] = new Map();
     this[reactionsSym] = new Map();
+    this[parserSym] = undefined;
   }
 
   firstUpdated() {
-    const { actions = [], reactions = [] } = this;
+    const { actions = [], reactions = [], parserengine } = this;
 
     this._actions = actions;
     this._reactions = reactions;
+    this[parserSym] = parserengine;
+
+    if (this.parser && !this[parserSym]) debug('Can not use parser');
 
     // eslint-disable-next-line no-unused-expressions
     Array.isArray(reactions) &&
       reactions.forEach(it => {
         this[reactionsSym].set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 });
       });
+  }
+
+  disconnectedCallback() {
+    this[actionsSym] = undefined;
+    this[reactionsSym] = undefined;
+    this[parserSym] = undefined;
   }
 
   render() {
@@ -168,6 +184,7 @@ export class _XMessagesElement extends MessagesElement {
         .parser=${this.parser}
         .parserpreset=${this.parserpreset}
         .parserrules=${this.parserrules}
+        .parserengine=${this[parserSym]}
         class=${className}
         icon=${icon}
         image=${avatar}

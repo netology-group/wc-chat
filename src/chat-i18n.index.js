@@ -1,6 +1,5 @@
 /**
  * Uses:
- * ./content.index.js
  * ./input.index.js
  * ./message.index.js
  * ./messages-extended.index.js
