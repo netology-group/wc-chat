@@ -30,9 +30,10 @@ export function MarkdownMessage(opts = {}) {
   }
 
   const isStrict = preset && preset === 'strict';
+  const isCustomLinkify = Object.hasOwnProperty.call(opts, 'linkify');
 
   const options = isStrict
-    ? ['zero', { linkify: true, typographer: true }]
+    ? ['zero', { linkify: !isCustomLinkify, typographer: true }]
     : [
         preset || {
           linkify: true,
@@ -50,7 +51,6 @@ export function MarkdownMessage(opts = {}) {
       ? rules
       : isStrict
       ? [
-          'linkify',
           'normalize',
           'blockquote',
           'paragraph',
@@ -58,9 +58,35 @@ export function MarkdownMessage(opts = {}) {
           'emphasis',
           'backticks',
           'fence',
-        ]
+        ].concat(isCustomLinkify ? [] : 'linkify')
       : [],
   );
 
-  return input => md.render(input);
+  return _input => {
+    const outputArr = [];
+    let last = 0;
+
+    const input = sanitize(_input);
+    const output = md.render(_input);
+
+    if (opts.linkify && opts.linkify.blanklink) {
+      const matches = md.linkify.match(input);
+
+      if (matches && matches.length) {
+        matches.forEach(match => {
+          if (last < match.index) outputArr.push(input.slice(last, match.index));
+
+          outputArr.push(`<a target="_blank" href="${match.url}">${match.text}</a>`);
+
+          last = match.lastIndex;
+        });
+      }
+
+      if (last < output.length) outputArr.push(input.slice(last));
+    } else {
+      outputArr.push(output);
+    }
+
+    return outputArr.join('');
+  };
 }

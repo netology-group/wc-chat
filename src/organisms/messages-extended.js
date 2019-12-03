@@ -21,7 +21,6 @@ const showPosHelpers = element =>
 
 const actionsSym = Symbol('actions');
 const reactionsSym = Symbol('reactions');
-const parserSym = Symbol('parserengine');
 
 export class _XMessagesElement extends MessagesElement {
   static get properties() {
@@ -65,17 +64,15 @@ export class _XMessagesElement extends MessagesElement {
 
     this[actionsSym] = new Map();
     this[reactionsSym] = new Map();
-    this[parserSym] = undefined;
   }
 
   firstUpdated() {
-    const { actions = [], reactions = [], parserengine } = this;
+    const { actions = [], reactions = [], parserengine, parser } = this;
 
     this._actions = actions;
     this._reactions = reactions;
-    this[parserSym] = parserengine;
 
-    if (this.parser && !this[parserSym]) debug('Can not use parser');
+    if (parser && !parserengine) debug('Can not use parser');
 
     // eslint-disable-next-line no-unused-expressions
     Array.isArray(reactions) &&
@@ -87,7 +84,6 @@ export class _XMessagesElement extends MessagesElement {
   disconnectedCallback() {
     this[actionsSym] = undefined;
     this[reactionsSym] = undefined;
-    this[parserSym] = undefined;
   }
 
   render() {
@@ -184,7 +180,7 @@ export class _XMessagesElement extends MessagesElement {
         .parser=${this.parser}
         .parserpreset=${this.parserpreset}
         .parserrules=${this.parserrules}
-        .parserengine=${this[parserSym]}
+        .parserengine=${this.parserengine}
         class=${className}
         icon=${icon}
         image=${avatar}

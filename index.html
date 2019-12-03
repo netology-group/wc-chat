@@ -169,6 +169,9 @@
     messenger1.I18nEngine = globalThis.IntlMessageFormat
     messenger1.ParserEngine = globalThis.markdownit
 
+    messenger2.I18nEngine = globalThis.IntlMessageFormat
+    messenger2.ParserEngine = globalThis.markdownit
+
     </script>
   </head>
   <body>
@@ -176,35 +179,36 @@
     <div class="row">
       <div class="container">
         <wc-chat
+          delayresize=400
+          delayupdate=200
           id="messenger1"
           language="ru"
-          parser='markdown'
-          parserpreset='strict'
+          parser="markdown"
+          parserpreset="strict"
           placeholder="Введите сообщение"
           placeholderdisabled="Чат заблокирован"
-          delayupdate=200
-          delayresize=400
         />
       </div>
       <div class="container">
         <wc-chat
+          delayresize=400
+          delayupdate=200
           id="messenger2"
           language="en-US"
+          parser="html-entities"
           placeholder="Write something…"
           placeholderdisabled="Chat is blocked now"
-          delayupdate=200
-          delayresize=400
         />
       </div>
       <div class="container">
         <wc-chat
+          delayresize=400
+          delayupdate=200
           id="messenger3"
           language="en-US"
           placeholder="Write something…"
           placeholderdisabled="Chat is blocked now"
           scrollabledisabled
-          delayupdate=200
-          delayresize=400
         />
       </div>
     </div>

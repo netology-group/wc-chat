@@ -70,6 +70,10 @@ export class _MessageElement extends LitElement {
     this.__initializeParser();
   }
 
+  disconnectedCallback() {
+    this[parserSym] = undefined;
+  }
+
   render() {
     // eslint-disable-line class-methods-use-this
     const {
@@ -133,6 +137,9 @@ export class _MessageElement extends LitElement {
           preset: parserpreset,
           rules: parserrules ? parserrules.split(',') : [],
           engine: parserengine,
+        },
+        linkify: {
+          blanklink: true,
         },
       });
     }
