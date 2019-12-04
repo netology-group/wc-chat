@@ -21,32 +21,43 @@ const format = (Engine, i = {}, o = {}) => {
 export class _ChatI18NElement extends _ChatElement {
   static get properties() {
     return {
-      actions: Array,
-      delayresize: Number,
-      delayscroll: Number,
-      delaysubmit: Number,
-      delayupdate: Number,
-      disabled: Boolean,
+      actions: { type: Array },
+      delayresize: { type: { type: Number } },
+      delayscroll: { type: Number },
+      delaysubmit: { type: Number },
+      delayupdate: { type: Number },
+      disabled: { type: Boolean },
       i18nengine: Function,
       language: String,
       lastseen: String,
-      list: Array,
-      maxlength: Number,
-      maxrows: Number,
+      list: { type: Array },
+      maxlength: { type: Number },
+      maxrows: { type: Number },
       message: String,
-      noinput: Boolean,
-      omni: Boolean,
+      noinput: { type: Boolean },
+      omni: { type: Boolean },
       parser: String,
-      parserengine: Object,
+      parserengine: { type: Object },
       parserpreset: String,
       parserrules: String,
       placeholder: String,
       placeholderdisabled: String,
-      reactions: Array,
-      scrollabledisabled: Boolean,
-      user: Number,
-      users: Array,
+      reactions: { type: Array },
+      scrollabledisabled: { type: Boolean },
+      user: { type: Number },
+      users: { type: Array },
     };
+  }
+
+  constructor() {
+    super();
+
+    this.delaysubmit = 0;
+    this.list = [];
+    this.message = '';
+    this.parser = '';
+    this.parserpreset = '';
+    this.parserrules = '';
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -96,10 +107,10 @@ export class _ChatI18NElement extends _ChatElement {
       disabled,
       language,
       lastseen,
-      list = [],
+      list,
       maxlength,
       maxrows,
-      message = '',
+      message,
       noinput,
       omni,
       parser,
@@ -147,13 +158,13 @@ export class _ChatI18NElement extends _ChatElement {
     return html`
       <div class="wrapper">
         <wc-chat-scrollable
+          ?freeze=${scrollabledisabled}
+          ?omni=${omni}
+          ?showbannernew=${newMessageCount > 0}
           .delay=${delayupdate}
           .delayresize=${delayresize}
           .delayscroll=${delayscroll}
-          .freeze=${scrollabledisabled}
           .i18n=${scrollableI18n}
-          .omni=${omni}
-          .showbannernew=${newMessageCount > 0}
           @last-seen-change=${this._handleLastSeenChangeBounded}
           @seek-after=${this._handleSeekAfterBounded}
           @seek-before=${this._handleSeekBeforeBounded}
@@ -164,10 +175,7 @@ export class _ChatI18NElement extends _ChatElement {
             .actions=${actions}
             .i18n=${messagesI18n}
             .list=${list}
-            .parser=${parser}
             .parserengine=${this.ParserEngine}
-            .parserpreset=${parserpreset}
-            .parserrules=${parserrules}
             .reactions=${reactions}
             .users=${users}
             @message-delete=${this._handleDeleteBounded}
@@ -176,6 +184,9 @@ export class _ChatI18NElement extends _ChatElement {
             invoke=${EVENT}
             lastseen=${lastseen}
             listdir=${this._listdir}
+            parser=${parser}
+            parserrules=${parserrules}
+            parserpreset=${parserpreset}
             user=${user}
           />
         </wc-chat-scrollable>
@@ -184,10 +195,10 @@ export class _ChatI18NElement extends _ChatElement {
           : html`
               <div class="input">
                 <wc-chat-input
-                  .delay=${delaysubmit || 0}
-                  .disabled=${disabled}
+                  ?disabled=${disabled}
+                  .delay=${delaysubmit}
                   .maxlength=${maxlength}
-                  .maxrows=${maxrows || 10}
+                  .maxrows=${maxrows}
                   @message-submit=${this._handleSubmitBounded}
                   placeholder=${placeholder}
                   placeholderdisabled=${placeholderdisabled}

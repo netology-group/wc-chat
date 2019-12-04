@@ -26,14 +26,14 @@ export class _XMessagesElement extends MessagesElement {
   static get properties() {
     return {
       ...super.properties,
-      actions: Array,
-      i18n: Object,
-      lastseen: Number,
+      actions: { type: Array },
+      i18n: { type: Object },
+      lastseen: { type: Number },
       parser: String,
-      parserengine: Object,
+      parserengine: { type: Object },
       parserpreset: String,
       parserrules: String,
-      reactions: Array,
+      reactions: { type: Array },
     };
   }
 
@@ -182,10 +182,10 @@ export class _XMessagesElement extends MessagesElement {
         .parserrules=${this.parserrules}
         .parserengine=${this.parserengine}
         class=${className}
-        icon=${icon}
+        icon=${icon || ''}
         image=${avatar}
         text=${text}
-        theme=${theme}
+        theme=${theme || ''}
         timestamp=${timestamp}
         uid=${id}
         username=${user_name}
@@ -271,7 +271,7 @@ export class _XMessagesElement extends MessagesElement {
     return !config
       ? undefined
       : html`
-          <wc-chat-reactions .config=${config} showcount="showcount" />
+          <wc-chat-reactions ?showcount="showcount" .config=${config} />
         `;
   }
 }

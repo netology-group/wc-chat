@@ -60,12 +60,12 @@ export const wasAtHeadSym = Symbol('wasAtHead');
 export class _ScrollableElement extends LitElement {
   static get properties() {
     return {
-      delay: Number,
-      delayresize: Number,
-      delayscroll: Number,
-      freeze: Boolean,
+      delay: { type: Number },
+      delayresize: { type: Number },
+      delayscroll: { type: Number },
+      freeze: { type: Boolean },
       listen: String,
-      omni: Boolean,
+      omni: { type: Boolean },
       scrolltarget: String,
     };
   }

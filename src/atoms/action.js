@@ -36,8 +36,8 @@ export const reaction = ({ disabled, handler, message }) => {
     <button .disabled=${disabled} @click=${e => handler && handler(e, { message })} class=${cls}>
       <wc-chat-reactions
         .config=${config()}
+        ?showall="showall"
         direction="column"
-        showall="showall"
       ></wc-chat-reactions>
     </button>
   `;

@@ -13,14 +13,10 @@ export const textarea = ({
   value = '',
 } = {}) => html`
   <iron-autogrow-textarea
-    .disabled=${disabled}
+    ?disabled=${disabled}
     .maxRows=${maxRows}
-    @input=${function oninput(e) {
-      onInput && onInput(e);
-    }}
-    @keypress=${function onkeypress(e) {
-      onKeyPress && onKeyPress(e);
-    }}
+    @input=${onInput}
+    @keypress=${onKeyPress}
     id=${id}
     maxlength=${maxlength}
     placeholder=${placeholder}

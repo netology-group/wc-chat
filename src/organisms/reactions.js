@@ -9,11 +9,11 @@ import emojiJSON from '../misc/emoji.json.js'; // eslint-disable-line import/ext
 export class _ReactionsElement extends LitElement {
   static get properties() {
     return {
-      config: Map,
+      config: { type: Map },
       direction: String,
       displayname: String,
-      showcount: Boolean,
-      showall: Boolean,
+      showcount: { type: Boolean },
+      showall: { type: Boolean },
     };
   }
 

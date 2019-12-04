@@ -44,8 +44,8 @@ customElements.define(
       return {
         disabled: String,
         id: String,
-        maxlength: Number,
-        maxrows: Number,
+        maxlength: { type: Number },
+        maxrows: { type: Number },
         placeholder: String,
         value: String,
       };
@@ -141,9 +141,9 @@ storiesOf('organisms|message-element', module).add(
   () => html`
     <wc-chat-message
       text="message text"
-      username="Marco Polo"
       timestamp="1572515613205"
       user_role="user"
+      username="Marco Polo"
     ></wc-chat-message>
   `,
 );
@@ -208,10 +208,10 @@ storiesOf('atoms|textarea', module).add(
   'basic',
   () => html`
     <textarea-atom
-      maxrows="10"
+      disabled="disabled"
       id="textarea"
       maxlength="50"
-      disabled="disabled"
+      maxrows="10"
       value="disabled"
     ></textarea-atom>
     <textarea-atom maxrows="10" id="textarea" maxlength="50"></textarea-atom>

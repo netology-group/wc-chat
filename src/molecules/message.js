@@ -33,18 +33,18 @@ export class _MessageElement extends LitElement {
     return {
       aggregated: String,
       body: String,
-      deleted: Boolean,
+      deleted: { type: Boolean },
       icon: String,
       identity: String,
       image: String,
-      me: Boolean,
+      me: { type: Boolean },
       parser: String,
       parserpreset: String,
       parserrules: String,
-      parserengine: Object,
+      parserengine: { type: Object },
       text: String,
       theme: String,
-      timestamp: Number,
+      timestamp: { type: Number },
       uid: String,
       username: String,
     };
@@ -120,7 +120,7 @@ export class _MessageElement extends LitElement {
               })}
           ${section({
             body: getMessageBody(text, parser, this[parserSym]),
-            cname: `parser-${parser}`,
+            cname: cs({ [`parser-${parser}`]: parser }),
           })}
           <slot name="message-epilogue"></slot>
         </div>

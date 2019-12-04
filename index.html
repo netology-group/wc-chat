@@ -172,6 +172,8 @@
     messenger2.I18nEngine = globalThis.IntlMessageFormat
     messenger2.ParserEngine = globalThis.markdownit
 
+    messenger3.I18nEngine = globalThis.IntlMessageFormat
+
     </script>
   </head>
   <body>
@@ -187,10 +189,10 @@
           parserpreset="strict"
           placeholder="Введите сообщение"
           placeholderdisabled="Чат заблокирован"
-        />
-      </div>
-      <div class="container">
-        <wc-chat
+          />
+        </div>
+        <div class="container">
+          <wc-chat
           delayresize=400
           delayupdate=200
           id="messenger2"

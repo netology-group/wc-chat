@@ -48,10 +48,10 @@ export class _MessagesElement extends LitElement {
     return {
       classname: String,
       invoke: String,
-      list: Array,
-      listdir: Number,
-      user: Number,
-      users: Array,
+      list: { type: Array },
+      listdir: { type: Number },
+      user: { type: Number },
+      users: { type: Array },
     };
   }
 
@@ -207,10 +207,10 @@ export class _MessagesElement extends LitElement {
         ?me=${me}
         .identity=${identity}
         class=${className}
-        icon=${icon}
+        icon=${icon || ''}
         image=${avatar}
         text=${text}
-        theme=${theme}
+        theme=${theme || ''}
         timestamp=${timestamp}
         uid=${id}
         username=${user_name}

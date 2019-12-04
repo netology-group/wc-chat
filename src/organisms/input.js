@@ -22,10 +22,10 @@ const isShiftBtn = ({ keyCode }) => isKeyCode(keyCode, 16);
 export class _InputElement extends LitElement {
   static get properties() {
     return {
-      delay: Number,
-      disabled: String,
-      maxlength: Number,
-      maxrows: Number,
+      delay: { type: Number },
+      disabled: { type: Boolean },
+      maxlength: { type: Number },
+      maxrows: { type: Number },
       placeholder: String,
       placeholderdisabled: String,
       value: String,
@@ -171,7 +171,7 @@ export class _InputElement extends LitElement {
           ${textaeraEl({
             disabled,
             maxlength,
-            maxRows: maxrows || 5,
+            maxRows: maxrows,
             onInput: this.__onInputBounded,
             onKeyPress: this.__onKeyPressBounded,
             placeholder: disabled ? placeholderdisabled : placeholder,

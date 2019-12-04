@@ -10,31 +10,34 @@ const debug = Debug('@netology-group/wc-chat/ChatElement');
 export class _ChatElement extends LitElement {
   static get properties() {
     return {
-      actions: Array,
-      delaysubmit: Number,
-      delayupdate: Number,
-      delayresize: Number,
-      delayscroll: Number,
-      disabled: Boolean,
+      actions: { type: Array },
+      delaysubmit: { type: Number },
+      delayupdate: { type: Number },
+      delayresize: { type: Number },
+      delayscroll: { type: Number },
+      disabled: { type: Boolean },
       language: String,
       lastseen: String,
-      list: Array,
-      maxlength: Number,
-      maxrows: Number,
+      list: { type: Array },
+      maxlength: { type: Number },
+      maxrows: { type: Number },
       message: String,
-      noinput: Boolean,
-      omni: Boolean,
+      noinput: { type: Boolean },
+      omni: { type: Boolean },
       placeholder: String,
       placeholderdisabled: String,
-      reactions: Array,
-      scrollabledisabled: Boolean,
-      user: Number,
-      users: Array,
+      reactions: { type: Array },
+      scrollabledisabled: { type: Boolean },
+      user: { type: Number },
+      users: { type: Array },
     };
   }
 
   constructor() {
     super();
+
+    this.list = [];
+    this.message = '';
 
     this._handleSubmitBounded = this._handleSubmit.bind(this);
     this._handleDeleteBounded = this._handleDelete.bind(this);
@@ -180,11 +183,11 @@ export class _ChatElement extends LitElement {
     return html`
       <div class="wrapper">
         <wc-chat-scrollable
+          ?freeze=${scrollabledisabled}
+          ?omni=${omni}
           .delay=${delayupdate}
           .delayresize=${delayresize}
           .delayscroll=${delayscroll}
-          .freeze=${scrollabledisabled}
-          .omni=${omni}
           @last-seen-change=${this._handleLastSeenChangeBounded}
           @seek-after=${this._handleSeekAfterBounded}
           @seek-before=${this._handleSeekBeforeBounded}
@@ -211,10 +214,10 @@ export class _ChatElement extends LitElement {
               <div class="input">
                 <wc-chat-input
                   .delay=${delaysubmit || 0}
-                  .disabled=${disabled}
                   .maxlength=${maxlength}
                   .maxrows=${maxrows || 10}
                   @message-submit=${this._handleSubmitBounded}
+                  disabled=${disabled}
                   placeholder=${placeholder}
                   placeholderdisabled=${placeholderdisabled}
                   value=${message}

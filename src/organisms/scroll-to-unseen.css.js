@@ -43,6 +43,10 @@ export const style = css`
     top: 3px;
   }
 
+  :host .wrapper .banner .action {
+    white-space: nowrap;
+  }
+
   :host .wrapper .banner.new .icon {
     right: -3px;
   }

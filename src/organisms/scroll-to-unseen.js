@@ -23,7 +23,7 @@ const freshBanner = ({ active, i18n, onClick }) => {
     <div class=${cname} @click=${!active ? undefined : onClick}>
       <div class="row">
         <div>${i18n.NEW_MESSAGES_COUNT}</div>
-        <div>
+        <div class="action">
           ${i18n.SEE}
           <span class="icon">${arrowDownSvg}</span>
         </div>
@@ -54,8 +54,8 @@ export class _ScrollableUnseenElement extends _ScrollableElement {
   static get properties() {
     return {
       ...super.properties,
-      i18n: Object,
-      showbannernew: Boolean,
+      i18n: { type: Object },
+      showbannernew: { type: Boolean },
       unseenSelector: String,
     };
   }

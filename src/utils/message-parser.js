@@ -66,15 +66,14 @@ export function MarkdownMessage(opts = {}) {
     const outputArr = [];
     let last = 0;
 
-    const input = sanitize(_input);
     const output = md.render(_input);
 
     if (opts.linkify && opts.linkify.blanklink) {
-      const matches = md.linkify.match(input);
+      const matches = md.linkify.match(output);
 
       if (matches && matches.length) {
         matches.forEach(match => {
-          if (last < match.index) outputArr.push(input.slice(last, match.index));
+          if (last < match.index) outputArr.push(output.slice(last, match.index));
 
           outputArr.push(`<a target="_blank" href="${match.url}">${match.text}</a>`);
 
@@ -82,7 +81,7 @@ export function MarkdownMessage(opts = {}) {
         });
       }
 
-      if (last < output.length) outputArr.push(input.slice(last));
+      if (last < output.length) outputArr.push(output.slice(last));
     } else {
       outputArr.push(output);
     }
