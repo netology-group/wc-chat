@@ -14,6 +14,7 @@
   "author": "",
   "files": [
     "dist",
+    "index.js",
     "src"
   ],
   "main": "dist/chat-i18n.index.js",
