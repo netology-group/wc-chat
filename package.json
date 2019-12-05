@@ -1,7 +1,7 @@
 {
-  "name": "@netology-group/wc-chat",
+  "name": "@ulms/wc-chat",
   "version": "1.0.0",
-  "description": "Messenger's webcomponents",
+  "description": "Chat' custom elements",
   "homepage": "https://github.com/netology-group/wc-chat",
   "bugs": {
     "url": "https://github.com/netology-group/wc-chat/issues"
