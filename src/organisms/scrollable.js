@@ -8,7 +8,7 @@ import { observeC as observe, throttleC as throttle } from '../utils/most.js';
 
 import { style } from './scrollable.css.js';
 
-const debug = Debug('@netology-group/wc-chat/ScrollableElement');
+const debug = Debug('@ulms/wc-chat/ScrollableElement');
 
 const DELTA = 20;
 const THROTTLE_RESIZE = 33;

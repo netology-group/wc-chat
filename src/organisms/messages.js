@@ -6,7 +6,7 @@ import { style } from './messages.css.js';
 import { style as actionStyle } from '../molecules/actions.css.js';
 import { withStyle } from '../mixins/with-style.js';
 
-const debug = Debug('@netology-group/wc-chat/MessagesElement');
+const debug = Debug('@ulms/wc-chat/MessagesElement');
 
 /**
  * Check a place where new messages should be placed

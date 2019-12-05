@@ -10,7 +10,7 @@ export const debug = namespace => {
   return (...argv) => (shouldLog ? Debug(namespace)(...argv) : undefined);
 };
 
-const deb = debug('@netology-group/wc-chat/utils');
+const deb = debug('@ulms/wc-chat/utils');
 
 export const stampToDate = stamp => new Date(stamp * 1e3);
 

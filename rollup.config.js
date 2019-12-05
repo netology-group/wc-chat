@@ -18,6 +18,6 @@ const config = createCompatibilityConfig({
   },
 });
 
-Debug(`@netology-group/wc-chat/rollup`)(config);
+Debug(`@ulms/wc-chat/rollup`)(config);
 
 export default config;

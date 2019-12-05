@@ -9,7 +9,7 @@ import { arrowDown as arrowDownSvg } from '../images/index.js';
 import { style } from './scrollable.css.js';
 import { style as styleUnseen } from './scroll-to-unseen.css.js';
 
-const debug = Debug('@netology-group/wc-chat/ScrollableUnseenElement');
+const debug = Debug('@ulms/wc-chat/ScrollableUnseenElement');
 
 const freshBanner = ({ active, i18n, onClick }) => {
   const cname = cs({

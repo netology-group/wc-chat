@@ -1,6 +1,6 @@
 import { debug as Debug } from './index.js';
 
-const debug = Debug('@netology-group/wc-chat/util/message-parser');
+const debug = Debug('@ulms/wc-chat/util/message-parser');
 
 const sanitize = input => {
   let tmp = document.createElement('div');

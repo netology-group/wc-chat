@@ -5,7 +5,7 @@ import { style } from './chat.css.js';
 import { withStyle } from '../mixins/with-style.js';
 
 const EVENT = 'did-update';
-const debug = Debug('@netology-group/wc-chat/ChatElement');
+const debug = Debug('@ulms/wc-chat/ChatElement');
 
 export class _ChatElement extends LitElement {
   static get properties() {
