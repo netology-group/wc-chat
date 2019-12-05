@@ -1,4 +1,6 @@
-@netology-group/wc-chat
+<img src="https://raw.githubusercontent.com/open-wc/open-wc/master/assets/images/logo.png" alt="open-wc" width="200px" />
+
+# @netology-group/wc-chat
 
 [![](https://data.jsdelivr.com/v1/package/npm/@netology-group/wc-chat/badge?style=rounded)](https://www.jsdelivr.com/package/npm/@netology-group/wc-chat)
 ![](https://img.shields.io/npm/dt/@netology-group/wc-chat.svg)
@@ -6,6 +8,15 @@
 
 
 ## Usage
+
+### Polyfills
+
+Workaround for custom-elements-es5-adapter:
+```html
+<script>if (!window.customElements) { document.write('<!--'); }</script>
+<script src="<path_to>/custom-elements-es5-adapter.84b300ee818dce8b351c7cc7c100bcf7.js" type="text/javascript" ></script>
+<!--! do not remove -->
+```
 
 ### Dependencies
 

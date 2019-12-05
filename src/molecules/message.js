@@ -1,103 +1,96 @@
-import { html, LitElement, classString as cs } from '@polymer/lit-element'
-import { unsafeHTML } from 'lit-html/lib/unsafe-html'
-import { withStyle } from '@netology-group/wc-utils'
+import { LitElement, html } from 'lit-element';
+import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
+import cs from 'classnames-es';
 
-import { section, avatar, meta } from '../atoms/message'
-import { HTMLEntityMessage, MarkdownMessage } from '../utils/message-parser'
+import { avatar } from '../atoms/avatar.js';
+import { HTMLEntityMessage, MarkdownMessage } from '../utils/message-parser.js';
+import { meta } from '../atoms/meta.js';
+import { section } from '../atoms/section.js';
+import { withStyle } from '../mixins/with-style.js';
 
-import style from './message.css'
+import { style } from './message.css.js';
 
-export { style }
+function getMessageBody(message, parsername, parse) {
+  let body = message;
+  const isMd = parsername === 'markdown' && parse;
 
-function getMessageBody (message, parsername, parse) {
-  let body = message
+  if (parsername === 'html-entities' && parse) body = parse(body);
+  if (isMd) body = parse(body);
 
-  const isMd = parsername === 'markdown'
-
-  if (parsername === 'html-entities') body = parse(body)
-  if (isMd) body = parse(body)
-
-  return isMd ? (html`${unsafeHTML(body)}`) : (html`<p>${body}</p>`)
+  return isMd
+    ? html`
+        ${unsafeHTML(body)}
+      `
+    : html`
+        <p>${body}</p>
+      `;
 }
 
-export class MessageFactory extends LitElement {
-  static get properties () {
+const parserSym = Symbol('parser');
+
+export class _MessageElement extends LitElement {
+  static get properties() {
     return {
-      aggregated: Boolean,
-      deleted: Boolean,
+      aggregated: String,
+      body: String,
+      deleted: { type: Boolean },
       icon: String,
       identity: String,
       image: String,
-      me: Boolean,
-      parsername: String,
+      me: { type: Boolean },
+      parser: String,
       parserpreset: String,
       parserrules: String,
+      parserengine: { type: Object },
       text: String,
       theme: String,
-      timestamp: Number,
-      username: String,
+      timestamp: { type: Number },
       uid: String,
-    }
+      username: String,
+    };
   }
 
-  constructor (...argv) {
-    super(...argv)
-
-    this.parser = undefined
+  // eslint-disable-next-line class-methods-use-this
+  get _parsers() {
+    return new Map([
+      ['markdown', opts => MarkdownMessage(opts)],
+      ['html-entities', opts => HTMLEntityMessage(opts)],
+    ]);
   }
 
-  _shouldRender (...argv) {
-    if (!this.parser && argv[0].parsername) {
-      this.parser = this.parsers.get(argv[0].parsername)({
-        parser: {
-          preset: argv[0].parserpreset,
-          rules: argv[0].parserrules ? argv[0].parserrules.split(',') : [],
-        },
-      })
-    }
+  constructor() {
+    super();
 
-    return super._shouldRender(...argv)
+    this[parserSym] = undefined;
   }
 
-  get parsers () { // eslint-disable-line class-methods-use-this
-    return new Map([['markdown', opts => MarkdownMessage(opts)], ['html-entities', opts => HTMLEntityMessage(opts)]])
+  connectedCallback() {
+    super.connectedCallback();
+
+    this.__initializeParser();
   }
 
-  _render (props) { // eslint-disable-line class-methods-use-this
+  disconnectedCallback() {
+    this[parserSym] = undefined;
+  }
+
+  render() {
+    // eslint-disable-line class-methods-use-this
     const {
-      aggregated,
-      deleted,
+      aggregated = false,
+      deleted = false,
       icon,
       image,
       identity,
       me,
-      parsername,
+      parser,
       text,
       theme,
       timestamp,
       uid,
       user_role,
       username,
-    } = props
-
-    const avatarTpl = avatar({
-      classname: user_role,
-      image,
-    })
-
-    const metaTpl = aggregated
-      ? undefined
-      : meta({
-        icon,
-        identity,
-        timestamp,
-        username,
-      })
-
-    const sectionTpl = section({
-      body: getMessageBody(text, parsername, this.parser),
-      classname: `parser-${parsername}`,
-    })
+    } = this;
 
     const cname = cs({
       [`theme-${theme}`]: theme,
@@ -105,21 +98,52 @@ export class MessageFactory extends LitElement {
       deleted,
       inner: true,
       me,
-    })
+    });
 
-    return (html`
-      <div class$='${cname}'>
-        <slot name$=${`message-${uid || Math.ceil(Math.random() * 1e3)}`}></slot>
-        ${avatarTpl}
+    // FIXME: Fix "Element has insufficient color contrast"
+    return html`
+      <div class="${cname}">
+        <slot name=${`message-${uid || Math.ceil(Math.random() * 1e3)}`}></slot>
+        ${avatar({
+          classname: user_role,
+          image,
+        })}
         <div class="content">
           <slot name="message-prologue"></slot>
-          ${metaTpl}
-          ${sectionTpl}
+          ${aggregated
+            ? undefined
+            : meta({
+                icon,
+                identity,
+                timestamp,
+                username,
+              })}
+          ${section({
+            body: getMessageBody(text, parser, this[parserSym]),
+            cname: cs({ [`parser-${parser}`]: parser }),
+          })}
           <slot name="message-epilogue"></slot>
         </div>
       </div>
-    `)
+    `;
+  }
+
+  __initializeParser() {
+    const { parser, parserpreset, parserrules, parserengine } = this;
+
+    if (!this[parserSym] && parserengine && parser) {
+      this[parserSym] = this._parsers.get(parser)({
+        parser: {
+          preset: parserpreset,
+          rules: parserrules ? parserrules.split(',') : [],
+          engine: parserengine,
+        },
+        linkify: {
+          blanklink: true,
+        },
+      });
+    }
   }
 }
 
-export const Message = withStyle(html)(MessageFactory, style)
+export const MessageElement = withStyle()(_MessageElement, style);

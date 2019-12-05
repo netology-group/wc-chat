@@ -1,17 +1,9 @@
-import { html } from '@polymer/lit-element'
+import { html } from 'lit-element';
 
-import entry from '../images/entry.svg'
+import { entry as entrysvg } from '../images/index.js';
 
-import style from './button.css'
-
-export const button = ({
-  disabled,
-  children,
-}) => (html`
-  <button
-    class='enter'
-    disabled=${disabled}
-  >${children || html`<img src='${entry}' />`}</button>
-`)
-
-export { style }
+export const button = ({ children, disabled, type = 'button' } = {}) => html`
+  <button .disabled=${disabled} class="enter" type=${type}>
+    ${children && children.length ? children : entrysvg}
+  </button>
+`;

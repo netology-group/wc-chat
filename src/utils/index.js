@@ -1,54 +1,49 @@
-import Debug from 'debug'
-import invariant from 'invariant'
+import Debug from './debug.js';
 
-// eslint-disable-next-line no-unused-vars
-const _ = ns => (cond, ...argv) => invariant(cond, ...argv)
+export const debug = namespace => {
+  const shouldLog =
+    typeof window.localStorage !== 'undefined' &&
+    localStorage.length &&
+    localStorage.getItem('debug') &&
+    new RegExp(localStorage.getItem('debug')).test(namespace);
 
-export const Invariant = (namespace) => {
-  const nvrnt = _(namespace)
+  return (...argv) => (shouldLog ? Debug(namespace)(...argv) : undefined);
+};
 
-  return (...argv) => nvrnt(process.env.NODE_ENV === 'production', ...argv)
-}
+const deb = debug('@netology-group/wc-chat/utils');
 
-export const debug = (namespace) => {
-  const deb = Debug(namespace)
+export const stampToDate = stamp => new Date(stamp * 1e3);
 
-  return (...argv) => process.env.NODE_ENV !== 'production' ? deb(...argv) : undefined
-}
+export const formatDate = (date, pattern = /\d{2}:\d{2}/) => date.toTimeString().match(pattern);
 
-const deb = debug('@netology-group/wc-chat/utils')
+export const isAggregatedBy = (field, index, list) =>
+  !index || !field ? false : list[index][field] === list[index - 1][field];
 
-export const stampToDate = stamp => new Date(stamp * 1e3)
+export const isLastseen = ({ index, lastseen, list }) => {
+  const idx = index - 1;
 
-export const formatDate = (date, pattern = /\d{2}:\d{2}/) => date.toTimeString().match(pattern)
+  const result =
+    lastseen !== undefined && list[idx] && typeof list[idx].id !== 'undefined'
+      ? list[idx].id === lastseen
+      : undefined;
 
-export const isAggregatedBy = (field, index, list) => (!index || !field)
-  ? false
-  : list[index][field] === list[index - 1][field]
+  return Boolean(result);
+};
 
-export const isLastseen = ({
-  index,
-  lastseen,
-  list,
-}) => {
-  const idx = index - 1
+export const requestAnimation = fn => {
+  const { requestAnimationFrame } = globalThis;
 
-  const result = (
-    lastseen !== undefined
-    && list[idx]
-    && typeof list[idx].id !== 'undefined'
-  )
-    ? list[idx].id === lastseen
-    : undefined
+  if (!requestAnimationFrame) deb('requestAnimationFrame is absent');
+  // eslint-disable-next-line no-unused-expressions
+  requestAnimationFrame ? requestAnimationFrame(() => fn()) : fn();
+};
 
-  return Boolean(result)
-}
+// TODO: get rid of `toJSON` method
+export const mapToJSON = map => {
+  const list = [];
+  [...map.keys()].forEach(key => {
+    list.push([key, map.get(key)]);
+  });
 
-export const requestAnimation = (fn) => {
-  const { requestAnimationFrame } = globalThis
-
-  if (!requestAnimationFrame) deb('requestAnimationFrame is absent')
-  requestAnimationFrame
-    ? requestAnimationFrame(() => fn())
-    : fn()
-}
+  return list;
+};

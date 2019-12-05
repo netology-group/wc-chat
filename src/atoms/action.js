@@ -1,21 +1,17 @@
-import { html, classString as cs } from '@polymer/lit-element'
+import { html } from 'lit-element';
+import cs from 'classnames-es';
 
-import * as images from '../images'
+import * as images from '../images/index.js';
+import { mapToJSON } from '../utils/index.js';
 
-const tplFromMap = map => map.toJSON().map(tuple => tuple[1])
+const tplFromMap = map => mapToJSON(map).map(tuple => tuple[1]);
 
-export const actionImages = new Map([['message-delete', images.del], ['user-disable', images.lock]])
+export const actionImages = new Map([
+  ['message-delete', images.del],
+  ['user-disable', images.lock],
+]);
 
-export const action = ({
-  allowed,
-  children,
-  classname,
-  disabled,
-  handler,
-  key,
-  message,
-  name,
-}) => {
+export const action = ({ allowed, children, classname, disabled, handler, key, message, name }) => {
   const cls = cs({
     allowed,
     [classname]: classname,
@@ -23,52 +19,44 @@ export const action = ({
     [name]: name,
     action: true,
     disabled,
-  })
+  });
 
-  if (typeof allowed !== 'undefined' && !allowed) return undefined
+  if (typeof allowed !== 'undefined' && !allowed) return undefined;
 
-  return (html`
-    <button
-      class$='${cls}'
-      on-click='${e => handler && handler(e, message)}'
-    >${children}</button>
-  `)
-}
+  return html`
+    <button @click=${e => handler && handler(e, message)} class=${cls}>${children}</button>
+  `;
+};
 
-export const reaction = ({
-  disabled,
-  handler,
-  message,
-}) => {
-  const cls = cs({ 'reaction-add': true, disabled })
-  const config = () => new Map([['thumbsup', { name: ':thumbsup' }]])
+export const reaction = ({ disabled, handler, message }) => {
+  const cls = cs({ 'reaction-add': true, disabled });
+  const config = () => new Map([['thumbsup', { name: ':thumbsup' }]]);
 
-  return (html`
-    <button
-      class$='${cls}'
-      disabled='${disabled}'
-      on-click='${e => handler && handler(e, { message })}'
-    >
-      <wc-chat-reactions direction='column' config='${config()}' showall></wc-chat-reactions>
+  return html`
+    <button .disabled=${disabled} @click=${e => handler && handler(e, { message })} class=${cls}>
+      <wc-chat-reactions
+        .config=${config()}
+        ?showall="showall"
+        direction="column"
+      ></wc-chat-reactions>
     </button>
-`)
-}
+  `;
+};
 
-export const reactions = ({ children }) => (html`
-  <div class='reactions'>
-    <div class='reaction'>${images.smiley}</div>
-    <div class='reactions-group'>
+export const reactions = ({ children }) => html`
+  <div class="reactions">
+    <div class="reaction">${images.smiley}</div>
+    <div class="reactions-group">
       ${children}
     </div>
   </div>
-`)
+`;
 
-export const actions = ({
-  actions: actns,
-  reactions: rctns,
-}) => (actns.size || rctns.size) && (html`
-  <div class='actions-group'>
-    ${actns.size ? tplFromMap(actns) : undefined}
-    ${rctns.size ? reactions({ children: tplFromMap(rctns) }) : undefined}
-  </div>
-`)
+export const actions = ({ actions: actns, reactions: rctns }) =>
+  (actns.size || rctns.size) &&
+  html`
+    <div class="actions-group">
+      ${actns.size ? tplFromMap(actns) : undefined}
+      ${rctns.size ? reactions({ children: tplFromMap(rctns) }) : undefined}
+    </div>
+  `;
