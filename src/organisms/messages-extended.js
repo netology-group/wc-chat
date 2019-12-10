@@ -14,7 +14,7 @@ import { style as actionsStyle } from '../molecules/actions.css.js';
 import { style as styleExt } from './messages-extended.css.js';
 import { style as separatorStyle } from '../atoms/separator.css.js';
 
-const debug = Debug('@netology-group/wc-chat/XMessagesElement');
+const debug = Debug('@ulms/wc-chat/XMessagesElement');
 
 const showPosHelpers = element =>
   element && typeof element[wasAtHeadSym] !== 'undefined' && !element[wasAtHeadSym];
