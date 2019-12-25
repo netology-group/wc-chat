@@ -1,6 +1,6 @@
 {
   "name": "@ulms/wc-chat",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Chat' custom elements",
   "homepage": "https://github.com/netology-group/wc-chat",
   "bugs": {
@@ -28,10 +28,9 @@
     "format": "npm run format:eslint && npm run format:prettier",
     "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .gitignore",
     "format:prettier": "prettier \"**/*.js\" --write --ignore-path .gitignore",
-    "lint": "npm run lint:eslint && npm run lint:prettier && npm run lint:style",
+    "lint": "npm run lint:eslint && npm run lint:prettier",
     "lint:eslint": "eslint --ext .js,.html \"./src\" --ignore-path .gitignore",
     "lint:prettier": "prettier \"./src/**/*.js\" --check --ignore-path .gitignore",
-    "lint:style": "stylelint \"./src\"",
     "prepublishOnly": "npm run lint && npm run test && npm run build",
     "site:build": "npm run storybook:build",
     "prestart": "scripts/prepare.sh",
@@ -64,6 +63,7 @@
   "eslintConfig": {
     "extends": [
       "@open-wc/eslint-config",
+      "adequate",
       "eslint-config-prettier"
     ],
     "globals": {
@@ -71,26 +71,9 @@
     },
     "rules": {
       "camelcase": 0,
-      "no-nested-ternary": 0
-    }
-  },
-  "stylelint": {
-    "extends": [
-      "stylelint-config-standard"
-    ],
-    "plugins": [
-      "stylelint-order"
-    ],
-    "rules": {
-      "order/order": [
-        "dollar-variables",
-        "custom-properties",
-        "at-variables",
-        "declarations",
-        "rules",
-        "at-rules"
-      ],
-      "order/properties-alphabetical-order": false
+      "no-nested-ternary": 0,
+      "node/no-unsupported-features/es-syntax": 0,
+      "import/extensions": 0
     }
   },
   "dependencies": {
@@ -119,13 +102,11 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "es-dev-server": "^1.5.0",
     "eslint": "^6.1.0",
+    "eslint-config-adequate": "^1.1.4",
     "husky": "^1.0.0",
     "lint-staged": "^8.2.1",
     "rollup": "^1.26.4",
     "sinon": "^7.5.0",
-    "stylelint": "^11.1.1",
-    "stylelint-config-standard": "^19.0.0",
-    "stylelint-order": "^3.1.1",
     "webpack-merge": "^4.1.5"
   },
   "peerDependencies": {

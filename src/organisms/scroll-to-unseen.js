@@ -1,11 +1,11 @@
 import { html } from 'lit-element';
 import cs from 'classnames-es';
 
-import { _ScrollableElement } from './scrollable.js';
 import { debug as Debug, requestAnimation } from '../utils/index.js';
 import { withStyle } from '../mixins/with-style.js';
 import { arrowDown as arrowDownSvg } from '../images/index.js';
 
+import { _ScrollableElement } from './scrollable.js';
 import { style } from './scrollable.css.js';
 import { style as styleUnseen } from './scroll-to-unseen.css.js';
 

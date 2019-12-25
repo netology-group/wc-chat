@@ -2,9 +2,10 @@ import { LitElement, html } from 'lit-element';
 import cs from 'classnames-es';
 
 import { debug as Debug, isAggregatedBy } from '../utils/index.js';
-import { style } from './messages.css.js';
 import { style as actionStyle } from '../molecules/actions.css.js';
 import { withStyle } from '../mixins/with-style.js';
+
+import { style } from './messages.css.js';
 
 const debug = Debug('@ulms/wc-chat/MessagesElement');
 
@@ -77,7 +78,7 @@ export class _MessagesElement extends LitElement {
 
     const prev = (changed || new Map()).get('list') || [];
     const next = this.list || [];
-    const shouldDispatch = Array.isArray(next);
+    const shouldDispatch = changed.has('list') && Array.isArray(changed.get('list'));
 
     /* eslint-disable max-len */
     /**
@@ -114,8 +115,8 @@ export class _MessagesElement extends LitElement {
     // eslint-disable-next-line no-unused-expressions
     !shouldDispatch && debug('Skip dispatching');
 
-    // eslint-disable-next-line no-unused-expressions
-    shouldDispatch &&
+    return (
+      shouldDispatch &&
       this.updateComplete
         .then(result => {
           if (!result)
@@ -123,11 +124,14 @@ export class _MessagesElement extends LitElement {
 
           debug(`dispatch '${this.invoke}' event`);
 
-          return this.dispatchEvent(
-            new CustomEvent(this.invoke, { detail: { direction: predictDirection(next, prev) } }),
+          return setImmediate(() =>
+            this.dispatchEvent(
+              new CustomEvent(this.invoke, { detail: { direction: predictDirection(next, prev) } }),
+            ),
           );
         })
-        .catch(error => debug(error.message));
+        .catch(error => debug(error.message))
+    );
   }
 
   __renderMessages(list) {

@@ -6,13 +6,13 @@ import { Actions as actionsFactory } from '../molecules/actions.js';
 import { isAggregatedBy, isLastseen, debug as Debug } from '../utils/index.js';
 import { actionImages } from '../atoms/action.js';
 import { maybeSeparator } from '../atoms/separator.js';
+import { style as actionsStyle } from '../molecules/actions.css.js';
+import { style as separatorStyle } from '../atoms/separator.css.js';
+
 import { MessagesElement } from './messages.js';
 import { wasAtHeadSym } from './scrollable.js';
-
 import { style } from './messages.css.js';
-import { style as actionsStyle } from '../molecules/actions.css.js';
 import { style as styleExt } from './messages-extended.css.js';
-import { style as separatorStyle } from '../atoms/separator.css.js';
 
 const debug = Debug('@ulms/wc-chat/XMessagesElement');
 
@@ -28,7 +28,7 @@ export class _XMessagesElement extends MessagesElement {
       ...super.properties,
       actions: { type: Array },
       i18n: { type: Object },
-      lastseen: { type: Number },
+      lastseen: String,
       parser: String,
       parserengine: { type: Object },
       parserpreset: String,
@@ -271,7 +271,7 @@ export class _XMessagesElement extends MessagesElement {
     return !config
       ? undefined
       : html`
-          <wc-chat-reactions ?showcount="showcount" .config=${config} />
+          <wc-chat-reactions ?showcount=${true} .config=${config} />
         `;
   }
 }

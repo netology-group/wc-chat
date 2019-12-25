@@ -1,9 +1,10 @@
 import { html } from 'lit-element';
 
-import { _ChatElement } from './chat.js';
-import { style } from './chat.css.js';
 import { withStyle } from '../mixins/with-style.js';
 import i18n from '../i18n.js';
+
+import { _ChatElement } from './chat.js';
+import { style } from './chat.css.js';
 
 const EVENT = 'did-update';
 

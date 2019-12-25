@@ -7,9 +7,9 @@ import { observeC as observe, filterC as filter, throttleC as throttle } from '.
 import { button as buttonEl } from '../atoms/button.js';
 import { textarea as textaeraEl } from '../atoms/textarea.js';
 import { withStyle } from '../mixins/with-style.js';
-
 import { style as textareaStyle } from '../atoms/textarea.css.js';
 import { style as buttonStyle } from '../atoms/button.css.js';
+
 import { style as inputStyle } from './input.css.js';
 
 const isKeyCode = (keyCode, code) => keyCode === code;

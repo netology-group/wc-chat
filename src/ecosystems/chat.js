@@ -1,8 +1,10 @@
 import { LitElement, html } from 'lit-element';
 
 import { debug as Debug } from '../utils/index.js';
-import { style } from './chat.css.js';
 import { withStyle } from '../mixins/with-style.js';
+import { Queue } from '../utils/queue.js';
+
+import { style } from './chat.css.js';
 
 const EVENT = 'did-update';
 const debug = Debug('@ulms/wc-chat/ChatElement');
@@ -15,6 +17,7 @@ export class _ChatElement extends LitElement {
       delayupdate: { type: Number },
       delayresize: { type: Number },
       delayscroll: { type: Number },
+      delayrender: { type: Number },
       disabled: { type: Boolean },
       language: String,
       lastseen: String,
@@ -38,16 +41,19 @@ export class _ChatElement extends LitElement {
 
     this.list = [];
     this.message = '';
+    this.delayrender = 1e3;
 
-    this._handleSubmitBounded = this._handleSubmit.bind(this);
     this._handleDeleteBounded = this._handleDelete.bind(this);
-    this._handleUserDisableBounded = this._handleUserDisable.bind(this);
-    this._handleMessageReactionBounded = this._handleMessageReaction.bind(this);
     this._handleLastSeenChangeBounded = this._handleLastSeenChange.bind(this);
-    this._handleSeekBeforeBounded = this._handleSeekBefore.bind(this);
+    this._handleListUpdateBounded = this._handleListUpdate.bind(this);
+    this._handleMessageReactionBounded = this._handleMessageReaction.bind(this);
     this._handleSeekAfterBounded = this._handleSeekAfter.bind(this);
-    this._scrollable = undefined;
+    this._handleSeekBeforeBounded = this._handleSeekBefore.bind(this);
+    this._handleSubmitBounded = this._handleSubmit.bind(this);
+    this._handleUserDisableBounded = this._handleUserDisable.bind(this);
     this._listdir = 0;
+    this._queue = undefined;
+    this._scrollable = undefined;
   }
 
   firstUpdated() {
@@ -56,6 +62,12 @@ export class _ChatElement extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
+
+    this._queue = new Queue({ timeout: this.delayrender }).on(
+      'list',
+      this._handleListUpdateBounded,
+    );
+
     this.dispatchEvent(new Event('connected'));
   }
 
@@ -88,7 +100,9 @@ export class _ChatElement extends LitElement {
   updateList(list) {
     if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type');
 
-    this.list = list;
+    this._queue.push(list);
+    // save messages to the queue
+
     this._listdir = 0;
   }
 
@@ -96,6 +110,11 @@ export class _ChatElement extends LitElement {
     debug('Maybe manual scroll to', x, y);
     // eslint-disable-next-line no-unused-expressions
     this._scrollable.scrollTo && this._scrollable.scrollTo(x, y);
+  }
+
+  _handleListUpdate(e) {
+    this.list = e.detail.list;
+    this._listdir = 0;
   }
 
   _handleSubmit(e) {
@@ -166,10 +185,10 @@ export class _ChatElement extends LitElement {
       delayupdate,
       disabled,
       lastseen,
-      list = [],
+      list,
       maxlength,
       maxrows,
-      message = '',
+      message,
       noinput,
       omni,
       placeholder,

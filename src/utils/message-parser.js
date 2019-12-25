@@ -26,6 +26,7 @@ export function MarkdownMessage(opts = {}) {
 
   if (!Engine) {
     debug('Parser is absent');
+
     return a => a;
   }
 

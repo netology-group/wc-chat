@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Chat component</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <script async src="https://cdn.jsdelivr.net/npm/ulid@2.3.0/dist/index.umd.min.js"></script>
-  <script async src="https://cdn.jsdelivr.net/npm/core-js@2.6.5/client/shim.min.js"></script>
-  <script async src="https://cdn.jsdelivr.net/npm/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
-  <script async src="https://cdn.jsdelivr.net/npm/intl-messageformat@2.2.0/dist/intl-messageformat-with-locales.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ulid@2.3.0/dist/index.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/core-js@2.6.5/client/shim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/intl-messageformat@2.2.0/dist/intl-messageformat-with-locales.min.js"></script>
 
   <script async type="module" src="./index.js"></script>
   <script async type="module" src="./src/input.index.js"></script>
@@ -18,26 +18,10 @@
   <script async type="module" src="./src/reactions.index.js"></script>
   <script async type="module" src="./src/scrollable-unseen.index.js"></script>
   <script async type="module" src="./src/chat-i18n.index.js"></script>
-  <script async type="module">
-    const elements = [messenger1, messenger2, messenger3]
+  <script>
+    var ulid = globalThis.ULID.ulid
 
     var avatarUrl = 'https://about.gitlab.com/images/devops-tools/gitlab-logo.svg'
-
-    var _messages = [
-      {
-        avatar: avatarUrl,
-        body: 'Hello World!',
-        icon: 'man',
-        id: window.ULID.ulid(),
-        identity: (function getIdentity (user_role = 'moderator') { return 'Administrator' }()), // eslint-disable-line no-unused-vars
-        rating: 0 || [['thumbsup', 0]],
-        theme: 'red',
-        timestamp: Date.now() / 1e3,
-        user_id: 3,
-        user_name: 'Alan Mathison Turing',
-        visible: true,
-      },
-    ]
 
     var _users = [
       {
@@ -63,9 +47,25 @@
       },
     ]
 
+    var _messages = [
+      {
+        avatar: avatarUrl,
+        body: 'Hello World!',
+        icon: 'man',
+        id: ulid(),
+        identity: (function getIdentity (user_role = 'moderator') { return 'Administrator' }()), // eslint-disable-line no-unused-vars
+        rating: 0 || [['thumbsup', 0]],
+        theme: 'red',
+        timestamp: Date.now() / 1e3,
+        user_id: 3,
+        user_name: 'Alan Mathison Turing',
+        visible: true,
+      },
+    ]
+
     function enhanceMessage (message, userId) {
       var _message = {
-        id: window.ULID.ulid(),
+        id: ulid(),
         body: message,
         timestamp: Date.now() / 1e3,
         user_id: userId,
@@ -83,23 +83,22 @@
 
     function messageFactory () {
       var index = Math.round(Math.random() * 2)
-
       return enhanceMessage(Math.random().toString(36).substring(7), index + 1)
     }
 
     function update (list, messages) {
-      list.forEach((_) => {
-        _ && _.updateList(messages)
-
-        window._messages = messages
-      })
+      list.forEach((_) => _ && _.updateList(messages))
     }
 
-    function initialize(element, user, makeUpdate){
+    function updateMessages (list){
+      if (list && list.length) _messages = list
+    }
+
+    function _initialize(element, user, makeUpdate){
       element.users = _users
       element.user = user
 
-      if (element === messenger3) {
+      if (element.id === 'messenger2') {
         // means user is admin and stuff
         element.actions = [['user-disable', 11], ['message-delete', 111], ['message-reaction', 1]]
         element.reactions = [['thumbsup']]
@@ -108,13 +107,12 @@
         element.reactions = [['thumbsup']]
       }
 
-      _messages.length && element.updateList(_messages)
-
       element.addEventListener('chat-message-submit', function onMessageSubmit (e) {
         setTimeout(function onSubmitSuccess () {
           _messages = _messages.concat(enhanceMessage(e.detail.message, user))
 
           makeUpdate(_messages)
+          updateMessages(_messages)
         }, 1e2)
       })
 
@@ -137,6 +135,7 @@
         })
 
         makeUpdate(_messages)
+        updateMessages(_messages)
       })
 
       element.addEventListener('chat-message-delete', function onMessageDelete (e) {
@@ -154,92 +153,118 @@
       element.lastseen = _messages && _messages.length ? _messages[_messages.length - 1].id : undefined
     }
 
-    initialize(messenger1, 1, list => update(elements, list))
-    initialize(messenger2, 2, list => update(elements, list))
-    initialize(messenger3, 3, list => update(elements, list))
+    function initialize(element, user, makeUpdate){
+      element.addEventListener('connected', function onConnected(){
+        console.log(`${element} initialized`)
 
+        update([element], _messages)
+
+        _initialize(element, user, makeUpdate)
+      })
+    }
+
+      // globals
+      globalThis.__update = update
+      globalThis.__messageFactory = messageFactory
+      globalThis.__updateMessages = updateMessages
+      // /globals
+  </script>
+  <script>
+    globalThis.addEventListener('DOMContentLoaded', function onDOMLoad (){
+      var elements = [globalThis.messenger1, globalThis.messenger2, globalThis.messenger3]
+
+      elements.forEach(function (element, i) {
+        if(typeof element === 'undefined') return
+        // else
+
+        initialize(element, i+1, list => globalThis.__update(elements, list))
+        element.I18nEngine = globalThis.IntlMessageFormat
+        element.ParserEngine = globalThis.markdownit
+      })
+
+      // globals
+      globalThis.__elements = elements
+      // /globals
+    })
+  </script>
+</head>
+<body>
+  <h1>Chat</h1>
+  <div class="row">
+    <div class="container">
+      <wc-chat
+        delayresize=400
+        delayupdate=200
+        delayrender=900
+        id="messenger1"
+        language="ru"
+        parser="markdown"
+        parserpreset="strict"
+        placeholder="Введите сообщение"
+        placeholderdisabled="Чат заблокирован"
+        />
+      </div>
+      <div class="container">
+        <wc-chat
+        delayresize=400
+        delayupdate=200
+        delayrender=1e3
+        id="messenger2"
+        language="en-US"
+        parser="html-entities"
+        placeholder="Write something…"
+        placeholderdisabled="Chat is blocked now"
+      />
+    </div>
+    <div class="container">
+      <wc-chat
+        delayresize=400
+        delayupdate=200
+        delayrender=1.1e3
+        id="messenger3"
+        language="en-US"
+        placeholder="Autoscroll is disabled"
+        placeholderdisabled="Chat is blocked now"
+        scrollabledisabled
+      />
+    </div>
+  </div>
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Lato", sans-serif;
+    }
+
+    .container {
+      display: inline-block;
+      height: 450px;
+      margin-bottom: 3px;
+      position: relative;
+      vertical-align: top;
+      width: 280px;
+    }
+
+    @media (max-width: 412px) {
+      .container {
+        width: 100%;
+      }
+    }
+
+    #messenger1,
+    #messenger2,
+    #messenger3 {
+      width: inherit;
+    }
+  </style>
+  <script type="module">
     import { emitter } from './util/message-emitter.js'
 
-    window.__WcChatEmitter = emitter(() => {
-      _messages = _messages.concat(messageFactory());
+    globalThis.__WcChatEmitter = emitter(function() {
+      var newmessages = globalThis._messages.concat(globalThis.__messageFactory())
 
-      ((list) => { update(elements, list) })(_messages)
+      globalThis.__updateMessages(newmessages);
+      ((list) => { globalThis.__update(globalThis.__elements, list) })(newmessages)
     })
-
-    messenger1.I18nEngine = globalThis.IntlMessageFormat
-    messenger1.ParserEngine = globalThis.markdownit
-
-    messenger2.I18nEngine = globalThis.IntlMessageFormat
-    messenger2.ParserEngine = globalThis.markdownit
-
-    messenger3.I18nEngine = globalThis.IntlMessageFormat
-
-    </script>
-  </head>
-  <body>
-    <h1>Chat</h1>
-    <div class="row">
-      <div class="container">
-        <wc-chat
-          delayresize=400
-          delayupdate=200
-          id="messenger1"
-          language="ru"
-          parser="markdown"
-          parserpreset="strict"
-          placeholder="Введите сообщение"
-          placeholderdisabled="Чат заблокирован"
-          />
-        </div>
-        <div class="container">
-          <wc-chat
-          delayresize=400
-          delayupdate=200
-          id="messenger2"
-          language="en-US"
-          parser="html-entities"
-          placeholder="Write something…"
-          placeholderdisabled="Chat is blocked now"
-        />
-      </div>
-      <div class="container">
-        <wc-chat
-          delayresize=400
-          delayupdate=200
-          id="messenger3"
-          language="en-US"
-          placeholder="Write something…"
-          placeholderdisabled="Chat is blocked now"
-          scrollabledisabled
-        />
-      </div>
-    </div>
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    <style>
-      body {
-        font-family: "Lato", sans-serif;
-      }
-
-      .container {
-        display: inline-block;
-        height: 450px;
-        margin-bottom: 3px;
-        position: relative;
-        vertical-align: top;
-        width: 280px;
-      }
-
-      @media (max-width: 600px) {
-        .container {
-          width: 550px;
-        }
-      }
-
-      #messenger1,
-      #messenger2,
-      #messenger3 {
-        width: inherit;
-      }
-      </style>
-  </body>
+  </script>
+</body>
 </html>

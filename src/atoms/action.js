@@ -24,7 +24,9 @@ export const action = ({ allowed, children, classname, disabled, handler, key, m
   if (typeof allowed !== 'undefined' && !allowed) return undefined;
 
   return html`
-    <button @click=${e => handler && handler(e, message)} class=${cls}>${children}</button>
+    <button @click=${e => handler && handler(e, message)} class=${cls} name="action">
+      ${children}
+    </button>
   `;
 };
 
@@ -33,10 +35,15 @@ export const reaction = ({ disabled, handler, message }) => {
   const config = () => new Map([['thumbsup', { name: ':thumbsup' }]]);
 
   return html`
-    <button .disabled=${disabled} @click=${e => handler && handler(e, { message })} class=${cls}>
+    <button
+      .disabled=${disabled}
+      @click=${e => handler && handler(e, { message })}
+      class=${cls}
+      name="reactions"
+    >
       <wc-chat-reactions
         .config=${config()}
-        ?showall="showall"
+        ?showall=${true}
         direction="column"
       ></wc-chat-reactions>
     </button>
