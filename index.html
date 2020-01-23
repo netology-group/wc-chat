@@ -19,6 +19,7 @@
   <script async type="module" src="./src/scrollable-unseen.index.js"></script>
   <script async type="module" src="./src/chat-i18n.index.js"></script>
   <script>
+    /* eslint-disable no-var,prefer-destructuring,no-param-reassign,prefer-arrow-callback */
     var ulid = globalThis.ULID.ulid
 
     var avatarUrl = 'https://about.gitlab.com/images/devops-tools/gitlab-logo.svg'
@@ -76,18 +77,19 @@
         _message.icon = 'man'
       }
 
-      return Object.assign(_message, _users.filter(function selectUsers (_) {
+      return Object.assign(_message, _users.filter(function selectUsers(_) {
         return _.user_id === _message.user_id
       })[0] || {})
     }
 
     function messageFactory () {
       var index = Math.round(Math.random() * 2)
+
       return enhanceMessage(Math.random().toString(36).substring(7), index + 1)
     }
 
     function update (list, messages) {
-      list.forEach((_) => _ && _.updateList(messages))
+      list.forEach(function onUpdateEach(_){ return _ && _.updateList(messages) })
     }
 
     function updateMessages (list){
@@ -119,8 +121,8 @@
       element.addEventListener('chat-message-reaction', function onMessageReaction (e) {
         _messages = _messages.map(function calcRating (it) {
           if (it.id
-          && e.detail.message.id
-          && it.id === e.detail.message.id
+            && e.detail.message.id
+            && it.id === e.detail.message.id
           ) {
             if (Array.isArray(it.rating)) {
               it.rating = [['thumbsup', (it.rating[0][1] || 0) + 1]]
@@ -154,38 +156,43 @@
     }
 
     function initialize(element, user, makeUpdate){
-      element.addEventListener('connected', function onConnected(){
-        console.log(`${element} initialized`)
+      console.info(`${element} initialized`) // eslint-disable-line no-console
 
-        update([element], _messages)
-
-        _initialize(element, user, makeUpdate)
-      })
+      update([element], _messages)
+      _initialize(element, user, makeUpdate)
     }
 
-      // globals
-      globalThis.__update = update
-      globalThis.__messageFactory = messageFactory
-      globalThis.__updateMessages = updateMessages
-      // /globals
+    // globals
+    globalThis.__update = update
+    globalThis.__messageFactory = messageFactory
+    globalThis.__updateMessages = updateMessages
+    globalThis.__initialize = initialize
+    // /globals
   </script>
   <script>
-    globalThis.addEventListener('DOMContentLoaded', function onDOMLoad (){
-      var elements = [globalThis.messenger1, globalThis.messenger2, globalThis.messenger3]
+    /* eslint-disable no-var,no-param-reassign,func-names,prefer-arrow-callback */
+    var counter = 1
+    var elements = []
 
-      elements.forEach(function (element, i) {
-        if(typeof element === 'undefined') return
-        // else
+    function registerElement(element){
+      elements.push(element)
+      element.I18nEngine = globalThis.IntlMessageFormat
+      element.ParserEngine = globalThis.markdownit
 
-        initialize(element, i+1, list => globalThis.__update(elements, list))
-        element.I18nEngine = globalThis.IntlMessageFormat
-        element.ParserEngine = globalThis.markdownit
-      })
+      globalThis.__initialize(element, counter, list => globalThis.__update(elements, list))
+      counter+=1
+    }
 
-      // globals
-      globalThis.__elements = elements
-      // /globals
+    globalThis.addEventListener('chat-connected', function(e) {
+      registerElement(e.target)
     })
+    globalThis.addEventListener('im-connected', function(e)  {
+      registerElement(e.target)
+    })
+
+    // globals
+    globalThis.__elements = elements
+    // /globals
   </script>
 </head>
 <body>
@@ -193,34 +200,35 @@
   <div class="row">
     <div class="container">
       <wc-chat
+        delayrender=900
         delayresize=400
         delayupdate=200
-        delayrender=900
         id="messenger1"
         language="ru"
         parser="markdown"
         parserpreset="strict"
         placeholder="Введите сообщение"
         placeholderdisabled="Чат заблокирован"
-        />
+      />
       </div>
       <div class="container">
         <wc-chat
-        delayresize=400
-        delayupdate=200
-        delayrender=1e3
-        id="messenger2"
-        language="en-US"
-        parser="html-entities"
-        placeholder="Write something…"
-        placeholderdisabled="Chat is blocked now"
-      />
+          delayrender=1e3
+          delayresize=400
+          delayupdate=200
+          id="messenger2"
+          language="en-US"
+          parser="html-entities"
+          placeholder="Write something…"
+          placeholderdisabled="Chat is blocked now"
+        />
     </div>
     <div class="container">
       <wc-chat
+        connectedeventname='im-connected'
+        delayrender=1.1e3
         delayresize=400
         delayupdate=200
-        delayrender=1.1e3
         id="messenger3"
         language="en-US"
         placeholder="Autoscroll is disabled"
@@ -257,13 +265,14 @@
     }
   </style>
   <script type="module">
+    /* eslint-disable no-var,func-names,prefer-arrow-callback */
     import { emitter } from './util/message-emitter.js'
 
     globalThis.__WcChatEmitter = emitter(function() {
       var newmessages = globalThis._messages.concat(globalThis.__messageFactory())
 
       globalThis.__updateMessages(newmessages);
-      ((list) => { globalThis.__update(globalThis.__elements, list) })(newmessages)
+      (function(list) { globalThis.__update(globalThis.__elements, list) })(newmessages)
     })
   </script>
 </body>
