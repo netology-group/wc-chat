@@ -22,7 +22,9 @@ const format = (Engine, i = {}, o = {}) => {
 export class _ChatI18NElement extends _ChatElement {
   static get properties() {
     return {
+      connectedeventname: String,
       actions: { type: Array },
+      delayrender: { type: Number },
       delayresize: { type: { type: Number } },
       delayscroll: { type: Number },
       delaysubmit: { type: Number },
