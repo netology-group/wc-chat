@@ -13,11 +13,12 @@ export class _ChatElement extends LitElement {
   static get properties() {
     return {
       actions: { type: Array },
-      delaysubmit: { type: Number },
-      delayupdate: { type: Number },
+      connectedeventname: String,
+      delayrender: { type: Number },
       delayresize: { type: Number },
       delayscroll: { type: Number },
-      delayrender: { type: Number },
+      delaysubmit: { type: Number },
+      delayupdate: { type: Number },
       disabled: { type: Boolean },
       language: String,
       lastseen: String,
@@ -68,7 +69,13 @@ export class _ChatElement extends LitElement {
       this._handleListUpdateBounded,
     );
 
-    this.dispatchEvent(new Event('connected'));
+    this.dispatchEvent(
+      new CustomEvent(this.connectedeventname || 'chat-connected', {
+        bubbles: true,
+        cancelable: false,
+        composed: true,
+      }),
+    );
   }
 
   disconnectedCallback() {

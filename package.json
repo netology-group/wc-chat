@@ -1,6 +1,6 @@
 {
   "name": "@ulms/wc-chat",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Chat' custom elements",
   "homepage": "https://github.com/netology-group/wc-chat",
   "bugs": {
@@ -23,7 +23,7 @@
     "lib": "src"
   },
   "scripts": {
-    "prebuild": "scripts/prepare.sh && rm -rf dist",
+    "prebuild": "scripts/prepare.sh",
     "build": "rimraf dist && rollup -c rollup.config.js",
     "format": "npm run format:eslint && npm run format:prettier",
     "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .gitignore",
