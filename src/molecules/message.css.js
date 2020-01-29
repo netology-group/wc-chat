@@ -139,7 +139,9 @@ export const style = css`
 
   :host .meta .stamp {
     color: var(--message-status-color);
+    cursor: help;
     padding-right: 15px;
+    user-select: none;
   }
 
   :host .meta .stamp > span {

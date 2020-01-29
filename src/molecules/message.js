@@ -44,7 +44,7 @@ export class _MessageElement extends LitElement {
       parserengine: { type: Object },
       text: String,
       theme: String,
-      timestamp: { type: Number },
+      timestamp: { type: String },
       uid: String,
       username: String,
     };

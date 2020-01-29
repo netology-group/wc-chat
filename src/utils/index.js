@@ -16,6 +16,23 @@ export const stampToDate = stamp => new Date(stamp * 1e3);
 
 export const formatDate = (date, pattern = /\d{2}:\d{2}/) => date.toTimeString().match(pattern);
 
+export const readableTime = maybeDate => {
+  const inputDate = new Date(maybeDate);
+
+  if (isNaN(inputDate.getTime())) {
+    deb('Ivalid date:', inputDate);
+
+    return [];
+  }
+
+  const isToday = new Date().setHours(0, 0, 0, 0) === new Date(inputDate).setHours(0, 0, 0, 0);
+
+  return [
+    isToday ? formatDate(inputDate)[0] : inputDate.toLocaleDateString(),
+    inputDate.toLocaleString(),
+  ];
+};
+
 export const isAggregatedBy = (field, index, list) =>
   !index || !field ? false : list[index][field] === list[index - 1][field];
 
