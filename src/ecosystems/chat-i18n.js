@@ -47,7 +47,7 @@ export class _ChatI18NElement extends _ChatElement {
       placeholderdisabled: String,
       reactions: { type: Array },
       scrollabledisabled: { type: Boolean },
-      user: { type: Number },
+      user: String,
       users: { type: Array },
     };
   }
