@@ -51,7 +51,7 @@ export class _MessagesElement extends LitElement {
       invoke: String,
       list: { type: Array },
       listdir: { type: Number },
-      user: { type: Number },
+      user: String,
       users: { type: Array },
     };
   }
@@ -143,6 +143,7 @@ export class _MessagesElement extends LitElement {
   }
 
   __hydrateEach(it, i, arr) {
+    const { user } = this;
     const {
       avatar,
       body, // .body should be depracated later on
@@ -164,12 +165,11 @@ export class _MessagesElement extends LitElement {
       aggregated: isAggregatedBy('user_id', i, arr),
       avatar,
       classname,
-      current_user_id: this.user,
       deleted,
       icon,
       id,
       identity,
-      me: this.user === user_id,
+      me: user === user_id,
       rating,
       text: body || text,
       theme,

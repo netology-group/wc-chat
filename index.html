@@ -98,9 +98,8 @@
 
     function _initialize(element, user, makeUpdate){
       element.users = _users
-      element.user = user
 
-      if (element.id === 'messenger2') {
+      if (element.id === 'messenger3') {
         // means user is admin and stuff
         element.actions = [['user-disable', 11], ['message-delete', 111], ['message-reaction', 1]]
         element.reactions = [['thumbsup']]
@@ -209,6 +208,7 @@
         parserpreset="strict"
         placeholder="Введите сообщение"
         placeholderdisabled="Чат заблокирован"
+        user="1"
       />
       </div>
       <div class="container">
@@ -221,6 +221,7 @@
           parser="html-entities"
           placeholder="Write something…"
           placeholderdisabled="Chat is blocked now"
+          user="2"
         />
     </div>
     <div class="container">
@@ -234,6 +235,7 @@
         placeholder="Autoscroll is disabled"
         placeholderdisabled="Chat is blocked now"
         scrollabledisabled
+        user="3"
       />
     </div>
   </div>

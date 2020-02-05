@@ -122,12 +122,11 @@ export class _XMessagesElement extends MessagesElement {
       aggregated: isAggregatedBy('user_id', index, list),
       avatar,
       classname,
-      current_user_id: user,
       deleted,
       icon,
       id,
       identity,
-      me: user === user_id,
+      me: user === String(user_id),
       invisible,
       is_lastseen: isLastseen({ index, lastseen, list }),
       rating,
@@ -211,13 +210,13 @@ export class _XMessagesElement extends MessagesElement {
 
     const isAllowed4Other = (a, b) =>
       // eslint-disable-next-line no-bitwise,max-len
-      b.current_user_id && b.user_id && b.current_user_id !== b.user_id && Boolean(a & 1);
+      !b.me && Boolean(a & 1);
     const isAllowed4Group = (a, b) =>
       // eslint-disable-next-line no-bitwise,max-len
-      b.current_user_id && b.user_id && b.current_user_id !== b.user_id && Boolean(a & 10);
+      !b.me && Boolean(a & 10);
     const isAllowed4Self = (a, b) =>
       // eslint-disable-next-line no-bitwise,max-len
-      b.current_user_id && b.user_id && b.current_user_id === b.user_id && Boolean(a & 100);
+      b.me && Boolean(a & 100);
 
     const isAllowed = (a, b) =>
       isAllowed4Other(a, b) || isAllowed4Group(a, b) || isAllowed4Self(a, b);

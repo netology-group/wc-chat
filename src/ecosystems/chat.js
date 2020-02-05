@@ -32,7 +32,7 @@ export class _ChatElement extends LitElement {
       placeholderdisabled: String,
       reactions: { type: Array },
       scrollabledisabled: { type: Boolean },
-      user: { type: Number },
+      user: String,
       users: { type: Array },
     };
   }
