@@ -225,10 +225,10 @@ export class _XMessagesElement extends MessagesElement {
     Array.isArray(this.actions) &&
       this.actions.forEach(_ => {
         const key = _[0];
-        const _action = this._actions.get(key) || {};
+        const _action = this._actions && this._actions.get(key) || {};
 
         if (!isAllowed(_action, data)) {
-          debug('Action is not alllowed');
+          debug('Action is not allowed');
 
           return;
         }
