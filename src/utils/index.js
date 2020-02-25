@@ -1,11 +1,17 @@
 import Debug from './debug.js';
 
 export const debug = namespace => {
-  const shouldLog =
-    typeof window.localStorage !== 'undefined' &&
-    localStorage.length &&
-    localStorage.getItem('debug') &&
-    new RegExp(localStorage.getItem('debug')).test(namespace);
+  let shouldLog;
+
+  try {
+    shouldLog =
+      typeof window.localStorage !== 'undefined' &&
+      localStorage.length &&
+      localStorage.getItem('debug') &&
+      new RegExp(localStorage.getItem('debug')).test(namespace);
+  } catch (error) {
+    shouldLog = undefined;
+  }
 
   return (...argv) => (shouldLog ? Debug(namespace)(...argv) : undefined);
 };
