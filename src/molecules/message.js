@@ -115,7 +115,7 @@ export class _MessageElement extends LitElement {
             : meta({
                 icon,
                 identity,
-                timestamp,
+                timestamp: Number(timestamp),
                 username,
               })}
           ${section({
