@@ -100,6 +100,8 @@ export class _MessageElement extends LitElement {
       me,
     });
 
+    const stamp = isNaN(Number(timestamp)) ? timestamp : Number(timestamp);
+
     // FIXME: Fix "Element has insufficient color contrast"
     return html`
       <div class="${cname}">
@@ -115,7 +117,7 @@ export class _MessageElement extends LitElement {
             : meta({
                 icon,
                 identity,
-                timestamp,
+                timestamp: stamp,
                 username,
               })}
           ${section({
