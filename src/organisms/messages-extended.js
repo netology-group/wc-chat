@@ -3,7 +3,7 @@ import cs from 'classnames-es';
 
 import { withStyle } from '../mixins/with-style.js';
 import { Actions as actionsFactory } from '../molecules/actions.js';
-import { isAggregatedBy, isLastseen, debug as Debug } from '../utils/index.js';
+import { isAggregatedBy, debug as Debug } from '../utils/index.js';
 import { actionImages } from '../atoms/action.js';
 import { maybeSeparator } from '../atoms/separator.js';
 import { style as actionsStyle } from '../molecules/actions.css.js';
@@ -94,12 +94,35 @@ export class _XMessagesElement extends MessagesElement {
     return showPosHelpers(this.parentElement);
   }
 
+  __renderMessages(list) {
+    const { lastseen: ls, user } = this;
+    let lastseen;
+
+    const nextList = list.map(a => {
+      let is_lastseen = false;
+
+      if (lastseen && String(a.user_id) !== user) {
+        is_lastseen = true;
+        lastseen = false;
+      }
+
+      if (typeof lastseen === 'undefined' && a.id === ls) lastseen = a.id;
+
+      return {
+        ...a,
+        lastseen: is_lastseen,
+      };
+    });
+
+    return super.__renderMessages(nextList);
+  }
+
   __renderEach(it, i, arr) {
     return this.__renderMessage(this.__hydrateEach(it, i, arr));
   }
 
   __hydrateEach(it, index, list) {
-    const { lastseen, user } = this;
+    const { user } = this;
     const {
       avatar,
       body, // .body should be depracated later on
@@ -109,6 +132,7 @@ export class _XMessagesElement extends MessagesElement {
       id,
       identity,
       invisible,
+      lastseen,
       rating,
       text,
       theme,
@@ -128,7 +152,7 @@ export class _XMessagesElement extends MessagesElement {
       identity,
       me: user === String(user_id),
       invisible,
-      is_lastseen: isLastseen({ index, lastseen, list }),
+      is_lastseen: lastseen,
       rating,
       text: body || text,
       theme,
@@ -192,7 +216,7 @@ export class _XMessagesElement extends MessagesElement {
         ${maybeSeparator({
           id,
           text: this.i18n.NEW_MESSAGES,
-          enabled: is_lastseen && !me && this.__outputTplAccordingParentPosition(), // show chunks according the parentElement
+          enabled: is_lastseen && this.__outputTplAccordingParentPosition(), // show chunks according the parentElement
         })}
         <div slot="message-prologue">
           ${this.__renderActions(message)}

@@ -30,6 +30,8 @@ export class _ChatI18NElement extends _ChatElement {
       delaysubmit: { type: Number },
       delayupdate: { type: Number },
       disabled: { type: Boolean },
+      disablerecentbanner: { type: Number },
+      disableunseenbanner: { type: Number },
       i18nengine: Function,
       language: String,
       lastseen: String,
@@ -108,6 +110,8 @@ export class _ChatI18NElement extends _ChatElement {
       delaysubmit,
       delayupdate,
       disabled,
+      disablerecentbanner,
+      disableunseenbanner,
       language,
       lastseen,
       list,
@@ -137,7 +141,7 @@ export class _ChatI18NElement extends _ChatElement {
     // eslint-disable-next-line max-len
     const newMessageCount =
       list && lastseen !== undefined && lastSeenIndex !== undefined
-        ? list.length - 1 - lastSeenIndex
+        ? list.slice(lastSeenIndex + 1).filter(a => String(a.user_id) !== user).length
         : 0;
 
     const scrollableI18n = {
@@ -161,6 +165,8 @@ export class _ChatI18NElement extends _ChatElement {
     return html`
       <div class="wrapper">
         <wc-chat-scrollable
+          ?disablerecentbanner=${Boolean(Number(disablerecentbanner))}
+          ?disableunseenbanner=${Boolean(Number(disableunseenbanner))}
           ?freeze=${scrollabledisabled}
           ?omni=${omni}
           ?showbannernew=${newMessageCount > 0}
