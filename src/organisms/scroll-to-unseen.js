@@ -54,6 +54,8 @@ export class _ScrollableUnseenElement extends _ScrollableElement {
   static get properties() {
     return {
       ...super.properties,
+      disablerecentbanner: { type: Boolean },
+      disableunseenbanner: { type: Boolean },
       i18n: { type: Object },
       showbannernew: { type: Boolean },
       unseenSelector: String,
@@ -85,15 +87,18 @@ export class _ScrollableUnseenElement extends _ScrollableElement {
 
   __scrollToUnseen() {
     const slot = this._scrollable.querySelector('slot');
+    const [child] = slot.assignedElements();
 
-    const el =
-      slot.assignedNodes() && slot.assignedNodes()[1] && slot.assignedNodes()[1].shadowRoot
-        ? slot.assignedNodes()[1].shadowRoot.querySelector(this.unseenSelector)
-        : undefined;
+    const unseenEl =
+      child && child.shadowRoot ? child.shadowRoot.querySelector(this.unseenSelector) : undefined;
 
-    if (!el) return;
+    if (!unseenEl) {
+      debug('Unseen element is absent');
 
-    const nextPoint = [0, el.offsetTop - this._scrollable.offsetHeight / 2];
+      return;
+    }
+
+    const nextPoint = [0, unseenEl.offsetTop - this._scrollable.offsetHeight / 2];
 
     requestAnimation(() => this.__scrollTo(...nextPoint));
   }
@@ -113,7 +118,7 @@ export class _ScrollableUnseenElement extends _ScrollableElement {
   }
 
   render() {
-    const { showbannernew } = this;
+    const { disablerecentbanner = false, disableunseenbanner = false, showbannernew } = this;
 
     return html`
       <div class="wrapper">
@@ -122,16 +127,20 @@ export class _ScrollableUnseenElement extends _ScrollableElement {
             <slot></slot>
           </div>
         </div>
-        ${freshBanner({
-          active: Boolean(this._detached && showbannernew),
-          i18n: this.i18n,
-          onClick: () => this.__scrollToUnseen(),
-        })}
-        ${recentBanner({
-          active: Boolean(this._detached && showbannernew),
-          i18n: this.i18n,
-          onClick: () => this.scrollTo(),
-        })}
+        ${disableunseenbanner
+          ? undefined
+          : freshBanner({
+              active: Boolean(this._detached && showbannernew),
+              i18n: this.i18n,
+              onClick: () => this.__scrollToUnseen(),
+            })}
+        ${disablerecentbanner
+          ? undefined
+          : recentBanner({
+              active: Boolean(this._detached && showbannernew),
+              i18n: this.i18n,
+              onClick: () => this.scrollTo(),
+            })}
       </div>
     `;
   }

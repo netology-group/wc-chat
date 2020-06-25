@@ -42,17 +42,6 @@ export const readableTime = maybeDate => {
 export const isAggregatedBy = (field, index, list) =>
   !index || !field ? false : list[index][field] === list[index - 1][field];
 
-export const isLastseen = ({ index, lastseen, list }) => {
-  const idx = index - 1;
-
-  const result =
-    lastseen !== undefined && list[idx] && typeof list[idx].id !== 'undefined'
-      ? list[idx].id === lastseen
-      : undefined;
-
-  return Boolean(result);
-};
-
 export const requestAnimation = fn => {
   const { requestAnimationFrame } = globalThis;
 
