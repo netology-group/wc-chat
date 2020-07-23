@@ -6,6 +6,7 @@ export const style = css`
     display: block;
     font-size: var(--chat-font-size, inherit);
     height: var(--chat-height, 100%);
+    line-height: var(--chat-line-height, inherit);
     min-height: var(--chat-min-height, 400px);
     min-width: var(--chat-min-width, 280px);
     width: var(--chat-width, auto);

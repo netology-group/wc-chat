@@ -19,6 +19,17 @@ const isEnterBtn = ({ keyCode }) => isKeyCode(keyCode, 13);
 const isControlBtn = ({ keyCode }) => isKeyCode(keyCode, 17);
 const isShiftBtn = ({ keyCode }) => isKeyCode(keyCode, 16);
 
+function pad(num, size) {
+  return `000${num}`.slice(size * -1);
+}
+
+function sec2time(timeInSeconds) {
+  const minutes = Math.floor(timeInSeconds / 60) % 60;
+  const seconds = Math.floor(timeInSeconds - minutes * 60);
+
+  return `${pad(minutes, 2)}:${pad(seconds, 2)}`;
+}
+
 export class _InputElement extends LitElement {
   static get properties() {
     return {
@@ -28,6 +39,7 @@ export class _InputElement extends LitElement {
       maxrows: { type: Number },
       placeholder: String,
       placeholderdisabled: String,
+      timer: { type: Number },
       value: String,
     };
   }
@@ -41,6 +53,8 @@ export class _InputElement extends LitElement {
     this.__underlyingTextarea = undefined;
     this.__pre = undefined;
     this.__post = undefined;
+    this.__shake = false;
+    this.__shakeTimeoutId = null;
   }
 
   connectedCallback() {
@@ -145,14 +159,31 @@ export class _InputElement extends LitElement {
 
   _handleSubmit(e) {
     e && e.preventDefault(); // eslint-disable-line no-unused-expressions
+
+    if (this.timer) {
+      if (!this.__shakeTimeoutId) {
+        this.__shake = true;
+        this.__shakeTimeoutId = setTimeout(() => {
+          clearTimeout(this.__shakeTimeoutId);
+
+          this.__shakeTimeoutId = null;
+          this.__shake = false;
+
+          this.requestUpdate();
+        }, 1000);
+
+        this.requestUpdate();
+      }
+
+      return;
+    }
+
     const message = this.__processMessage(this.value);
 
     if (message) {
       this.dispatchEvent(new CustomEvent('message-submit', { detail: { message } }));
       this.changeValue('');
     }
-
-    return e;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -161,10 +192,10 @@ export class _InputElement extends LitElement {
   }
 
   render() {
-    const { disabled, maxlength, maxrows, placeholder, placeholderdisabled, value } = this;
+    const { disabled, maxlength, maxrows, placeholder, placeholderdisabled, timer, value } = this;
 
     return html`
-      <section class=${cs({ input: true, disabled })}>
+      <section class=${cs({ input: true, disabled, shakeX: this.__shake })}>
         <form
           @submit=${e => this._handleSubmit(e)}
         >
@@ -177,10 +208,21 @@ export class _InputElement extends LitElement {
             placeholder: disabled ? placeholderdisabled : placeholder,
             value,
           })}
-          ${buttonEl({
-            disabled: !this.__processMessage(value) || disabled,
-            type: 'submit',
-          })}
+          ${
+            timer
+              ? undefined
+              : buttonEl({
+                  disabled: !this.__processMessage(value) || disabled,
+                  type: 'submit',
+                })
+          }
+          ${
+            timer
+              ? html`
+                  <div class="timer">${sec2time(timer)}</div>
+                `
+              : undefined
+          }
         <form>
       </section>
     `;

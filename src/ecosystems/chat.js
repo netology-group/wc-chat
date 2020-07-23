@@ -30,6 +30,7 @@ export class _ChatElement extends LitElement {
       omni: { type: Boolean },
       placeholder: String,
       placeholderdisabled: String,
+      ratelimit: { type: Number },
       reactions: { type: Array },
       scrollabledisabled: { type: Boolean },
       user: String,
@@ -55,6 +56,21 @@ export class _ChatElement extends LitElement {
     this._listdir = 0;
     this._queue = undefined;
     this._scrollable = undefined;
+
+    this.__timer = null;
+    this.__timerId = null;
+  }
+
+  attributeChangedCallback(name, old, value) {
+    super.attributeChangedCallback(name, old, value);
+
+    if (name === 'ratelimit' && old !== value) {
+      this._clearTimerId();
+
+      if (value !== null) {
+        this._setTimerId(value);
+      }
+    }
   }
 
   firstUpdated() {
@@ -119,12 +135,45 @@ export class _ChatElement extends LitElement {
     this._scrollable.scrollTo && this._scrollable.scrollTo(x, y);
   }
 
+  _clearTimerId() {
+    if (this.__timerId) {
+      clearInterval(this.__timerId);
+
+      this.__timerId = null;
+      this.__timer = null;
+    }
+  }
+
+  _setTimerId(value) {
+    this.__timer = value;
+
+    this.__timerId = setInterval(() => {
+      this.__timer -= 1;
+
+      if (this.__timer === 0) {
+        clearInterval(this.__timerId);
+
+        this.__timerId = null;
+        this.__timer = null;
+      }
+
+      this.requestUpdate();
+    }, 1000);
+
+    this.requestUpdate();
+  }
+
   _handleListUpdate(e) {
     this.list = e.detail.list;
     this._listdir = 0;
   }
 
   _handleSubmit(e) {
+    if (this.ratelimit) {
+      this._clearTimerId();
+      this._setTimerId(this.ratelimit);
+    }
+
     this.dispatchEvent(new CustomEvent('chat-message-submit', { detail: e.detail }));
   }
 
@@ -246,6 +295,7 @@ export class _ChatElement extends LitElement {
                   disabled=${disabled}
                   placeholder=${placeholder}
                   placeholderdisabled=${placeholderdisabled}
+                  timer=${this.__timer}
                   value=${message}
                 />
               </div>

@@ -112,7 +112,6 @@ export const style = css`
 
   :host .meta {
     display: flex;
-    line-height: 19px;
     padding-bottom: 5px;
   }
 
@@ -153,7 +152,6 @@ export const style = css`
   /** Markdown */
 
   :host .body {
-    line-height: 19px;
     overflow-wrap: anywhere;
     padding-bottom: 5px;
     padding-right: 24px;
