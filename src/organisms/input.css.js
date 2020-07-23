@@ -45,4 +45,38 @@ export const style = css`
   :host .input button:active:not(:disabled) {
     transform: translateY(1px);
   }
+
+  :host .input .timer {
+    position: absolute;
+    bottom: 26px;
+    right: 20px;
+    font-size: 16px;
+    color: #b8b8b8;
+  }
+
+  @keyframes shakeX {
+    from,
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+      transform: translate3d(-10px, 0, 0);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+      transform: translate3d(10px, 0, 0);
+    }
+  }
+
+  .shakeX {
+    animation: shakeX 1s;
+  }
 `;

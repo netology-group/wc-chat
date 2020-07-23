@@ -47,6 +47,7 @@ export class _ChatI18NElement extends _ChatElement {
       parserrules: String,
       placeholder: String,
       placeholderdisabled: String,
+      ratelimit: { type: Number },
       reactions: { type: Array },
       scrollabledisabled: { type: Boolean },
       user: String,
@@ -211,6 +212,7 @@ export class _ChatI18NElement extends _ChatElement {
                   @message-submit=${this._handleSubmitBounded}
                   placeholder=${placeholder}
                   placeholderdisabled=${placeholderdisabled}
+                  timer=${this.__timer}
                   value=${message}
                 />
               </div>
