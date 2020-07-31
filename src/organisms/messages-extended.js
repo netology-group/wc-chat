@@ -232,6 +232,8 @@ export class _XMessagesElement extends MessagesElement {
     const actions = new Map();
     const reactions = new Map();
 
+    this._actions = this.actions;
+
     const isAllowed4Other = (a, b) =>
       // eslint-disable-next-line no-bitwise,max-len
       !b.me && Boolean(a & 1);
