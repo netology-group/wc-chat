@@ -18,12 +18,12 @@ export const debug = namespace => {
 
 const deb = debug('@ulms/wc-chat/utils');
 
-const getUTCDate = d => `${d.getUTCFullYear()}${d.getUTCMonth()}${d.getUTCDate()}`;
+const getISODate = d => d.toISOString().match(/\d{4}-\d{2}-\d{2}/)[0];
 
-const getUTCDateTimeAsS = d =>
-  `${d.getUTCFullYear()}${d.getUTCMonth()}${d.getUTCDate()}${d.getUTCHours() * 3600 +
-    d.getUTCMinutes() * 60 +
-    d.getUTCSeconds()}`;
+const getNumericYMD = d => Number(getISODate(d).replaceAll('-', ''));
+
+const getNumericYMDS = d =>
+  `${getNumericYMD(d)}${d.getUTCHours() * 3600 + d.getUTCMinutes() * 60 + d.getUTCSeconds()}`;
 
 export const stampToDate = stamp => new Date(stamp * 1e3);
 
@@ -56,8 +56,8 @@ export const isAggregatedByDate = (field, index, list, interval) => {
   return !index || !field
     ? false
     : typeof interval === 'undefined'
-    ? getUTCDate(new Date(next)) === getUTCDate(new Date(prev))
-    : getUTCDateTimeAsS(new Date(next)) - getUTCDateTimeAsS(new Date(prev)) <= interval;
+    ? getNumericYMD(new Date(next)) === getNumericYMD(new Date(prev))
+    : getNumericYMDS(new Date(next)) - getNumericYMDS(new Date(prev)) <= interval;
 };
 
 export const requestAnimation = fn => {
