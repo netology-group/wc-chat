@@ -13,12 +13,22 @@ module.exports = config => {
         // npm run test -- --grep test/bar/*
         { pattern: config.grep ? config.grep : 'test/**/*.test.js', type: 'module' },
       ],
-
+      coverageIstanbulReporter: {
+        thresholds: {
+          global: {
+            statements: 50,
+            lines: 50,
+            branches: 25,
+            functions: 35,
+          },
+        },
+      },
       esm: {
         nodeResolve: true,
       },
       // you can overwrite/extend the config further
     }),
   );
+
   return config;
 };

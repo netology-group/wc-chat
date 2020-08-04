@@ -3,7 +3,7 @@ import cs from 'classnames-es';
 
 import { withStyle } from '../mixins/with-style.js';
 import { Actions as actionsFactory } from '../molecules/actions.js';
-import { isAggregatedBy, debug as Debug } from '../utils/index.js';
+import { debug as Debug, isAggregatedBy, isAggregatedByDate } from '../utils/index.js';
 import { actionImages } from '../atoms/action.js';
 import { maybeSeparator } from '../atoms/separator.js';
 import { style as actionsStyle } from '../molecules/actions.css.js';
@@ -122,7 +122,7 @@ export class _XMessagesElement extends MessagesElement {
   }
 
   __hydrateEach(it, index, list) {
-    const { user } = this;
+    const { user, aggregateperinterval } = this;
     const {
       avatar,
       body, // .body should be depracated later on
@@ -143,7 +143,14 @@ export class _XMessagesElement extends MessagesElement {
     } = it;
 
     return {
-      aggregated: isAggregatedBy('user_id', index, list),
+      aggregated:
+        isAggregatedBy('user_id', index, list) &&
+        isAggregatedByDate(
+          'timestamp',
+          index,
+          list,
+          aggregateperinterval ? Number(aggregateperinterval) : undefined,
+        ),
       avatar,
       classname,
       deleted,

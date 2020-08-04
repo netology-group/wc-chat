@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit-element';
 import cs from 'classnames-es';
 
-import { debug as Debug, isAggregatedBy } from '../utils/index.js';
+import { debug as Debug, isAggregatedBy, isAggregatedByDate } from '../utils/index.js';
 import { style as actionStyle } from '../molecules/actions.css.js';
 import { withStyle } from '../mixins/with-style.js';
 
@@ -47,6 +47,7 @@ function predictDirection(list, prevList, predicate) {
 export class _MessagesElement extends LitElement {
   static get properties() {
     return {
+      aggregateperinterval: String,
       classname: String,
       invoke: String,
       list: { type: Array },
@@ -143,7 +144,7 @@ export class _MessagesElement extends LitElement {
   }
 
   __hydrateEach(it, i, arr) {
-    const { user } = this;
+    const { user, aggregateperinterval } = this;
     const {
       avatar,
       body, // .body should be depracated later on
@@ -162,7 +163,14 @@ export class _MessagesElement extends LitElement {
     } = it;
 
     return {
-      aggregated: isAggregatedBy('user_id', i, arr),
+      aggregated:
+        isAggregatedBy('user_id', i, arr) &&
+        isAggregatedByDate(
+          'timestamp',
+          i,
+          arr,
+          aggregateperinterval ? Number(aggregateperinterval) : undefined,
+        ),
       avatar,
       classname,
       deleted,

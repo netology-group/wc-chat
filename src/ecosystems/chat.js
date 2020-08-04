@@ -13,6 +13,7 @@ export class _ChatElement extends LitElement {
   static get properties() {
     return {
       actions: { type: Array },
+      aggregateperinterval: String,
       connectedeventname: String,
       delayrender: { type: Number },
       delayresize: { type: Number },
@@ -235,6 +236,7 @@ export class _ChatElement extends LitElement {
   render() {
     const {
       actions,
+      aggregateperinterval,
       delayresize,
       delayscroll,
       delaysubmit,
@@ -271,6 +273,7 @@ export class _ChatElement extends LitElement {
         >
           <wc-chat-messages
             .actions=${actions}
+            .aggregateperinterval=${aggregateperinterval}
             .list=${list}
             .reactions=${reactions}
             .users=${users}

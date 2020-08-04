@@ -22,8 +22,9 @@ const format = (Engine, i = {}, o = {}) => {
 export class _ChatI18NElement extends _ChatElement {
   static get properties() {
     return {
-      connectedeventname: String,
       actions: { type: Array },
+      aggregateperinterval: String,
+      connectedeventname: String,
       delayrender: { type: Number },
       delayresize: { type: { type: Number } },
       delayscroll: { type: Number },
@@ -106,6 +107,7 @@ export class _ChatI18NElement extends _ChatElement {
   render() {
     const {
       actions,
+      aggregateperinterval,
       delayresize,
       delayscroll,
       delaysubmit,
@@ -183,6 +185,7 @@ export class _ChatI18NElement extends _ChatElement {
         >
           <wc-chat-messages
             .actions=${actions}
+            .aggregateperinterval=${aggregateperinterval}
             .i18n=${messagesI18n}
             .list=${list}
             .parserengine=${this.ParserEngine}
