@@ -8,6 +8,7 @@ import { actionImages } from '../atoms/action.js';
 import { maybeSeparator } from '../atoms/separator.js';
 import { style as actionsStyle } from '../molecules/actions.css.js';
 import { style as separatorStyle } from '../atoms/separator.css.js';
+import { RichMessageFactory } from '../domain/rich-message-factory.js';
 
 import { MessagesElement } from './messages.js';
 import { wasAtHeadSym } from './scrollable.js';
@@ -29,10 +30,6 @@ export class _XMessagesElement extends MessagesElement {
       actions: { type: Array },
       i18n: { type: Object },
       lastseen: String,
-      parser: String,
-      parserengine: { type: Object },
-      parserpreset: String,
-      parserrules: String,
       reactions: { type: Array },
     };
   }
@@ -53,10 +50,6 @@ export class _XMessagesElement extends MessagesElement {
     this[reactionsSym] = new Map(Array.isArray(_) ? _ : []);
   }
 
-  get __prsrengine() {
-    return this.parserengine;
-  }
-
   constructor() {
     super();
 
@@ -67,12 +60,10 @@ export class _XMessagesElement extends MessagesElement {
   }
 
   firstUpdated() {
-    const { actions = [], reactions = [], parserengine, parser } = this;
+    const { actions = [], reactions = [] } = this;
 
     this._actions = actions;
     this._reactions = reactions;
-
-    if (parser && !parserengine) debug('Can not use parser');
 
     // eslint-disable-next-line no-unused-expressions
     Array.isArray(reactions) &&
@@ -82,12 +73,23 @@ export class _XMessagesElement extends MessagesElement {
   }
 
   disconnectedCallback() {
+    super.disconnectedCallback();
+
     this[actionsSym] = undefined;
     this[reactionsSym] = undefined;
   }
 
   render() {
     return super.render();
+  }
+
+  __initFactory() {
+    this._factory = new RichMessageFactory({
+      parserengine: this.parserengine,
+      parser: this.parser,
+      parserpreset: this.parserpreset,
+      parserrules: this.parserrules,
+    });
   }
 
   __outputTplAccordingParentPosition() {
@@ -142,6 +144,8 @@ export class _XMessagesElement extends MessagesElement {
       visible,
     } = it;
 
+    const { body: messageText, unsafe } = this._factory.make({ body: body || text });
+
     return {
       aggregated:
         isAggregatedBy('user_id', index, list) &&
@@ -161,9 +165,10 @@ export class _XMessagesElement extends MessagesElement {
       invisible,
       is_lastseen: lastseen,
       rating,
-      text: body || text,
+      text: messageText,
       theme,
       timestamp,
+      unsafe,
       user_icon: icon,
       user_id,
       user_name,
@@ -188,6 +193,7 @@ export class _XMessagesElement extends MessagesElement {
       text,
       theme,
       timestamp,
+      unsafe,
       user_name,
     } = message;
 
@@ -208,9 +214,7 @@ export class _XMessagesElement extends MessagesElement {
         .aggregated=${aggregated}
         .identity=${identity}
         .parser=${this.parser}
-        .parserpreset=${this.parserpreset}
-        .parserrules=${this.parserrules}
-        .parserengine=${this.parserengine}
+        .unsafe=${unsafe}
         class=${className}
         icon=${icon || ''}
         image=${avatar}

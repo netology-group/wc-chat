@@ -3,30 +3,21 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import cs from 'classnames-es';
 
 import { avatar } from '../atoms/avatar.js';
-import { HTMLEntityMessage, MarkdownMessage } from '../utils/message-parser.js';
 import { meta } from '../atoms/meta.js';
 import { section } from '../atoms/section.js';
 import { withStyle } from '../mixins/with-style.js';
 
 import { style } from './message.css.js';
 
-function getMessageBody(message, parsername, parse) {
-  let body = message;
-  const isMd = parsername === 'markdown' && parse;
-
-  if (parsername === 'html-entities' && parse) body = parse(body);
-  if (isMd) body = parse(body);
-
-  return isMd
+function getMessageBody(message, { unsafe }) {
+  return unsafe
     ? html`
-        ${unsafeHTML(body)}
+        ${unsafeHTML(message)}
       `
     : html`
-        <p>${body}</p>
+        <p>${message}</p>
       `;
 }
-
-const parserSym = Symbol('parser');
 
 export class _MessageElement extends LitElement {
   static get properties() {
@@ -39,39 +30,12 @@ export class _MessageElement extends LitElement {
       image: String,
       me: { type: Boolean },
       parser: String,
-      parserpreset: String,
-      parserrules: String,
-      parserengine: { type: Object },
       text: String,
       theme: String,
       timestamp: { type: String },
       uid: String,
       username: String,
     };
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  get _parsers() {
-    return new Map([
-      ['markdown', opts => MarkdownMessage(opts)],
-      ['html-entities', opts => HTMLEntityMessage(opts)],
-    ]);
-  }
-
-  constructor() {
-    super();
-
-    this[parserSym] = undefined;
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-
-    this.__initializeParser();
-  }
-
-  disconnectedCallback() {
-    this[parserSym] = undefined;
   }
 
   render() {
@@ -88,6 +52,7 @@ export class _MessageElement extends LitElement {
       theme,
       timestamp,
       uid,
+      unsafe,
       user_role,
       username,
     } = this;
@@ -121,30 +86,13 @@ export class _MessageElement extends LitElement {
                 username,
               })}
           ${section({
-            body: getMessageBody(text, parser, this[parserSym]),
+            body: getMessageBody(text, { unsafe }),
             cname: cs({ [`parser-${parser}`]: parser }),
           })}
           <slot name="message-epilogue"></slot>
         </div>
       </div>
     `;
-  }
-
-  __initializeParser() {
-    const { parser, parserpreset, parserrules, parserengine } = this;
-
-    if (!this[parserSym] && parserengine && parser) {
-      this[parserSym] = this._parsers.get(parser)({
-        parser: {
-          preset: parserpreset,
-          rules: parserrules ? parserrules.split(',') : [],
-          engine: parserengine,
-        },
-        linkify: {
-          blanklink: true,
-        },
-      });
-    }
   }
 }
 

@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit-element';
 import cs from 'classnames-es';
 
 import { debug as Debug, isAggregatedBy, isAggregatedByDate } from '../utils/index.js';
+import { MessageFactory } from '../domain/message-factory.js';
 import { style as actionStyle } from '../molecules/actions.css.js';
 import { withStyle } from '../mixins/with-style.js';
 
@@ -52,9 +53,34 @@ export class _MessagesElement extends LitElement {
       invoke: String,
       list: { type: Array },
       listdir: { type: Number },
+      parser: String,
+      parserengine: { type: Object },
+      parserpreset: String,
+      parserrules: String,
       user: String,
       users: { type: Array },
     };
+  }
+
+  get _factory() {
+    return this.__messageFactory;
+  }
+
+  set _factory(a) {
+    this.__messageFactory = a;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    this.__initFactory();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+
+    this._factory.destroy();
+    this._factory = undefined;
   }
 
   render() {
@@ -135,6 +161,15 @@ export class _MessagesElement extends LitElement {
     );
   }
 
+  __initFactory() {
+    this._factory = new MessageFactory({
+      parserengine: this.parserengine,
+      parser: this.parser,
+      parserpreset: this.parserpreset,
+      parserrules: this.parserrules,
+    });
+  }
+
   __renderMessages(list) {
     return list.map((it, i, arr) => this.__renderEach(it, i, arr));
   }
@@ -162,6 +197,8 @@ export class _MessagesElement extends LitElement {
       visible,
     } = it;
 
+    const { body: messageText, unsafe } = this._factory.make({ body: body || text });
+
     return {
       aggregated:
         isAggregatedBy('user_id', i, arr) &&
@@ -179,9 +216,10 @@ export class _MessagesElement extends LitElement {
       identity,
       me: user === user_id,
       rating,
-      text: body || text,
+      text: messageText,
       theme,
       timestamp,
+      unsafe,
       user_icon: icon,
       user_id,
       user_name,
@@ -203,6 +241,7 @@ export class _MessagesElement extends LitElement {
       text,
       theme,
       timestamp,
+      unsafe,
       user_name,
     } = message;
 
@@ -218,6 +257,8 @@ export class _MessagesElement extends LitElement {
         ?deleted=${deleted}
         ?me=${me}
         .identity=${identity}
+        .parser=${this.parser}
+        .unsafe=${unsafe}
         class=${className}
         icon=${icon || ''}
         image=${avatar}
