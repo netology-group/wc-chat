@@ -6,8 +6,9 @@ import { Queue } from '../utils/queue.js';
 
 import { style } from './chat.css.js';
 
-const EVENT = 'did-update';
 const debug = Debug('@ulms/wc-chat/ChatElement');
+const EVENT = 'did-update';
+const parserSym = Symbol('parsearengine');
 
 export class _ChatElement extends LitElement {
   static get properties() {
@@ -29,6 +30,10 @@ export class _ChatElement extends LitElement {
       message: String,
       noinput: { type: Boolean },
       omni: { type: Boolean },
+      parser: String,
+      parserengine: { type: Object },
+      parserpreset: String,
+      parserrules: String,
       placeholder: String,
       placeholderdisabled: String,
       ratelimit: { type: Number },
@@ -42,9 +47,12 @@ export class _ChatElement extends LitElement {
   constructor() {
     super();
 
+    this.delayrender = 1e3;
     this.list = [];
     this.message = '';
-    this.delayrender = 1e3;
+    this.parser = '';
+    this.parserpreset = '';
+    this.parserrules = '';
 
     this._handleDeleteBounded = this._handleDelete.bind(this);
     this._handleLastSeenChangeBounded = this._handleLastSeenChange.bind(this);
@@ -60,6 +68,14 @@ export class _ChatElement extends LitElement {
 
     this.__timer = null;
     this.__timerId = null;
+  }
+
+  set ParserEngine(e) {
+    this[parserSym] = e;
+  }
+
+  get ParserEngine() {
+    return this[parserSym] || this.parserengine;
   }
 
   attributeChangedCallback(name, old, value) {
@@ -249,6 +265,9 @@ export class _ChatElement extends LitElement {
       message,
       noinput,
       omni,
+      parser,
+      parserpreset,
+      parserrules,
       placeholder,
       placeholderdisabled,
       reactions,
@@ -275,6 +294,7 @@ export class _ChatElement extends LitElement {
             .actions=${actions}
             .aggregateperinterval=${aggregateperinterval}
             .list=${list}
+            .parserengine=${this.ParserEngine}
             .reactions=${reactions}
             .users=${users}
             @message-delete=${this._handleDeleteBounded}
@@ -283,6 +303,9 @@ export class _ChatElement extends LitElement {
             invoke=${EVENT}
             lastseen=${lastseen}
             listdir=${this._listdir}
+            parser=${parser}
+            parserrules=${parserrules}
+            parserpreset=${parserpreset}
             user=${user}
           />
         </wc-chat-scrollable>
@@ -291,11 +314,11 @@ export class _ChatElement extends LitElement {
           : html`
               <div class="input">
                 <wc-chat-input
+                  ?disabled=${disabled}
                   .delay=${delaysubmit || 0}
                   .maxlength=${maxlength}
                   .maxrows=${maxrows || 10}
                   @message-submit=${this._handleSubmitBounded}
-                  disabled=${disabled}
                   placeholder=${placeholder}
                   placeholderdisabled=${placeholderdisabled}
                   timer=${this.__timer}

@@ -7,9 +7,7 @@ import { _ChatElement } from './chat.js';
 import { style } from './chat.css.js';
 
 const EVENT = 'did-update';
-
 const i18nSym = Symbol('i18nengine');
-const parserSym = Symbol('parsearengine');
 
 const format = (Engine, i = {}, o = {}) => {
   if (!Engine) return i.message;
@@ -62,22 +60,11 @@ export class _ChatI18NElement extends _ChatElement {
     this.delaysubmit = 0;
     this.list = [];
     this.message = '';
-    this.parser = '';
-    this.parserpreset = '';
-    this.parserrules = '';
   }
 
   // eslint-disable-next-line class-methods-use-this
   get i18n() {
     return i18n;
-  }
-
-  set ParserEngine(e) {
-    this[parserSym] = e;
-  }
-
-  get ParserEngine() {
-    return this[parserSym] || this.parserengine;
   }
 
   set I18nEngine(e) {
