@@ -8,6 +8,7 @@ import { actionImages } from '../atoms/action.js';
 import { maybeSeparator } from '../atoms/separator.js';
 import { style as actionsStyle } from '../molecules/actions.css.js';
 import { style as separatorStyle } from '../atoms/separator.css.js';
+import { MessageFactory } from '../domain/message-factory.js';
 import { RichMessageFactory } from '../domain/rich-message-factory.js';
 
 import { MessagesElement } from './messages.js';
@@ -22,6 +23,7 @@ const showPosHelpers = element =>
 
 const actionsSym = Symbol('actions');
 const reactionsSym = Symbol('reactions');
+const factorySym = Symbol('factory');
 
 export class _XMessagesElement extends MessagesElement {
   static get properties() {
@@ -40,6 +42,14 @@ export class _XMessagesElement extends MessagesElement {
 
   set _actions(_) {
     this[actionsSym] = new Map(Array.isArray(_) ? _ : []);
+  }
+
+  get _factory() {
+    return this[factorySym] || new MessageFactory();
+  }
+
+  set _factory(f) {
+    this[factorySym] = f;
   }
 
   get _reactions() {
