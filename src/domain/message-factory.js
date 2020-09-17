@@ -14,27 +14,27 @@ export class MessageFactory {
     const hasNeededParser = this._parsers.has(this.__parsername);
 
     if (!hasNeededParser) {
-      debug(`Can not use '${this.__parsername}' parser`);
+      debug(`Use Raw parser instead of ${this.__parsername}`);
 
-      this.parser = this._parsers.get(RAW);
+      this.parser = this._parsers.get(RAW)();
+    } else {
+      const parserFn = this._parsers.get(this.__parsername);
 
-      return;
+      if (typeof parserFn !== 'function') {
+        debug('Can not instantinate a parser');
+      } else {
+        this.parser = parserFn({
+          parser: {
+            engine: parserengine,
+            preset: parserpreset,
+            rules: parserrules ? parserrules.split(',') : [],
+          },
+          linkify: {
+            blanklink: true,
+          },
+        });
+      }
     }
-
-    const parserFn = this._parsers.get(this.__parsername);
-
-    if (!parserFn || !parserengine) throw new TypeError('Can not instantinate a parser');
-
-    this.parser = parserFn({
-      parser: {
-        engine: parserengine,
-        preset: parserpreset,
-        rules: parserrules ? parserrules.split(',') : [],
-      },
-      linkify: {
-        blanklink: true,
-      },
-    });
   }
 
   get parser() {

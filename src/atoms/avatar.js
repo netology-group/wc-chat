@@ -3,6 +3,6 @@ import cs from 'classnames-es';
 
 export const avatar = ({ classname, image } = {}) => html`
   <div class=${cs({ classname, avatar: true })}>
-    <div style=${!image ? '' : `background-image: url(${image});`}></div>
+    <div style=${!image || image === 'undefined' ? '' : `background-image: url(${image});`}></div>
   </div>
 `;
