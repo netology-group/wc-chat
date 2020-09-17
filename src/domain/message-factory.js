@@ -12,11 +12,18 @@ export class MessageFactory {
     this.__parsername = parser;
 
     const hasNeededParser = this._parsers.has(this.__parsername);
-    const parserFn = this._parsers.get(hasNeededParser ? this.__parsername : RAW);
+
+    if (!hasNeededParser) {
+      debug(`Can not use '${this.__parsername}' parser`);
+
+      this.parser = this._parsers.get(RAW);
+
+      return;
+    }
+
+    const parserFn = this._parsers.get(this.__parsername);
 
     if (!parserFn || !parserengine) throw new TypeError('Can not instantinate a parser');
-
-    if (!hasNeededParser) debug(`Can not use '${this.__parsername}' parser`);
 
     this.parser = parserFn({
       parser: {
