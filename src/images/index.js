@@ -1,5 +1,15 @@
 import { svg } from 'lit-element';
 
+export const block = svg`<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8.5 2C5.5 2 3 4.5 3 7.5C3 8.3 3.2 9 3.4 9.7L3.6 10L2.8 13.1L5.7 12.2L6 12.4C6.7 12.8 7.6 13 8.5 13C11.5 13 14 10.5 14 7.5C14 4.5 11.5 2 8.5 2ZM1 7.5C1 3.4 4.4 0 8.5 0C12.6 0 16 3.4 16 7.5C16 11.6 12.6 15 8.5 15C7.4 15 6.4 14.8 5.4 14.3L0 16L1.5 10.1C1.2 9.3 1 8.4 1 7.5Z" fill="#E9E9E9"/>
+  <path d="M10.4688 4L8.5 5.96875L6.53125 4L5 5.53125L6.96875 7.5L5 9.46875L6.53125 11L8.5 9.03125L10.4688 11L12 9.46875L10.0312 7.5L12 5.53125L10.4688 4Z" fill="#E9E9E9"/>
+</svg>`;
+
+export const blocked = svg`<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8.5 2C5.5 2 3 4.5 3 7.5C3 8.3 3.2 9 3.4 9.7L3.6 10L2.8 13.1L5.7 12.2L6 12.4C6.7 12.8 7.6 13 8.5 13C11.5 13 14 10.5 14 7.5C14 4.5 11.5 2 8.5 2ZM1 7.5C1 3.4 4.4 0 8.5 0C12.6 0 16 3.4 16 7.5C16 11.6 12.6 15 8.5 15C7.4 15 6.4 14.8 5.4 14.3L0 16L1.5 10.1C1.2 9.3 1 8.4 1 7.5Z" fill="#F94B28"/>
+  <path d="M10.4688 4L8.5 5.96875L6.53125 4L5 5.53125L6.96875 7.5L5 9.46875L6.53125 11L8.5 9.03125L10.4688 11L12 9.46875L10.0312 7.5L12 5.53125L10.4688 4Z" fill="#F94B28"/>
+</svg>`;
+
 export const warning = svg`<svg id="warninig" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
   <g fill-rule="evenodd">
     <path fill-rule="nonzero" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm0 2A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>

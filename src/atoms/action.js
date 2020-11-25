@@ -8,7 +8,7 @@ const tplFromMap = map => mapToJSON(map).map(tuple => tuple[1]);
 
 export const actionImages = new Map([
   ['message-delete', images.del],
-  ['user-disable', images.lock],
+  ['user-disable', images.block],
 ]);
 
 export const action = ({ allowed, children, classname, disabled, handler, key, message, name }) => {

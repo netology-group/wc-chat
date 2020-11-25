@@ -2,12 +2,15 @@ import { html } from 'lit-element';
 import cs from 'classnames-es';
 
 import { readableTime } from '../utils/index.js';
-import { human as humansvg } from '../images/index.js';
+import { blocked as blockedsvg, human as humansvg } from '../images/index.js';
 
 export const icon = ({ name }) => {
   switch (name) {
     case 'man':
       return humansvg;
+
+    case 'blocked':
+      return blockedsvg;
     default:
       return undefined;
   }
