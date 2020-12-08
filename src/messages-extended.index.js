@@ -1,3 +1,3 @@
-import { XMessagesElement } from './organisms/messages-extended.js';
+import { MessagesElement } from './organisms/messages.js';
 
-customElements.define('wc-chat-messages', XMessagesElement);
+customElements.define('wc-chat-messages', MessagesElement);

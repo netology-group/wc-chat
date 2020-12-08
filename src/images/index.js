@@ -96,3 +96,20 @@ export const human = svg`<svg width="8" height="9" viewBox="0 0 8 9" fill="none"
 export const arrowDown = svg`<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M13.1295 4L14.5 5.39309L8 12L1.5 5.39309L2.87054 4L8 9.21383L13.1295 4Z" fill="white"/>
 </svg>`;
+
+export const pin = svg`
+<svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.051 0L10.0475 1.00346V4.74523L7.59179 7.27651H2.24542L1.24196 8.27997L5.82768 12.8657L0 18.6448L1.34779 20L7.17919 14.2171L11.7679 18.8058L12.7713 17.8023L12.7713 12.4067L15.2801 9.95247L18.9965 9.95247L20 8.94906L11.051 0ZM14.4962 8.04117L10.86 11.6073V15.1949L4.85286 9.18781H8.39421L11.9588 5.52631V3.6109L16.3891 8.04117L14.4962 8.04117Z" fill="#48A1E6"/>
+</svg>
+`;
+
+export const arrowLeft = svg`
+<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="16" height="16">
+<path d="M16 0H0V16H16V0Z" fill="#C4C4C4"/>
+</mask>
+<g mask="url(#mask0)">
+<path d="M5.9001 7.99999L12.2001 14.3L10.8001 15.7L3.1001 7.99999L10.8001 0.299988L12.2001 1.69999L5.9001 7.99999Z" fill="#48A1E6"/>
+</g>
+</svg>
+`;

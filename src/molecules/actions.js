@@ -18,7 +18,7 @@ export const Actions = ({
     rctns.set(k, reactionEl(v));
   });
   actions.forEach((v, k) => {
-    actns.set(k, actionEl(v));
+    actns.set(k, actionEl({ ...v, key: k }));
   });
 
   const renderChildren = actns.size || rctns.size;

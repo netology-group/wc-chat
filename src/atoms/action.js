@@ -9,9 +9,29 @@ const tplFromMap = map => mapToJSON(map).map(tuple => tuple[1]);
 export const actionImages = new Map([
   ['message-delete', images.del],
   ['user-disable', images.block],
+  ['message-pin', images.pin],
+  ['message-unpin', images.pin],
 ]);
 
-export const action = ({ allowed, children, classname, disabled, handler, key, message, name }) => {
+// TODO: Add i18n support
+export const actionTexts = new Map([
+  ['message-delete', 'Удалить'],
+  ['user-disable', 'Заблокировать'],
+  ['message-pin', 'Закрепить'],
+  ['message-unpin', 'Открепить'],
+]);
+
+export const action = ({
+  allowed,
+  children,
+  classname,
+  disabled,
+  handler,
+  key,
+  message,
+  name,
+  text,
+}) => {
   const cls = cs({
     allowed,
     [classname]: classname,
@@ -23,9 +43,16 @@ export const action = ({ allowed, children, classname, disabled, handler, key, m
 
   if (typeof allowed !== 'undefined' && !allowed) return undefined;
 
+  const child =
+    classname === 'quickdelete'
+      ? children
+      : html`
+          ${text} ${children}
+        `;
+
   return html`
-    <button @click=${e => handler && handler(e, message)} class=${cls} name="action">
-      ${children}
+    <button @click=${e => handler && handler(e, message)} class=${cls} name="action" title=${text}>
+      ${child}
     </button>
   `;
 };

@@ -3,15 +3,33 @@ import cs from 'classnames-es';
 import { fromEvent } from 'most/src/source/fromEvent.js';
 import { LitElement, html } from 'lit-element';
 
-import { debug as Debug, isAggregatedBy, isAggregatedByDate } from '../utils/index.js';
-import { MessageFactory } from '../domain/message-factory.js';
-import { observeC as observe, debounceC as debounce } from '../utils/most.js';
-import { style as actionStyle } from '../molecules/actions.css.js';
+import { Actions as actionsFactory } from '../molecules/actions.js';
+import {
+  debug as Debug,
+  isAggregatedBy,
+  isAggregatedByDate,
+  isAggregatedByExceptValue,
+} from '../utils/index.js';
+import { actionImages, actionTexts } from '../atoms/action.js';
+import { maybeSeparator } from '../atoms/separator.js';
+import { observeC as observe, debounceC as debounce, skipC as skip } from '../utils/most.js';
+import { RichMessageFactory } from '../domain/rich-message-factory.js';
+import { style as actionsStyle } from '../molecules/actions.css.js';
+import { style as separatorStyle } from '../atoms/separator.css.js';
+import { VirtualList } from '../utils/virtual-list.js';
 import { withStyle } from '../mixins/with-style.js';
 
+import { wasAtHeadSym } from './scrollable.js';
 import { style } from './messages.css.js';
+import { style as styleExt } from './messages-extended.css.js';
 
 const debug = Debug('@ulms/wc-chat/MessagesElement');
+
+const showPosHelpers = element =>
+  element && typeof element[wasAtHeadSym] !== 'undefined' && !element[wasAtHeadSym];
+
+const actionsSym = Symbol('actions');
+const reactionsSym = Symbol('reactions');
 
 const relativeShiftTop = (anc, desc) => {
   const { top: ancTop } = anc.getBoundingClientRect();
@@ -20,150 +38,13 @@ const relativeShiftTop = (anc, desc) => {
   return ancTop - descTop;
 };
 
-class VirtualList {
-  constructor({ size = 24, accessEl }) {
-    this.__data = [];
-    this.__list = [];
-    this.__activeIds = [];
-    this.__size = size;
-    this.__accessElFn =
-      accessEl ||
-      function acEl(a) {
-        return a.id;
-      };
-    this.__updateFn = undefined;
-
-    /* computed */
-    this.__onEdge = true;
-    this.__isLatestReached = true;
-    this.__latestReachedElId = undefined;
-  }
-
-  set list(a) {
-    const latestNextId = a.length && this.__accessElFn(a[a.length - 1]);
-    const latestActiveId = this.__activeIds && this.__activeIds.slice(-1)[0];
-
-    this.__data = a;
-
-    // Turn `latestReached` flag off
-    if (latestActiveId && latestActiveId !== latestNextId) {
-      this.__isLatestReached = false;
-      this.__latestReachedElId = undefined;
-    }
-  }
-
-  get list() {
-    const [firstVisibleId] = this.__activeIds;
-    const numberRemainsToStart = this.__data.findIndex(
-      a => this.__accessElFn(a) === firstVisibleId,
-    );
-
-    if (!firstVisibleId) {
-      const prevList = this.__list;
-
-      this.__list = this.__data.slice(-1 * this.__size);
-      this.__updateFn && this.__updateFn(this.__list, prevList);
-
-      return this.__list;
-    }
-
-    const numberAhead = numberRemainsToStart - this.__size;
-    const prevList = this.__list;
-
-    const sliceFrom = numberAhead < 0 ? 0 : numberAhead;
-
-    if (this.__latestReachedElId) {
-      const latestReachedElIndex = this.__data.findIndex(
-        a => this.__accessElFn(a) === this.__latestReachedElId,
-      );
-
-      this.__list = this.__data.slice(sliceFrom, latestReachedElIndex + 1);
-    } else {
-      this.__list = this.__data.slice(sliceFrom);
-    }
-
-    this.__updateFn && this.__updateFn(this.__list, prevList);
-
-    return this.__list;
-  }
-
-  get forward() {
-    return this.__onEdge;
-  }
-
-  set size(a) {
-    if (!isNaN(a)) {
-      this.__size = a;
-    } else {
-      debug('Can not change size');
-    }
-  }
-
-  adjust(ids = [], auto = false) {
-    const oldIds = this.__activeIds;
-
-    // Toggle `latestReached` flag on if latest id matches the last item
-    const latestVisibleId = ids[ids.length - 1];
-    const latestExistedEl = this.__data[this.__data.length - 1];
-
-    if (
-      latestVisibleId &&
-      latestExistedEl &&
-      latestVisibleId === this.__accessElFn(latestExistedEl)
-    ) {
-      this.__isLatestReached = true;
-      this.__latestReachedElId = latestVisibleId;
-    }
-
-    const currentList = this.list;
-
-    const lastVisibleId = oldIds[oldIds.length - 1];
-    const prevVisisbleId = oldIds[oldIds.length - 2];
-
-    const lastExistedEl = currentList[currentList.length - 1];
-    const prevExistedEl = currentList[currentList.length - 2];
-    // access last and prevous elements at the list as adjust meant to be called multiple times on update when the list is actual
-
-    if (!lastExistedEl || !lastVisibleId || auto) {
-      this.__onEdge = true;
-    } else if (
-      this.__accessElFn(lastExistedEl) === lastVisibleId ||
-      this.__accessElFn(prevExistedEl) === lastVisibleId ||
-      this.__accessElFn(lastExistedEl) === prevVisisbleId // is needed on element delete from list
-    ) {
-      this.__onEdge = true;
-    } else {
-      this.__onEdge = false;
-    }
-
-    const cleanupIds = a => {
-      const end = a[a.length - 1];
-
-      if (end === 'undefined') {
-        a.splice(-1);
-      }
-
-      return a;
-    };
-
-    this.__activeIds = cleanupIds(ids);
-  }
-
-  destroy() {
-    this.__data = [];
-    this.__updateFn = undefined;
-  }
-
-  onUpdate(listener) {
-    this.__updateFn = listener;
-  }
-}
-
 export class _MessagesElement extends LitElement {
   static get properties() {
     return {
       aggregateperinterval: String,
       classname: String,
+      disablevl: { type: Boolean },
+      forceUpdate: { type: Boolean },
       invoke: String,
       list: { type: Array },
       visiblelist: { type: Array },
@@ -174,6 +55,10 @@ export class _MessagesElement extends LitElement {
       parserrules: String,
       user: String,
       users: { type: Array },
+      actions: { type: Array },
+      i18n: { type: Object },
+      lastseen: String,
+      reactions: { type: Array },
     };
   }
 
@@ -181,10 +66,28 @@ export class _MessagesElement extends LitElement {
     super(...argv);
 
     this.visiblelist = [];
+    this.forceUpdate = false;
 
     this.__afterRenderFn = undefined;
     this.__vlist = new VirtualList({ size: this.pagesize });
     this.__vlist.onUpdate(this.__handleVirtualListUpdate.bind(this));
+    this.__applyForceUpdate = false;
+    this.__memoForceUpdateToNextRender = false;
+    this.__registeredUserInteraction = false;
+    // is needed to toggle auto-scroll feature
+
+    this.i18n = {};
+
+    this[actionsSym] = new Map();
+    this[reactionsSym] = new Map();
+  }
+
+  get _actions() {
+    return this[actionsSym];
+  }
+
+  set _actions(_) {
+    this[actionsSym] = new Map(Array.isArray(_) ? _ : []);
   }
 
   get _factory() {
@@ -193,6 +96,14 @@ export class _MessagesElement extends LitElement {
 
   set _factory(a) {
     this.__messageFactory = a;
+  }
+
+  get _reactions() {
+    return this[reactionsSym];
+  }
+
+  set _reactions(_) {
+    this[reactionsSym] = new Map(Array.isArray(_) ? _ : []);
   }
 
   get _rootNode() {
@@ -206,16 +117,45 @@ export class _MessagesElement extends LitElement {
   }
 
   __handleVirtualListUpdate(next, prev) {
-    if (next.length === prev.length) return;
+    let shouldUpdate = false;
 
-    const rootHeight = this._rootNode.offsetHeight;
-    const outerHeight = this._parentEl.offsetHeight;
+    const invokeUpdate = n => {
+      requestAnimationFrame(() => {
+        shouldUpdate = false;
+
+        this.visiblelist = n;
+      });
+    };
+
+    if (next.length === prev.length) {
+      shouldUpdate = true;
+    } else {
+      const rootHeight = this._rootNode.offsetHeight;
+      const outerHeight = this._parentEl.offsetHeight;
+
+      const relativeHeight = relativeShiftTop(this._parentEl, this._rootNode);
+
+      const isEdgeReached = rootHeight <= relativeHeight + outerHeight;
+
+      if (isEdgeReached) shouldUpdate = true;
+    }
+
+    shouldUpdate && invokeUpdate(next, prev);
+  }
+
+  __getTailHeight() {
     const relativeHeight = relativeShiftTop(this._parentEl, this._rootNode);
+    const tailHeight = this._rootNode.offsetHeight - relativeHeight;
 
-    const isEdgeReached = rootHeight <= relativeHeight + outerHeight;
+    return tailHeight;
+  }
 
-    if (isEdgeReached) requestAnimationFrame(() => this.requestUpdate('visiblelist', next));
-    // change visiblelist on reaching the `head` of list
+  __updateList() {
+    this.__vlist.list = this.list;
+
+    const nextList = this.__vlist.list;
+
+    this.visiblelist = this.__applyForceUpdate ? this.list : nextList;
   }
 
   connectedCallback() {
@@ -223,6 +163,7 @@ export class _MessagesElement extends LitElement {
 
     const seek$ = fromEvent('seek', this.parentElement);
     const seekBefore$ = fromEvent('seek-before', this.parentElement);
+    const userScroll$ = fromEvent('scroll', this.parentElement.shadowRoot, true);
 
     compose(
       observe(() => {
@@ -246,22 +187,53 @@ export class _MessagesElement extends LitElement {
           this.__afterRenderFn = () => {
             const presentHeight = this._rootNode.offsetHeight;
 
-            this.parentElement.scrollTo2(0, presentHeight - currentHeight);
+            // this.parentElement.scrollTo2(0, presentHeight - currentHeight);
+            return [0, presentHeight - currentHeight];
           };
         }
       }),
     )(seekBefore$);
 
+    compose(
+      observe(() => {
+        if (!this.__registeredUserInteraction) this.__registeredUserInteraction = true;
+
+        if (this.__getTailHeight() - this._parentEl.scrollHeight <= 100) {
+          this.__onEdge = true;
+        } else {
+          this.__onEdge = false;
+        }
+      }),
+      skip(1),
+    )(userScroll$);
+
     this.__initFactory();
+  }
+
+  firstUpdated() {
+    const { actions = [], reactions = [] } = this;
+
+    this._actions = actions;
+    this._reactions = reactions;
+
+    // eslint-disable-next-line no-unused-expressions
+    Array.isArray(reactions) &&
+      reactions.forEach(it => {
+        this[reactionsSym].set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 });
+      });
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
 
     this.__vlist = undefined;
+    this.__registeredUserInteraction = false;
 
     this._factory.destroy();
     this._factory = undefined;
+
+    this[actionsSym] = undefined;
+    this[reactionsSym] = undefined;
   }
 
   shouldUpdate(changedProps) {
@@ -271,41 +243,74 @@ export class _MessagesElement extends LitElement {
     // update page size from props
 
     if (changedProps.has('list') && this._rootNode && this.__vlist) {
-      if (this.list.length !== this.visiblelist.length) {
-        this.__vlist.list = this.list;
-
-        const nextList = this.__vlist.list;
-
-        this.visiblelist = nextList;
-      }
+      this.__updateList();
     }
 
     if (changedProps.has('visiblelist') && this._rootNode) {
-      this.__tailHeight =
-        this._rootNode.offsetHeight - relativeShiftTop(this._parentEl, this._rootNode);
+      const relativeHeight = relativeShiftTop(this._parentEl, this._rootNode);
+
+      this.__tailHeight = this.__getTailHeight();
+      if (this.__tailHeight && !relativeHeight) {
+        this.requestUpdate('__tailHeight', this.__tailHeight);
+      }
+
+      // if (!this.__tailHeight) return false;
     }
 
-    return true;
+    if (changedProps.has('disablevl')) {
+      if (this.disablevl) {
+        this.__vlist.disabled = true;
+      } else {
+        this.__vlist.disabled = false;
+      }
+    }
+
+    return super.shouldUpdate(changedProps);
   }
 
-  async performUpdate() {
+  async _performUpdate() {
     await new Promise(resolve => requestAnimationFrame(() => resolve()));
 
     if (this.__vlist) {
+      this.__vlist.filterVisible();
       const updatedList = this.__vlist.list; // eslint-disable-line no-unused-vars
       // update virtual list on update
     } else {
       debug('Can not access vlist');
     }
 
-    // this.visiblelist = nextList;
-    // NOTE: seems unnecessary. figure out later
-
     super.performUpdate();
+  }
+
+  update(changed) {
+    const initialRender = !this._rootNode;
+
+    if (changed.has('list') && initialRender) {
+      this.visiblelist = this.list;
+      this.__vlist.list = this.list;
+    }
+
+    if (changed.has('forceUpdate') && this.forceUpdate) {
+      this.__applyForceUpdate = this.forceUpdate;
+    }
+
+    this.onUpdate(changed);
+
+    super.update(changed);
   }
 
   render() {
     const { list = [] } = this;
+
+    if (this._parentEl && this._rootNode) {
+      if (!this.__prevWasAtTop) {
+        this.__prevWasAtTop = this._parentEl.scrollTop === 0;
+      }
+      if (!this.__prevWasAtBottom) {
+        this.__prevWasAtBottom =
+          this._parentEl.scrollHeight - this._parentEl.scrollTop === this._rootNode.offsetHeight;
+      }
+    }
 
     if (!list.length)
       return html`
@@ -321,54 +326,124 @@ export class _MessagesElement extends LitElement {
     `;
   }
 
+  onUpdate() {
+    this.updateComplete
+      .then(result => {
+        if (this.__memoForceUpdateToNextRender) {
+          this.__memoForceUpdateToNextRender = false;
+
+          requestAnimationFrame(() => {
+            this._parentEl.scrollTo2(0, 1e6);
+            // scroll to the latest element on force update
+          });
+        }
+
+        if (this.__applyForceUpdate) {
+          this.__memoForceUpdateToNextRender = true;
+          this.__applyForceUpdate = false;
+        }
+
+        return result;
+      })
+      .catch(console.error); // eslint-disable-line no-console
+  }
+
   updated(changed) {
     super.updated(changed);
 
-    let shouldDispatch = false;
-    if (changed.has('list')) shouldDispatch = true;
+    const listWasChanged = changed.has('list');
 
-    // eslint-disable-next-line no-unused-expressions
-    !shouldDispatch && debug('Skip dispatching');
+    return this.updateComplete
+      .then(result => {
+        this.__curIsAtTop = this._parentEl.scrollTop === 0;
+        this.__curIsAtBottom =
+          this._parentEl.scrollHeight - this._parentEl.scrollTop === this._rootNode.offsetHeight;
 
-    return (
-      shouldDispatch &&
-      this.updateComplete
-        .then(result => {
-          if (!result)
-            return new Error('Could not perform the update. Nested changing was detected');
+        if (!result) {
+          return new Error('Could not perform the update. Nested changing was detected');
+        }
 
+        // console.log('CHANGE', this.__prevWasAtBottom, this.__prevWasAtTop, this.__curIsAtBottom, this.__curIsAtTop)
+
+        let nextScrollPos;
+
+        if (!listWasChanged && typeof this.__tailHeight !== 'undefined') {
+          const relativeHeight = relativeShiftTop(this._parentEl, this._rootNode);
+
+          if (
+            this.__tailHeight &&
+            this.__tailHeight === this._rootNode.offsetHeight &&
+            relativeHeight === 0
+          ) {
+            if (this.__registeredUserInterction) {
+              nextScrollPos = [0, this.__tailHeight + this._rootNode.offsetHeight];
+            }
+
+            // this.__tailHeight = undefined;
+          }
+
+          if (!this.__registeredUserInteraction) {
+            nextScrollPos = [0, this._rootNode.offsetHeight];
+          }
+        }
+
+        if (listWasChanged) {
           const visibleEls = this.__discoverMessageVisibility();
 
           this.__vlist && this.__vlist.adjust(visibleEls);
 
-          if (this.__tailHeight) {
-            this._parentEl.scrollTo2(0, this._rootNode.offsetHeight - this.__tailHeight);
-            // needed to be called at current frame
+          this.__updateList();
 
-            this.__tailHeight = undefined;
+          const listLengthChanged = changed.get('list').length !== this.list.length;
+          const lastIsByUser = this.list[this.list.length - 1].created_by === this.user;
+
+          if (listLengthChanged && lastIsByUser) {
+            // console.log('CHANGEDBYME', this.__forceUpdate)
+            if (!this.__forceUpdate) nextScrollPos = [0, 1e6];
+          } else if (listLengthChanged) {
+            // console.log('CHANGEDBYOTHER', this.__forceUpdate)
+            if (this.__onEdge) nextScrollPos = [0, 1e6];
+          } else if (this.__afterRenderFn) {
+            // console.log('CHANGETOADJUSTHISTLLOAD')
+            nextScrollPos = this.__afterRenderFn();
+            this.__afterRenderFn = undefined;
+          } else if (!this.__afterRenderFn && !this.__registeredUserInteraction) {
+            // console.log('CHANGEATSTARTWOINTERACTION')
+            nextScrollPos = [0, this._rootNode.offsetHeight];
+          } else if (
+            !this.__afterRenderFn &&
+            changed.get('list').length !== this.list.length &&
+            this.__prevWasAtBottom &&
+            !this.__prevWasAtBottom
+          ) {
+            // console.log(this.user, this.list[this.list.length].created_by)
+            nextScrollPos = [0, 1e6];
           }
+        }
 
-          /* request scroll change */
-          this.__afterRenderFn &&
-            requestAnimationFrame(() => {
-              const afterrenderFn = this.__afterRenderFn;
+        // console.log('CHANGENEXTSCROLL', nextScrollPos)
 
-              afterrenderFn();
-              this.__afterRenderFn = undefined;
-            });
+        nextScrollPos.length &&
+          requestAnimationFrame(() => {
+            this._parentEl.scrollTo2(...nextScrollPos);
+            this.__lastScrollPos = nextScrollPos;
+            nextScrollPos = undefined;
+          });
 
-          debug('Element was updated');
+        this.__prevWasAtBottom = this.__curIsAtBottom;
+        this.__prevWasAtTop = this.__curIsAtTop;
 
-          return true;
-        })
-        .catch(error => debug(error.message))
-    );
+        debug('Element was updated');
+
+        return result;
+      })
+      .catch(error => debug(error.message));
   }
 
   __initFactory() {
     if (this._factory) this._factory.destroy();
 
-    this._factory = new MessageFactory({
+    this._factory = new RichMessageFactory({
       parserengine: this.parserengine,
       parser: this.parser,
       parserpreset: this.parserpreset,
@@ -376,8 +451,40 @@ export class _MessagesElement extends LitElement {
     });
   }
 
+  __outputTplAccordingParentPosition() {
+    return showPosHelpers(this.parentElement);
+  }
+
   __renderMessages(list) {
-    return list.map((it, i, arr) => this.__renderEach(it, i, arr));
+    const { lastseen: ls, user, users } = this;
+    let lastseen;
+
+    const nextList = list.map(a => {
+      const _user = users[users.findIndex(b => b.user_id === a.created_by)];
+      let is_lastseen = false;
+
+      if (!_user) return a;
+
+      const { image, display_name } = _user;
+
+      if (lastseen && String(a.user_id) !== user) {
+        is_lastseen = true;
+        lastseen = false;
+      }
+
+      if (typeof lastseen === 'undefined' && a.id === ls) lastseen = a.id;
+
+      return {
+        ...a,
+        avatar: image,
+        user_name: display_name,
+        username: display_name,
+        lastseen: is_lastseen,
+        pinned: a.attribute === 'pinned',
+      };
+    });
+
+    return nextList.map((it, i, arr) => this.__renderEach(it, i, arr));
   }
 
   __renderEach(it, i, arr) {
@@ -394,6 +501,9 @@ export class _MessagesElement extends LitElement {
       icon,
       id,
       identity,
+      invisible,
+      lastseen,
+      pinned,
       rating,
       text,
       theme,
@@ -403,7 +513,10 @@ export class _MessagesElement extends LitElement {
       visible,
     } = it;
 
-    const { body: messageText, unsafe } = this._factory.make({ body: body || text });
+    const { body: messageText, unsafe } =
+      this._factory && this._factory.make
+        ? this._factory.make({ body: body || text })
+        : { body: body || text, unsafe: false };
 
     return {
       aggregated:
@@ -413,14 +526,18 @@ export class _MessagesElement extends LitElement {
           i,
           arr,
           aggregateperinterval ? Number(aggregateperinterval) : undefined,
-        ),
+        ) &&
+        isAggregatedByExceptValue('attribute', i, arr),
       avatar,
       classname,
       deleted,
       icon,
       id,
       identity,
-      me: user === user_id,
+      invisible,
+      is_lastseen: lastseen,
+      me: user === String(user_id),
+      pinned,
       rating,
       text: messageText,
       theme,
@@ -443,7 +560,11 @@ export class _MessagesElement extends LitElement {
       icon,
       id,
       identity,
+      invisible,
+      is_lastseen,
       me,
+      pinned,
+      rating,
       text,
       theme,
       timestamp,
@@ -455,16 +576,58 @@ export class _MessagesElement extends LitElement {
       [classname]: classname,
       aggregated,
       message: true,
+      unseen: is_lastseen,
+    });
+
+    if (invisible) return undefined;
+    // skip unless visible
+
+    const actionsHtml = this.__renderActions(message);
+    const reactionsHtml = this.__renderReactions({ rating, text });
+
+    if (pinned) {
+      return html`
+        <wc-chat-message
+          .aggregated=${aggregated}
+          .identity=${identity}
+          .parser=${this.parser}
+          .unsafe=${unsafe}
+          ?deleted=${deleted}
+          ?me=${me}
+          class=${className}
+          icon=${icon || ''}
+          image=${avatar}
+          pinned
+          text=${text}
+          theme=${theme || ''}
+          timestamp=${timestamp}
+          uid=${id}
+          username=${user_name}
+        >
+          <div slot="message-prologue">
+            ${actionsHtml}
+          </div>
+          <div slot="message-epilogue">
+            ${reactionsHtml}
+          </div>
+        </wc-chat-message>
+      `;
+    }
+
+    const separatorHtml = maybeSeparator({
+      id,
+      text: this.i18n.NEW_MESSAGES,
+      enabled: is_lastseen && this.__outputTplAccordingParentPosition(), // show chunks according the parentElement
     });
 
     return html`
       <wc-chat-message
-        ?aggregated=${aggregated}
-        ?deleted=${deleted}
-        ?me=${me}
+        .aggregated=${aggregated}
         .identity=${identity}
         .parser=${this.parser}
         .unsafe=${unsafe}
+        ?deleted=${deleted}
+        ?me=${me}
         class=${className}
         icon=${icon || ''}
         image=${avatar}
@@ -473,7 +636,15 @@ export class _MessagesElement extends LitElement {
         timestamp=${timestamp}
         uid=${id}
         username=${user_name}
-      />
+      >
+        ${separatorHtml}
+        <div slot="message-prologue">
+          ${actionsHtml}
+        </div>
+        <div slot="message-epilogue">
+          ${reactionsHtml}
+        </div>
+      </wc-chat-message>
     `;
   }
 
@@ -501,6 +672,89 @@ export class _MessagesElement extends LitElement {
 
     return visibleMessages;
   }
+
+  __renderActions(data) {
+    const actions = new Map();
+    const reactions = new Map();
+
+    this._actions = this.actions;
+
+    const isAllowed4Other = (a, b) =>
+      // eslint-disable-next-line no-bitwise,max-len
+      !b.me && Boolean(a & 1);
+    const isAllowed4Group = (a, b) =>
+      // eslint-disable-next-line no-bitwise,max-len
+      !b.me && Boolean(a & 10);
+    const isAllowed4Self = (a, b) =>
+      // eslint-disable-next-line no-bitwise,max-len
+      b.me && Boolean(a & 100);
+
+    const isAllowed = (a, b) =>
+      isAllowed4Other(a, b) || isAllowed4Group(a, b) || isAllowed4Self(a, b);
+
+    // eslint-disable-next-line no-unused-expressions
+    Array.isArray(this.actions) &&
+      this.actions.forEach(_ => {
+        const key = _[0];
+        const _action =
+          key && this._actions && this._actions.has(key) ? this._actions.get(key) || 0 : 0;
+
+        if (!isAllowed(_action, data)) {
+          debug('Action is not allowed');
+
+          return;
+        }
+
+        if (data.pinned && key === 'message-pin') return;
+        if (!data.pinned && key === 'message-unpin') return;
+
+        const actionOpts = {
+          message: data,
+          children: actionImages.get(key),
+          text: actionTexts.get(key),
+          handler: (e, detail) => {
+            this.dispatchEvent(new CustomEvent(key, { detail }));
+          },
+        };
+
+        if (key === 'message-reaction') {
+          reactions.set(key, actionOpts);
+        } else {
+          actions.set(key, actionOpts);
+        }
+      });
+
+    return actionsFactory({ actions, reactions });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  __renderReactions(opts) {
+    const { rating } = opts;
+    let config;
+
+    if (typeof rating === 'number') {
+      config = new Map([['thumbsup', { name: ':thumbsup:', count: rating }]]);
+    } else if (Array.isArray(rating)) {
+      config = new Map([]);
+      rating.forEach(it => {
+        config.set(it[0], { name: `:${it[0]}:`, count: it[1] || 0 });
+      });
+    } else if (opts.rating !== undefined) {
+      throw new TypeError('Wrong rating type');
+    }
+
+    return !config
+      ? undefined
+      : html`
+          <wc-chat-reactions ?showcount=${true} .config=${config} />
+        `;
+  }
 }
 
-export const MessagesElement = withStyle()(_MessagesElement, style, actionStyle);
+export const MessagesElement = withStyle()(
+  _MessagesElement,
+  style,
+  separatorStyle,
+  actionsStyle,
+  styleExt,
+);
