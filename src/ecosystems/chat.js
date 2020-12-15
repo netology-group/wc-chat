@@ -8,7 +8,6 @@ import { style } from './chat.css.js';
 
 const debug = Debug('@ulms/wc-chat/ChatElement');
 const EVENT = 'did-update';
-const parserSym = Symbol('parsearengine');
 
 export class _ChatElement extends LitElement {
   static get properties() {
@@ -51,6 +50,7 @@ export class _ChatElement extends LitElement {
     this.list = [];
     this.message = '';
     this.parser = '';
+    this.parserengine = null;
     this.parserpreset = '';
     this.parserrules = '';
 
@@ -62,20 +62,11 @@ export class _ChatElement extends LitElement {
     this._handleSeekBeforeBounded = this._handleSeekBefore.bind(this);
     this._handleSubmitBounded = this._handleSubmit.bind(this);
     this._handleUserDisableBounded = this._handleUserDisable.bind(this);
-    this._listdir = 0;
     this._queue = undefined;
     this._scrollable = undefined;
 
     this.__timer = null;
     this.__timerId = null;
-  }
-
-  set ParserEngine(e) {
-    this[parserSym] = e;
-  }
-
-  get ParserEngine() {
-    return this[parserSym] || this.parserengine;
   }
 
   attributeChangedCallback(name, old, value) {
@@ -127,14 +118,12 @@ export class _ChatElement extends LitElement {
     if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type');
 
     this.list = list;
-    this._listdir = 1;
   }
 
   prependList(list) {
     if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type');
 
     this.list = list;
-    this._listdir = -1;
   }
 
   updateList(list) {
@@ -142,8 +131,6 @@ export class _ChatElement extends LitElement {
 
     this._queue.push(list);
     // save messages to the queue
-
-    this._listdir = 0;
   }
 
   scrollTo(x, y) {
@@ -181,8 +168,12 @@ export class _ChatElement extends LitElement {
   }
 
   _handleListUpdate(e) {
-    this.list = e.detail.list;
-    this._listdir = 0;
+    const { list } = e.detail;
+
+    const loadNew = this.list.length < list.length;
+
+    this.list = list;
+    if (!this.lastseen && loadNew) this.lastseen = list[list.length - 1].id;
   }
 
   _handleSubmit(e) {
@@ -207,15 +198,8 @@ export class _ChatElement extends LitElement {
   }
 
   _handleLastSeenChange() {
-    if (
-      this.list &&
-      this.list.length > 0 &&
-      this.lastseen !== undefined &&
-      this.lastseen !== this.list[this.list.length - 1].id
-    ) {
-      this.dispatchEvent(
-        new CustomEvent('chat-last-seen-change', { detail: this.list[this.list.length - 1].id }),
-      );
+    if (this.list && this.list.length > 0 && this.lastseen !== this.list[this.list.length - 1].id) {
+      this.lastseen = this.list[this.list.length - 1].id;
     }
   }
 
@@ -294,7 +278,7 @@ export class _ChatElement extends LitElement {
             .actions=${actions}
             .aggregateperinterval=${aggregateperinterval}
             .list=${list}
-            .parserengine=${this.ParserEngine}
+            .parserengine=${this.parserengine}
             .reactions=${reactions}
             .users=${users}
             @message-delete=${this._handleDeleteBounded}
@@ -302,7 +286,7 @@ export class _ChatElement extends LitElement {
             @user-disable=${this._handleUserDisableBounded}
             invoke=${EVENT}
             lastseen=${lastseen}
-            listdir=${this._listdir}
+            pagesize=${15}
             parser=${parser}
             parserrules=${parserrules}
             parserpreset=${parserpreset}

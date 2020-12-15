@@ -176,7 +176,7 @@
     function registerElement(element){
       elements.push(element)
       element.I18nEngine = globalThis.IntlMessageFormat
-      element.ParserEngine = globalThis.markdownit
+      element.parserengine = globalThis.markdownit
 
       globalThis.__initialize(element, counter, list => globalThis.__update(elements, list))
       counter+=1

@@ -141,6 +141,14 @@ export class _ScrollableElement extends LitElement {
     );
   }
 
+  scrollTo2(x, y) {
+    this.__scrollTo(
+      isNumber(x) ? x : 0,
+      isNumber(y) ? y : this._scrollable.scrollHeight - this._scrollable.offsetHeight,
+      true,
+    );
+  }
+
   // eslint-disable-next-line class-methods-use-this
   _scrollMinMax(shift, min = 1, max = DELTA) {
     return shift === 0 || (shift >= min && shift <= max);
@@ -169,13 +177,6 @@ export class _ScrollableElement extends LitElement {
       return;
     }
 
-    // eslint-disable-next-line no-unused-expressions
-    this.listen &&
-      compose(
-        observe(e => this._onChildrenUpdate(e)),
-        throttle(this[delaySym]),
-      )(fromEvent(this.listen, this._scrollable, true));
-
     compose(
       observe(e => this._onResizeHandler(e)),
       throttle(this[delayresizeSym]),
@@ -203,9 +204,11 @@ export class _ScrollableElement extends LitElement {
     }
 
     // seek after
-    if (this.omni && atHead) {
+    else if (this.omni && atHead) {
       debug('Seek after');
       this.dispatchEvent(new CustomEvent('seek-after'));
+    } else {
+      this.dispatchEvent(new Event('seek'));
     }
   }
 
@@ -227,11 +230,6 @@ export class _ScrollableElement extends LitElement {
   _onScrollHandler(e) {
     debug('onScroll');
     this.__handleScroll(e.currentTarget);
-  }
-
-  _onChildrenUpdate(e) {
-    debug('onUpdate');
-    this._shouldScrollTo(e, e.detail.direction);
   }
 
   _yScroll(el) {
@@ -323,6 +321,7 @@ export class _ScrollableElement extends LitElement {
     return params.left;
   }
 
+  // TODO: Remove unnecessary method
   _shouldScrollTo(e, direction = 0) {
     /**
      * At the moment `Y.height` and `this._height` are not the same.
@@ -359,7 +358,7 @@ export class _ScrollableElement extends LitElement {
     return this.__scrollTo(x, y);
   }
 
-  __scrollTo(x, y) {
+  __scrollTo(x, y, z) {
     debug('Maybe scroll to:', x, y);
 
     if (!isNumber(x) || !isNumber(y)) {
@@ -369,7 +368,7 @@ export class _ScrollableElement extends LitElement {
       return;
     }
 
-    requestAnimation(() => scrollTo(this._scrollable, [x, y]));
+    requestAnimation(() => z && scrollTo(this._scrollable, [x, y]));
   }
 
   // eslint-disable-next-line class-methods-use-this

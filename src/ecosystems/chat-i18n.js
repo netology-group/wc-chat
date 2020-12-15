@@ -67,6 +67,7 @@ export class _ChatI18NElement extends _ChatElement {
     return i18n;
   }
 
+  // TODO: rewrite to lit-element property
   set I18nEngine(e) {
     this[i18nSym] = e;
   }
@@ -175,7 +176,7 @@ export class _ChatI18NElement extends _ChatElement {
             .aggregateperinterval=${aggregateperinterval}
             .i18n=${messagesI18n}
             .list=${list}
-            .parserengine=${this.ParserEngine}
+            .parserengine=${this.parserengine}
             .reactions=${reactions}
             .users=${users}
             @message-delete=${this._handleDeleteBounded}
@@ -183,7 +184,7 @@ export class _ChatI18NElement extends _ChatElement {
             @user-disable=${this._handleUserDisableBounded}
             invoke=${EVENT}
             lastseen=${lastseen}
-            listdir=${this._listdir}
+            pagesize=${15}
             parser=${parser}
             parserrules=${parserrules}
             parserpreset=${parserpreset}

@@ -5,10 +5,15 @@ import { timeoutTrampoline as repeat } from './recursion.js';
 export function Queue(options = {}) {
   let target = new EventTarget();
   let list = [];
+  let updateNeeded = false;
 
   const opts = {
     timeout: 1e3,
     ...options,
+  };
+
+  const requestUpdate = () => {
+    updateNeeded = true;
   };
 
   let self = {
@@ -25,7 +30,10 @@ export function Queue(options = {}) {
     },
     push(a) {
       if (Array.isArray(a)) {
-        if (list !== a) list = a;
+        if (list !== a) {
+          list = a;
+          requestUpdate();
+        }
 
         return list;
       }
@@ -33,6 +41,7 @@ export function Queue(options = {}) {
       const index = list.push(a);
 
       list = [...list];
+      requestUpdate();
 
       return index;
     },
@@ -47,7 +56,10 @@ export function Queue(options = {}) {
   };
 
   repeat(() => {
-    target.dispatchEvent(new CustomEvent('list', { detail: { list } }));
+    if (updateNeeded) {
+      target.dispatchEvent(new CustomEvent('list', { detail: { list } }));
+      updateNeeded = false;
+    }
   }, opts.timeout);
 
   return self;
