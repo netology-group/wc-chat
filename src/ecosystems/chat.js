@@ -29,6 +29,7 @@ export class _ChatElement extends LitElement {
       message: String,
       noinput: { type: Boolean },
       omni: { type: Boolean },
+      pagesize: String,
       parser: String,
       parserengine: { type: Object },
       parserpreset: String,
@@ -43,6 +44,11 @@ export class _ChatElement extends LitElement {
     };
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  get className() {
+    return '_ChatElement';
+  }
+
   constructor() {
     super();
 
@@ -54,19 +60,12 @@ export class _ChatElement extends LitElement {
     this.parserpreset = '';
     this.parserrules = '';
 
-    this._handleDeleteBounded = this._handleDelete.bind(this);
-    this._handleLastSeenChangeBounded = this._handleLastSeenChange.bind(this);
-    this._handleListUpdateBounded = this._handleListUpdate.bind(this);
-    this._handleMessageReactionBounded = this._handleMessageReaction.bind(this);
-    this._handleSeekAfterBounded = this._handleSeekAfter.bind(this);
-    this._handleSeekBeforeBounded = this._handleSeekBefore.bind(this);
-    this._handleSubmitBounded = this._handleSubmit.bind(this);
-    this._handleUserDisableBounded = this._handleUserDisable.bind(this);
     this._queue = undefined;
     this._scrollable = undefined;
 
     this.__timer = null;
     this.__timerId = null;
+    this.__forceUpdate = false;
   }
 
   attributeChangedCallback(name, old, value) {
@@ -88,10 +87,9 @@ export class _ChatElement extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    this._queue = new Queue({ timeout: this.delayrender }).on(
-      'list',
-      this._handleListUpdateBounded,
-    );
+    this._setup();
+
+    this._queue = new Queue({ timeout: this.delayrender }).on('list', this._handleListUpdate);
 
     this.dispatchEvent(
       new CustomEvent(this.connectedeventname || 'chat-connected', {
@@ -105,38 +103,41 @@ export class _ChatElement extends LitElement {
   disconnectedCallback() {
     super.disconnectedCallback();
 
-    this._handleSubmitBounded = undefined;
-    this._handleDeleteBounded = undefined;
-    this._handleUserDisableBounded = undefined;
-    this._handleMessageReactionBounded = undefined;
-    this._handleLastSeenChangeBounded = undefined;
-    this._handleSeekBeforeBounded = undefined;
-    this._handleSeekAfterBounded = undefined;
+    this._destroy();
   }
 
-  appendList(list) {
+  updateList(list, forceUpdate = false) {
     if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type');
 
-    this.list = list;
-  }
+    debug('Update list', list);
 
-  prependList(list) {
-    if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type');
+    this.__forceUpdate = forceUpdate;
 
-    this.list = list;
-  }
-
-  updateList(list) {
-    if (!list || !Array.isArray(list)) throw new TypeError('List has wrong type');
-
-    this._queue.push(list);
+    this._queue && this._queue.push(list);
     // save messages to the queue
+  }
+
+  updatePinned(count) {
+    this.dispatchEvent(new CustomEvent('chat-pinned-update', { detail: { count } }));
+
+    const prevQuantity = this.quantity;
+
+    if (prevQuantity !== count) {
+      this.quantity = count;
+      this.requestUpdate('quantity', prevQuantity);
+    }
   }
 
   scrollTo(x, y) {
     debug('Maybe manual scroll to', x, y);
     // eslint-disable-next-line no-unused-expressions
     this._scrollable.scrollTo && this._scrollable.scrollTo(x, y);
+  }
+
+  scrollToEnd(x, y) {
+    debug('Maybe manual scroll to end', x, y);
+    // eslint-disable-next-line no-unused-expressions
+    this._scrollable.scrollTo2 && this._scrollable.scrollTo2(x, y);
   }
 
   _clearTimerId() {
@@ -146,6 +147,20 @@ export class _ChatElement extends LitElement {
       this.__timerId = null;
       this.__timer = null;
     }
+  }
+
+  _destroy() {
+    this._queue = null;
+
+    this._handleSubmitBounded = undefined;
+    this._handleDeleteBounded = undefined;
+    this._handleUserDisableBounded = undefined;
+    this._handleMessageReactionBounded = undefined;
+    this._handleLastSeenChangeBounded = undefined;
+    this._handleSeekBeforeBounded = undefined;
+    this._handleSeekAfterBounded = undefined;
+    this.__handleMessagePinBounded = undefined;
+    this._handleMessageUnpinBounded = undefined;
   }
 
   _setTimerId(value) {
@@ -167,13 +182,32 @@ export class _ChatElement extends LitElement {
     this.requestUpdate();
   }
 
+  _setup() {
+    this._handleDeleteBounded = this._handleDelete.bind(this);
+    this._handleLastSeenChangeBounded = this._handleLastSeenChange.bind(this);
+    this._handleListUpdate = this._handleListUpdate.bind(this);
+    this._handleMessageReactionBounded = this._handleMessageReaction.bind(this);
+    this._handleSeekAfterBounded = this._handleSeekAfter.bind(this);
+    this._handleSeekBeforeBounded = this._handleSeekBefore.bind(this);
+    this._handleSubmitBounded = this._handleSubmit.bind(this);
+    this._handleUserDisableBounded = this._handleUserDisable.bind(this);
+    this.__handleMessagePinBounded = this.__handleMessagePin.bind(this);
+    this._handleMessageUnpinBounded = this._handleMessageUnpin.bind(this);
+  }
+
   _handleListUpdate(e) {
     const { list } = e.detail;
-
-    const loadNew = this.list.length < list.length;
+    const prevList = this.list;
 
     this.list = list;
-    if (!this.lastseen && loadNew) this.lastseen = list[list.length - 1].id;
+
+    const latest = list[list.length - 1];
+
+    if (latest && this.lastseen === latest.id) {
+      this._changeLastseen(latest.id);
+    }
+
+    this.requestUpdate('list', prevList);
   }
 
   _handleSubmit(e) {
@@ -198,21 +232,31 @@ export class _ChatElement extends LitElement {
   }
 
   _handleLastSeenChange() {
-    if (this.list && this.list.length > 0 && this.lastseen !== this.list[this.list.length - 1].id) {
-      this.lastseen = this.list[this.list.length - 1].id;
+    if (!this.list) return;
+
+    const latest = this.list[this.list.length - 1];
+
+    if (latest && this.lastseen !== latest.id) {
+      const { id } = latest;
+
+      this._changeLastseen(id);
+      this.dispatchEvent(new CustomEvent('chat-last-seen-change', { detail: { id } }));
     }
   }
 
   _handleSeekBefore() {
     if (!(Array.isArray(this.list) && this.list.length)) return;
-    const { offset, id: last_id, timestamp } = this.list[0];
+
+    const { id: last_id, occurred_at, offset, original_occurred_at, timestamp } = this.list[0];
 
     this.dispatchEvent(
       new CustomEvent('chat-messages-seek-before', {
         detail: {
           before: Math.ceil(timestamp),
           last_id,
+          occurred_at,
           offset,
+          original_occurred_at,
         },
       }),
     );
@@ -220,17 +264,53 @@ export class _ChatElement extends LitElement {
 
   _handleSeekAfter() {
     if (!(Array.isArray(this.list) && this.list.length)) return;
-    const { offset, id: last_id, timestamp } = this.list[this.list.length - 1];
+
+    const list = this.list[this.list.length - 1];
+    const { id: last_id, occurred_at, offset, original_occurred_at, timestamp } = list;
 
     this.dispatchEvent(
       new CustomEvent('chat-messages-seek-after', {
         detail: {
           after: Math.round(timestamp),
           last_id,
+          occurred_at,
           offset,
+          original_occurred_at,
         },
       }),
     );
+  }
+
+  __handleMessagePin(e) {
+    const {
+      detail: { id },
+    } = e;
+
+    this.dispatchEvent(new CustomEvent('chat-message-pin', { detail: { id } }));
+  }
+
+  _handleMessageUnpin(e) {
+    const {
+      detail: { id },
+    } = e;
+
+    this.dispatchEvent(new CustomEvent('chat-message-unpin', { detail: { id } }));
+  }
+
+  _changeLastseen(nextseen) {
+    this.lastseen = nextseen;
+  }
+
+  update(changedProperties) {
+    super.update(changedProperties);
+
+    this.updateComplete
+      .then(result => {
+        if (this.__forceUpdate) this.__forceUpdate = false;
+
+        return result;
+      })
+      .catch(console.error); // eslint-disable-line no-console
   }
 
   render() {
@@ -249,6 +329,7 @@ export class _ChatElement extends LitElement {
       message,
       noinput,
       omni,
+      pagesize = 15,
       parser,
       parserpreset,
       parserrules,
@@ -259,6 +340,12 @@ export class _ChatElement extends LitElement {
       user,
       users,
     } = this;
+
+    const shouldForceUpdate = this.__forceUpdate;
+
+    const filtersWereActive = this.__filtersWereActive;
+
+    this.__filtersWereActive = false;
 
     return html`
       <div class="wrapper">
@@ -277,6 +364,8 @@ export class _ChatElement extends LitElement {
           <wc-chat-messages
             .actions=${actions}
             .aggregateperinterval=${aggregateperinterval}
+            .disablevl=${filtersWereActive}
+            .forceUpdate=${shouldForceUpdate}
             .list=${list}
             .parserengine=${this.parserengine}
             .reactions=${reactions}
@@ -284,9 +373,11 @@ export class _ChatElement extends LitElement {
             @message-delete=${this._handleDeleteBounded}
             @message-reaction=${this._handleMessageReactionBounded}
             @user-disable=${this._handleUserDisableBounded}
+            @message-pin=${this.__handleMessagePinBounded}
+            @message-unpin=${this._handleMessageUnpinBounded}
             invoke=${EVENT}
             lastseen=${lastseen}
-            pagesize=${15}
+            pagesize=${pagesize}
             parser=${parser}
             parserrules=${parserrules}
             parserpreset=${parserpreset}

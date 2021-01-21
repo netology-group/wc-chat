@@ -12,12 +12,14 @@
   <script src="https://cdn.jsdelivr.net/npm/intl-messageformat@2.2.0/dist/intl-messageformat-with-locales.min.js"></script>
 
   <script async type="module" src="./index.js"></script>
+  <script async type="module" src="./src/chat-i18n.index.js"></script>
   <script async type="module" src="./src/input.index.js"></script>
   <script async type="module" src="./src/message.index.js"></script>
-  <script async type="module" src="./src/messages-extended.index.js"></script>
+  <script async type="module" src="./src/messages.index.js"></script>
   <script async type="module" src="./src/reactions.index.js"></script>
   <script async type="module" src="./src/scrollable-unseen.index.js"></script>
-  <script async type="module" src="./src/chat-i18n.index.js"></script>
+  <script async type="module" src="./src/chat-with-filters.index.js"></script>
+  <script async type="module" src="./src/n-slot-manager.index.js"></script>
   <script>
     /* eslint-disable no-var,prefer-destructuring,no-param-reassign,prefer-arrow-callback */
     var ulid = globalThis.ULID.ulid
@@ -148,10 +150,8 @@
       })
 
       element.addEventListener('chat-last-seen-change', function onLastSeenChange (e) {
-        element.lastseen = e.detail
+        console.log('Lastseen changed:', e.detail) // eslint-disable-line no-console
       })
-
-      element.lastseen = _messages && _messages.length ? _messages[_messages.length - 1].id : undefined
     }
 
     function initialize(element, user, makeUpdate){
@@ -211,22 +211,22 @@
         placeholderdisabled="Чат заблокирован"
         user="1"
       />
-      </div>
-      <div class="container">
-        <wc-chat
-          aggregateperinterval=5
-          delayrender=1e3
-          delayresize=400
-          delayupdate=200
-          disablerecentbanner=1
-          disableunseenbanner=1
-          id="messenger2"
-          language="en-US"
-          parser="html-entities"
-          placeholder="Write something…"
-          placeholderdisabled="Chat is blocked now"
-          user="2"
-        />
+    </div>
+    <div class="container">
+      <wc-chat
+        aggregateperinterval=5
+        delayrender=1e3
+        delayresize=400
+        delayupdate=200
+        disablerecentbanner=1
+        disableunseenbanner=1
+        id="messenger2"
+        language="en-US"
+        parser="html-entities"
+        placeholder="Write something…"
+        placeholderdisabled="Chat is blocked now"
+        user="2"
+      />
     </div>
     <div class="container">
       <wc-chat
@@ -242,7 +242,7 @@
         scrollabledisabled
         user="3"
       />
-    </div>
+    </div-->
   </div>
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
   <style>

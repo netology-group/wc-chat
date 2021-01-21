@@ -1,6 +1,8 @@
 import { html } from 'lit-element';
 
 import { withStyle } from '../mixins/with-style.js';
+import { slotSwitcher } from '../molecules/slot-switcher.js';
+import { style as slotSwitcherStyle } from '../molecules/slot-switcher.css.js';
 import i18n from '../i18n.js';
 
 import { _ChatElement } from './chat.js';
@@ -31,6 +33,7 @@ export class _ChatI18NElement extends _ChatElement {
       disabled: { type: Boolean },
       disablerecentbanner: { type: Number },
       disableunseenbanner: { type: Number },
+      filters: { type: String },
       i18nengine: Function,
       language: String,
       lastseen: String,
@@ -40,12 +43,14 @@ export class _ChatI18NElement extends _ChatElement {
       message: String,
       noinput: { type: Boolean },
       omni: { type: Boolean },
+      pagesize: String,
       parser: String,
       parserengine: { type: Object },
       parserpreset: String,
       parserrules: String,
       placeholder: String,
       placeholderdisabled: String,
+      quantity: { type: Number },
       ratelimit: { type: Number },
       reactions: { type: Array },
       scrollabledisabled: { type: Boolean },
@@ -54,12 +59,23 @@ export class _ChatI18NElement extends _ChatElement {
     };
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  get className() {
+    return '_ChatI18NElement';
+  }
+
   constructor() {
     super();
 
     this.delaysubmit = 0;
     this.list = [];
     this.message = '';
+    this.pagesize = 15;
+    this.quantity = 0;
+
+    this.__filtersActive = false;
+    this.__filtersWereActive = false;
+    this.__hasNoInput = null;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -76,6 +92,41 @@ export class _ChatI18NElement extends _ChatElement {
     return this[i18nSym] || this.i18nengine;
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+
+    this.__hasNoInput = {
+      disabled: this.disabled,
+      disableunseenbanner: this.disableunseenbanner,
+      noinput: this.noinput || false, // store info about initial input need
+    };
+  }
+
+  shouldUpdate(changedProperties) {
+    const filtersActive = this.__filtersActive;
+    const hadNoInput = changedProperties.has('noinput') && changedProperties.get('noinput');
+
+    // disable remote input change on active filters
+    if (filtersActive && hadNoInput && !this.noinput) {
+      this.noinput = true;
+      this.__hasNoInput = this.noinput;
+
+      return false;
+    }
+
+    return super.shouldUpdate(changedProperties);
+  }
+
+  updateFilters(filters) {
+    const prevFilters = this.filters;
+
+    if (filters !== prevFilters) {
+      requestAnimationFrame(() => {
+        this._handleFiltersChange();
+      });
+    }
+  }
+
   _resolveLanguage(language) {
     let resolvedLanguage =
       !language &&
@@ -90,6 +141,35 @@ export class _ChatI18NElement extends _ChatElement {
     }
 
     return resolvedLanguage;
+  }
+
+  _handleFiltersChange() {
+    const { disabled, disableunseenbanner, noinput } = this;
+
+    const prevFitlersState = this.__filtersActive;
+    const nextFitlersState = !prevFitlersState;
+
+    this.__filtersWereActive = prevFitlersState;
+
+    if (nextFitlersState) {
+      this.filters = 'pinned=1';
+      this.noinput = true;
+      this.disableunseenbanner = 1;
+      this.__hasNoInput = { disabled, disableunseenbanner, noinput };
+    }
+
+    if (!nextFitlersState) {
+      if (this.__hasNoInput) {
+        this.noinput = this.__hasNoInput.noinput;
+        this.disabled = this.__hasNoInput.disabled;
+        this.disableunseenbanner = this.__hasNoInput.disableunseenbanner;
+      }
+      this.filters = '';
+    }
+
+    this.__filtersActive = nextFitlersState;
+
+    this.dispatchEvent(new CustomEvent('chat-filters-change', { detail: this.filters }));
   }
 
   render() {
@@ -111,11 +191,13 @@ export class _ChatI18NElement extends _ChatElement {
       message,
       noinput,
       omni,
+      pagesize,
       parser,
       parserpreset,
       parserrules,
       placeholder,
       placeholderdisabled,
+      quantity,
       reactions,
       scrollabledisabled,
       user,
@@ -124,7 +206,7 @@ export class _ChatI18NElement extends _ChatElement {
 
     const currentLanguage = this._resolveLanguage(language);
 
-    const { GO_TO_RECENT_MESSAGE, NEW_MESSAGES_COUNT, NEW_MESSAGES, SEE } =
+    const { GO_TO_RECENT_MESSAGE, NEW_MESSAGES_COUNT, NEW_MESSAGES, SEE, PIN_MESSAGES_COUNT } =
       this.i18n[currentLanguage] || {};
 
     const lastSeenIndex =
@@ -150,11 +232,31 @@ export class _ChatI18NElement extends _ChatElement {
 
     const messagesI18n = { NEW_MESSAGES };
 
+    const pinnedQnt = quantity;
+    const pinnedText = format(
+      this.I18nEngine,
+      {
+        message: PIN_MESSAGES_COUNT,
+        language: currentLanguage,
+      },
+      {
+        count: pinnedQnt,
+      },
+    );
+
+    const shouldForceUpdate = this.__forceUpdate;
+
     /**
      *  Scrollable & messages are ment to work together
      */
+
+    const filtersWereActive = this.__filtersWereActive;
+
+    this.__filtersWereActive = false;
+
     return html`
       <div class="wrapper">
+        ${slotSwitcher(pinnedQnt, pinnedText, this.__filtersActive, this._handleFiltersChange)}
         <wc-chat-scrollable
           ?disablerecentbanner=${Boolean(Number(disablerecentbanner))}
           ?disableunseenbanner=${Boolean(Number(disableunseenbanner))}
@@ -174,6 +276,8 @@ export class _ChatI18NElement extends _ChatElement {
           <wc-chat-messages
             .actions=${actions}
             .aggregateperinterval=${aggregateperinterval}
+            .disablevl=${filtersWereActive}
+            .forceUpdate=${shouldForceUpdate}
             .i18n=${messagesI18n}
             .list=${list}
             .parserengine=${this.parserengine}
@@ -182,9 +286,11 @@ export class _ChatI18NElement extends _ChatElement {
             @message-delete=${this._handleDeleteBounded}
             @message-reaction=${this._handleMessageReactionBounded}
             @user-disable=${this._handleUserDisableBounded}
+            @message-pin=${this.__handleMessagePinBounded}
+            @message-unpin=${this._handleMessageUnpinBounded}
             invoke=${EVENT}
             lastseen=${lastseen}
-            pagesize=${15}
+            pagesize=${pagesize}
             parser=${parser}
             parserrules=${parserrules}
             parserpreset=${parserpreset}
@@ -213,4 +319,4 @@ export class _ChatI18NElement extends _ChatElement {
   }
 }
 
-export const ChatI18NElement = withStyle()(_ChatI18NElement, style);
+export const ChatI18NElement = withStyle()(_ChatI18NElement, style, slotSwitcherStyle);

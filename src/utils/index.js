@@ -60,6 +60,19 @@ export const isAggregatedByDate = (field, index, list, interval = 86400) => {
   );
 };
 
+export const isAggregatedByExceptValue = (field, index, list, value = 'pinned') => {
+  if (!index || !field) return false;
+
+  const prev = list[index - 1][field];
+  const next = list[index][field];
+
+  if (typeof prev === 'undefined' || typeof next === 'undefined') return false;
+
+  if (prev !== value && next !== value) return true;
+
+  return false;
+};
+
 export const requestAnimation = fn => {
   const { requestAnimationFrame } = globalThis;
 

@@ -9,7 +9,7 @@ import { withStyle } from '../mixins/with-style.js';
 
 import { style } from './message.css.js';
 
-export class _MessageElement extends LitElement {
+export class _PinnedMessageElement extends LitElement {
   static get properties() {
     return {
       aggregated: String,
@@ -20,10 +20,8 @@ export class _MessageElement extends LitElement {
       image: String,
       me: { type: Boolean },
       parser: String,
-      pinned: { type: Boolean },
       text: String,
       theme: String,
-      timestamp: { type: String },
       uid: String,
       username: String,
     };
@@ -39,10 +37,8 @@ export class _MessageElement extends LitElement {
       identity,
       me,
       parser,
-      pinned = false,
       text,
       theme,
-      timestamp,
       uid,
       unsafe,
       user_role,
@@ -56,8 +52,6 @@ export class _MessageElement extends LitElement {
       inner: true,
       me,
     });
-
-    const stamp = isNaN(Number(timestamp)) ? timestamp : Number(timestamp);
 
     // FIXME: Fix "Element has insufficient color contrast"
     return html`
@@ -74,8 +68,6 @@ export class _MessageElement extends LitElement {
             : meta({
                 icon,
                 identity,
-                pinned,
-                timestamp: stamp,
                 username,
               })}
           ${section({
@@ -89,4 +81,4 @@ export class _MessageElement extends LitElement {
   }
 }
 
-export const MessageElement = withStyle()(_MessageElement, style);
+export const PinnedMessageElement = withStyle()(_PinnedMessageElement, style);

@@ -64,15 +64,27 @@ export const style = css`
 
   /** actions */
   :host .action {
+    align-items: center;
     background-color: transparent;
     border: none;
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
     outline: none;
-    padding: 0;
+    padding-left: 15px;
+    white-space: nowrap;
+  }
+
+  :host .action.quickdelete {
+    padding-left: 8px;
   }
 
   :host .action:disabled {
     cursor: not-allowed;
+  }
+
+  :host .action:hover {
+    color: currentColor;
   }
 
   :host .action > svg path {
@@ -113,6 +125,7 @@ export const style = css`
     opacity: 0;
     position: absolute;
     z-index: -1;
+    right: -15px;
   }
 
   :host .actions:hover .actions-inner {
@@ -189,7 +202,6 @@ export const style = css`
   :host .quickdelete > svg {
     height: 10px;
     padding: 0;
-    padding-top: 2px;
   }
 
   /* stylelint-disable-next-line no-descending-specificity */

@@ -127,7 +127,9 @@ export const style = css`
   }
 
   :host .meta .icon {
+    height: 9px;
     padding-right: 8px;
+    width: 9px;
   }
 
   /* stylelint-disable-next-line no-duplicate-selectors */

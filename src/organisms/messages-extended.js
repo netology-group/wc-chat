@@ -3,8 +3,13 @@ import cs from 'classnames-es';
 
 import { withStyle } from '../mixins/with-style.js';
 import { Actions as actionsFactory } from '../molecules/actions.js';
-import { debug as Debug, isAggregatedBy, isAggregatedByDate } from '../utils/index.js';
-import { actionImages } from '../atoms/action.js';
+import {
+  debug as Debug,
+  isAggregatedBy,
+  isAggregatedByDate,
+  isAggregatedByExceptValue,
+} from '../utils/index.js';
+import { actionImages, actionTexts } from '../atoms/action.js';
 import { maybeSeparator } from '../atoms/separator.js';
 import { style as actionsStyle } from '../molecules/actions.css.js';
 import { style as separatorStyle } from '../atoms/separator.css.js';
@@ -25,6 +30,7 @@ const actionsSym = Symbol('actions');
 const reactionsSym = Symbol('reactions');
 const factorySym = Symbol('factory');
 
+// TODO: allow to specify message' actions for the message element not the messages
 export class _XMessagesElement extends MessagesElement {
   static get properties() {
     return {
@@ -123,6 +129,7 @@ export class _XMessagesElement extends MessagesElement {
       return {
         ...a,
         lastseen: is_lastseen,
+        pinned: a.attribute === 'pinned',
       };
     });
 
@@ -145,6 +152,7 @@ export class _XMessagesElement extends MessagesElement {
       identity,
       invisible,
       lastseen,
+      pinned,
       rating,
       text,
       theme,
@@ -164,16 +172,18 @@ export class _XMessagesElement extends MessagesElement {
           index,
           list,
           aggregateperinterval ? Number(aggregateperinterval) : undefined,
-        ),
+        ) &&
+        isAggregatedByExceptValue('attribute', index, list),
       avatar,
       classname,
       deleted,
       icon,
       id,
       identity,
-      me: user === String(user_id),
       invisible,
       is_lastseen: lastseen,
+      me: user === String(user_id),
+      pinned,
       rating,
       text: messageText,
       theme,
@@ -192,13 +202,14 @@ export class _XMessagesElement extends MessagesElement {
       aggregated,
       avatar,
       classname,
-      me,
       deleted,
       icon,
       id,
       identity,
       invisible,
       is_lastseen,
+      me,
+      pinned,
       rating,
       text,
       theme,
@@ -217,6 +228,45 @@ export class _XMessagesElement extends MessagesElement {
     if (invisible) return undefined;
     // skip unless visible
 
+    const separatorHtml = maybeSeparator({
+      id,
+      text: this.i18n.NEW_MESSAGES,
+      enabled: is_lastseen && this.__outputTplAccordingParentPosition(), // show chunks according the parentElement
+    });
+
+    const actionsHtml = this.__renderActions(message);
+    const reactionsHtml = this.__renderReactions({ rating, text });
+
+    if (pinned) {
+      return html`
+        <wc-chat-message
+          ?deleted=${deleted}
+          ?me=${me}
+          .aggregated=${aggregated}
+          .identity=${identity}
+          .parser=${this.parser}
+          .unsafe=${unsafe}
+          class=${className}
+          icon=${icon || ''}
+          image=${avatar}
+          pinned
+          text=${text}
+          theme=${theme || ''}
+          timestamp=${timestamp}
+          uid=${id}
+          username=${user_name}
+        >
+          ${separatorHtml}
+          <div slot="message-prologue">
+            ${actionsHtml}
+          </div>
+          <div slot="message-epilogue">
+            ${reactionsHtml}
+          </div>
+        </wc-chat-message>
+      `;
+    }
+
     return html`
       <wc-chat-message
         ?deleted=${deleted}
@@ -234,16 +284,12 @@ export class _XMessagesElement extends MessagesElement {
         uid=${id}
         username=${user_name}
       >
-        ${maybeSeparator({
-          id,
-          text: this.i18n.NEW_MESSAGES,
-          enabled: is_lastseen && this.__outputTplAccordingParentPosition(), // show chunks according the parentElement
-        })}
+        ${separatorHtml}
         <div slot="message-prologue">
-          ${this.__renderActions(message)}
+          ${actionsHtml}
         </div>
         <div slot="message-epilogue">
-          ${this.__renderReactions({ rating, text })}
+          ${reactionsHtml}
         </div>
       </wc-chat-message>
     `;
@@ -281,9 +327,13 @@ export class _XMessagesElement extends MessagesElement {
           return;
         }
 
+        if (data.pinned && key === 'message-pin') return;
+        if (!data.pinned && key === 'message-unpin') return;
+
         const actionOpts = {
           message: data,
           children: actionImages.get(key),
+          text: actionTexts.get(key),
           handler: (e, detail) => {
             this.dispatchEvent(new CustomEvent(key, { detail }));
           },
