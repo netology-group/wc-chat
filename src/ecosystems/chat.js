@@ -160,6 +160,7 @@ export class _ChatElement extends LitElement {
     this._handleSeekBeforeBounded = undefined;
     this._handleSeekAfterBounded = undefined;
     this.__handleMessagePinBounded = undefined;
+    this._handleMessageReachedBefore = undefined;
     this._handleMessageUnpinBounded = undefined;
   }
 
@@ -192,6 +193,7 @@ export class _ChatElement extends LitElement {
     this._handleSubmitBounded = this._handleSubmit.bind(this);
     this._handleUserDisableBounded = this._handleUserDisable.bind(this);
     this.__handleMessagePinBounded = this.__handleMessagePin.bind(this);
+    this._handleReachedBefore = this._handleReachedBefore.bind(this);
     this._handleMessageUnpinBounded = this._handleMessageUnpin.bind(this);
   }
 
@@ -297,6 +299,14 @@ export class _ChatElement extends LitElement {
     this.dispatchEvent(new CustomEvent('chat-message-unpin', { detail: { id } }));
   }
 
+  _handleReachedBefore(e) {
+    const {
+      detail: { id },
+    } = e;
+
+    this.dispatchEvent(new CustomEvent('chat-message-reached-before', { detail: { id } }));
+  }
+
   _changeLastseen(nextseen) {
     this.lastseen = nextseen;
   }
@@ -371,10 +381,11 @@ export class _ChatElement extends LitElement {
             .reactions=${reactions}
             .users=${users}
             @message-delete=${this._handleDeleteBounded}
-            @message-reaction=${this._handleMessageReactionBounded}
-            @user-disable=${this._handleUserDisableBounded}
             @message-pin=${this.__handleMessagePinBounded}
+            @message-reaction=${this._handleMessageReactionBounded}
             @message-unpin=${this._handleMessageUnpinBounded}
+            @reached-before=${this._handleReachedBefore}
+            @user-disable=${this._handleUserDisableBounded}
             invoke=${EVENT}
             lastseen=${lastseen}
             pagesize=${pagesize}

@@ -156,6 +156,6 @@ export class VirtualList {
   }
 
   matchItem(el, id) {
-    return this.__accessElFn(el) === id;
+    return el && id && this.__accessElFn(el) === id;
   }
 }

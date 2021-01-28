@@ -55,6 +55,7 @@ export class _ChatI18NElement extends _ChatElement {
       reactions: { type: Array },
       scrollabledisabled: { type: Boolean },
       user: String,
+      userbanned: { type: Boolean },
       users: { type: Array },
     };
   }
@@ -72,6 +73,7 @@ export class _ChatI18NElement extends _ChatElement {
     this.message = '';
     this.pagesize = 15;
     this.quantity = 0;
+    this.userbanned = false;
 
     this.__filtersActive = false;
     this.__filtersWereActive = false;
@@ -112,6 +114,11 @@ export class _ChatI18NElement extends _ChatElement {
       this.__hasNoInput = this.noinput;
 
       return false;
+    }
+
+    if (!filtersActive && this.userbanned) {
+      this.noinput = true;
+      this.__hasNoInput = this.noinput;
     }
 
     return super.shouldUpdate(changedProperties);
@@ -284,10 +291,11 @@ export class _ChatI18NElement extends _ChatElement {
             .reactions=${reactions}
             .users=${users}
             @message-delete=${this._handleDeleteBounded}
-            @message-reaction=${this._handleMessageReactionBounded}
-            @user-disable=${this._handleUserDisableBounded}
             @message-pin=${this.__handleMessagePinBounded}
+            @message-reaction=${this._handleMessageReactionBounded}
             @message-unpin=${this._handleMessageUnpinBounded}
+            @reached-before=${this._handleReachedBefore}
+            @user-disable=${this._handleUserDisableBounded}
             invoke=${EVENT}
             lastseen=${lastseen}
             pagesize=${pagesize}
