@@ -107,6 +107,7 @@ export const style = css`
     position: relative;
     text-align: center;
     width: 24px;
+    padding-left: 10px;
   }
 
   :host .actions:hover {

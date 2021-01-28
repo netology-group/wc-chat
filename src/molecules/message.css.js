@@ -127,7 +127,9 @@ export const style = css`
   }
 
   :host .meta .icon {
+    flex-shrink: 0;
     height: 9px;
+    min-width: 9px;
     padding-right: 8px;
     width: 9px;
   }
