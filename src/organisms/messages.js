@@ -76,6 +76,8 @@ export class _MessagesElement extends LitElement {
     this.__registeredUserInteraction = false;
     // is needed to toggle auto-scroll feature
 
+    this.__visibleLength = undefined;
+
     this.i18n = {};
 
     this[actionsSym] = new Map();
@@ -188,6 +190,9 @@ export class _MessagesElement extends LitElement {
             const presentHeight = this._rootNode.offsetHeight;
 
             // this.parentElement.scrollTo2(0, presentHeight - currentHeight);
+            //
+            if (presentHeight === this._rootNode.offsetHeight && !presentHeight) return undefined;
+
             return [0, presentHeight - currentHeight];
           };
         }
@@ -409,24 +414,24 @@ export class _MessagesElement extends LitElement {
           } else if (listLengthChanged && lastIsByUser) {
             // !!!console.log('CHANGEDBYME', this.__forceUpdate)
             // !!! if (!this.__forceUpdate) nextScrollPos = [0, 1e6];
-            //
-            //
             if (this.__onEdge) nextScrollPos = [0, 1e6];
             else nextScrollPos = [0, this._rootNode.offsetHeight - this.__tailHeight];
           } else if (listLengthChanged) {
             // !!!console.log('CHANGEDBYOTHER', this.__forceUpdate)
+
             if (this.__onEdge) nextScrollPos = [0, 1e6];
             else nextScrollPos = [0, this._rootNode.offsetHeight - this.__tailHeight];
           } else if (this.__afterRenderFn) {
             const onTop = isOnTop();
-
             // !!!console.log('CHANGETOADJUSTHISTLLOAD', isOnTop())
+
             if (!onTop) {
               nextScrollPos = this.__afterRenderFn();
             }
             this.__afterRenderFn = undefined;
           } else if (!this.__afterRenderFn && !this.__registeredUserInteraction) {
             // !!!console.log('CHANGEATSTARTWOINTERACTION')
+            //
             nextScrollPos = [0, this._rootNode.offsetHeight];
           } else if (
             !this.__afterRenderFn &&
@@ -692,12 +697,18 @@ export class _MessagesElement extends LitElement {
 
     const visibleMessages = listVisibility.filter(a => a.visible === true).map(a => a.id);
 
+    this.__visibleLength = visibleMessages.length;
+
     // !!!console.log('list', this.list, visibleMessages[0])
     const [firstVisibleId] = visibleMessages;
     const [firstStored] = this.list;
 
     const shouldDispatchTopReached =
       firstStored && firstVisibleId && firstStored.id === firstVisibleId;
+
+    this.dispatchEvent(
+      new CustomEvent('viewport-list-change', { detail: { length: visibleMessages.length } }),
+    );
 
     if (shouldDispatchTopReached) {
       this.dispatchEvent(new CustomEvent('reached-before', { detail: { id: firstVisibleId } }));

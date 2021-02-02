@@ -59,6 +59,7 @@ export class _ChatElement extends LitElement {
     this.parserengine = null;
     this.parserpreset = '';
     this.parserrules = '';
+    this.visiblelength = undefined;
 
     this._queue = undefined;
     this._scrollable = undefined;
@@ -162,6 +163,7 @@ export class _ChatElement extends LitElement {
     this.__handleMessagePinBounded = undefined;
     this._handleMessageReachedBefore = undefined;
     this._handleMessageUnpinBounded = undefined;
+    this._handleViewportChange = undefined;
   }
 
   _setTimerId(value) {
@@ -195,6 +197,7 @@ export class _ChatElement extends LitElement {
     this.__handleMessagePinBounded = this.__handleMessagePin.bind(this);
     this._handleReachedBefore = this._handleReachedBefore.bind(this);
     this._handleMessageUnpinBounded = this._handleMessageUnpin.bind(this);
+    this._handleViewportChange = this._handleViewportChange.bind(this);
   }
 
   _handleListUpdate(e) {
@@ -244,6 +247,14 @@ export class _ChatElement extends LitElement {
       this._changeLastseen(id);
       this.dispatchEvent(new CustomEvent('chat-last-seen-change', { detail: { id } }));
     }
+  }
+
+  _handleViewportChange(e) {
+    const {
+      detail: { length },
+    } = e;
+
+    this.visiblelength = length;
   }
 
   _handleSeekBefore() {
@@ -386,6 +397,7 @@ export class _ChatElement extends LitElement {
             @message-unpin=${this._handleMessageUnpinBounded}
             @reached-before=${this._handleReachedBefore}
             @user-disable=${this._handleUserDisableBounded}
+            @viewport-list-change=${this._handleViewportChange}
             invoke=${EVENT}
             lastseen=${lastseen}
             pagesize=${pagesize}

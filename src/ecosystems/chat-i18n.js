@@ -296,6 +296,7 @@ export class _ChatI18NElement extends _ChatElement {
             @message-unpin=${this._handleMessageUnpinBounded}
             @reached-before=${this._handleReachedBefore}
             @user-disable=${this._handleUserDisableBounded}
+            @viewport-list-change=${this._handleViewportChange}
             invoke=${EVENT}
             lastseen=${lastseen}
             pagesize=${pagesize}
