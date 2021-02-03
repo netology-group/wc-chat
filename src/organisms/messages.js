@@ -186,10 +186,21 @@ export class _MessagesElement extends LitElement {
           const currentHeight = this._rootNode.offsetHeight;
 
           // save fn to perform scroll updating to previous position
-          this.__afterRenderFn = () => {
+          this.__afterRenderFn = next => {
             const presentHeight = this._rootNode.offsetHeight;
 
             if (presentHeight === this._rootNode.offsetHeight && !presentHeight) return undefined;
+
+            const nextHeight = presentHeight - currentHeight;
+
+            if (next && next.top === false && nextHeight === 0) {
+              return undefined;
+            }
+
+            if (presentHeight - currentHeight < 0) {
+              return [0, 1e6];
+              // scroll to end on drastically change
+            }
 
             return [0, presentHeight - currentHeight];
           };
@@ -394,7 +405,7 @@ export class _MessagesElement extends LitElement {
             const onTop = isOnTop();
 
             if (!onTop) {
-              nextScrollPos = this.__afterRenderFn();
+              nextScrollPos = this.__afterRenderFn({ top: onTop });
             }
             this.__afterRenderFn = undefined;
           } else if (!this.__afterRenderFn && !this.__registeredUserInteraction) {
