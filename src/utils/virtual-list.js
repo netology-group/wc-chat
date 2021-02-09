@@ -1,6 +1,6 @@
 import { debug as Debug } from './index.js';
 
-const debug = Debug('@ulms/util/VirtualList');
+const debug = Debug('@ulms/module/VirtualList');
 
 export class VirtualList {
   constructor({ size = 24, accessEl }) {
@@ -156,6 +156,6 @@ export class VirtualList {
   }
 
   matchItem(el, id) {
-    return this.__accessElFn(el) === id;
+    return el && id && this.__accessElFn(el) === id;
   }
 }

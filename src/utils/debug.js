@@ -1,8 +1,9 @@
-const logger =
-  console ||
-  function Logger() {
-    return { log: () => {}, error: () => {} };
-  };
+const ConsoleLogger = {
+  log: Function.prototype.bind.call(globalThis.console.log, globalThis.console),
+  error: globalThis.console.error.bind(globalThis.console, 'error: %s'),
+};
+
+const logger = ConsoleLogger;
 
 export default function(namespace) {
   return (...argv) => {

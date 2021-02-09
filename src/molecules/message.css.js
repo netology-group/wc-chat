@@ -136,6 +136,7 @@ export const style = css`
   :host .meta .author {
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   :host .meta .stamp {

@@ -59,6 +59,7 @@ export class _ChatElement extends LitElement {
     this.parserengine = null;
     this.parserpreset = '';
     this.parserrules = '';
+    this.visiblelength = undefined;
 
     this._queue = undefined;
     this._scrollable = undefined;
@@ -160,7 +161,9 @@ export class _ChatElement extends LitElement {
     this._handleSeekBeforeBounded = undefined;
     this._handleSeekAfterBounded = undefined;
     this.__handleMessagePinBounded = undefined;
+    this._handleMessageReachedBefore = undefined;
     this._handleMessageUnpinBounded = undefined;
+    this._handleViewportChange = undefined;
   }
 
   _setTimerId(value) {
@@ -192,7 +195,9 @@ export class _ChatElement extends LitElement {
     this._handleSubmitBounded = this._handleSubmit.bind(this);
     this._handleUserDisableBounded = this._handleUserDisable.bind(this);
     this.__handleMessagePinBounded = this.__handleMessagePin.bind(this);
+    this._handleReachedBefore = this._handleReachedBefore.bind(this);
     this._handleMessageUnpinBounded = this._handleMessageUnpin.bind(this);
+    this._handleViewportChange = this._handleViewportChange.bind(this);
   }
 
   _handleListUpdate(e) {
@@ -242,6 +247,14 @@ export class _ChatElement extends LitElement {
       this._changeLastseen(id);
       this.dispatchEvent(new CustomEvent('chat-last-seen-change', { detail: { id } }));
     }
+  }
+
+  _handleViewportChange(e) {
+    const {
+      detail: { length },
+    } = e;
+
+    this.visiblelength = length;
   }
 
   _handleSeekBefore() {
@@ -295,6 +308,14 @@ export class _ChatElement extends LitElement {
     } = e;
 
     this.dispatchEvent(new CustomEvent('chat-message-unpin', { detail: { id } }));
+  }
+
+  _handleReachedBefore(e) {
+    const {
+      detail: { id },
+    } = e;
+
+    this.dispatchEvent(new CustomEvent('chat-message-reached-before', { detail: { id } }));
   }
 
   _changeLastseen(nextseen) {
@@ -371,10 +392,12 @@ export class _ChatElement extends LitElement {
             .reactions=${reactions}
             .users=${users}
             @message-delete=${this._handleDeleteBounded}
-            @message-reaction=${this._handleMessageReactionBounded}
-            @user-disable=${this._handleUserDisableBounded}
             @message-pin=${this.__handleMessagePinBounded}
+            @message-reaction=${this._handleMessageReactionBounded}
             @message-unpin=${this._handleMessageUnpinBounded}
+            @reached-before=${this._handleReachedBefore}
+            @user-disable=${this._handleUserDisableBounded}
+            @viewport-list-change=${this._handleViewportChange}
             invoke=${EVENT}
             lastseen=${lastseen}
             pagesize=${pagesize}

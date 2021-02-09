@@ -76,6 +76,8 @@ export class _MessagesElement extends LitElement {
     this.__registeredUserInteraction = false;
     // is needed to toggle auto-scroll feature
 
+    this.__visibleLength = undefined;
+
     this.i18n = {};
 
     this[actionsSym] = new Map();
@@ -184,10 +186,22 @@ export class _MessagesElement extends LitElement {
           const currentHeight = this._rootNode.offsetHeight;
 
           // save fn to perform scroll updating to previous position
-          this.__afterRenderFn = () => {
+          this.__afterRenderFn = next => {
             const presentHeight = this._rootNode.offsetHeight;
 
-            // this.parentElement.scrollTo2(0, presentHeight - currentHeight);
+            if (presentHeight === this._rootNode.offsetHeight && !presentHeight) return undefined;
+
+            const nextHeight = presentHeight - currentHeight;
+
+            if (next && next.top === false && nextHeight === 0) {
+              return undefined;
+            }
+
+            if (presentHeight - currentHeight < 0) {
+              return [0, 1e6];
+              // scroll to end on drastically change
+            }
+
             return [0, presentHeight - currentHeight];
           };
         }
@@ -253,8 +267,6 @@ export class _MessagesElement extends LitElement {
       if (this.__tailHeight && !relativeHeight) {
         this.requestUpdate('__tailHeight', this.__tailHeight);
       }
-
-      // if (!this.__tailHeight) return false;
     }
 
     if (changedProps.has('disablevl')) {
@@ -363,31 +375,13 @@ export class _MessagesElement extends LitElement {
           return new Error('Could not perform the update. Nested changing was detected');
         }
 
-        // console.log('CHANGE', this.__prevWasAtBottom, this.__prevWasAtTop, this.__curIsAtBottom, this.__curIsAtTop)
-
         let nextScrollPos;
 
         if (!listWasChanged && typeof this.__tailHeight !== 'undefined') {
-          const relativeHeight = relativeShiftTop(this._parentEl, this._rootNode);
-
-          if (
-            this.__tailHeight &&
-            this.__tailHeight === this._rootNode.offsetHeight &&
-            relativeHeight === 0
-          ) {
-            if (this.__registeredUserInterction) {
-              nextScrollPos = [0, this.__tailHeight + this._rootNode.offsetHeight];
-            }
-
-            // this.__tailHeight = undefined;
-          }
-
           if (!this.__registeredUserInteraction) {
             nextScrollPos = [0, this._rootNode.offsetHeight];
           }
-        }
-
-        if (listWasChanged) {
+        } else if (listWasChanged) {
           const visibleEls = this.__discoverMessageVisibility();
 
           this.__vlist && this.__vlist.adjust(visibleEls);
@@ -397,18 +391,24 @@ export class _MessagesElement extends LitElement {
           const listLengthChanged = changed.get('list').length !== this.list.length;
           const lastIsByUser = this.list[this.list.length - 1].created_by === this.user;
 
-          if (listLengthChanged && lastIsByUser) {
-            // console.log('CHANGEDBYME', this.__forceUpdate)
-            if (!this.__forceUpdate) nextScrollPos = [0, 1e6];
-          } else if (listLengthChanged) {
-            // console.log('CHANGEDBYOTHER', this.__forceUpdate)
+          const isOnTop = () => this._rootNode.offsetHeight === this.__tailHeight;
+
+          if (!this.__registeredUserInteraction) {
+            nextScrollPos = [0, this.__tailHeight + this._rootNode.offsetHeight];
+          } else if (listLengthChanged && lastIsByUser) {
             if (this.__onEdge) nextScrollPos = [0, 1e6];
+            else nextScrollPos = [0, this._rootNode.offsetHeight - this.__tailHeight];
+          } else if (listLengthChanged) {
+            if (this.__onEdge) nextScrollPos = [0, 1e6];
+            else nextScrollPos = [0, this._rootNode.offsetHeight - this.__tailHeight];
           } else if (this.__afterRenderFn) {
-            // console.log('CHANGETOADJUSTHISTLLOAD')
-            nextScrollPos = this.__afterRenderFn();
+            const onTop = isOnTop();
+
+            if (!onTop) {
+              nextScrollPos = this.__afterRenderFn({ top: onTop });
+            }
             this.__afterRenderFn = undefined;
           } else if (!this.__afterRenderFn && !this.__registeredUserInteraction) {
-            // console.log('CHANGEATSTARTWOINTERACTION')
             nextScrollPos = [0, this._rootNode.offsetHeight];
           } else if (
             !this.__afterRenderFn &&
@@ -416,19 +416,15 @@ export class _MessagesElement extends LitElement {
             this.__prevWasAtBottom &&
             !this.__prevWasAtBottom
           ) {
-            // console.log(this.user, this.list[this.list.length].created_by)
             nextScrollPos = [0, 1e6];
           }
         }
 
-        // console.log('CHANGENEXTSCROLL', nextScrollPos)
-
-        nextScrollPos.length &&
-          requestAnimationFrame(() => {
-            this._parentEl.scrollTo2(...nextScrollPos);
-            this.__lastScrollPos = nextScrollPos;
-            nextScrollPos = undefined;
-          });
+        if (nextScrollPos.length) {
+          this._parentEl.scrollTo2(...nextScrollPos);
+          this.__lastScrollPos = nextScrollPos;
+          nextScrollPos = undefined;
+        }
 
         this.__prevWasAtBottom = this.__curIsAtBottom;
         this.__prevWasAtTop = this.__curIsAtTop;
@@ -669,6 +665,22 @@ export class _MessagesElement extends LitElement {
     });
 
     const visibleMessages = listVisibility.filter(a => a.visible === true).map(a => a.id);
+
+    this.__visibleLength = visibleMessages.length;
+
+    const [firstVisibleId] = visibleMessages;
+    const [firstStored] = this.list;
+
+    const shouldDispatchTopReached =
+      firstStored && firstVisibleId && firstStored.id === firstVisibleId;
+
+    this.dispatchEvent(
+      new CustomEvent('viewport-list-change', { detail: { length: visibleMessages.length } }),
+    );
+
+    if (shouldDispatchTopReached) {
+      this.dispatchEvent(new CustomEvent('reached-before', { detail: { id: firstVisibleId } }));
+    }
 
     return visibleMessages;
   }
