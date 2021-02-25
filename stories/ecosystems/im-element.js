@@ -2,7 +2,7 @@ import { html } from '@open-wc/demoing-storybook'; // eslint-disable-line import
 
 import '../../src/n-slot-manager.index.js';
 
-export const imElement = messages => html`
+export const imElement = ([messages, users]) => html`
   <wc-chat
     delayrender="1.1e3"
     delayresize="400"
@@ -13,12 +13,13 @@ export const imElement = messages => html`
     placeholderdisabled="Disabled"
     scrollabledisabled
     user="3"
+    .users=${users}
     .list=${messages}
   ></wc-chat>
 `;
 
 // eslint-disable-next-line no-unused-vars
-export const imWithFiltersElement = ([list, user = '3'] = []) => html`
+export const imWithFiltersElement = ([list, users, user = '3'] = []) => html`
   <wc-chat-filtered language="ru" quantity="1">
     <wc-chat
       delayrender="1.1e3"
@@ -30,6 +31,7 @@ export const imWithFiltersElement = ([list, user = '3'] = []) => html`
       placeholderdisabled="Disabled"
       scrollabledisabled
       user=${user}
+      .users=${users}
       .list=${[]}
     />
   </wc-chat-filtered>

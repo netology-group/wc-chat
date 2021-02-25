@@ -2,7 +2,7 @@
  * Uses:
  * ./input.index.js
  * ./message.index.js
- * ./messages-extended.index.js
+ * ./messages.index.js
  * ./reactions.index.js
  * ./scrollable-unseen.index.js
  */

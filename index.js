@@ -1,5 +1,3 @@
-import { MessagesElement as _XMessagesElement } from './src/organisms/messages.js';
-
 import { EventEmitter, withStyle, withStyleLink } from './src/index.js';
 
 export { ChatElement } from './src/ecosystems/chat.js';
@@ -22,16 +20,7 @@ export { ScrollableElement } from './src/organisms/scrollable.js';
 
 export { ScrollableUnseenElement } from './src/organisms/scroll-to-unseen.js';
 
-export class XMessagesElement extends _XMessagesElement {
-  constructor(...argv) {
-    super(...argv);
-
-    // eslint-disable-next-line no-console
-    console.warn(
-      'XMessagesElement is deprecated and will be removed at next major release. Use MessagesElement instead.',
-    );
-  }
-}
+export { SymbolRangeProcessor, ranges } from './src/index.js';
 
 export const mixins = {
   withStyle,

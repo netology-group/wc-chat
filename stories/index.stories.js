@@ -9,7 +9,7 @@ import '../src/chat-i18n.index.js';
 import '../src/chat-with-filters.index.js';
 import '../src/input.index.js';
 import '../src/message.index.js';
-import '../src/messages-extended.index.js';
+import '../src/messages.index.js';
 import '../src/scrollable-unseen.index.js';
 
 import { imElement, imWithFiltersElement } from './ecosystems/im-element.js';
@@ -17,6 +17,7 @@ import * as messageMolecules from './molecules/message.js';
 import * as pinnedMessageMolecules from './molecules/pinned-message.js';
 import * as richMessageMolecules from './molecules/rich-message.js';
 import * as messagesWithPinnedOrganisms from './organisms/messages.js';
+import * as inputOrganisms from './organisms/input.js';
 
 import { _messages, _users } from './mocks.js';
 
@@ -128,18 +129,11 @@ Object.keys(richMessageMolecules).forEach(a => {
 
 /* Organisms */
 
-storiesOf('organisms|input-element', module).add(
-  'basic',
-  () => html`
-    <wc-chat-input
-      disabled="disabled"
-      placeholder="Awaits input"
-      placeholderdisabled="Disabled"
-    ></wc-chat-input>
-    <br />
-    <wc-chat-input placeholder="Awaits input" placeholderdisabled="Disabled"></wc-chat-input>
-  `,
-);
+const inputOrganismStory = storiesOf('organisms|input-element', module);
+
+Object.keys(inputOrganisms).forEach(a => {
+  inputOrganismStory.add(a, () => inputOrganisms[a]());
+});
 
 const messagesWithActionsStory = storiesOf('organisms|messages', module);
 
@@ -160,5 +154,5 @@ Object.keys(messagesWithPinnedOrganisms).forEach(a => {
 storiesOf('ecosystems|im', module).add('basic', () => imElement(messages));
 
 storiesOf('ecosystems|im-with-pinned-filter', module).add('basic', () =>
-  imWithFiltersElement([messages]),
+  imWithFiltersElement([messages, _users]),
 );

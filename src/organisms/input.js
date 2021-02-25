@@ -9,6 +9,7 @@ import { textarea as textaeraEl } from '../atoms/textarea.js';
 import { withStyle } from '../mixins/with-style.js';
 import { style as textareaStyle } from '../atoms/textarea.css.js';
 import { style as buttonStyle } from '../atoms/button.css.js';
+import { SymbolRangeProcessor, ranges } from '../utils/processors.js';
 
 import { style as inputStyle } from './input.css.js';
 
@@ -39,6 +40,7 @@ export class _InputElement extends LitElement {
       maxrows: { type: Number },
       placeholder: String,
       placeholderdisabled: String,
+      preprocessors: String,
       timer: { type: Number },
       value: String,
     };
@@ -47,20 +49,24 @@ export class _InputElement extends LitElement {
   constructor() {
     super();
 
-    this.__onInputBounded = this.__onInput.bind(this);
-    this.__onKeyPressBounded = this.__onKeyPress.bind(this);
-    this.__onValueChangedBounded = this.__onValueChanged.bind(this);
+    this.__onInput = this.__onInput.bind(this);
+    this.__onKeyPress = this.__onKeyPress.bind(this);
+    this.__onValueChanged = this.__onValueChanged.bind(this);
     this.__underlyingTextarea = undefined;
     this.__pre = undefined;
     this.__post = undefined;
     this.__shake = false;
     this.__shakeTimeoutId = null;
+    this.__symRangeProcessor = new SymbolRangeProcessor();
+    this.__preprocessorsMap = new Map([['strict', ['latin_extended_additional']]]);
+
+    this.preprocessors = '';
   }
 
   connectedCallback() {
     super.connectedCallback();
 
-    this.addEventListener('bind-value-changed', this.__onValueChangedBounded);
+    this.addEventListener('bind-value-changed', this.__onValueChanged);
   }
 
   firstUpdated() {
@@ -74,7 +80,7 @@ export class _InputElement extends LitElement {
     this.__pre = undefined;
     this.__post = undefined;
 
-    this.removeEventListener('bind-value-changed', this.__onValueChangedBounded);
+    this.removeEventListener('bind-value-changed', this.__onValueChanged);
   }
 
   changeValue(value = '') {
@@ -141,6 +147,8 @@ export class _InputElement extends LitElement {
 
   __onInput(e, element) {
     if (!this.__underlyingTextarea) this.__underlyingTextarea = element;
+
+    e.target.value = this.__processMessage(e.target.value);
   }
 
   __insertLinebreak() {
@@ -178,7 +186,7 @@ export class _InputElement extends LitElement {
       return;
     }
 
-    const message = this.__processMessage(this.value);
+    const message = this.__processMessage(this.value).trim();
 
     if (message) {
       this.dispatchEvent(new CustomEvent('message-submit', { detail: { message } }));
@@ -187,8 +195,21 @@ export class _InputElement extends LitElement {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  __processMessage(value) {
-    return value && value.trim ? value.trim() : value;
+  __processMessage(value = '') {
+    let val = value;
+
+    const { preprocessors: prep } = this;
+    const [preprocessorPlan] = prep.split(',');
+
+    if (preprocessorPlan && preprocessorPlan === 'strict') {
+      const prepPlan = this.__preprocessorsMap.get('strict');
+
+      const [newValue] = this.__symRangeProcessor.process(val, prepPlan.map(a => ranges.get(a)));
+
+      val = newValue;
+    }
+
+    return val;
   }
 
   render() {
@@ -203,8 +224,8 @@ export class _InputElement extends LitElement {
             disabled,
             maxlength,
             maxRows: maxrows,
-            onInput: this.__onInputBounded,
-            onKeyPress: this.__onKeyPressBounded,
+            onInput: this.__onInput,
+            onKeyPress: this.__onKeyPress,
             placeholder: disabled ? placeholderdisabled : placeholder,
             value,
           })}
