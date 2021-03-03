@@ -165,7 +165,12 @@ export class _MessagesElement extends LitElement {
 
     const seek$ = fromEvent('seek', this.parentElement);
     const seekBefore$ = fromEvent('seek-before', this.parentElement);
-    const userScroll$ = fromEvent('scroll', this.parentElement.shadowRoot, true);
+
+    let userScroll$;
+
+    if (this.parentElement.shadowRoot) {
+      userScroll$ = fromEvent('scroll', this.parentElement.shadowRoot, true);
+    }
 
     compose(
       observe(() => {
@@ -208,18 +213,19 @@ export class _MessagesElement extends LitElement {
       }),
     )(seekBefore$);
 
-    compose(
-      observe(() => {
-        if (!this.__registeredUserInteraction) this.__registeredUserInteraction = true;
+    userScroll$ &&
+      compose(
+        observe(() => {
+          if (!this.__registeredUserInteraction) this.__registeredUserInteraction = true;
 
-        if (this.__getTailHeight() - this._parentEl.scrollHeight <= 100) {
-          this.__onEdge = true;
-        } else {
-          this.__onEdge = false;
-        }
-      }),
-      skip(1),
-    )(userScroll$);
+          if (this.__getTailHeight() - this._parentEl.scrollHeight <= 100) {
+            this.__onEdge = true;
+          } else {
+            this.__onEdge = false;
+          }
+        }),
+        skip(1),
+      )(userScroll$);
 
     this.__initFactory();
   }

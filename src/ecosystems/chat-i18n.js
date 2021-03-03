@@ -50,6 +50,7 @@ export class _ChatI18NElement extends _ChatElement {
       parserrules: String,
       placeholder: String,
       placeholderdisabled: String,
+      preprocessors: String,
       quantity: { type: Number },
       ratelimit: { type: Number },
       reactions: { type: Array },
@@ -204,6 +205,7 @@ export class _ChatI18NElement extends _ChatElement {
       parserrules,
       placeholder,
       placeholderdisabled,
+      preprocessors,
       quantity,
       reactions,
       scrollabledisabled,
@@ -318,6 +320,7 @@ export class _ChatI18NElement extends _ChatElement {
                   @message-submit=${this._handleSubmitBounded}
                   placeholder=${placeholder}
                   placeholderdisabled=${placeholderdisabled}
+                  preprocessors=${preprocessors}
                   timer=${this.__timer}
                   value=${message}
                 />

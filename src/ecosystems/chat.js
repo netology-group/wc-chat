@@ -36,6 +36,7 @@ export class _ChatElement extends LitElement {
       parserrules: String,
       placeholder: String,
       placeholderdisabled: String,
+      preprocessors: String,
       ratelimit: { type: Number },
       reactions: { type: Array },
       scrollabledisabled: { type: Boolean },
@@ -356,6 +357,7 @@ export class _ChatElement extends LitElement {
       parserrules,
       placeholder,
       placeholderdisabled,
+      preprocessors,
       reactions,
       scrollabledisabled,
       user,
@@ -419,6 +421,7 @@ export class _ChatElement extends LitElement {
                   @message-submit=${this._handleSubmitBounded}
                   placeholder=${placeholder}
                   placeholderdisabled=${placeholderdisabled}
+                  preprocessors=${preprocessors}
                   timer=${this.__timer}
                   value=${message}
                 />
