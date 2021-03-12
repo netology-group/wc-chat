@@ -2,9 +2,7 @@
 
 # @ulms/wc-chat
 
-[![](https://data.jsdelivr.com/v1/package/npm/@ulms/wc-chat/badge?style=rounded)](https://www.jsdelivr.com/package/npm/@ulms/wc-chat)
-![](https://img.shields.io/npm/dt/@ulms/wc-chat.svg)
-![](https://img.shields.io/npm/dm/@ulms/wc-chat.svg)
+[![downloads](https://img.shields.io/npm/dm/@ulms/wc-chat)](https://www.npmjs.com/package/@ulms/wc-chat)
 
 
 ## Usage

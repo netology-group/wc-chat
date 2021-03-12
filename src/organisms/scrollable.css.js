@@ -19,7 +19,7 @@ export const style = css`
 
   :host .wrapper .scrollable {
     flex: 1 1 auto;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   :host .row {
