@@ -141,14 +141,6 @@ export class _ScrollableElement extends LitElement {
     );
   }
 
-  scrollTo2(x, y) {
-    this.__scrollTo(
-      isNumber(x) ? x : 0,
-      isNumber(y) ? y : this._scrollable.scrollHeight - this._scrollable.offsetHeight,
-      true,
-    );
-  }
-
   // eslint-disable-next-line class-methods-use-this
   _scrollMinMax(shift, min = 1, max = DELTA) {
     return shift === 0 || (shift >= min && shift <= max);
@@ -321,15 +313,9 @@ export class _ScrollableElement extends LitElement {
     return params.left;
   }
 
+  /*
   // TODO: Remove unnecessary method
   _shouldScrollTo(e, direction = 0) {
-    /**
-     * At the moment `Y.height` and `this._height` are not the same.
-     * - `Y.height` is equal to the new container height (new message has been appended already)
-     * - `this._height` is equal to the old container height (
-     *  before new element was appended and no scroll behaviour has been present
-     * )
-     */
     const X = this._xScroll(this._scrollable);
     const Y = this._yScroll(this._scrollable);
     const { offsetHeight } = this._scrollable;
@@ -357,8 +343,9 @@ export class _ScrollableElement extends LitElement {
 
     return this.__scrollTo(x, y);
   }
+  */
 
-  __scrollTo(x, y, z) {
+  __scrollTo(x, y) {
     debug('Maybe scroll to:', x, y);
 
     if (!isNumber(x) || !isNumber(y)) {
@@ -368,7 +355,7 @@ export class _ScrollableElement extends LitElement {
       return;
     }
 
-    requestAnimation(() => z && scrollTo(this._scrollable, [x, y]));
+    requestAnimation(() => scrollTo(this._scrollable, [x, y]));
   }
 
   // eslint-disable-next-line class-methods-use-this

@@ -100,7 +100,7 @@ export class _ScrollableUnseenElement extends _ScrollableElement {
 
     const nextPoint = [0, unseenEl.offsetTop - this._scrollable.offsetHeight / 2];
 
-    requestAnimation(() => this.__scrollTo(...nextPoint, true));
+    requestAnimation(() => this.__scrollTo(...nextPoint));
   }
 
   _onScrollHandler(e) {
@@ -139,7 +139,7 @@ export class _ScrollableUnseenElement extends _ScrollableElement {
           : recentBanner({
               active: Boolean(this._detached && showbannernew),
               i18n: this.i18n,
-              onClick: () => this.scrollTo2(),
+              onClick: () => this.scrollTo(),
             })}
       </div>
     `;

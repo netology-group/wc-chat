@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit-element';
 
 import { debug as Debug } from '../utils/index.js';
 import { withStyle } from '../mixins/with-style.js';
-import { Queue } from '../utils/queue.js';
 
 import { style } from './chat.css.js';
 
@@ -62,7 +61,6 @@ export class _ChatElement extends LitElement {
     this.parserrules = '';
     this.visiblelength = undefined;
 
-    this._queue = undefined;
     this._scrollable = undefined;
 
     this.__timer = null;
@@ -91,8 +89,6 @@ export class _ChatElement extends LitElement {
 
     this._setup();
 
-    this._queue = new Queue({ timeout: this.delayrender }).on('list', this._handleListUpdate);
-
     this.dispatchEvent(
       new CustomEvent(this.connectedeventname || 'chat-connected', {
         bubbles: true,
@@ -115,8 +111,7 @@ export class _ChatElement extends LitElement {
 
     this.__forceUpdate = forceUpdate;
 
-    this._queue && this._queue.push(list);
-    // save messages to the queue
+    this._handleListUpdate(list);
   }
 
   updatePinned(count) {
@@ -139,7 +134,7 @@ export class _ChatElement extends LitElement {
   scrollToEnd(x, y) {
     debug('Maybe manual scroll to end', x, y);
     // eslint-disable-next-line no-unused-expressions
-    this._scrollable.scrollTo2 && this._scrollable.scrollTo2(x, y);
+    this._scrollable.scrollTo && this._scrollable.scrollTo(x, y);
   }
 
   _clearTimerId() {
@@ -152,8 +147,6 @@ export class _ChatElement extends LitElement {
   }
 
   _destroy() {
-    this._queue = null;
-
     this._handleSubmitBounded = undefined;
     this._handleDeleteBounded = undefined;
     this._handleUserDisableBounded = undefined;
@@ -201,8 +194,7 @@ export class _ChatElement extends LitElement {
     this._handleViewportChange = this._handleViewportChange.bind(this);
   }
 
-  _handleListUpdate(e) {
-    const { list } = e.detail;
+  _handleListUpdate(list) {
     const prevList = this.list;
 
     this.list = list;
