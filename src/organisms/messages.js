@@ -132,9 +132,7 @@ export class _MessagesElement extends LitElement {
       });
     };
 
-    if (next.length === prev.length) {
-      shouldUpdate = true;
-    } else {
+    if (next.length !== prev.length) {
       const rootHeight = this._rootNode.offsetHeight;
       const outerHeight = this._parentEl.offsetHeight;
 
@@ -162,8 +160,18 @@ export class _MessagesElement extends LitElement {
     return tailHeight;
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  __predictNavigationDirection(prev = [], next = []) {
+    const pl = prev.length;
+    const nl = next.length;
+
+    if (pl > nl) return -1;
+    if (pl < nl) return 1;
+
+    return 0;
+  }
+
   __updateList() {
-    console.log('nextlist', this.list.length);
     this.__vlist.list = this.list;
 
     const nextList = this.__vlist.list;
@@ -391,7 +399,6 @@ export class _MessagesElement extends LitElement {
   }
 
   updated(changed) {
-    console.log('changed', changed);
     super.updated(changed);
 
     const listWasChanged = changed.has('list');
@@ -412,39 +419,17 @@ export class _MessagesElement extends LitElement {
         let nextScrollPos;
 
         const isOnTop = () => this._rootNode.offsetHeight === this.__tailHeight;
-        // const isOnBottom = () =>
-
-        // console.log('tailheight', this.__getTailHeight(), 'instanTH', this.__getInstantTailHeight(), '!viewp', this.__viewportIsOnEdges())
-
-        // console.log('listWasChanged', listWasChanged, 'tailHeight', this.__tailHeight, 'registered', this.__registeredUserInteraction, 'top', [isOnTop(), this.__curIsAtTop], this.__curIsAtBottom)
 
         if (this.__registeredUserInteraction && !this.__viewportIsOnEdges()) {
-          console.log(
-            'NEXT',
-            this.visiblelist.length,
-            scrollableCont.scrollTop,
-            scrollableCont.offsetHeight,
-            this.__getInstantTailHeight(),
-            scrollableCont.offsetHeight,
-            this.__getTailHeight(),
-          );
           nextScrollPos = [0, scrollableCont.scrollTop];
         } else if (!listWasChanged && typeof this.__tailHeight !== 'undefined') {
           if (!this.__registeredUserInteraction) {
             nextScrollPos = [0, this._rootNode.offsetHeight];
           }
-          /* } else if (this.__registeredUserInteraction && !this.__curIsAtBottom) {
-          // nextScrollPos = [0, this._rootNode.offsetHeight - this.__tailHeight]
-          nextScrollPos = [0, this.__getInstantTailHeight()]
-          // preserve scroll position on shift to top
-          // !!!
-        */
         } else if (listWasChanged) {
           const visibleEls = this.__discoverMessageVisibility();
 
           this.__vlist && this.__vlist.adjust(visibleEls);
-
-          this.__updateList();
 
           const listLengthChanged = changed.get('list').length !== this.list.length;
           const lastIsByUser = this.list[this.list.length - 1].created_by === this.user;
@@ -481,8 +466,6 @@ export class _MessagesElement extends LitElement {
             nextScrollPos = [0, 1e6];
           }
         }
-
-        console.log({ nextScrollPos });
 
         if (nextScrollPos.length) {
           this._parentEl.scrollTo(...nextScrollPos);
