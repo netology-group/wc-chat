@@ -30,12 +30,12 @@ export class VirtualList {
     const latestNextId = a.length && this.__accessElFn(a[a.length - 1]);
     const latestActiveId = this.__activeIds && this.__activeIds.slice(-1)[0];
 
-    if (this.__data.length) {
+    if (this.__data.length && a.length) {
       const prevList = [...this.__data];
       const oldestPrev = prevList[0];
       const preOldestNext = a[1];
 
-      if (preOldestNext.id === oldestPrev.id) {
+      if (preOldestNext && oldestPrev && preOldestNext.id === oldestPrev.id) {
         // compensate +1 top message (oldest) shift
         this.__data = a.slice(1);
       } else {
