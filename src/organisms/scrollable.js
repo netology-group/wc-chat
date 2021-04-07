@@ -224,28 +224,6 @@ export class _ScrollableElement extends LitElement {
     this.__handleScroll(e.currentTarget);
   }
 
-  _yScroll(el) {
-    const { scrollTop: top, scrollHeight: height } = el;
-
-    return {
-      height,
-      top,
-      prevTop: this._y,
-      prevHeight: this._height,
-    };
-  }
-
-  _xScroll(el) {
-    const { scrollLeft: left, scrollWidth: width } = el;
-
-    return {
-      left,
-      width,
-      prevLeft: this._x,
-      prevWidth: this._width,
-    };
-  }
-
   /**
    * Update position on scroll
    *
@@ -271,79 +249,6 @@ export class _ScrollableElement extends LitElement {
       top: scrollTop,
     });
   }
-
-  __shouldScrollByYAxis(params, changed, prevParams) {
-    const { direction, top, viewHeight } = changed;
-
-    let prevHead = prevParams.height - prevParams.top - viewHeight;
-
-    prevHead = prevHead < 0 ? 0 : prevHead;
-    // got value below zero on initial render (prevPrams.height == 0)
-
-    if (prevParams.height === 0) return params.height;
-    // scroll to top/bottom on initial render
-
-    if (this.freeze) return this[wasAtHeadSym] ? params.top : prevParams.top;
-    // preserve top position if is freezed
-
-    const _wasAtHead = prevParams.height - viewHeight === prevParams.top;
-
-    this[wasAtHeadSym] = _wasAtHead;
-
-    const atZero = top === 0;
-    // means that user is seeing the top message ↑
-
-    if (prevParams.height !== 0 && atZero) return top;
-    // preserve position on top unless initial render
-
-    if (direction === -1) return params.height - prevHead;
-    // calculate top position according the previous distance
-    //  between hight (head) and current position
-
-    const result = _wasAtHead ? params.height - viewHeight : prevParams.top;
-    // preserve current position unless user is near the latest message
-
-    return result;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  __shouldScrollByXAxis(params, changed, prevParams) {
-    debug('calcX', params, prevParams, changed);
-
-    return params.left;
-  }
-
-  /*
-  // TODO: Remove unnecessary method
-  _shouldScrollTo(e, direction = 0) {
-    const X = this._xScroll(this._scrollable);
-    const Y = this._yScroll(this._scrollable);
-    const { offsetHeight } = this._scrollable;
-
-    debug('XY x:', X, 'y:', Y);
-
-    if (Y.top === Y.height || Y.height === Y.prevHeight) return debug('Skip scrolling');
-    // skip scrolling on empty children (initial render might has 0/0 or equal values)
-
-    // TODO: clarify changed data
-    const y = this.__shouldScrollByYAxis(
-      { height: Y.height, top: Y.top },
-      {
-        direction,
-        top: Y.top,
-        viewHeight: offsetHeight,
-      },
-      { height: Y.prevHeight, top: Y.prevTop },
-    );
-    const x = this.__shouldScrollByXAxis(
-      { left: X.left, width: X.width },
-      { left: X.left, viewHeight: offsetHeight },
-      { left: X.prevLeft, width: X.prevWidth },
-    );
-
-    return this.__scrollTo(x, y);
-  }
-  */
 
   __scrollTo(x, y) {
     debug('Maybe scroll to:', x, y);
