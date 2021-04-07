@@ -147,16 +147,16 @@ export class _ChatElement extends LitElement {
   }
 
   _destroy() {
-    this._handleSubmitBounded = undefined;
-    this._handleDeleteBounded = undefined;
-    this._handleUserDisableBounded = undefined;
-    this._handleMessageReactionBounded = undefined;
-    this._handleLastSeenChangeBounded = undefined;
-    this._handleSeekBeforeBounded = undefined;
-    this._handleSeekAfterBounded = undefined;
-    this.__handleMessagePinBounded = undefined;
+    this._handleSubmit = undefined;
+    this._handleDelete = undefined;
+    this._handleUserDisable = undefined;
+    this._handleMessageReaction = undefined;
+    this._handleLastSeenChange = undefined;
+    this._handleSeekBefore = undefined;
+    this._handleSeekAfter = undefined;
+    this._handleMessagePin = undefined;
     this._handleMessageReachedBefore = undefined;
-    this._handleMessageUnpinBounded = undefined;
+    this._handleMessageUnpin = undefined;
     this._handleViewportChange = undefined;
   }
 
@@ -180,17 +180,17 @@ export class _ChatElement extends LitElement {
   }
 
   _setup() {
-    this._handleDeleteBounded = this._handleDelete.bind(this);
-    this._handleLastSeenChangeBounded = this._handleLastSeenChange.bind(this);
+    this._handleDelete = this._handleDelete.bind(this);
+    this._handleLastSeenChange = this._handleLastSeenChange.bind(this);
     this._handleListUpdate = this._handleListUpdate.bind(this);
-    this._handleMessageReactionBounded = this._handleMessageReaction.bind(this);
-    this._handleSeekAfterBounded = this._handleSeekAfter.bind(this);
-    this._handleSeekBeforeBounded = this._handleSeekBefore.bind(this);
-    this._handleSubmitBounded = this._handleSubmit.bind(this);
-    this._handleUserDisableBounded = this._handleUserDisable.bind(this);
-    this.__handleMessagePinBounded = this.__handleMessagePin.bind(this);
+    this._handleMessageReaction = this._handleMessageReaction.bind(this);
+    this._handleSeekAfter = this._handleSeekAfter.bind(this);
+    this._handleSeekBefore = this._handleSeekBefore.bind(this);
+    this._handleSubmit = this._handleSubmit.bind(this);
+    this._handleUserDisable = this._handleUserDisable.bind(this);
+    this._handleMessagePin = this.__handleMessagePin.bind(this);
     this._handleReachedBefore = this._handleReachedBefore.bind(this);
-    this._handleMessageUnpinBounded = this._handleMessageUnpin.bind(this);
+    this._handleMessageUnpin = this._handleMessageUnpin.bind(this);
     this._handleViewportChange = this._handleViewportChange.bind(this);
   }
 
@@ -370,9 +370,9 @@ export class _ChatElement extends LitElement {
           .delay=${delayupdate}
           .delayresize=${delayresize}
           .delayscroll=${delayscroll}
-          @last-seen-change=${this._handleLastSeenChangeBounded}
-          @seek-after=${this._handleSeekAfterBounded}
-          @seek-before=${this._handleSeekBeforeBounded}
+          @last-seen-change=${this._handleLastSeenChange}
+          @seek-after=${this._handleSeekAfter}
+          @seek-before=${this._handleSeekBefore}
           listen=${EVENT}
           unseenSelector=".message.unseen"
         >
@@ -385,12 +385,12 @@ export class _ChatElement extends LitElement {
             .parserengine=${this.parserengine}
             .reactions=${reactions}
             .users=${users}
-            @message-delete=${this._handleDeleteBounded}
-            @message-pin=${this.__handleMessagePinBounded}
-            @message-reaction=${this._handleMessageReactionBounded}
-            @message-unpin=${this._handleMessageUnpinBounded}
+            @message-delete=${this._handleDelete}
+            @message-pin=${this._handleMessagePin}
+            @message-reaction=${this._handleMessageReaction}
+            @message-unpin=${this._handleMessageUnpin}
             @reached-before=${this._handleReachedBefore}
-            @user-disable=${this._handleUserDisableBounded}
+            @user-disable=${this._handleUserDisable}
             @viewport-list-change=${this._handleViewportChange}
             invoke=${EVENT}
             lastseen=${lastseen}
@@ -410,7 +410,7 @@ export class _ChatElement extends LitElement {
                   .delay=${delaysubmit || 0}
                   .maxlength=${maxlength}
                   .maxrows=${maxrows || 10}
-                  @message-submit=${this._handleSubmitBounded}
+                  @message-submit=${this._handleSubmit}
                   placeholder=${placeholder}
                   placeholderdisabled=${placeholderdisabled}
                   preprocessors=${preprocessors}

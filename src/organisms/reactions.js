@@ -33,7 +33,7 @@ export class _ReactionsElement extends LitElement {
     this.showall = false;
     this.showcount = false;
 
-    this._handleClickBounded = this._handleClick.bind(this);
+    this._handleClick = this._handleClick.bind(this);
   }
 
   _renderIcon(data) {
@@ -66,7 +66,7 @@ export class _ReactionsElement extends LitElement {
     return !shouldRender
       ? undefined
       : html`
-          <div class="icon" name=${k} @click=${this._handleClickBounded}>
+          <div class="icon" name=${k} @click=${this._handleClick}>
             <span>${this._renderIcon(v)}</span>
             ${shouldCount
               ? html`
