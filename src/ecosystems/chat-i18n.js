@@ -25,7 +25,6 @@ export class _ChatI18NElement extends _ChatElement {
       actions: { type: Array },
       aggregateperinterval: String,
       connectedeventname: String,
-      delayrender: { type: Number },
       delayresize: { type: { type: Number } },
       delayscroll: { type: Number },
       delaysubmit: { type: Number },

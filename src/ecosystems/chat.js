@@ -14,7 +14,6 @@ export class _ChatElement extends LitElement {
       actions: { type: Array },
       aggregateperinterval: String,
       connectedeventname: String,
-      delayrender: { type: Number },
       delayresize: { type: Number },
       delayscroll: { type: Number },
       delaysubmit: { type: Number },
@@ -52,7 +51,6 @@ export class _ChatElement extends LitElement {
   constructor() {
     super();
 
-    this.delayrender = 1e3;
     this.list = [];
     this.message = '';
     this.parser = '';

@@ -18,8 +18,6 @@
   <script async type="module" src="./src/messages.index.js"></script>
   <script async type="module" src="./src/reactions.index.js"></script>
   <script async type="module" src="./src/scrollable-unseen.index.js"></script>
-  <script async type="module" src="./src/chat-with-filters.index.js"></script>
-  <script async type="module" src="./src/n-slot-manager.index.js"></script>
   <script>
     /* eslint-disable no-var,prefer-destructuring,no-param-reassign,prefer-arrow-callback */
     var ulid = globalThis.ULID.ulid
@@ -200,7 +198,6 @@
     <div class="container">
       <wc-chat
         aggregateperinterval=1
-        delayrender=900
         delayresize=400
         delayupdate=200
         id="messenger1"
@@ -215,7 +212,6 @@
     <div class="container">
       <wc-chat
         aggregateperinterval=5
-        delayrender=1e3
         delayresize=400
         delayupdate=200
         disablerecentbanner=1
@@ -231,7 +227,6 @@
     <div class="container">
       <wc-chat
         connectedeventname='im-connected'
-        delayrender=1.1e3
         delayresize=400
         delayupdate=200
         disablerecentbanner=1
