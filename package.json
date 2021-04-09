@@ -31,7 +31,7 @@
     "lint": "npm run lint:eslint && npm run lint:prettier",
     "lint:eslint": "eslint --ext .js,.html \"./src\" --ignore-path .gitignore",
     "lint:prettier": "prettier \"./src/**/*.js\" --check --ignore-path .gitignore",
-    "prepublishOnly": "npm run lint && npm run test && npm run build",
+    "prepublishOnly": "npm ci && npm run lint && npm run test && npm run build",
     "site:build": "npm run storybook:build",
     "prestart": "scripts/prepare.sh",
     "start": "es-dev-server --app-index index.html --node-resolve --open --watch",
