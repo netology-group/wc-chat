@@ -4,8 +4,6 @@ export { ChatElement } from './src/ecosystems/chat.js';
 
 export { ChatI18NElement } from './src/ecosystems/chat-i18n.js';
 
-export { ChatFilteredElement } from './src/ecosystems/chat-with-filters.js';
-
 export { InputElement } from './src/organisms/input.js';
 
 export { MessageElement } from './src/molecules/message.js';
