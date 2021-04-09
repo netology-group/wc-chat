@@ -30,7 +30,20 @@ export class VirtualList {
     const latestNextId = a.length && this.__accessElFn(a[a.length - 1]);
     const latestActiveId = this.__activeIds && this.__activeIds.slice(-1)[0];
 
-    this.__data = a;
+    if (this.__data.length && a.length) {
+      const prevList = [...this.__data];
+      const oldestPrev = prevList[0];
+      const preOldestNext = a[1];
+
+      if (preOldestNext && oldestPrev && preOldestNext.id === oldestPrev.id) {
+        // compensate +1 top message (oldest) shift
+        this.__data = a.slice(1);
+      } else {
+        this.__data = a;
+      }
+    } else {
+      this.__data = a;
+    }
 
     // Turn `latestReached` flag off
     if (latestActiveId && latestActiveId !== latestNextId) {
@@ -41,43 +54,17 @@ export class VirtualList {
 
   get list() {
     const [firstVisibleId] = this.__activeIds;
-    // const numberRemainsToStart = this.__data.findIndex(a => this.matchItem(a, firstVisibleId));
-
-    if (!firstVisibleId) {
-      const prevList = this.__list;
-
-      this.__list = this.__data.slice(-1 * this.__size);
-      this.__updateFn && this.__updateFn(this.__list, prevList);
-
-      return this.__list;
-    }
-
-    // const numberAhead = numberRemainsToStart - this.__size;
     const prevList = this.__list;
 
-    // const sliceFrom = numberAhead < 0 ? 0 : numberAhead;
-
-    if (this.__latestReachedElId) {
-      const latestReachedElIndex = this.__data.findIndex(a =>
-        this.matchItem(a, this.__latestReachedElId),
-      );
-
-      debug('Latest reached', latestReachedElIndex);
-
-      if (this.__disabled) {
-        // const from = this.__data.length - this.__size;
-
-        this.__list = this.__data; // .slice(from < 0 ? 0 : from, this.__data.length);
-      } else {
-        this.__list = this.__data; // .slice(sliceFrom, latestReachedElIndex + 1);
-      }
+    if (!firstVisibleId) {
+      this.__list = this.__data.slice(-1 * this.__size);
     } else {
-      this.__list = this.__data; // .slice(sliceFrom);
+      this.__list = this.__data;
     }
 
-    debug('Update list', this.__list);
-
     this.__updateFn && this.__updateFn(this.__list, prevList);
+
+    debug('Update list', this.__list);
 
     return this.__list;
   }

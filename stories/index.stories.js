@@ -6,13 +6,12 @@ import { button } from '../src/atoms/button.js';
 import { textarea } from '../src/atoms/textarea.js';
 
 import '../src/chat-i18n.index.js';
-import '../src/chat-with-filters.index.js';
 import '../src/input.index.js';
 import '../src/message.index.js';
 import '../src/messages.index.js';
 import '../src/scrollable-unseen.index.js';
 
-import { imElement, imWithFiltersElement } from './ecosystems/im-element.js';
+import { imElement } from './ecosystems/im-element.js';
 import * as messageMolecules from './molecules/message.js';
 import * as pinnedMessageMolecules from './molecules/pinned-message.js';
 import * as richMessageMolecules from './molecules/rich-message.js';
@@ -152,7 +151,3 @@ Object.keys(messagesWithPinnedOrganisms).forEach(a => {
 /* Ecosystems */
 
 storiesOf('ecosystems|im', module).add('basic', () => imElement(messages));
-
-storiesOf('ecosystems|im-with-pinned-filter', module).add('basic', () =>
-  imWithFiltersElement([messages, _users]),
-);

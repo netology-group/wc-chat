@@ -38,6 +38,9 @@ const relativeShiftTop = (anc, desc) => {
   return ancTop - descTop;
 };
 
+const heightMatches = (a, b, delta = 1) => Math.abs(a - b) <= delta;
+// due to decimal height we match height which differs by 1 at max
+
 export class _MessagesElement extends LitElement {
   static get properties() {
     return {
@@ -129,9 +132,7 @@ export class _MessagesElement extends LitElement {
       });
     };
 
-    if (next.length === prev.length) {
-      shouldUpdate = true;
-    } else {
+    if (next.length !== prev.length) {
       const rootHeight = this._rootNode.offsetHeight;
       const outerHeight = this._parentEl.offsetHeight;
 
@@ -150,6 +151,24 @@ export class _MessagesElement extends LitElement {
     const tailHeight = this._rootNode.offsetHeight - relativeHeight;
 
     return tailHeight;
+  }
+
+  __getInstantTailHeight() {
+    const scrollableCont = this._parentEl._scrollable;
+    const tailHeight = scrollableCont.scrollTop;
+
+    return tailHeight;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  __predictNavigationDirection(prev = [], next = []) {
+    const pl = prev.length;
+    const nl = next.length;
+
+    if (pl > nl) return -1;
+    if (pl < nl) return 1;
+
+    return 0;
   }
 
   __updateList() {
@@ -351,7 +370,7 @@ export class _MessagesElement extends LitElement {
           this.__memoForceUpdateToNextRender = false;
 
           requestAnimationFrame(() => {
-            this._parentEl.scrollTo2(0, 1e6);
+            this._parentEl.scrollTo(0, 1e6);
             // scroll to the latest element on force update
           });
         }
@@ -366,16 +385,32 @@ export class _MessagesElement extends LitElement {
       .catch(console.error); // eslint-disable-line no-console
   }
 
+  __viewportIsOnEdges() {
+    const scrollableCont = this._parentEl._scrollable;
+
+    const onTop = scrollableCont.scrollTop === 0;
+    const atBottom =
+      scrollableCont.scrollTop + scrollableCont.offsetHeight === scrollableCont.scrollHeight;
+
+    const messages = this.__checkMessagesVisibility();
+    const latestMessageIsVisible = messages.length && messages[messages.length - 1].visible;
+
+    return onTop || atBottom || latestMessageIsVisible;
+  }
+
   updated(changed) {
     super.updated(changed);
 
     const listWasChanged = changed.has('list');
+    const scrollableCont = this._parentEl._scrollable;
 
     return this.updateComplete
       .then(result => {
-        this.__curIsAtTop = this._parentEl.scrollTop === 0;
-        this.__curIsAtBottom =
-          this._parentEl.scrollHeight - this._parentEl.scrollTop === this._rootNode.offsetHeight;
+        this.__curIsAtTop = scrollableCont.scrollTop === 0;
+        this.__curIsAtBottom = heightMatches(
+          scrollableCont.scrollHeight - scrollableCont.scrollTop,
+          scrollableCont.offsetHeight,
+        );
 
         if (!result) {
           return new Error('Could not perform the update. Nested changing was detected');
@@ -383,7 +418,11 @@ export class _MessagesElement extends LitElement {
 
         let nextScrollPos;
 
-        if (!listWasChanged && typeof this.__tailHeight !== 'undefined') {
+        const isOnTop = () => this._rootNode.offsetHeight === this.__tailHeight;
+
+        if (this.__registeredUserInteraction && !this.__viewportIsOnEdges()) {
+          nextScrollPos = [0, scrollableCont.scrollTop];
+        } else if (!listWasChanged && typeof this.__tailHeight !== 'undefined') {
           if (!this.__registeredUserInteraction) {
             nextScrollPos = [0, this._rootNode.offsetHeight];
           }
@@ -392,21 +431,23 @@ export class _MessagesElement extends LitElement {
 
           this.__vlist && this.__vlist.adjust(visibleEls);
 
-          this.__updateList();
-
           const listLengthChanged = changed.get('list').length !== this.list.length;
           const lastIsByUser = this.list[this.list.length - 1].created_by === this.user;
-
-          const isOnTop = () => this._rootNode.offsetHeight === this.__tailHeight;
 
           if (!this.__registeredUserInteraction) {
             nextScrollPos = [0, this.__tailHeight + this._rootNode.offsetHeight];
           } else if (listLengthChanged && lastIsByUser) {
-            if (this.__onEdge) nextScrollPos = [0, 1e6];
-            else nextScrollPos = [0, this._rootNode.offsetHeight - this.__tailHeight];
+            if (this.__onEdge) {
+              nextScrollPos = [0, 1e6];
+            } else {
+              nextScrollPos = [0, this._rootNode.offsetHeight - this.__tailHeight];
+            }
           } else if (listLengthChanged) {
-            if (this.__onEdge) nextScrollPos = [0, 1e6];
-            else nextScrollPos = [0, this._rootNode.offsetHeight - this.__tailHeight];
+            if (this.__onEdge) {
+              nextScrollPos = [0, 1e6];
+            } else {
+              nextScrollPos = [0, this._rootNode.offsetHeight - this.__tailHeight];
+            }
           } else if (this.__afterRenderFn) {
             const onTop = isOnTop();
 
@@ -427,7 +468,7 @@ export class _MessagesElement extends LitElement {
         }
 
         if (nextScrollPos.length) {
-          this._parentEl.scrollTo2(...nextScrollPos);
+          this._parentEl.scrollTo(...nextScrollPos);
           this.__lastScrollPos = nextScrollPos;
           nextScrollPos = undefined;
         }
@@ -650,7 +691,7 @@ export class _MessagesElement extends LitElement {
     `;
   }
 
-  __discoverMessageVisibility() {
+  __checkMessagesVisibility() {
     const parentEl = this.parentElement;
     const childrenEls = this.shadowRoot.querySelector('.messages-inner').children;
 
@@ -669,6 +710,12 @@ export class _MessagesElement extends LitElement {
         visible: topR <= elTopR && elTopR <= bottomR && (topR <= elBotR && elBotR <= bottomR),
       };
     });
+
+    return listVisibility;
+  }
+
+  __discoverMessageVisibility() {
+    const listVisibility = this.__checkMessagesVisibility();
 
     const visibleMessages = listVisibility.filter(a => a.visible === true).map(a => a.id);
 

@@ -25,7 +25,6 @@ export class _ChatI18NElement extends _ChatElement {
       actions: { type: Array },
       aggregateperinterval: String,
       connectedeventname: String,
-      delayrender: { type: Number },
       delayresize: { type: { type: Number } },
       delayscroll: { type: Number },
       delaysubmit: { type: Number },
@@ -276,9 +275,9 @@ export class _ChatI18NElement extends _ChatElement {
           .delayresize=${delayresize}
           .delayscroll=${delayscroll}
           .i18n=${scrollableI18n}
-          @last-seen-change=${this._handleLastSeenChangeBounded}
-          @seek-after=${this._handleSeekAfterBounded}
-          @seek-before=${this._handleSeekBeforeBounded}
+          @last-seen-change=${this._handleLastSeenChange}
+          @seek-after=${this._handleSeekAfter}
+          @seek-before=${this._handleSeekBefore}
           listen=${EVENT}
           unseenSelector=".message.unseen"
         >
@@ -292,12 +291,12 @@ export class _ChatI18NElement extends _ChatElement {
             .parserengine=${this.parserengine}
             .reactions=${reactions}
             .users=${users}
-            @message-delete=${this._handleDeleteBounded}
-            @message-pin=${this.__handleMessagePinBounded}
-            @message-reaction=${this._handleMessageReactionBounded}
-            @message-unpin=${this._handleMessageUnpinBounded}
+            @message-delete=${this._handleDelete}
+            @message-pin=${this.__handleMessagePin}
+            @message-reaction=${this._handleMessageReaction}
+            @message-unpin=${this._handleMessageUnpin}
             @reached-before=${this._handleReachedBefore}
-            @user-disable=${this._handleUserDisableBounded}
+            @user-disable=${this._handleUserDisable}
             @viewport-list-change=${this._handleViewportChange}
             invoke=${EVENT}
             lastseen=${lastseen}
@@ -317,7 +316,7 @@ export class _ChatI18NElement extends _ChatElement {
                   .delay=${delaysubmit}
                   .maxlength=${maxlength}
                   .maxrows=${maxrows}
-                  @message-submit=${this._handleSubmitBounded}
+                  @message-submit=${this._handleSubmit}
                   placeholder=${placeholder}
                   placeholderdisabled=${placeholderdisabled}
                   preprocessors=${preprocessors}
