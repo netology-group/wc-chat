@@ -7,12 +7,13 @@ export const style = css`
   }
 
   :host {
-    --message-avatar-margin: 8px;
-    --message-avatar-size: 32px;
-    --message-border-radius: 5px;
+    --message-avatar-margin: var(--chat-message-avatar-margin, 8px);
+    --message-avatar-size: var(--chat-message-avatar-size, 32px);
+    --message-border-radius: var(--chat-message-border-radius, 5px);
     --message-color-deleted-hover: var(--chat-message-color-deleted-hover, #eeeeeeb3);
     --message-color-deleted: var(--chat-message-color-watchdog, var(--gallery, #eee));
     --message-color-hover: var(--chat-message-color-hover, #ffffff80);
+    --message-color: var(--chat-message-color, #fff);
     --message-color-me-hover: var(--chat-message-color-me-hover, #ebf2f7b3);
     --message-color-me: var(--chat-message-color-me, var(--cornflowerBlue, #ebf2f7));
     --message-color-watchdog-hover: var(--chat-message-color-watchdog-hover, #faefebb3);
@@ -50,7 +51,7 @@ export const style = css`
   }
 
   :host .content {
-    background-color: #fff;
+    background-color: var(--message-color);
     border-radius: var(--message-border-radius);
     box-sizing: border-box;
     display: inline-block;
